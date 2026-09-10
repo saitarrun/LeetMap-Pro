@@ -39,7 +39,7 @@ export const SqlCompanyDetailView: React.FC<SqlCompanyDetailViewProps> = ({ comp
     const handleSolvedChange = () => {
       setSolvedSet(getSolvedProblems());
     };
-    window.addEventListener('grindmap-solved-updated', handleSolvedChange);
+    window.addEventListener('leetmap-solved-updated', handleSolvedChange);
 
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape' && searchQuery) {
@@ -50,7 +50,7 @@ export const SqlCompanyDetailView: React.FC<SqlCompanyDetailViewProps> = ({ comp
     window.addEventListener('keydown', handleKeyDown);
 
     return () => {
-      window.removeEventListener('grindmap-solved-updated', handleSolvedChange);
+      window.removeEventListener('leetmap-solved-updated', handleSolvedChange);
       window.removeEventListener('keydown', handleKeyDown);
     };
   }, [searchQuery]);

@@ -1,6 +1,6 @@
-# GrindMap Pro — Company-wise LeetCode Interview Questions
+# LeetMap — Company-wise LeetCode Interview Questions
 
-A fast, responsive, modern web application for practicing LeetCode problems categorized by company, ranked by recency and interview frequency. Modeled after [GrindMap](https://grindmap.xevrion.dev/) and powered by community-maintained upstream datasets from [`liquidslr/leetcode-company-wise-problems`](https://github.com/liquidslr/leetcode-company-wise-problems) and [`snehasishroy/leetcode-companywise-interview-questions`](https://github.com/snehasishroy/leetcode-companywise-interview-questions).
+A fast, responsive, modern web application for practicing LeetCode problems categorized by company, ranked by recency and interview frequency. Powered by community-maintained upstream datasets from [`liquidslr/leetcode-company-wise-problems`](https://github.com/liquidslr/leetcode-company-wise-problems) and [`snehasishroy/leetcode-companywise-interview-questions`](https://github.com/snehasishroy/leetcode-companywise-interview-questions).
 
 ---
 

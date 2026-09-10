@@ -1,8 +1,7 @@
 import { UserProfile, SolvedProblemRecord, UserActivityStats } from '@/types';
 
-const GUEST_KEY = 'grindmap_solved_guest';
-const LEGACY_KEY = 'grindmap_solved_problems';
-const ACTIVE_USER_KEY = 'grindmap_active_user';
+const GUEST_KEY = 'leetmap_solved_guest';
+const ACTIVE_USER_KEY = 'leetmap_active_user';
 
 export function getActiveUser(): UserProfile | null {
   if (typeof window === 'undefined') return null;
@@ -29,29 +28,29 @@ export function setActiveUser(user: UserProfile | null): void {
     console.error('Failed to update active user in storage:', e);
   }
   // Notify all components that active profile/progress changed
-  window.dispatchEvent(new CustomEvent('grindmap-solved-updated', { detail: { count: getSolvedCount() } }));
+  window.dispatchEvent(new CustomEvent('leetmap-solved-updated', { detail: { count: getSolvedCount() } }));
 }
 
 export function getStorageKey(username?: string): string {
   if (username) {
-    return `grindmap_solved_${username.toLowerCase()}`;
+    return `leetmap_solved_${username.toLowerCase()}`;
   }
   const user = getActiveUser();
   if (user?.username) {
-    return `grindmap_solved_${user.username.toLowerCase()}`;
+    return `leetmap_solved_${user.username.toLowerCase()}`;
   }
   return GUEST_KEY;
 }
 
 export function getActivityKey(username?: string): string {
   if (username) {
-    return `grindmap_activity_${username.toLowerCase()}`;
+    return `leetmap_activity_${username.toLowerCase()}`;
   }
   const user = getActiveUser();
   if (user?.username) {
-    return `grindmap_activity_${user.username.toLowerCase()}`;
+    return `leetmap_activity_${user.username.toLowerCase()}`;
   }
-  return 'grindmap_activity_guest';
+  return 'leetmap_activity_guest';
 }
 
 function getLocalDateString(d: Date = new Date()): string {
@@ -66,15 +65,6 @@ export function getSolvedProblems(username?: string): Set<string> {
   const key = getStorageKey(username);
   try {
     let raw = localStorage.getItem(key);
-
-    // Auto-migration from legacy single-user key if guest/active storage is empty
-    if (!raw && key === GUEST_KEY) {
-      const legacy = localStorage.getItem(LEGACY_KEY);
-      if (legacy) {
-        localStorage.setItem(GUEST_KEY, legacy);
-        raw = legacy;
-      }
-    }
 
     if (!raw) return new Set();
     const parsed = JSON.parse(raw);
@@ -168,7 +158,7 @@ export function toggleProblemSolved(
   try {
     localStorage.setItem(key, JSON.stringify(Array.from(set)));
     window.dispatchEvent(
-      new CustomEvent('grindmap-solved-updated', {
+      new CustomEvent('leetmap-solved-updated', {
         detail: { slug, solved, count: set.size, key },
       })
     );
@@ -318,7 +308,7 @@ export function migrateGuestToUser(targetUsername: string): number {
   localStorage.setItem(userKey, JSON.stringify(Array.from(userSet)));
   localStorage.setItem(actKey, JSON.stringify(mergedRecords));
 
-  window.dispatchEvent(new CustomEvent('grindmap-solved-updated', { detail: { count: userSet.size } }));
+  window.dispatchEvent(new CustomEvent('leetmap-solved-updated', { detail: { count: userSet.size } }));
   return merged;
 }
 
@@ -355,7 +345,7 @@ export async function syncUserProgressWithServer(username?: string): Promise<voi
           localStorage.setItem(actKey, JSON.stringify(data.activityRecords));
         }
         window.dispatchEvent(
-          new CustomEvent('grindmap-solved-updated', {
+          new CustomEvent('leetmap-solved-updated', {
             detail: { count: data.solvedSlugs.length, key: localKey },
           })
         );

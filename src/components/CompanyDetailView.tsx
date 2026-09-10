@@ -46,8 +46,8 @@ export const CompanyDetailView: React.FC<CompanyDetailViewProps> = ({ company })
     const handleSolvedChange = () => {
       setSolvedSet(getSolvedProblems());
     };
-    window.addEventListener('grindmap-solved-updated', handleSolvedChange);
-    return () => window.removeEventListener('grindmap-solved-updated', handleSolvedChange);
+    window.addEventListener('leetmap-solved-updated', handleSolvedChange);
+    return () => window.removeEventListener('leetmap-solved-updated', handleSolvedChange);
   }, []);
 
   const handleToggleSolved = (prob: Problem) => {

@@ -5,7 +5,7 @@ import { UserProfile } from '@/types';
 export async function GET() {
   try {
     const cookieStore = await cookies();
-    const sessionCookie = cookieStore.get('grindmap_session')?.value;
+    const sessionCookie = cookieStore.get('leetmap_session')?.value;
 
     if (!sessionCookie) {
       return NextResponse.json({

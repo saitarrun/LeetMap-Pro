@@ -37,7 +37,7 @@ export async function POST(request: Request) {
       try {
         const ghRes = await fetch(`https://api.github.com/users/${encodeURIComponent(targetHandle)}`, {
           headers: {
-            'User-Agent': 'grindmap-web',
+            'User-Agent': 'leetmap',
             Accept: 'application/vnd.github.v3+json',
           },
           next: { revalidate: 3600 },
@@ -67,7 +67,7 @@ export async function POST(request: Request) {
           username: targetHandle.toLowerCase().replace(/[^a-z0-9_-]/g, '_'),
           name: targetHandle,
           avatarUrl: `https://api.dicebear.com/7.x/identicon/svg?seed=${targetHandle}`,
-          email: isEmail ? rawInput : `${targetHandle}@grindmap.dev`,
+          email: isEmail ? rawInput : `${targetHandle}@leetmap.dev`,
           githubUrl: `https://github.com/${targetHandle}`,
           createdAt: new Date().toISOString(),
         };
@@ -76,7 +76,7 @@ export async function POST(request: Request) {
 
     // Save session cookie for 30 days
     const cookieStore = await cookies();
-    cookieStore.set('grindmap_session', JSON.stringify(userProfile), {
+    cookieStore.set('leetmap_session', JSON.stringify(userProfile), {
       httpOnly: false,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',

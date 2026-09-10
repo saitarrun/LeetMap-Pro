@@ -17,7 +17,6 @@ from typing import Dict, Any, List, Set, Optional
 SOURCE_LIQUIDSLR = "liquidslr/leetcode-company-wise-problems"
 SOURCE_SNEHASISHROY = "snehasishroy/leetcode-companywise-interview-questions"
 LEETCODE_GRAPHQL = "https://leetcode.com/graphql"
-GRINDMAP_COMPANIES_URL = "https://grindmap.xevrion.dev/data/companies.json"
 
 WINDOW_DEFINITIONS = [
     {"index": 0, "name": "Last 30 Days", "key": "30_days", "l_file": "1. Thirty Days.csv", "s_file": "thirty-days.csv"},
@@ -91,18 +90,19 @@ def fetch_leetcode_official_company_tags() -> Dict[str, Dict[str, Any]]:
 
 def fetch_curated_domains() -> Dict[str, str]:
     domains = {}
+    local_file = "public/data/companies.json"
     try:
-        req = urllib.request.Request(GRINDMAP_COMPANIES_URL, headers={"User-Agent": "LeetCodeCompanySync/2.0"})
-        with urllib.request.urlopen(req, timeout=10) as resp:
-            data = json.loads(resp.read().decode())
-            for item in data:
-                if item.get("name") and item.get("domain"):
-                    domains[item["name"].lower()] = item["domain"]
-                    domains[slugify(item["name"])] = item["domain"]
-                    if item.get("slug"):
-                        domains[item["slug"]] = item["domain"]
+        if os.path.exists(local_file):
+            with open(local_file, "r", encoding="utf-8") as f:
+                data = json.load(f)
+                for item in data:
+                    if item.get("name") and item.get("domain"):
+                        domains[item["name"].lower()] = item["domain"]
+                        domains[slugify(item["name"])] = item["domain"]
+                        if item.get("slug"):
+                            domains[item["slug"]] = item["domain"]
     except Exception as e:
-        print(f"Notice: Domain mappings ({e})")
+        print(f"Notice: Local domain mappings ({e})")
     return domains
 
 def extract_slug_from_link(link: str) -> str:

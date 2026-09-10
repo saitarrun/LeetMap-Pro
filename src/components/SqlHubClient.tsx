@@ -52,7 +52,7 @@ export const SqlHubClient: React.FC<SqlHubClientProps> = ({
     const handleUpdate = () => {
       setSolvedSet(getSolvedProblems());
     };
-    window.addEventListener('grindmap-solved-updated', handleUpdate);
+    window.addEventListener('leetmap-solved-updated', handleUpdate);
 
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === '/' && document.activeElement !== searchInputRef.current) {
@@ -67,7 +67,7 @@ export const SqlHubClient: React.FC<SqlHubClientProps> = ({
     window.addEventListener('keydown', handleKeyDown);
 
     return () => {
-      window.removeEventListener('grindmap-solved-updated', handleUpdate);
+      window.removeEventListener('leetmap-solved-updated', handleUpdate);
       window.removeEventListener('keydown', handleKeyDown);
     };
   }, [searchQuery]);

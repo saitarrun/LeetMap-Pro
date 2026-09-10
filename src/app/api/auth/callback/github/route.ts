@@ -46,7 +46,7 @@ export async function GET(request: Request) {
     const userRes = await fetch('https://api.github.com/user', {
       headers: {
         Authorization: `Bearer ${accessToken}`,
-        'User-Agent': 'grindmap-web',
+        'User-Agent': 'leetmap',
         Accept: 'application/vnd.github.v3+json',
       },
     });
@@ -70,7 +70,7 @@ export async function GET(request: Request) {
 
     // 3. Store session in secure cookie (valid for 30 days)
     const cookieStore = await cookies();
-    cookieStore.set('grindmap_session', JSON.stringify(userProfile), {
+    cookieStore.set('leetmap_session', JSON.stringify(userProfile), {
       httpOnly: false, // accessible to client for offline/react state sync
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',

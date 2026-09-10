@@ -36,8 +36,8 @@ export const UserProfileMenu: React.FC<UserProfileMenuProps> = ({ variant = 'ful
     };
 
     updateStats();
-    window.addEventListener('grindmap-solved-updated', updateStats);
-    return () => window.removeEventListener('grindmap-solved-updated', updateStats);
+    window.addEventListener('leetmap-solved-updated', updateStats);
+    return () => window.removeEventListener('leetmap-solved-updated', updateStats);
   }, [user]);
 
   // Click outside listener for dropdown
@@ -122,7 +122,7 @@ export const UserProfileMenu: React.FC<UserProfileMenuProps> = ({ variant = 'ful
           <ShieldCheck className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
           <div>
             <span className="font-semibold text-[var(--text-main)]">Private Profile: </span>
-            Your problem solves, timestamps, and streak calculations are isolated under your profile key (<code className="font-mono text-[11px] text-[var(--text-main)]">grindmap_solved_{user.username.toLowerCase()}</code>).
+            Your problem solves, timestamps, and streak calculations are isolated under your profile key (<code className="font-mono text-[11px] text-[var(--text-main)]">leetmap_solved_{user.username.toLowerCase()}</code>).
           </div>
         </div>
 
@@ -176,7 +176,7 @@ export const UserProfileMenu: React.FC<UserProfileMenuProps> = ({ variant = 'ful
 
   return (
     <div className="relative shrink-0" ref={menuRef}>
-      {/* Circular Avatar Trigger Button matching GrindMap design */}
+      {/* Circular Avatar Trigger Button matching LeetMap design */}
       <button
         onClick={() => setIsOpen(!isOpen)}
         className="apple-press relative w-8 h-8 rounded-full overflow-hidden border border-black/10 dark:border-white/15 focus:outline-none focus:ring-2 focus:ring-[var(--border)] transition-transform hover:scale-105 cursor-pointer block"
@@ -192,7 +192,7 @@ export const UserProfileMenu: React.FC<UserProfileMenuProps> = ({ variant = 'ful
         />
       </button>
 
-      {/* Popover Dropdown matching GrindMap / Clerk modal */}
+      {/* Popover Dropdown matching LeetMap / Clerk modal */}
       {isOpen && (
         <div className="apple-pop-in absolute right-0 mt-2 w-72 rounded-2xl border border-[var(--border)] bg-[var(--bg-card)] shadow-2xl z-50 overflow-hidden text-left">
           {/* Top Section: Avatar + Name + Username */}
