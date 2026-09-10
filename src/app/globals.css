@@ -1,26 +1,79 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --bg-page: #fbfbfa;
+  --bg-card: #ffffff;
+  --bg-subtle: #f4f4f2;
+  --bg-hover: #ecece9;
+  --border: #e7e5e4;
+  --border-subtle: #f0eeeb;
+  --text-main: #1c1917;
+  --text-muted: #78716c;
+  --text-light: #a8a29e;
+  
+  --diff-easy-bg: #dcfce7;
+  --diff-easy-text: #15803d;
+  --diff-medium-bg: #fef3c7;
+  --diff-medium-text: #b45309;
+  --diff-hard-bg: #fee2e2;
+  --diff-hard-text: #b91c1c;
+
+  --accent: #2563eb;
+  --accent-hover: #1d4ed8;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+[data-theme="dark"] {
+  --bg-page: #141413;
+  --bg-card: #1c1b18;
+  --bg-subtle: #262522;
+  --bg-hover: #31302c;
+  --border: #2e2d29;
+  --border-subtle: #23221f;
+  --text-main: #f5f5f4;
+  --text-muted: #a8a29e;
+  --text-light: #78716c;
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --diff-easy-bg: rgba(34, 197, 94, 0.15);
+  --diff-easy-text: #4ade80;
+  --diff-medium-bg: rgba(245, 158, 11, 0.15);
+  --diff-medium-text: #fbbf24;
+  --diff-hard-bg: rgba(239, 68, 68, 0.15);
+  --diff-hard-text: #f87171;
+
+  --accent: #3b82f6;
+  --accent-hover: #60a5fa;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--bg-page);
+  color: var(--text-main);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  transition: background-color 0.15s ease, color 0.15s ease;
+  min-height: 100vh;
+}
+
+/* Custom transitions and scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--text-light);
+  border-radius: 9999px;
+  opacity: 0.5;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
+}
+
+@keyframes pulse-subtle {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.animate-pulse-subtle {
+  animation: pulse-subtle 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }

@@ -1,0 +1,10 @@
+{
+  "status": "success",
+  "lastSynced": 1789069593592,
+  "lastSyncedISO": "2026-09-10T19:46:33Z",
+  "commitSha": "03850eb5",
+  "companiesCount": 470,
+  "uniqueProblemsCount": 3392,
+  "durationSeconds": 2.19,
+  "upstreamRepo": "liquidslr/leetcode-company-wise-problems"
+}
