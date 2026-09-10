@@ -246,6 +246,18 @@ export const CompanyDetailView: React.FC<CompanyDetailViewProps> = ({ company })
               <span className="font-semibold text-[var(--diff-medium-text)]">{company.medium} Medium</span>
               <span>•</span>
               <span className="font-semibold text-[var(--diff-hard-text)]">{company.hard} Hard</span>
+              {Boolean(company.sqlTotal && company.sqlTotal > 0) && (
+                <>
+                  <span>•</span>
+                  <Link
+                    href={`/sql/${company.slug}`}
+                    className="apple-press inline-flex items-center gap-1 text-cyan-600 dark:text-cyan-400 hover:text-cyan-500 font-semibold underline decoration-cyan-500/30"
+                  >
+                    <Database className="w-3 h-3" />
+                    <span>View {company.sqlTotal} SQL questions →</span>
+                  </Link>
+                </>
+              )}
             </div>
           </div>
         </div>

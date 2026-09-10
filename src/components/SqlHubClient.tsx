@@ -1,0 +1,264 @@
+'use client';
+
+import React, { useState, useMemo, useEffect, useRef } from 'react';
+import Link from 'next/link';
+import {
+  Search,
+  Database,
+  Building2,
+  Trophy,
+  Sparkles,
+  ArrowUpDown,
+  LayoutGrid,
+  ListFilter,
+  ArrowLeft,
+} from 'lucide-react';
+import { SqlCompanySummary, SqlCatalog, SyncStatus } from '@/types';
+import { Header } from '@/components/Header';
+import { SqlCompanyCard } from '@/components/SqlCompanyCard';
+import { SqlExplorerView } from '@/components/SqlExplorerView';
+import { getSolvedCount, getSolvedProblems } from '@/utils/progress';
+
+interface SqlHubClientProps {
+  companies: SqlCompanySummary[];
+  catalog: SqlCatalog;
+  syncStatus: SyncStatus | null;
+}
+
+const FAANG_SLUGS = new Set([
+  'google', 'amazon', 'meta', 'apple', 'microsoft', 'netflix', 'uber', 'airbnb', 'stripe', 'linkedin'
+]);
+
+const FINTECH_SLUGS = new Set([
+  'citadel', 'jane-street', 'two-sigma', 'goldman-sachs', 'j-p-morgan', 'bloomberg',
+  'stripe', 'squarepoint-capital', 'paypal', 'coinbase', 'visa', 'point72', 'revolut', 'robinhood'
+]);
+
+export const SqlHubClient: React.FC<SqlHubClientProps> = ({
+  companies,
+  catalog,
+  syncStatus,
+}) => {
+  const [activeView, setActiveView] = useState<'companies' | 'problems'>('companies');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [categoryFilter, setCategoryFilter] = useState<'ALL' | 'FAANG' | 'FINTECH' | 'POPULAR_20' | 'POPULAR_50'>('ALL');
+  const [sortBy, setSortBy] = useState<'sqlTotal' | 'name' | 'sqlHard'>('sqlTotal');
+  const [solvedSet, setSolvedSet] = useState<Set<string>>(new Set());
+
+  const searchInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    setSolvedSet(getSolvedProblems());
+
+    const handleUpdate = () => {
+      setSolvedSet(getSolvedProblems());
+    };
+    window.addEventListener('grindmap-solved-updated', handleUpdate);
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === '/' && document.activeElement !== searchInputRef.current) {
+        e.preventDefault();
+        searchInputRef.current?.focus();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      window.removeEventListener('grindmap-solved-updated', handleUpdate);
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, []);
+
+  // Filtered SQL Companies
+  const filteredCompanies = useMemo(() => {
+    return companies
+      .filter((c) => {
+        if (searchQuery.trim()) {
+          const q = searchQuery.toLowerCase().trim();
+          const matchName = c.name.toLowerCase().includes(q);
+          const matchSlug = c.slug.toLowerCase().includes(q);
+          const matchDomain = c.domain && c.domain.toLowerCase().includes(q);
+          if (!matchName && !matchSlug && !matchDomain) return false;
+        }
+
+        if (categoryFilter === 'FAANG') return FAANG_SLUGS.has(c.slug);
+        if (categoryFilter === 'FINTECH') return FINTECH_SLUGS.has(c.slug);
+        if (categoryFilter === 'POPULAR_20') return c.sqlTotal >= 20;
+        if (categoryFilter === 'POPULAR_50') return c.sqlTotal >= 50;
+        return true;
+      })
+      .sort((a, b) => {
+        if (sortBy === 'name') return a.name.localeCompare(b.name);
+        if (sortBy === 'sqlHard') return b.sqlHard - a.sqlHard;
+        return b.sqlTotal - a.sqlTotal;
+      });
+  }, [companies, searchQuery, categoryFilter, sortBy]);
+
+  const solvedSqlCount = useMemo(() => {
+    let count = 0;
+    for (const p of catalog.problems) {
+      if (solvedSet.has(p.slug)) count++;
+    }
+    return count;
+  }, [catalog.problems, solvedSet]);
+
+  return (
+    <div className="min-h-screen flex flex-col">
+      <Header syncStatus={syncStatus} />
+
+      <main className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 py-8 w-full space-y-8">
+        {/* Breadcrumb */}
+        <nav className="flex items-center gap-2 text-xs text-[var(--text-muted)] font-normal">
+          <Link href="/" className="apple-press hover:text-[var(--text-main)] flex items-center gap-1.5 transition-colors">
+            <ArrowLeft className="w-3.5 h-3.5" />
+            <span>All Companies (DSA)</span>
+          </Link>
+          <span>/</span>
+          <span className="text-[var(--text-main)] font-medium">SQL & Database Hub</span>
+        </nav>
+
+        {/* Hero Section */}
+        <section className="text-center max-w-2xl mx-auto space-y-3.5">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 border border-cyan-500/20 shadow-2xs">
+            <Database className="w-3.5 h-3.5" />
+            <span>Company-Wise SQL & Database Questions</span>
+          </div>
+
+          <h1 className="text-3xl sm:text-5xl font-bold tracking-tight text-[var(--text-main)]">
+            Company-wise SQL Questions
+          </h1>
+
+          <p className="text-sm sm:text-base text-[var(--text-muted)] leading-relaxed font-normal">
+            LeetCode database problems asked in interviews across {companies.length} top tech firms, organized company by company with recency and frequency.
+          </p>
+
+          {/* Metric Pills */}
+          <div className="flex flex-wrap items-center justify-center gap-2.5 pt-2">
+            <div className="flex items-center gap-2 text-xs font-medium text-[var(--text-main)] bg-[var(--bg-card)] border border-[var(--border)] px-3.5 py-1.5 rounded-full shadow-xs">
+              <Building2 className="w-3.5 h-3.5 text-cyan-500" />
+              <span><strong>{companies.length}</strong> companies asking SQL</span>
+            </div>
+
+            <div className="flex items-center gap-2 text-xs font-medium text-[var(--text-main)] bg-[var(--bg-card)] border border-[var(--border)] px-3.5 py-1.5 rounded-full shadow-xs">
+              <Database className="w-3.5 h-3.5 text-emerald-500" />
+              <span><strong>{catalog.totalSqlProblems}</strong> unique SQL queries</span>
+            </div>
+
+            <div className="flex items-center gap-2 text-xs font-medium text-[var(--text-main)] bg-[var(--bg-card)] border border-[var(--border)] px-3.5 py-1.5 rounded-full shadow-xs">
+              <Trophy className="w-3.5 h-3.5 text-amber-500" />
+              <span><strong>{solvedSqlCount}</strong> / {catalog.totalSqlProblems} solved</span>
+            </div>
+          </div>
+
+          {/* Primary View Switcher: Browse by Company vs All Problems */}
+          <div className="pt-3 flex justify-center">
+            <div className="inline-flex p-1 rounded-2xl bg-[var(--bg-subtle)] border border-[var(--border)] shadow-xs">
+              <button
+                onClick={() => setActiveView('companies')}
+                className={`apple-press flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
+                  activeView === 'companies'
+                    ? 'bg-[var(--bg-card)] text-[var(--text-main)] shadow-xs font-bold'
+                    : 'text-[var(--text-muted)] hover:text-[var(--text-main)]'
+                }`}
+              >
+                <LayoutGrid className="w-3.5 h-3.5 text-cyan-500" />
+                <span>Browse by Company ({companies.length})</span>
+              </button>
+              <button
+                onClick={() => setActiveView('problems')}
+                className={`apple-press flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
+                  activeView === 'problems'
+                    ? 'bg-[var(--bg-card)] text-[var(--text-main)] shadow-xs font-bold'
+                    : 'text-[var(--text-muted)] hover:text-[var(--text-main)]'
+                }`}
+              >
+                <ListFilter className="w-3.5 h-3.5 text-emerald-500" />
+                <span>All {catalog.totalSqlProblems} SQL Problems</span>
+              </button>
+            </div>
+          </div>
+        </section>
+
+        {/* Dynamic Body: Company Cards Grid OR Full Explorer Table */}
+        {activeView === 'companies' ? (
+          <div className="space-y-6">
+            {/* Search & Category Filter Controls */}
+            <section className="max-w-2xl mx-auto space-y-4">
+              <div className="relative group">
+                <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--text-light)] group-focus-within:text-[var(--text-main)] transition-colors" />
+                <input
+                  ref={searchInputRef}
+                  type="search"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder={`Search ${companies.length} companies asking SQL... (Amazon, Google, Meta, Bloomberg)`}
+                  className="w-full pl-11 pr-12 py-3 rounded-2xl text-sm bg-[var(--bg-card)] border border-[var(--border)] text-[var(--text-main)] placeholder:text-[var(--text-light)] shadow-xs focus:outline-none focus:border-cyan-500/40 focus:ring-4 focus:ring-cyan-500/10 transition-all"
+                />
+                <kbd className="absolute right-3.5 top-1/2 -translate-y-1/2 px-2 py-0.5 rounded-lg text-[10px] font-mono text-[var(--text-light)] border border-[var(--border)] bg-[var(--bg-subtle)]">
+                  /
+                </kbd>
+              </div>
+
+              {/* Segmented Category Filter Bar */}
+              <div className="flex flex-wrap items-center justify-between gap-3 text-xs">
+                <div className="flex flex-wrap items-center p-1 rounded-2xl bg-[var(--bg-subtle)] border border-[var(--border)] gap-1">
+                  {[
+                    { key: 'ALL', label: `All (${companies.length})` },
+                    { key: 'FAANG', label: 'FAANG & Big Tech' },
+                    { key: 'FINTECH', label: 'FinTech & Quant' },
+                    { key: 'POPULAR_20', label: '20+ SQL' },
+                    { key: 'POPULAR_50', label: '50+ SQL' },
+                  ].map((tab) => (
+                    <button
+                      key={tab.key}
+                      onClick={() => setCategoryFilter(tab.key as any)}
+                      className={`apple-press px-3 py-1.5 rounded-xl font-medium transition-all cursor-pointer ${
+                        categoryFilter === tab.key
+                          ? 'bg-[var(--bg-card)] text-[var(--text-main)] shadow-xs font-semibold'
+                          : 'text-[var(--text-muted)] hover:text-[var(--text-main)]'
+                      }`}
+                    >
+                      {tab.label}
+                    </button>
+                  ))}
+                </div>
+
+                {/* Sort Dropdown */}
+                <div className="flex items-center gap-2 ml-auto">
+                  <div className="flex items-center gap-1.5 bg-[var(--bg-card)] border border-[var(--border)] px-3 py-1.5 rounded-xl text-xs shadow-2xs">
+                    <ArrowUpDown className="w-3.5 h-3.5 text-[var(--text-muted)]" />
+                    <span className="text-[var(--text-muted)] font-normal">Sort:</span>
+                    <select
+                      value={sortBy}
+                      onChange={(e) => setSortBy(e.target.value as any)}
+                      className="bg-transparent text-[var(--text-main)] font-medium focus:outline-none cursor-pointer"
+                    >
+                      <option value="sqlTotal">Most SQL Questions</option>
+                      <option value="name">Company Name</option>
+                      <option value="sqlHard">Most Hard SQL</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            {/* Company Cards Grid */}
+            <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5">
+              {filteredCompanies.length === 0 ? (
+                <div className="col-span-full py-16 text-center text-xs text-[var(--text-muted)] border border-dashed border-[var(--border)] rounded-3xl bg-[var(--bg-card)]/50">
+                  No companies matching &quot;{searchQuery}&quot; found asking SQL questions.
+                </div>
+              ) : (
+                filteredCompanies.map((c) => (
+                  <SqlCompanyCard key={c.slug} company={c} />
+                ))
+              )}
+            </section>
+          </div>
+        ) : (
+          <SqlExplorerView catalog={catalog} />
+        )}
+      </main>
+    </div>
+  );
+};

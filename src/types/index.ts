@@ -27,7 +27,17 @@ export interface CompanyDetail {
   medium: number;
   hard: number;
   sqlTotal?: number;
+  sqlEasy?: number;
+  sqlMedium?: number;
+  sqlHard?: number;
   windows: ProblemWindow[];
+  sqlWindowsCount?: {
+    '30_days': number;
+    '3_months': number;
+    '6_months': number;
+    'more_than_6_months': number;
+    'all': number;
+  };
 }
 
 export interface CompanySummary {
@@ -39,7 +49,42 @@ export interface CompanySummary {
   medium: number;
   hard: number;
   sqlTotal?: number;
+  sqlEasy?: number;
+  sqlMedium?: number;
+  sqlHard?: number;
   windowsCount: {
+    '30_days': number;
+    '3_months': number;
+    '6_months': number;
+    'more_than_6_months': number;
+    'all': number;
+  };
+  sqlWindowsCount?: {
+    '30_days': number;
+    '3_months': number;
+    '6_months': number;
+    'more_than_6_months': number;
+    'all': number;
+  };
+}
+
+export interface SqlCompanySummary {
+  name: string;
+  slug: string;
+  domain: string;
+  total: number;
+  sqlTotal: number;
+  sqlEasy: number;
+  sqlMedium: number;
+  sqlHard: number;
+  windowsCount: {
+    '30_days': number;
+    '3_months': number;
+    '6_months': number;
+    'more_than_6_months': number;
+    'all': number;
+  };
+  sqlWindowsCount: {
     '30_days': number;
     '3_months': number;
     '6_months': number;

@@ -1,17 +1,17 @@
 import React from 'react';
 import fs from 'fs';
 import path from 'path';
-import { SqlCatalog, SyncStatus } from '@/types';
-import { Header } from '@/components/Header';
-import { SqlExplorerView } from '@/components/SqlExplorerView';
+import { SqlCatalog, SqlCompanySummary, SyncStatus } from '@/types';
+import { SqlHubClient } from '@/components/SqlHubClient';
 
 export const metadata = {
-  title: 'Top Company SQL Questions — GrindMap Pro',
-  description: 'Practice 190+ LeetCode SQL and Database interview questions asked by top tech firms (Google, Amazon, Meta, Microsoft, Uber, etc.), ranked by interview frequency.',
+  title: 'Company-wise LeetCode SQL Questions — GrindMap Pro',
+  description: 'Browse coding interview SQL questions asked by 73+ tech firms (Amazon, Google, Meta, Bloomberg, Microsoft, etc.), ranked by interview frequency and recency.',
 };
 
 export default async function SqlPage() {
   const sqlPath = path.join(process.cwd(), 'public', 'data', 'sql-problems.json');
+  const companiesPath = path.join(process.cwd(), 'public', 'data', 'sql-companies.json');
   const statusPath = path.join(process.cwd(), 'public', 'data', 'sync-status.json');
 
   let catalog: SqlCatalog = {
@@ -28,6 +28,15 @@ export default async function SqlPage() {
     }
   }
 
+  let companies: SqlCompanySummary[] = [];
+  if (fs.existsSync(companiesPath)) {
+    try {
+      companies = JSON.parse(fs.readFileSync(companiesPath, 'utf8'));
+    } catch (err) {
+      console.error('Failed to parse sql-companies.json', err);
+    }
+  }
+
   let syncStatus: SyncStatus | null = null;
   if (fs.existsSync(statusPath)) {
     try {
@@ -38,11 +47,10 @@ export default async function SqlPage() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <Header syncStatus={syncStatus} />
-      <main className="flex-1 pb-16">
-        <SqlExplorerView catalog={catalog} />
-      </main>
-    </div>
+    <SqlHubClient
+      companies={companies}
+      catalog={catalog}
+      syncStatus={syncStatus}
+    />
   );
 }

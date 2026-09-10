@@ -321,10 +321,12 @@ def merge_company_datasets(
                     }
 
             sorted_probs = sorted(prob_map.values(), key=lambda x: x["frequency"], reverse=True)
+            win_sql_count = sum(1 for p in sorted_probs if p.get("isSql", False) or "database" in [t.lower() for t in p.get("topics", [])])
             merged_windows.append({
                 "name": win["name"],
                 "key": win["key"],
                 "count": len(sorted_probs),
+                "sqlCount": win_sql_count,
                 "problems": sorted_probs
             })
 
@@ -337,11 +339,17 @@ def merge_company_datasets(
             all_time_probs = sorted(comb.values(), key=lambda x: x["frequency"], reverse=True)
             merged_windows[4]["problems"] = all_time_probs
             merged_windows[4]["count"] = len(all_time_probs)
+            merged_windows[4]["sqlCount"] = sum(1 for p in all_time_probs if p.get("isSql", False) or "database" in [t.lower() for t in p.get("topics", [])])
 
         easy_c = sum(1 for p in all_time_probs if p["difficulty"] == "EASY")
         med_c = sum(1 for p in all_time_probs if p["difficulty"] == "MEDIUM")
         hard_c = sum(1 for p in all_time_probs if p["difficulty"] == "HARD")
-        sql_c = sum(1 for p in all_time_probs if p.get("isSql", False))
+
+        sql_probs = [p for p in all_time_probs if p.get("isSql", False) or "database" in [t.lower() for t in p.get("topics", [])]]
+        sql_c = len(sql_probs)
+        sql_easy = sum(1 for p in sql_probs if p["difficulty"] == "EASY")
+        sql_med = sum(1 for p in sql_probs if p["difficulty"] == "MEDIUM")
+        sql_hard = sum(1 for p in sql_probs if p["difficulty"] == "HARD")
         total_c = len(all_time_probs)
 
         if total_c == 0:
@@ -356,6 +364,9 @@ def merge_company_datasets(
             "medium": med_c,
             "hard": hard_c,
             "sqlTotal": sql_c,
+            "sqlEasy": sql_easy,
+            "sqlMedium": sql_med,
+            "sqlHard": sql_hard,
             "windows": merged_windows,
             "windowsCount": {
                 "30_days": merged_windows[0]["count"],
@@ -363,6 +374,13 @@ def merge_company_datasets(
                 "6_months": merged_windows[2]["count"],
                 "more_than_6_months": merged_windows[3]["count"],
                 "all": merged_windows[4]["count"],
+            },
+            "sqlWindowsCount": {
+                "30_days": merged_windows[0].get("sqlCount", 0),
+                "3_months": merged_windows[1].get("sqlCount", 0),
+                "6_months": merged_windows[2].get("sqlCount", 0),
+                "more_than_6_months": merged_windows[3].get("sqlCount", 0),
+                "all": merged_windows[4].get("sqlCount", 0),
             }
         })
 
@@ -468,8 +486,9 @@ def main():
 
     # Save lightweight companies.json index
     index_list = []
+    sql_companies_list = []
     for c in merged_companies:
-        index_list.append({
+        item = {
             "name": c["name"],
             "slug": c["slug"],
             "domain": c["domain"],
@@ -477,13 +496,26 @@ def main():
             "easy": c["easy"],
             "medium": c["medium"],
             "hard": c["hard"],
-            "sqlTotal": c["sqlTotal"],
-            "windowsCount": c["windowsCount"]
-        })
+            "sqlTotal": c.get("sqlTotal", 0),
+            "sqlEasy": c.get("sqlEasy", 0),
+            "sqlMedium": c.get("sqlMedium", 0),
+            "sqlHard": c.get("sqlHard", 0),
+            "windowsCount": c["windowsCount"],
+            "sqlWindowsCount": c.get("sqlWindowsCount", {})
+        }
+        index_list.append(item)
+        if c.get("sqlTotal", 0) > 0:
+            sql_companies_list.append(item)
 
     index_path = os.path.join(public_data_dir, "companies.json")
     with open(index_path, "w", encoding="utf-8") as f:
         json.dump(index_list, f, separators=(',', ':'))
+
+    # Save dedicated sql-companies.json
+    sql_companies_list.sort(key=lambda x: x["sqlTotal"], reverse=True)
+    sql_companies_path = os.path.join(public_data_dir, "sql-companies.json")
+    with open(sql_companies_path, "w", encoding="utf-8") as f:
+        json.dump(sql_companies_list, f, separators=(',', ':'))
 
     # Save dedicated sql-problems.json
     sql_path = os.path.join(public_data_dir, "sql-problems.json")
