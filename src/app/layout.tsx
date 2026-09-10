@@ -5,7 +5,7 @@ import { LoginModal } from "@/components/LoginModal";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "GrindMap Pro — Company Wise LeetCode Questions",
+  title: "LeetMap — Company Wise LeetCode & SQL Questions",
   description: "Browse coding interview problems actually asked by 680+ tech companies, ranked by frequency and recency. Free, realtime multi-source sync.",
 };
 

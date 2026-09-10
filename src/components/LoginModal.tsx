@@ -100,7 +100,7 @@ export const LoginModal: React.FC = () => {
         {/* Header */}
         <div className="text-center">
           <h2 className="text-xl font-bold text-neutral-900 dark:text-white tracking-tight">
-            {isSignUp ? 'Sign up for grindmap' : 'Sign in to grindmap'}
+            {isSignUp ? 'Sign up for leetmap' : 'Sign in to leetmap'}
           </h2>
           <p className="text-sm text-neutral-500 dark:text-neutral-400 mt-1.5 font-normal">
             {isSignUp

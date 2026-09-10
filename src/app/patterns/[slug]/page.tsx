@@ -16,12 +16,12 @@ export async function generateMetadata({ params }: PageProps) {
   const filePath = path.join(process.cwd(), 'public', 'data', 'patterns', `${safeSlug}.json`);
 
   if (!fs.existsSync(filePath)) {
-    return { title: 'Pattern Not Found — GrindMap Pro' };
+    return { title: 'Pattern Not Found — LeetMap' };
   }
 
   const pattern: PatternDetail = JSON.parse(fs.readFileSync(filePath, 'utf8'));
   return {
-    title: `${pattern.name} Pattern (${pattern.total} Interview Questions) — GrindMap Pro`,
+    title: `${pattern.name} Pattern (${pattern.total} Interview Questions) — LeetMap`,
     description: `${pattern.tagline}. Master ${pattern.total} LeetCode problems in the ${pattern.name} pattern asked by top tech firms.`,
   };
 }

@@ -5,7 +5,7 @@ import { PatternSummary, SyncStatus } from '@/types';
 import { PatternsHubClient } from '@/components/PatternsHubClient';
 
 export const metadata = {
-  title: 'Browse by Pattern for LeetCode DSA — GrindMap Pro',
+  title: 'Browse by Pattern for LeetCode DSA — LeetMap',
   description: 'Master the 22 core LeetCode coding interview patterns (Two Pointers, Sliding Window, Monotonic Stack, Fast & Slow Pointers, 1D/2D DP) asked by top tech firms.',
 };
 

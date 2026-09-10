@@ -5,7 +5,7 @@ import { CompanySummary, SyncStatus } from '@/types';
 import { HomeClient } from '@/components/HomeClient';
 
 export const metadata = {
-  title: 'GrindMap Pro — Company Wise LeetCode Questions',
+  title: 'LeetMap — Company Wise LeetCode Questions',
   description: 'Browse coding interview problems actually asked by 470+ tech companies, ranked by frequency and recency. Free, realtime sync.',
 };
 

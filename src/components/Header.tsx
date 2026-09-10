@@ -67,7 +67,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenSync, syncStatus }) => {
               <span className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
               <span className="absolute w-4 h-4 rounded-full bg-emerald-500/30 animate-ping" />
             </div>
-            <span className="font-bold text-base tracking-tight">grindmap</span>
+            <span className="font-bold text-base tracking-tight">leetmap</span>
           </Link>
 
           {/* Apple Primary Segmented Navigation */}
