@@ -1,3 +1,4 @@
+import { ClerkProvider } from "@clerk/nextjs";
 import type { Metadata } from "next";
 import { Toaster } from "sonner";
 import { AuthProvider } from "@/context/AuthContext";
@@ -32,11 +33,13 @@ export default function RootLayout({
         />
       </head>
       <body className="antialiased selection:bg-[var(--text-main)]/15 selection:text-[var(--text-main)]">
-        <AuthProvider>
+        <ClerkProvider>
+          <AuthProvider>
           {children}
           <LoginModal />
-        </AuthProvider>
-        <Toaster position="bottom-right" richColors closeButton />
+          </AuthProvider>
+          <Toaster position="bottom-right" richColors closeButton />
+        </ClerkProvider>
       </body>
     </html>
   );

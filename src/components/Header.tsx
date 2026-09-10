@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { RefreshCw, Sun, Moon, Database, GitBranch, Building2, Heart } from 'lucide-react';
+import { SignInButton, SignUpButton, Show, UserButton } from '@clerk/nextjs';
 import { SyncStatus } from '@/types';
 import { UserProfileMenu } from '@/components/UserProfileMenu';
 
@@ -155,8 +156,34 @@ export const Header: React.FC<HeaderProps> = ({ onOpenSync, syncStatus }) => {
             <Heart className="w-4 h-4" />
           </a>
 
-          {/* User Profile / GitHub Sign In Menu (GrindMap / Clerk Style) */}
-          <UserProfileMenu />
+          {/* Clerk Auth Controls */}
+          <Show when="signed-out">
+            <div className="flex items-center gap-1.5">
+              <SignInButton mode="modal">
+                <button className="apple-press text-xs font-semibold px-3 py-1.5 rounded-full bg-[var(--text-main)] text-[var(--bg-page)] hover:opacity-90 transition-opacity cursor-pointer shadow-2xs">
+                  Sign in
+                </button>
+              </SignInButton>
+              <SignUpButton mode="modal">
+                <button className="apple-press text-xs font-medium px-3 py-1.5 rounded-full bg-[var(--bg-subtle)] border border-[var(--border)] text-[var(--text-main)] hover:bg-[var(--bg-hover)] transition-colors cursor-pointer hidden sm:inline-block">
+                  Sign up
+                </button>
+              </SignUpButton>
+            </div>
+          </Show>
+
+          <Show when="signed-in">
+            <div className="flex items-center gap-2">
+              <UserProfileMenu />
+              <UserButton
+                appearance={{
+                  elements: {
+                    avatarBox: 'w-8 h-8 rounded-full border border-black/10 dark:border-white/15',
+                  },
+                }}
+              />
+            </div>
+          </Show>
 
           {/* Theme Toggle */}
           <button

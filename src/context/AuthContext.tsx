@@ -5,6 +5,8 @@ import { UserProfile } from '@/types';
 import { setActiveUser, migrateGuestToUser } from '@/utils/progress';
 import { toast } from 'sonner';
 
+import { useUser, useClerk } from '@clerk/nextjs';
+
 interface AuthContextType {
   user: UserProfile | null;
   isLoading: boolean;
@@ -24,8 +26,33 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const [oauthConfigured, setOauthConfigured] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  // Initialize session on mount
+  const { user: clerkUser, isLoaded: isClerkLoaded, isSignedIn: isClerkSignedIn } = useUser();
+  const { signOut } = useClerk();
+
+  // Initialize session on mount and sync with Clerk
   useEffect(() => {
+    if (!isClerkLoaded) return;
+
+    if (isClerkSignedIn && clerkUser) {
+      const username =
+        clerkUser.username ||
+        clerkUser.primaryEmailAddress?.emailAddress?.split('@')[0] ||
+        clerkUser.id;
+      const profile: UserProfile = {
+        id: clerkUser.id,
+        username,
+        name: clerkUser.fullName || clerkUser.firstName || username,
+        avatarUrl: clerkUser.imageUrl,
+        email: clerkUser.primaryEmailAddress?.emailAddress,
+        githubUrl: `https://github.com/${username}`,
+        createdAt: clerkUser.createdAt ? new Date(clerkUser.createdAt).toISOString() : new Date().toISOString(),
+      };
+      setUser(profile);
+      setActiveUser(profile);
+      setIsLoading(false);
+      return;
+    }
+
     async function loadSession() {
       try {
         const res = await fetch('/api/auth/me');
@@ -48,14 +75,13 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       const params = new URLSearchParams(window.location.search);
       if (params.has('auth_success')) {
         toast.success('Successfully signed in with GitHub!');
-        // Clean URL
         window.history.replaceState({}, '', window.location.pathname);
       } else if (params.has('auth_error')) {
         toast.error(`Sign in error: ${params.get('auth_error')}`);
         window.history.replaceState({}, '', window.location.pathname);
       }
     }
-  }, []);
+  }, [isClerkLoaded, isClerkSignedIn, clerkUser]);
 
   const openLoginModal = () => setIsModalOpen(true);
   const closeLoginModal = () => setIsModalOpen(false);
@@ -69,7 +95,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       });
       const data = await res.json();
       if (!data.success) {
-        throw new Error(data.error || 'Failed to sign in with GitHub profile');
+        throw new Error(data.error || 'Failed to sign in with profile');
       }
 
       setUser(data.user);
@@ -93,6 +119,9 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   const logout = async () => {
     try {
+      if (isClerkSignedIn) {
+        await signOut();
+      }
       await fetch('/api/auth/logout', { method: 'POST' });
     } catch (e) {
       console.error('Logout error:', e);

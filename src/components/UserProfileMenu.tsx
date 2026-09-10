@@ -18,7 +18,11 @@ import {
   UserCheck,
 } from 'lucide-react';
 
-export const UserProfileMenu: React.FC = () => {
+export interface UserProfileMenuProps {
+  variant?: 'full' | 'streak-badge';
+}
+
+export const UserProfileMenu: React.FC<UserProfileMenuProps> = ({ variant = 'full' }) => {
   const { user, logout, openLoginModal } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
   const [isManageAccountOpen, setIsManageAccountOpen] = useState(false);
@@ -49,16 +53,124 @@ export const UserProfileMenu: React.FC = () => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [isOpen]);
 
+  if (!user && variant === 'streak-badge') {
+    return null;
+  }
+
   if (!user) {
     return (
       <button
         onClick={openLoginModal}
         className="apple-press p-2 rounded-full text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--bg-hover)] transition-colors cursor-pointer"
-        title="Sign in with GitHub"
+        title="Sign in"
         aria-label="Sign in"
       >
         <User className="w-4 h-4" />
       </button>
+    );
+  }
+
+  const renderManageAccountModal = () => (
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-md apple-modal-backdrop"
+      onClick={() => setIsManageAccountOpen(false)}
+    >
+      <div
+        className="bg-[var(--bg-card)] border border-[var(--border)] rounded-3xl max-w-2xl w-full p-6 shadow-2xl relative apple-modal-surface space-y-6 max-h-[92vh] overflow-y-auto"
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/* Close Button */}
+        <button
+          onClick={() => setIsManageAccountOpen(false)}
+          className="apple-press absolute top-5 right-5 p-1.5 rounded-full text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--bg-hover)] transition-colors cursor-pointer"
+          aria-label="Close"
+        >
+          <X className="w-4 h-4" />
+        </button>
+
+        {/* Header */}
+        <div className="flex items-center gap-3.5 pr-8">
+          <div className="w-14 h-14 rounded-full overflow-hidden border border-[var(--border)] shrink-0 shadow-xs">
+            <img src={user.avatarUrl} alt={user.name} className="w-full h-full object-cover" />
+          </div>
+          <div className="min-w-0">
+            <h2 className="text-base font-semibold text-[var(--text-main)] tracking-tight">
+              {user.name}
+            </h2>
+            <a
+              href={user.githubUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-xs font-mono text-emerald-600 dark:text-emerald-400 hover:underline flex items-center gap-1 mt-0.5"
+            >
+              <span>@{user.username}</span>
+              <ExternalLink className="w-3 h-3" />
+            </a>
+            {user.bio && (
+              <p className="text-xs text-[var(--text-muted)] mt-1 line-clamp-2">{user.bio}</p>
+            )}
+          </div>
+        </div>
+
+        {/* Activity Heatmap & Everyday Streak Tracker */}
+        {activityStats && (
+          <ActivityTracker stats={activityStats} username={user.username} />
+        )}
+
+        {/* Storage Info */}
+        <div className="p-3.5 rounded-2xl bg-[var(--bg-subtle)] border border-[var(--border)] text-xs text-[var(--text-muted)] flex items-start gap-2.5">
+          <ShieldCheck className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
+          <div>
+            <span className="font-semibold text-[var(--text-main)]">Private Profile: </span>
+            Your problem solves, timestamps, and streak calculations are isolated under your profile key (<code className="font-mono text-[11px] text-[var(--text-main)]">grindmap_solved_{user.username.toLowerCase()}</code>).
+          </div>
+        </div>
+
+        {/* Account Actions */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
+          <button
+            onClick={() => {
+              setIsManageAccountOpen(false);
+              openLoginModal();
+            }}
+            className="apple-press w-full flex items-center justify-center gap-2 py-2.5 rounded-xl border border-[var(--border)] bg-[var(--bg-card)] hover:bg-[var(--bg-hover)] text-xs font-semibold text-[var(--text-main)] shadow-2xs transition-colors cursor-pointer"
+          >
+            <UserCheck className="w-3.5 h-3.5 text-[var(--text-muted)]" />
+            <span>Switch Profile</span>
+          </button>
+
+          <button
+            onClick={() => {
+              setIsManageAccountOpen(false);
+              logout();
+            }}
+            className="apple-press w-full flex items-center justify-center gap-2 py-2.5 rounded-xl border border-rose-500/20 bg-rose-500/10 text-rose-600 dark:text-rose-400 text-xs font-semibold shadow-2xs transition-colors cursor-pointer"
+          >
+            <LogOut className="w-3.5 h-3.5" />
+            <span>Sign Out</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+
+  if (variant === 'streak-badge') {
+    return (
+      <div className="relative shrink-0">
+        <button
+          onClick={() => setIsManageAccountOpen(true)}
+          className="apple-press flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-amber-500/10 border border-amber-500/25 hover:border-amber-500/50 text-amber-600 dark:text-amber-400 font-mono text-xs font-semibold cursor-pointer shadow-2xs transition-colors"
+          title="Click to view full Activity Heatmap & Streaks"
+          aria-label="View Activity"
+        >
+          <span>🔥 {activityStats?.currentStreak || 0}d</span>
+          <span className="hidden sm:inline font-sans font-normal text-[11px] text-[var(--text-muted)]">
+            • {activityStats?.totalSolved || 0} solved
+          </span>
+        </button>
+
+        {isManageAccountOpen && renderManageAccountModal()}
+      </div>
     );
   }
 
@@ -163,89 +275,7 @@ export const UserProfileMenu: React.FC = () => {
       )}
 
       {/* Manage Account Dialog / Modal */}
-      {isManageAccountOpen && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-md apple-modal-backdrop"
-          onClick={() => setIsManageAccountOpen(false)}
-        >
-          <div
-            className="bg-[var(--bg-card)] border border-[var(--border)] rounded-3xl max-w-2xl w-full p-6 shadow-2xl relative apple-modal-surface space-y-6 max-h-[92vh] overflow-y-auto"
-            onClick={(e) => e.stopPropagation()}
-          >
-            {/* Close Button */}
-            <button
-              onClick={() => setIsManageAccountOpen(false)}
-              className="apple-press absolute top-5 right-5 p-1.5 rounded-full text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--bg-hover)] transition-colors cursor-pointer"
-              aria-label="Close"
-            >
-              <X className="w-4 h-4" />
-            </button>
-
-            {/* Header */}
-            <div className="flex items-center gap-3.5 pr-8">
-              <div className="w-14 h-14 rounded-full overflow-hidden border border-[var(--border)] shrink-0 shadow-xs">
-                <img src={user.avatarUrl} alt={user.name} className="w-full h-full object-cover" />
-              </div>
-              <div className="min-w-0">
-                <h2 className="text-base font-semibold text-[var(--text-main)] tracking-tight">
-                  {user.name}
-                </h2>
-                <a
-                  href={user.githubUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-xs font-mono text-emerald-600 dark:text-emerald-400 hover:underline flex items-center gap-1 mt-0.5"
-                >
-                  <span>@{user.username}</span>
-                  <ExternalLink className="w-3 h-3" />
-                </a>
-                {user.bio && (
-                  <p className="text-xs text-[var(--text-muted)] mt-1 line-clamp-2">{user.bio}</p>
-                )}
-              </div>
-            </div>
-
-            {/* Activity Heatmap & Everyday Streak Tracker */}
-            {activityStats && (
-              <ActivityTracker stats={activityStats} username={user.username} />
-            )}
-
-            {/* Storage Info */}
-            <div className="p-3.5 rounded-2xl bg-[var(--bg-subtle)] border border-[var(--border)] text-xs text-[var(--text-muted)] flex items-start gap-2.5">
-              <ShieldCheck className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
-              <div>
-                <span className="font-semibold text-[var(--text-main)]">Private Local Profile: </span>
-                Your problem solves, timestamps, and streak calculations are isolated under your profile key (<code className="font-mono text-[11px] text-[var(--text-main)]">grindmap_solved_{user.username.toLowerCase()}</code>).
-              </div>
-            </div>
-
-            {/* Account Actions */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
-              <button
-                onClick={() => {
-                  setIsManageAccountOpen(false);
-                  openLoginModal();
-                }}
-                className="apple-press w-full flex items-center justify-center gap-2 py-2.5 rounded-xl border border-[var(--border)] bg-[var(--bg-card)] hover:bg-[var(--bg-hover)] text-xs font-semibold text-[var(--text-main)] shadow-2xs transition-colors cursor-pointer"
-              >
-                <UserCheck className="w-3.5 h-3.5 text-[var(--text-muted)]" />
-                <span>Switch GitHub Profile</span>
-              </button>
-
-              <button
-                onClick={() => {
-                  setIsManageAccountOpen(false);
-                  logout();
-                }}
-                className="apple-press w-full flex items-center justify-center gap-2 py-2.5 rounded-xl border border-rose-500/20 bg-rose-500/10 text-rose-600 dark:text-rose-400 text-xs font-semibold shadow-2xs transition-colors cursor-pointer"
-              >
-                <LogOut className="w-3.5 h-3.5" />
-                <span>Sign Out</span>
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      {isManageAccountOpen && renderManageAccountModal()}
     </div>
   );
 };
