@@ -177,11 +177,24 @@ export const UserProfileMenu: React.FC<UserProfileMenuProps> = ({ variant = 'ful
   }
 
   return (
-    <div className="relative shrink-0" ref={menuRef}>
+    <div className="relative shrink-0 flex items-center gap-1.5 sm:gap-2" ref={menuRef}>
+      {/* Streak Badge Trigger */}
+      <button
+        onClick={() => setIsManageAccountOpen(true)}
+        className="apple-press h-8 flex items-center gap-1.5 px-2.5 sm:px-3 rounded-full bg-amber-500/10 hover:bg-amber-500/15 border border-amber-500/25 text-amber-600 dark:text-amber-400 font-mono text-xs font-semibold cursor-pointer shadow-2xs transition-colors select-none"
+        title="View Activity Heatmap & Streaks"
+        aria-label="View Activity"
+      >
+        <span className="leading-none">🔥 {activityStats?.currentStreak || 0}d</span>
+        <span className="hidden sm:inline font-sans font-normal text-[11px] text-[var(--text-muted)] leading-none">
+          • {activityStats?.totalSolved || 0} solved
+        </span>
+      </button>
+
       {/* Circular Avatar Trigger Button matching LeetMap design */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="apple-press relative w-8 h-8 rounded-full overflow-hidden border border-black/10 dark:border-white/15 focus:outline-none focus:ring-2 focus:ring-[var(--border)] transition-transform hover:scale-105 cursor-pointer block"
+        className="apple-press relative w-8 h-8 rounded-full overflow-hidden border border-black/10 dark:border-white/15 focus:outline-none focus:ring-2 focus:ring-[var(--border)] transition-transform hover:scale-105 cursor-pointer block shrink-0"
         aria-label="User account menu"
         aria-expanded={isOpen}
       >
@@ -196,7 +209,7 @@ export const UserProfileMenu: React.FC<UserProfileMenuProps> = ({ variant = 'ful
 
       {/* Popover Dropdown matching LeetMap / Clerk modal */}
       {isOpen && (
-        <div className="apple-pop-in absolute right-0 mt-2 w-72 rounded-2xl border border-[var(--border)] bg-[var(--bg-card)] shadow-2xl z-50 overflow-hidden text-left">
+        <div className="apple-pop-in absolute right-0 top-full mt-2 w-72 rounded-2xl border border-[var(--border)] bg-[var(--bg-card)] shadow-2xl z-50 overflow-hidden text-left">
           {/* Top Section: Avatar + Name + Username */}
           <div className="p-4 flex items-center gap-3">
             <div className="w-10 h-10 rounded-full overflow-hidden border border-[var(--border)] shrink-0 bg-[var(--bg-subtle)]">
@@ -208,7 +221,7 @@ export const UserProfileMenu: React.FC<UserProfileMenuProps> = ({ variant = 'ful
                 className="w-full h-full object-cover"
               />
             </div>
-            <div className="min-w-0">
+            <div className="min-w-0 flex-1">
               <h3 className="text-sm font-semibold text-[var(--text-main)] truncate leading-tight">
                 {user.name}
               </h3>

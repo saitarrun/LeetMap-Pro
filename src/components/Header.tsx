@@ -134,7 +134,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenSync, syncStatus }) => {
             href="https://github.com/saitarrun"
             target="_blank"
             rel="noopener noreferrer"
-            className="apple-press p-2 rounded-full text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--bg-hover)] transition-colors"
+            className="apple-press h-8 w-8 inline-flex items-center justify-center rounded-full text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--bg-hover)] transition-colors shrink-0"
             title="GitHub Profile (@saitarrun)"
             aria-label="GitHub Profile"
           >
@@ -146,14 +146,14 @@ export const Header: React.FC<HeaderProps> = ({ onOpenSync, syncStatus }) => {
 
           {/* Clerk Auth Controls */}
           <Show when="signed-out">
-            <div className="flex items-center gap-1.5">
+            <div className="flex items-center gap-1.5 shrink-0">
               <SignInButton mode="modal">
-                <button className="apple-press text-xs font-semibold px-3 py-1.5 rounded-full bg-[var(--text-main)] text-[var(--bg-page)] hover:opacity-90 transition-opacity cursor-pointer shadow-2xs">
+                <button className="apple-press h-8 inline-flex items-center text-xs font-semibold px-3 rounded-full bg-[var(--text-main)] text-[var(--bg-page)] hover:opacity-90 transition-opacity cursor-pointer shadow-2xs shrink-0">
                   Sign in
                 </button>
               </SignInButton>
               <SignUpButton mode="modal">
-                <button className="apple-press text-xs font-medium px-3 py-1.5 rounded-full bg-[var(--bg-subtle)] border border-[var(--border)] text-[var(--text-main)] hover:bg-[var(--bg-hover)] transition-colors cursor-pointer hidden sm:inline-block">
+                <button className="apple-press h-8 inline-flex items-center text-xs font-medium px-3 rounded-full bg-[var(--bg-subtle)] border border-[var(--border)] text-[var(--text-main)] hover:bg-[var(--bg-hover)] transition-colors cursor-pointer hidden sm:inline-flex shrink-0">
                   Sign up
                 </button>
               </SignUpButton>
@@ -167,7 +167,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenSync, syncStatus }) => {
           {/* Theme Toggle */}
           <button
             onClick={toggleTheme}
-            className="apple-press p-2 rounded-full text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--bg-hover)] transition-colors cursor-pointer overflow-hidden"
+            className="apple-press h-8 w-8 inline-flex items-center justify-center rounded-full text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--bg-hover)] transition-colors cursor-pointer overflow-hidden shrink-0"
             title={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
             aria-label="Toggle theme"
           >
