@@ -16,7 +16,7 @@ export default async function SqlPage() {
 
   let catalog: SqlCatalog = {
     totalSqlProblems: 0,
-    lastUpdated: Date.now(),
+    lastUpdated: 0,
     problems: [],
   };
 

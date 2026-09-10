@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { ChevronRight, CheckCircle2 } from 'lucide-react';
 import { CompanySummary } from '@/types';
 
@@ -33,12 +34,11 @@ export const CompanyCard: React.FC<CompanyCardProps> = ({ company, solvedCount =
         {/* Apple Squircle Logo Container */}
         <div className="w-11 h-11 rounded-xl bg-white border border-black/5 dark:border-white/10 flex items-center justify-center shrink-0 overflow-hidden shadow-xs">
           {faviconUrl && !imgFailed ? (
-            <img
+            <Image
               src={faviconUrl}
               alt=""
               width={26}
               height={26}
-              loading="lazy"
               onError={() => setImgFailed(true)}
               className="w-6 h-6 object-contain"
             />

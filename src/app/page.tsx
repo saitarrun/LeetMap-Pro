@@ -6,7 +6,7 @@ import { HomeClient } from '@/components/HomeClient';
 
 export const metadata = {
   title: 'LeetMap — Company Wise LeetCode Questions',
-  description: 'Browse coding interview problems actually asked by 470+ tech companies, ranked by frequency and recency. Free, realtime sync.',
+  description: 'Browse coding interview problems asked by 680+ tech companies, ranked by frequency and recency. Free, realtime sync.',
 };
 
 export default function HomePage() {

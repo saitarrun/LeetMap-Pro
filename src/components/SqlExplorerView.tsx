@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo } from 'react';
 import Link from 'next/link';
 import {
   Database,
@@ -10,13 +10,15 @@ import {
   ExternalLink,
   Download,
   Building2,
-  Check,
   ArrowLeft,
   X,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { SqlProblem, SqlCatalog } from '@/types';
-import { getSolvedProblems, toggleProblemSolved } from '@/utils/progress';
+import { toggleProblemSolved } from '@/utils/progress';
+import { useSolvedProblems } from '@/utils/useSolvedProblems';
+import { getLeetCodeProblemUrl } from '@/utils/urls';
+import { downloadCsv } from '@/utils/csv';
 
 interface SqlExplorerViewProps {
   catalog: SqlCatalog;
@@ -27,24 +29,13 @@ export const SqlExplorerView: React.FC<SqlExplorerViewProps> = ({ catalog }) => 
   const [difficultyFilter, setDifficultyFilter] = useState<'ALL' | 'EASY' | 'MEDIUM' | 'HARD'>('ALL');
   const [selectedCompany, setSelectedCompany] = useState<string>('ALL');
   const [hideSolved, setHideSolved] = useState(false);
-  const [solvedSet, setSolvedSet] = useState<Set<string>>(new Set());
+  const solvedSet = useSolvedProblems();
 
   const [sortBy, setSortBy] = useState<'companiesCount' | 'difficulty' | 'title' | 'acceptance' | 'id'>('companiesCount');
   const [sortDir, setSortDir] = useState<'asc' | 'desc'>('desc');
 
-  useEffect(() => {
-    setSolvedSet(getSolvedProblems());
-
-    const handleSolvedChange = () => {
-      setSolvedSet(getSolvedProblems());
-    };
-    window.addEventListener('leetmap-solved-updated', handleSolvedChange);
-    return () => window.removeEventListener('leetmap-solved-updated', handleSolvedChange);
-  }, []);
-
   const handleToggleSolved = (prob: SqlProblem) => {
     const solved = toggleProblemSolved(prob.slug, { title: prob.title, difficulty: prob.difficulty });
-    setSolvedSet(getSolvedProblems());
 
     if (solved) {
       toast.success(`Solved: ${prob.title}`, {
@@ -137,7 +128,7 @@ export const SqlExplorerView: React.FC<SqlExplorerViewProps> = ({ catalog }) => 
     toast.info(`Random SQL problem selected`, {
       description: `${random.id ? `#${random.id} · ` : ''}${random.title}`,
     });
-    window.open(random.link, '_blank');
+    window.open(getLeetCodeProblemUrl(random.slug), '_blank', 'noopener,noreferrer');
   };
 
   const handleExportCSV = () => {
@@ -148,23 +139,16 @@ export const SqlExplorerView: React.FC<SqlExplorerViewProps> = ({ catalog }) => 
         : '-';
       return [
         p.id || '',
-        `"${p.title.replace(/"/g, '""')}"`,
+        p.title,
         p.difficulty,
         p.companiesCount,
-        `"${p.companies.map((c) => c.name).join(', ')}"`,
+        p.companies.map((c) => c.name).join(', '),
         accStr,
         solvedSet.has(p.slug) ? 'YES' : 'NO',
-        p.link,
+        getLeetCodeProblemUrl(p.slug),
       ];
     });
-    const csvContent = 'data:text/csv;charset=utf-8,' + [headers.join(','), ...rows.map((r) => r.join(','))].join('\n');
-    const encodedUri = encodeURI(csvContent);
-    const link = document.createElement('a');
-    link.setAttribute('href', encodedUri);
-    link.setAttribute('download', `company-sql-questions.csv`);
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    downloadCsv('company-sql-questions.csv', headers, rows);
 
     toast.success('Downloaded SQL CSV', {
       description: `Exported ${sortedProblems.length} SQL interview questions`,
@@ -433,7 +417,7 @@ export const SqlExplorerView: React.FC<SqlExplorerViewProps> = ({ catalog }) => 
                       {/* Title */}
                       <td className="py-3 px-4">
                         <a
-                          href={prob.link}
+                          href={getLeetCodeProblemUrl(prob.slug)}
                           target="_blank"
                           rel="noopener noreferrer"
                           className={`inline-flex items-center gap-1.5 font-medium hover:text-[var(--text-main)] hover:underline transition-colors ${

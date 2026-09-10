@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo } from 'react';
 import Link from 'next/link';
 import {
   ArrowLeft,
@@ -15,6 +15,7 @@ import {
   X,
   Lightbulb,
   Sparkles,
+  BookOpen,
   ArrowLeftRight,
   SlidersHorizontal,
   Binary,
@@ -41,7 +42,11 @@ import {
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { PatternDetail, PatternProblem } from '@/types';
-import { getSolvedProblems, toggleProblemSolved } from '@/utils/progress';
+import { toggleProblemSolved } from '@/utils/progress';
+import { useSolvedProblems } from '@/utils/useSolvedProblems';
+import { getLeetCodeProblemUrl } from '@/utils/urls';
+import { downloadCsv } from '@/utils/csv';
+import { PATTERN_GUIDES } from '@/data/pattern-guides';
 
 const ICON_MAP: Record<string, LucideIcon> = {
   ArrowLeftRight,
@@ -78,24 +83,13 @@ export const PatternDetailView: React.FC<PatternDetailViewProps> = ({ pattern })
   const [selectedCompany, setSelectedCompany] = useState<string>('ALL');
   const [hideTopics, setHideTopics] = useState(false);
   const [hideSolved, setHideSolved] = useState(false);
-  const [solvedSet, setSolvedSet] = useState<Set<string>>(new Set());
+  const solvedSet = useSolvedProblems();
 
   const [sortBy, setSortBy] = useState<'companiesCount' | 'difficulty' | 'title' | 'acceptance' | 'id' | 'frequency'>('companiesCount');
   const [sortDir, setSortDir] = useState<'asc' | 'desc'>('desc');
 
-  useEffect(() => {
-    setSolvedSet(getSolvedProblems());
-
-    const handleSolvedChange = () => {
-      setSolvedSet(getSolvedProblems());
-    };
-    window.addEventListener('leetmap-solved-updated', handleSolvedChange);
-    return () => window.removeEventListener('leetmap-solved-updated', handleSolvedChange);
-  }, []);
-
   const handleToggleSolved = (prob: PatternProblem) => {
     const solved = toggleProblemSolved(prob.slug, { title: prob.title, difficulty: prob.difficulty });
-    setSolvedSet(getSolvedProblems());
 
     if (solved) {
       toast.success(`Solved: ${prob.title}`, {
@@ -190,7 +184,7 @@ export const PatternDetailView: React.FC<PatternDetailViewProps> = ({ pattern })
     toast.info(`Random problem in ${pattern.name}`, {
       description: `${random.id ? `#${random.id} · ` : ''}${random.title}`,
     });
-    window.open(random.link, '_blank');
+    window.open(getLeetCodeProblemUrl(random.slug), '_blank', 'noopener,noreferrer');
   };
 
   const handleExportCSV = () => {
@@ -201,24 +195,17 @@ export const PatternDetailView: React.FC<PatternDetailViewProps> = ({ pattern })
         : '-';
       return [
         p.id || '',
-        `"${p.title.replace(/"/g, '""')}"`,
+        p.title,
         p.difficulty,
         p.companiesCount,
-        `"${p.companies.slice(0, 5).map((c) => c.name).join(', ')}"`,
+        p.companies.slice(0, 5).map((c) => c.name).join(', '),
         p.maxFrequency,
         accStr,
         solvedSet.has(p.slug) ? 'YES' : 'NO',
-        p.link,
+        getLeetCodeProblemUrl(p.slug),
       ];
     });
-    const csvContent = 'data:text/csv;charset=utf-8,' + [headers.join(','), ...rows.map((r) => r.join(','))].join('\n');
-    const encodedUri = encodeURI(csvContent);
-    const link = document.createElement('a');
-    link.setAttribute('href', encodedUri);
-    link.setAttribute('download', `${pattern.slug}-pattern-problems.csv`);
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    downloadCsv(`${pattern.slug}-pattern-problems.csv`, headers, rows);
 
     toast.success('Downloaded Pattern CSV', {
       description: `Exported ${sortedProblems.length} problems for pattern: ${pattern.name}`,
@@ -234,6 +221,7 @@ export const PatternDetailView: React.FC<PatternDetailViewProps> = ({ pattern })
   }, [pattern.problems, solvedSet]);
 
   const IconComponent = ICON_MAP[pattern.icon] || GitBranch;
+  const guide = PATTERN_GUIDES[pattern.slug];
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 space-y-6">
@@ -307,36 +295,64 @@ export const PatternDetailView: React.FC<PatternDetailViewProps> = ({ pattern })
           </div>
         </div>
 
-        {/* Strategy & Clues Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 border-t border-[var(--border)]">
-          {/* Strategy Block */}
-          <div className="p-4 rounded-2xl bg-[var(--bg-subtle)]/70 border border-[var(--border)] space-y-2">
+        {/* Pattern Notes */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 border-t border-[var(--border)] pt-5">
+          <section className="space-y-3 pb-5 lg:pb-0 lg:pr-5">
             <div className="flex items-center gap-2 text-xs font-semibold text-[var(--text-main)]">
-              <Lightbulb className="w-4 h-4 text-amber-500" />
-              <span>Strategy & Mental Model</span>
+              <Sparkles className="size-4 text-emerald-500" />
+              <h2>Recognize it</h2>
             </div>
-            <p className="text-xs text-[var(--text-muted)] leading-relaxed font-normal">
-              {pattern.strategy}
-            </p>
-          </div>
-
-          {/* Interview Clues Block */}
-          <div className="p-4 rounded-2xl bg-[var(--bg-subtle)]/70 border border-[var(--border)] space-y-2">
-            <div className="flex items-center gap-2 text-xs font-semibold text-[var(--text-main)]">
-              <Sparkles className="w-4 h-4 opacity-80" />
-              <span>Common Interview Clues & Keywords</span>
-            </div>
-            <div className="flex flex-wrap gap-1.5 pt-0.5">
+            <ul className="space-y-2">
               {pattern.clues.map((clue) => (
-                <span
-                  key={clue}
-                  className="text-[11px] px-2.5 py-1 rounded-xl bg-[var(--bg-card)] text-[var(--text-main)] border border-[var(--border)] shadow-2xs font-normal"
-                >
-                  &quot;{clue}&quot;
-                </span>
+                <li key={clue} className="flex gap-2 text-xs leading-relaxed text-[var(--text-muted)]">
+                  <span className="mt-[7px] size-1 shrink-0 rounded-full bg-emerald-500/70" />
+                  <span>{clue}</span>
+                </li>
               ))}
+            </ul>
+          </section>
+
+          <section className="space-y-3 border-t border-[var(--border)] py-5 lg:border-l lg:border-t-0 lg:px-5 lg:py-0">
+            <div className="flex items-center gap-2 text-xs font-semibold text-[var(--text-main)]">
+              <Lightbulb className="size-4 text-amber-500" />
+              <h2>How to solve</h2>
             </div>
-          </div>
+            <p className="text-xs leading-relaxed text-[var(--text-muted)]">{pattern.strategy}</p>
+            {guide && (
+              <ol className="space-y-2">
+                {guide.steps.map((step, index) => (
+                  <li key={step} className="flex gap-2 text-xs leading-relaxed text-[var(--text-muted)]">
+                    <span className="font-mono text-[10px] text-[var(--text-light)]">{index + 1}.</span>
+                    <span>{step}</span>
+                  </li>
+                ))}
+              </ol>
+            )}
+          </section>
+
+          <section className="space-y-3 border-t border-[var(--border)] pt-5 lg:border-l lg:border-t-0 lg:pl-5 lg:pt-0">
+            <div className="flex items-center gap-2 text-xs font-semibold text-[var(--text-main)]">
+              <BookOpen className="size-4 text-sky-500" />
+              <h2>Cheat sheet</h2>
+            </div>
+            {guide && (
+              <div className="space-y-3 text-xs">
+                <code className="block overflow-x-auto rounded-xl border border-[var(--border)] bg-[var(--bg-subtle)] px-3 py-2.5 text-[11px] leading-relaxed text-[var(--text-main)]">
+                  {guide.template}
+                </code>
+                <dl className="space-y-2">
+                  <div className="flex gap-2">
+                    <dt className="w-16 shrink-0 text-[var(--text-light)]">Cost</dt>
+                    <dd className="text-[var(--text-muted)]">{guide.complexity}</dd>
+                  </div>
+                  <div className="flex gap-2">
+                    <dt className="w-16 shrink-0 text-[var(--text-light)]">Watch for</dt>
+                    <dd className="text-[var(--text-muted)]">{guide.pitfall}</dd>
+                  </div>
+                </dl>
+              </div>
+            )}
+          </section>
         </div>
       </div>
 
@@ -567,7 +583,7 @@ export const PatternDetailView: React.FC<PatternDetailViewProps> = ({ pattern })
                       <td className="py-3 px-4">
                         <div className="flex flex-col gap-1">
                           <a
-                            href={prob.link}
+                            href={getLeetCodeProblemUrl(prob.slug)}
                             target="_blank"
                             rel="noopener noreferrer"
                             className={`inline-flex items-center gap-1.5 font-medium hover:text-[var(--text-main)] hover:underline transition-colors ${

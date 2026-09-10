@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useSyncExternalStore } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { RefreshCw, Sun, Moon, Database, GitBranch, Building2 } from 'lucide-react';
@@ -15,17 +15,14 @@ interface HeaderProps {
 
 export const Header: React.FC<HeaderProps> = ({ onOpenSync, syncStatus }) => {
   const pathname = usePathname() || '/';
-  const [theme, setTheme] = useState<'light' | 'dark'>('dark');
-
-  useEffect(() => {
-    const currentTheme = document.documentElement.getAttribute('data-theme') as 'light' | 'dark' | null;
-    const saved = localStorage.getItem('theme') as 'light' | 'dark' | null;
-    const initial = saved || currentTheme || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-    setTheme(initial);
-    if (document.documentElement.getAttribute('data-theme') !== initial) {
-      document.documentElement.setAttribute('data-theme', initial);
-    }
-  }, []);
+  const theme = useSyncExternalStore(
+    (onStoreChange) => {
+      window.addEventListener('leetmap-theme-change', onStoreChange);
+      return () => window.removeEventListener('leetmap-theme-change', onStoreChange);
+    },
+    () => document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark',
+    () => 'dark'
+  );
 
   const toggleTheme = () => {
     const next = theme === 'dark' ? 'light' : 'dark';
@@ -40,9 +37,9 @@ export const Header: React.FC<HeaderProps> = ({ onOpenSync, syncStatus }) => {
     );
     document.head.appendChild(css);
 
-    setTheme(next);
     localStorage.setItem('theme', next);
     document.documentElement.setAttribute('data-theme', next);
+    window.dispatchEvent(new Event('leetmap-theme-change'));
 
     // Force browser reflow to apply new CSS variables instantaneously
     window.getComputedStyle(document.body);
@@ -62,13 +59,12 @@ export const Header: React.FC<HeaderProps> = ({ onOpenSync, syncStatus }) => {
         <div className="flex items-center gap-2.5 sm:gap-5">
           <Link
             href="/"
-            className="apple-press flex items-center gap-2 text-[var(--text-main)] select-none shrink-0"
+            className="apple-press flex items-center select-none shrink-0 rounded-xl focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-emerald-500"
+            aria-label="LeetMap home"
           >
-            <div className="relative flex items-center justify-center">
-              <span className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
-              <span className="absolute w-4 h-4 rounded-full bg-emerald-500/30 animate-ping" />
-            </div>
-            <span className="font-bold text-base tracking-tight">leetmap</span>
+            <span className="text-[17px] font-bold tracking-[-0.035em] text-[var(--text-main)]">
+              leet<span className="text-emerald-500 dark:text-emerald-400">map</span>
+            </span>
           </Link>
 
           {/* Apple Primary Segmented Navigation */}
@@ -83,7 +79,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenSync, syncStatus }) => {
             >
               <Building2 className="w-3.5 h-3.5 opacity-80" />
               <span>Companies</span>
-              <span className="font-mono text-[10px] text-[var(--text-light)]">683</span>
+              <span className="font-mono text-[10px] text-[var(--text-light)]">{syncStatus?.companiesCount ?? '—'}</span>
             </Link>
 
             <Link
@@ -125,7 +121,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenSync, syncStatus }) => {
             <RefreshCw className="w-3 h-3 text-emerald-500 animate-[spin_12s_linear_infinite]" />
             <span className="hidden md:inline font-normal text-[var(--text-muted)]">Live:</span>
             <span className="font-mono text-emerald-600 dark:text-emerald-400 font-semibold text-[11px]">
-              {syncStatus?.companiesCount ? `${syncStatus.companiesCount} cos` : '683 cos'}
+              {syncStatus?.companiesCount ? `${syncStatus.companiesCount} cos` : 'Loading'}
             </span>
           </button>
 

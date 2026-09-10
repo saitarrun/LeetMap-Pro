@@ -1,12 +1,12 @@
 'use client';
 
 import React, { useState, useMemo, useEffect, useRef } from 'react';
-import { Search, Sparkles, Trophy, Database, Building2, Code2, X } from 'lucide-react';
+import { Search, Trophy, Database, Building2, Code2, X } from 'lucide-react';
 import { CompanySummary, SyncStatus } from '@/types';
 import { Header } from '@/components/Header';
 import { SyncModal } from '@/components/SyncModal';
 import { CompanyCard } from '@/components/CompanyCard';
-import { getSolvedCount } from '@/utils/progress';
+import { useSolvedProblems } from '@/utils/useSolvedProblems';
 
 interface HomeClientProps {
   initialCompanies: CompanySummary[];
@@ -32,18 +32,11 @@ export const HomeClient: React.FC<HomeClientProps> = ({
   const [searchQuery, setSearchQuery] = useState('');
   const [categoryFilter, setCategoryFilter] = useState<'ALL' | 'FAANG' | 'FINTECH' | 'POPULAR' | 'SQL'>('ALL');
   const [sortBy, setSortBy] = useState<'total' | 'name' | 'hard'>('total');
-  const [userSolvedCount, setUserSolvedCount] = useState(0);
+  const userSolvedCount = useSolvedProblems().size;
 
   const searchInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    setUserSolvedCount(getSolvedCount());
-
-    const handleUpdate = () => {
-      setUserSolvedCount(getSolvedCount());
-    };
-    window.addEventListener('leetmap-solved-updated', handleUpdate);
-
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === '/' && document.activeElement !== searchInputRef.current) {
         e.preventDefault();
@@ -57,7 +50,6 @@ export const HomeClient: React.FC<HomeClientProps> = ({
     window.addEventListener('keydown', handleKeyDown);
 
     return () => {
-      window.removeEventListener('leetmap-solved-updated', handleUpdate);
       window.removeEventListener('keydown', handleKeyDown);
     };
   }, [searchQuery]);
@@ -126,7 +118,7 @@ export const HomeClient: React.FC<HomeClientProps> = ({
             <div className="flex items-center gap-2 text-xs font-medium text-[var(--text-main)] bg-[var(--bg-card)] border border-[var(--border)] px-3.5 py-1.5 rounded-full shadow-xs">
               <Database className="w-3.5 h-3.5 text-[var(--text-muted)]" />
               <span>
-                <strong>{syncStatus?.uniqueProblemsCount ? syncStatus.uniqueProblemsCount.toLocaleString() : '3,422'}</strong> problems
+                <strong>{syncStatus?.uniqueProblemsCount?.toLocaleString() || '—'}</strong> problems
               </span>
             </div>
 
@@ -146,7 +138,7 @@ export const HomeClient: React.FC<HomeClientProps> = ({
               type="search"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search 683 companies... (Google, Citadel, Jane Street, Stripe)"
+              placeholder={`Search ${companies.length} companies... (Google, Citadel, Jane Street, Stripe)`}
               className="w-full pl-11 pr-12 py-3 rounded-2xl text-sm bg-[var(--bg-card)] border border-[var(--border)] text-[var(--text-main)] placeholder:text-[var(--text-light)] shadow-xs focus:outline-none focus:border-[var(--text-muted)]/40 focus:ring-4 focus:ring-[var(--border)]/40 transition-[box-shadow,border-color] duration-150"
             />
             {searchQuery ? (
@@ -179,7 +171,7 @@ export const HomeClient: React.FC<HomeClientProps> = ({
               ].map((tab) => (
                 <button
                   key={tab.key}
-                  onClick={() => setCategoryFilter(tab.key as any)}
+                  onClick={() => setCategoryFilter(tab.key as typeof categoryFilter)}
                   className={`apple-press px-3 py-1.5 rounded-xl font-medium transition-all cursor-pointer ${
                     categoryFilter === tab.key
                       ? 'bg-[var(--bg-card)] text-[var(--text-main)] shadow-xs font-semibold'
@@ -195,7 +187,7 @@ export const HomeClient: React.FC<HomeClientProps> = ({
               <span className="text-[var(--text-muted)] text-[11px]">Sort by:</span>
               <select
                 value={sortBy}
-                onChange={(e) => setSortBy(e.target.value as any)}
+                onChange={(e) => setSortBy(e.target.value as typeof sortBy)}
                 className="apple-press bg-[var(--bg-card)] border border-[var(--border)] text-[var(--text-main)] px-3 py-1.5 rounded-xl text-xs focus:outline-none cursor-pointer shadow-2xs"
               >
                 <option value="total">Most Questions</option>

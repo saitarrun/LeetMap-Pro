@@ -1,192 +1,188 @@
 'use client';
 
-import React, { useMemo, useState } from 'react';
+import React, { useMemo } from 'react';
+import { CalendarDays, CheckCircle2, Flame, Trophy, Zap } from 'lucide-react';
 import { UserActivityStats } from '@/types';
-import { Flame, Zap, CheckCircle2, Calendar, Trophy, ExternalLink } from 'lucide-react';
+import { getLeetCodeProblemUrl } from '@/utils/urls';
 
 interface ActivityTrackerProps {
   stats: UserActivityStats;
-  username: string;
+  displayName: string;
 }
 
-export const ActivityTracker: React.FC<ActivityTrackerProps> = ({ stats, username }) => {
-  const [hoveredDay, setHoveredDay] = useState<{ date: string; count: number } | null>(null);
+interface CalendarDay {
+  date: string;
+  count: number;
+  isFuture: boolean;
+}
 
-  // Generate grid for the past 16 weeks (112 days up to today)
-  const heatmapData = useMemo(() => {
-    const days: Array<{ date: string; count: number; dayOfWeek: number; monthName: string }> = [];
+const WEEK_COUNT = 26;
+const DAYS_PER_WEEK = 7;
+
+function toLocalDateString(date: Date): string {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
+function getCellClass(count: number, isFuture: boolean): string {
+  if (isFuture) return 'border-transparent bg-transparent';
+  if (count === 0) return 'border-[var(--border)] bg-[var(--bg-subtle)]';
+  if (count === 1) return 'border-emerald-500/35 bg-emerald-500/30';
+  if (count <= 3) return 'border-emerald-500/60 bg-emerald-500/65';
+  return 'border-emerald-400 bg-emerald-500';
+}
+
+export const ActivityTracker: React.FC<ActivityTrackerProps> = ({ stats, displayName }) => {
+  const calendar = useMemo(() => {
     const today = new Date();
-    
-    // 16 weeks = 112 days
-    const totalDays = 112;
+    today.setHours(12, 0, 0, 0);
 
-    for (let i = totalDays - 1; i >= 0; i--) {
-      const d = new Date(today);
-      d.setDate(d.getDate() - i);
+    const start = new Date(today);
+    start.setDate(start.getDate() - start.getDay() - (WEEK_COUNT - 1) * DAYS_PER_WEEK);
 
-      const year = d.getFullYear();
-      const month = String(d.getMonth() + 1).padStart(2, '0');
-      const day = String(d.getDate()).padStart(2, '0');
-      const dateStr = `${year}-${month}-${day}`;
+    const weeks: CalendarDay[][] = [];
+    const monthLabels: string[] = [];
 
-      const count = stats.dailyHistory[dateStr] || 0;
-      const dayOfWeek = d.getDay(); // 0 = Sun, 1 = Mon ...
-      const monthName = d.toLocaleString('default', { month: 'short' });
+    for (let weekIndex = 0; weekIndex < WEEK_COUNT; weekIndex++) {
+      const week: CalendarDay[] = [];
+      const weekStart = new Date(start);
+      weekStart.setDate(start.getDate() + weekIndex * DAYS_PER_WEEK);
 
-      days.push({
-        date: dateStr,
-        count,
-        dayOfWeek,
-        monthName,
-      });
+      const containsFirstOfMonth = Array.from({ length: DAYS_PER_WEEK }, (_, dayIndex) => {
+        const date = new Date(weekStart);
+        date.setDate(weekStart.getDate() + dayIndex);
+        return date;
+      }).find((date) => date.getDate() === 1);
+
+      monthLabels.push(
+        weekIndex === 0 || containsFirstOfMonth
+          ? (containsFirstOfMonth || weekStart).toLocaleString('default', { month: 'short' })
+          : ''
+      );
+
+      for (let dayIndex = 0; dayIndex < DAYS_PER_WEEK; dayIndex++) {
+        const date = new Date(weekStart);
+        date.setDate(weekStart.getDate() + dayIndex);
+        const dateString = toLocalDateString(date);
+        week.push({
+          date: dateString,
+          count: stats.dailyHistory[dateString] || 0,
+          isFuture: date > today,
+        });
+      }
+
+      weeks.push(week);
     }
 
-    return days;
+    return { weeks, monthLabels };
   }, [stats.dailyHistory]);
 
-  const getColorClass = (count: number) => {
-    if (count === 0) return 'bg-[var(--bg-subtle)] border border-[var(--border)]';
-    if (count === 1) return 'bg-emerald-500/35 border border-emerald-500/40';
-    if (count <= 3) return 'bg-emerald-500/70 border border-emerald-500/80';
-    return 'bg-emerald-500 border border-emerald-400 shadow-2xs';
-  };
+  const statCards = [
+    { label: 'Current streak', value: stats.currentStreak, suffix: 'days', icon: Flame, color: 'text-amber-500' },
+    { label: 'Best streak', value: stats.maxStreak, suffix: 'days', icon: Zap, color: 'text-blue-500' },
+    { label: 'Solved today', value: stats.todaySolved, suffix: 'problems', icon: CheckCircle2, color: 'text-emerald-500' },
+    { label: 'Total solved', value: stats.totalSolved, suffix: 'problems', icon: Trophy, color: 'text-amber-500' },
+  ];
 
   return (
     <div className="space-y-4">
-      {/* Streak Stat Badges */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-        {/* Current Streak */}
-        <div className="p-3 rounded-2xl bg-[var(--bg-subtle)] border border-[var(--border)] relative overflow-hidden">
-          <div className="flex items-center gap-1.5 text-xs text-[var(--text-muted)] font-medium">
-            <Flame className={`w-3.5 h-3.5 ${stats.currentStreak > 0 ? 'text-amber-500 fill-amber-500 animate-pulse' : 'text-[var(--text-light)]'}`} />
-            <span>Streak</span>
+      <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+        {statCards.map(({ label, value, suffix, icon: Icon, color }) => (
+          <div key={label} className="rounded-2xl border border-[var(--border)] bg-[var(--bg-subtle)] p-3">
+            <div className="flex items-center gap-1.5 text-[11px] font-medium text-[var(--text-muted)]">
+              <Icon className={`h-3.5 w-3.5 ${color}`} />
+              <span>{label}</span>
+            </div>
+            <div className="mt-1 flex items-baseline gap-1">
+              <span className="font-mono text-xl font-bold text-[var(--text-main)]">{value}</span>
+              <span className="text-[10px] text-[var(--text-muted)]">{suffix}</span>
+            </div>
           </div>
-          <div className="mt-1 flex items-baseline gap-1">
-            <span className="text-xl font-bold font-mono text-[var(--text-main)]">
-              {stats.currentStreak}
-            </span>
-            <span className="text-[11px] text-[var(--text-muted)]">days</span>
-          </div>
-        </div>
-
-        {/* Best Streak */}
-        <div className="p-3 rounded-2xl bg-[var(--bg-subtle)] border border-[var(--border)]">
-          <div className="flex items-center gap-1.5 text-xs text-[var(--text-muted)] font-medium">
-            <Zap className="w-3.5 h-3.5 text-blue-500 fill-blue-500" />
-            <span>Best</span>
-          </div>
-          <div className="mt-1 flex items-baseline gap-1">
-            <span className="text-xl font-bold font-mono text-[var(--text-main)]">
-              {stats.maxStreak}
-            </span>
-            <span className="text-[11px] text-[var(--text-muted)]">days</span>
-          </div>
-        </div>
-
-        {/* Today's Solved */}
-        <div className="p-3 rounded-2xl bg-[var(--bg-subtle)] border border-[var(--border)]">
-          <div className="flex items-center gap-1.5 text-xs text-[var(--text-muted)] font-medium">
-            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />
-            <span>Today</span>
-          </div>
-          <div className="mt-1 flex items-baseline gap-1">
-            <span className="text-xl font-bold font-mono text-emerald-600 dark:text-emerald-400">
-              {stats.todaySolved}
-            </span>
-            <span className="text-[11px] text-[var(--text-muted)]">solved</span>
-          </div>
-        </div>
-
-        {/* Total Solved */}
-        <div className="p-3 rounded-2xl bg-[var(--bg-subtle)] border border-[var(--border)]">
-          <div className="flex items-center gap-1.5 text-xs text-[var(--text-muted)] font-medium">
-            <Trophy className="w-3.5 h-3.5 text-amber-500" />
-            <span>Total</span>
-          </div>
-          <div className="mt-1 flex items-baseline gap-1">
-            <span className="text-xl font-bold font-mono text-[var(--text-main)]">
-              {stats.totalSolved}
-            </span>
-            <span className="text-[11px] text-[var(--text-muted)]">problems</span>
-          </div>
-        </div>
+        ))}
       </div>
 
-      {/* GitHub-Style Activity Heatmap */}
-      <div className="p-4 rounded-2xl bg-[var(--bg-card)] border border-[var(--border)] shadow-2xs space-y-2.5">
-        <div className="flex items-center justify-between text-xs">
-          <div className="flex items-center gap-2 font-semibold text-[var(--text-main)]">
-            <Calendar className="w-3.5 h-3.5 text-[var(--text-muted)]" />
-            <span>Everyday Activity (Past 16 Weeks)</span>
+      <section className="rounded-2xl border border-[var(--border)] bg-[var(--bg-card)] p-4 shadow-2xs">
+        <div className="mb-4 flex items-center justify-between gap-3">
+          <div className="flex items-center gap-2">
+            <CalendarDays className="h-4 w-4 text-emerald-500" />
+            <div>
+              <h3 className="text-xs font-semibold text-[var(--text-main)]">LeetCode solve activity</h3>
+              <p className="mt-0.5 text-[10px] text-[var(--text-muted)]">Past 26 weeks</p>
+            </div>
           </div>
-          {hoveredDay ? (
-            <span className="text-[11px] font-mono text-emerald-600 dark:text-emerald-400">
-              {hoveredDay.count} {hoveredDay.count === 1 ? 'problem' : 'problems'} on {hoveredDay.date}
-            </span>
-          ) : (
-            <span className="text-[11px] text-[var(--text-muted)]">
-              Hover square for details
-            </span>
-          )}
+          <span className="hidden text-[10px] text-[var(--text-muted)] sm:block">Each square is one day</span>
         </div>
 
-        {/* Calendar Grid Container */}
-        <div className="overflow-x-auto pb-1 scrollbar-none">
-          <div className="inline-grid grid-rows-7 grid-flow-col gap-1.5 p-1 min-w-[500px]">
-            {heatmapData.map((day) => (
-              <div
-                key={day.date}
-                onMouseEnter={() => setHoveredDay({ date: day.date, count: day.count })}
-                onMouseLeave={() => setHoveredDay(null)}
-                className={`w-3.5 h-3.5 rounded-xs transition-transform hover:scale-125 cursor-pointer ${getColorClass(
-                  day.count
-                )}`}
-                title={`${day.count} problems on ${day.date}`}
-              />
-            ))}
+        <div className="overflow-x-auto pb-1">
+          <div className="w-max min-w-full">
+            <div className="ml-8 grid grid-cols-[repeat(26,14px)] gap-1.5">
+              {calendar.monthLabels.map((label, index) => (
+                <span key={`${label}-${index}`} className="h-4 text-[9px] text-[var(--text-muted)]">
+                  {label}
+                </span>
+              ))}
+            </div>
+
+            <div className="mt-1 flex gap-2">
+              <div className="grid w-6 shrink-0 grid-rows-7 gap-1.5 text-right text-[9px] leading-3 text-[var(--text-muted)]">
+                <span />
+                <span>Mon</span>
+                <span />
+                <span>Wed</span>
+                <span />
+                <span>Fri</span>
+                <span />
+              </div>
+              <div className="grid grid-cols-[repeat(26,14px)] gap-1.5">
+                {calendar.weeks.map((week, weekIndex) => (
+                  <div key={weekIndex} className="grid grid-rows-7 gap-1.5">
+                    {week.map((day) => (
+                      <div
+                        key={day.date}
+                        className={`h-3.5 w-3.5 rounded-[3px] border transition-transform ${getCellClass(day.count, day.isFuture)} ${day.isFuture ? '' : 'hover:scale-125'}`}
+                        title={day.isFuture ? undefined : `${day.count} ${day.count === 1 ? 'problem' : 'problems'} solved on ${day.date}`}
+                        aria-label={day.isFuture ? undefined : `${day.count} problems solved on ${day.date}`}
+                      />
+                    ))}
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
 
-        {/* Legend */}
-        <div className="flex items-center justify-between pt-2 border-t border-[var(--border)] text-[10px] text-[var(--text-muted)]">
-          <span>{stats.todaySolved > 0 ? '🔥 Great job solving today!' : '⚡ Solve 1 problem today to keep your streak!'}</span>
+        <div className="mt-4 flex flex-wrap items-center justify-between gap-3 border-t border-[var(--border)] pt-3 text-[10px] text-[var(--text-muted)]">
+          <span>{stats.todaySolved > 0 ? 'Great work—today is active.' : 'Solve one problem today to keep your streak moving.'}</span>
           <div className="flex items-center gap-1.5">
             <span>Less</span>
-            <div className="w-2.5 h-2.5 rounded-xs bg-[var(--bg-subtle)] border border-[var(--border)]" />
-            <div className="w-2.5 h-2.5 rounded-xs bg-emerald-500/35 border border-emerald-500/40" />
-            <div className="w-2.5 h-2.5 rounded-xs bg-emerald-500/70 border border-emerald-500/80" />
-            <div className="w-2.5 h-2.5 rounded-xs bg-emerald-500 border border-emerald-400" />
+            {[0, 1, 2, 4].map((count) => (
+              <span key={count} className={`h-3 w-3 rounded-[3px] border ${getCellClass(count, false)}`} />
+            ))}
             <span>More</span>
           </div>
         </div>
-      </div>
+      </section>
 
-      {/* Recent Solved History */}
       {stats.recentSolved.length > 0 && (
-        <div className="p-3.5 rounded-2xl bg-[var(--bg-subtle)] border border-[var(--border)] space-y-2">
-          <h4 className="text-xs font-semibold text-[var(--text-main)] flex items-center gap-1.5">
-            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />
-            <span>Recently Solved by @{username}</span>
-          </h4>
-          <div className="divide-y divide-[var(--border)] text-xs">
-            {stats.recentSolved.slice(0, 5).map((rec) => (
-              <div key={rec.slug} className="py-2 flex items-center justify-between gap-3">
-                <a
-                  href={`https://leetcode.com/problems/${rec.slug}/`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="font-medium text-[var(--text-main)] hover:text-emerald-600 dark:hover:text-emerald-400 hover:underline flex items-center gap-1.5 truncate"
-                >
-                  <span className="truncate">{rec.title || rec.slug.replace(/-/g, ' ')}</span>
-                  <ExternalLink className="w-3 h-3 opacity-60 shrink-0" />
-                </a>
-                <span className="font-mono text-[10px] text-[var(--text-light)] shrink-0">
-                  {rec.date}
-                </span>
-              </div>
+        <section className="rounded-2xl border border-[var(--border)] bg-[var(--bg-subtle)] p-3.5">
+          <h3 className="text-xs font-semibold text-[var(--text-main)]">Recently solved by {displayName}</h3>
+          <div className="mt-2 divide-y divide-[var(--border)]">
+            {stats.recentSolved.slice(0, 5).map((record) => (
+              <a
+                key={record.slug}
+                href={getLeetCodeProblemUrl(record.slug)}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center justify-between gap-3 py-2 text-xs hover:text-emerald-600 dark:hover:text-emerald-400"
+              >
+                <span className="truncate font-medium">{record.title || record.slug.replace(/-/g, ' ')}</span>
+                <span className="shrink-0 font-mono text-[10px] text-[var(--text-muted)]">{record.date}</span>
+              </a>
             ))}
           </div>
-        </div>
+        </section>
       )}
     </div>
   );

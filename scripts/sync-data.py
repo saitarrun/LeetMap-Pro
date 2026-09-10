@@ -17,6 +17,10 @@ from typing import Dict, Any, List, Set, Optional
 SOURCE_LIQUIDSLR = "liquidslr/leetcode-company-wise-problems"
 SOURCE_SNEHASISHROY = "snehasishroy/leetcode-companywise-interview-questions"
 LEETCODE_GRAPHQL = "https://leetcode.com/graphql"
+MAX_API_RESPONSE_BYTES = 2 * 1024 * 1024
+MAX_ARCHIVE_BYTES = 100 * 1024 * 1024
+MAX_CSV_BYTES = 10 * 1024 * 1024
+MAX_TOTAL_CSV_BYTES = 150 * 1024 * 1024
 
 WINDOW_DEFINITIONS = [
     {"index": 0, "name": "Last 30 Days", "key": "30_days", "l_file": "1. Thirty Days.csv", "s_file": "thirty-days.csv"},
@@ -32,12 +36,36 @@ def slugify(text: str) -> str:
     s = re.sub(r'[^a-z0-9\-]', '', s)
     return s.strip('-')
 
+def read_limited_response(response: Any, max_bytes: int) -> bytes:
+    content_length = response.headers.get("Content-Length")
+    if content_length and int(content_length) > max_bytes:
+        raise ValueError("Remote response exceeds the configured size limit")
+    data = response.read(max_bytes + 1)
+    if len(data) > max_bytes:
+        raise ValueError("Remote response exceeds the configured size limit")
+    return data
+
+def iter_safe_csv_members(tar: tarfile.TarFile):
+    total_size = 0
+    for member in tar.getmembers():
+        if not member.isfile() or not member.name.endswith(".csv"):
+            continue
+        if member.size > MAX_CSV_BYTES:
+            continue
+        total_size += member.size
+        if total_size > MAX_TOTAL_CSV_BYTES:
+            raise ValueError("Archive contains too much extracted CSV data")
+        yield member
+
+def leetcode_problem_url(slug: str) -> str:
+    return f"https://leetcode.com/problems/{slug}/"
+
 def fetch_commit_sha(repo: str, branch: str = "main") -> str:
     url = f"https://api.github.com/repos/{repo}/commits/{branch}"
     try:
         req = urllib.request.Request(url, headers={"User-Agent": "LeetCodeCompanySync/2.0"})
         with urllib.request.urlopen(req, timeout=10) as resp:
-            data = json.loads(resp.read().decode())
+            data = json.loads(read_limited_response(resp, MAX_API_RESPONSE_BYTES).decode())
             return data.get("sha", "")[:8]
     except Exception as e:
         if branch == "main":
@@ -49,7 +77,7 @@ def fetch_tarball(repo: str, branch: str = "main") -> Optional[bytes]:
     try:
         req = urllib.request.Request(url, headers={"User-Agent": "LeetCodeCompanySync/2.0"})
         with urllib.request.urlopen(req, timeout=60) as resp:
-            return resp.read()
+            return read_limited_response(resp, MAX_ARCHIVE_BYTES)
     except Exception as e:
         if branch == "main":
             return fetch_tarball(repo, "master")
@@ -73,7 +101,7 @@ def fetch_leetcode_official_company_tags() -> Dict[str, Dict[str, Any]]:
             headers={"Content-Type": "application/json", "User-Agent": "Mozilla/5.0"}
         )
         with urllib.request.urlopen(req, timeout=12) as resp:
-            data = json.loads(resp.read().decode())
+            data = json.loads(read_limited_response(resp, MAX_API_RESPONSE_BYTES).decode())
             tags = data.get("data", {}).get("companyTags", [])
             for t in tags:
                 slug = slugify(t.get("slug") or t.get("name") or "")
@@ -138,9 +166,7 @@ def is_sql_problem(topics: List[str], title: str = "") -> bool:
 def parse_liquidslr_tar(tar_bytes: bytes) -> Dict[str, Dict[int, List[Dict[str, Any]]]]:
     data: Dict[str, Dict[int, List[Dict[str, Any]]]] = {}
     with tarfile.open(fileobj=io.BytesIO(tar_bytes), mode="r:gz") as tar:
-        for member in tar.getmembers():
-            if not member.name.endswith(".csv"):
-                continue
+        for member in iter_safe_csv_members(tar):
             parts = member.name.split("/")
             if len(parts) < 3:
                 continue
@@ -163,7 +189,7 @@ def parse_liquidslr_tar(tar_bytes: bytes) -> Dict[str, Dict[int, List[Dict[str, 
             reader = csv.DictReader(io.StringIO(text))
             problems = []
             for row in reader:
-                title = (row.get("Title") or "").strip()
+                title = (row.get("Title") or "").strip()[:300]
                 if not title:
                     continue
                 diff = (row.get("Difficulty") or "MEDIUM").strip().upper()
@@ -174,7 +200,7 @@ def parse_liquidslr_tar(tar_bytes: bytes) -> Dict[str, Dict[int, List[Dict[str, 
                 link = (row.get("Link") or "").strip()
                 slug = extract_slug_from_link(link)
                 raw_topics = (row.get("Topics") or "").strip()
-                topics = [t.strip() for t in raw_topics.split(",") if t.strip()] if raw_topics else []
+                topics = [t.strip()[:100] for t in raw_topics.split(",") if t.strip()][:30] if raw_topics else []
                 
                 problems.append({
                     "title": title,
@@ -182,7 +208,7 @@ def parse_liquidslr_tar(tar_bytes: bytes) -> Dict[str, Dict[int, List[Dict[str, 
                     "difficulty": diff,
                     "frequency": freq,
                     "acceptance": acc,
-                    "link": link or f"https://leetcode.com/problems/{slug}",
+                    "link": leetcode_problem_url(slug),
                     "topics": topics,
                     "isSql": is_sql_problem(topics, title),
                     "source": "liquidslr"
@@ -197,9 +223,7 @@ def parse_liquidslr_tar(tar_bytes: bytes) -> Dict[str, Dict[int, List[Dict[str, 
 def parse_snehasishroy_tar(tar_bytes: bytes) -> Dict[str, Dict[int, List[Dict[str, Any]]]]:
     data: Dict[str, Dict[int, List[Dict[str, Any]]]] = {}
     with tarfile.open(fileobj=io.BytesIO(tar_bytes), mode="r:gz") as tar:
-        for member in tar.getmembers():
-            if not member.name.endswith(".csv"):
-                continue
+        for member in iter_safe_csv_members(tar):
             parts = member.name.split("/")
             if len(parts) < 3:
                 continue
@@ -222,7 +246,7 @@ def parse_snehasishroy_tar(tar_bytes: bytes) -> Dict[str, Dict[int, List[Dict[st
             reader = csv.DictReader(io.StringIO(text))
             problems = []
             for row in reader:
-                title = (row.get("Title") or "").strip()
+                title = (row.get("Title") or "").strip()[:300]
                 if not title:
                     continue
                 prob_id = (row.get("ID") or "").strip()
@@ -241,7 +265,7 @@ def parse_snehasishroy_tar(tar_bytes: bytes) -> Dict[str, Dict[int, List[Dict[st
                     "difficulty": diff,
                     "frequency": freq,
                     "acceptance": acc,
-                    "link": link or f"https://leetcode.com/problems/{slug}",
+                    "link": leetcode_problem_url(slug),
                     "topics": [],
                     "source": "snehasishroy"
                 })

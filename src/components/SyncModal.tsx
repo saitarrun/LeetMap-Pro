@@ -41,7 +41,7 @@ export const SyncModal: React.FC<SyncModalProps> = ({
         if (data.status) {
           onSyncComplete(data.status);
         }
-        return `Synced ${data.status?.companiesCount || 683} companies & ${data.status?.uniqueProblemsCount || 3422} problems in ${data.status?.durationSeconds || 4}s!`;
+        return `Synced ${data.status?.companiesCount?.toLocaleString() || 'updated'} companies and ${data.status?.uniqueProblemsCount?.toLocaleString() || 'updated'} problems.`;
       },
       error: (err) => err.message || 'Sync failed',
     });
@@ -49,8 +49,8 @@ export const SyncModal: React.FC<SyncModalProps> = ({
     try {
       const data = await syncPromise;
       setSyncLogs(data.stdout || 'Multi-source sync completed successfully.');
-    } catch (err: any) {
-      setSyncError(err.message || 'Network error occurred during sync.');
+    } catch (error) {
+      setSyncError(error instanceof Error ? error.message : 'Network error occurred during sync.');
     } finally {
       setIsSyncing(false);
     }
@@ -59,6 +59,7 @@ export const SyncModal: React.FC<SyncModalProps> = ({
   const formattedDate = syncStatus?.lastSynced
     ? new Date(syncStatus.lastSynced).toLocaleString()
     : 'Unknown';
+  const sources = syncStatus?.sources || [];
 
   return (
     <div
@@ -88,7 +89,7 @@ export const SyncModal: React.FC<SyncModalProps> = ({
               Realtime Multi-Source Sync
             </h2>
             <p className="text-xs text-[var(--text-muted)]">
-              Continuous aggregation across 3 independent repositories
+              Aggregation across verified upstream sources
             </p>
           </div>
         </div>
@@ -100,18 +101,18 @@ export const SyncModal: React.FC<SyncModalProps> = ({
             <span>Active Data Sources</span>
           </div>
           <div className="space-y-1.5 text-[11px] text-[var(--text-muted)] pt-0.5">
-            <div className="flex items-center justify-between">
-              <span>1. <strong>liquidslr</strong> (topics & 5 recency windows)</span>
-              <span className="font-mono text-emerald-600 dark:text-emerald-400 font-medium">470 companies</span>
-            </div>
-            <div className="flex items-center justify-between">
-              <span>2. <strong>snehasishroy</strong> (problem IDs & 2026 commits)</span>
-              <span className="font-mono text-emerald-600 dark:text-emerald-400 font-medium">659 companies</span>
-            </div>
-            <div className="flex items-center justify-between">
-              <span>3. <strong>Official LeetCode GraphQL</strong></span>
-              <span className="font-mono text-emerald-600 dark:text-emerald-400 font-medium">984 live tags</span>
-            </div>
+            {sources.length > 0 ? sources.map((source, index) => (
+              <div key={source.name} className="flex items-center justify-between gap-3">
+                <span className="truncate">{index + 1}. <strong>{source.name}</strong></span>
+                <span className="shrink-0 font-mono font-medium text-emerald-600 dark:text-emerald-400">
+                  {source.companies !== undefined
+                    ? `${source.companies} companies`
+                    : `${source.tagsCount ?? 0} tags`}
+                </span>
+              </div>
+            )) : (
+              <span>Source details will appear after the first successful sync.</span>
+            )}
           </div>
         </div>
 
@@ -123,7 +124,7 @@ export const SyncModal: React.FC<SyncModalProps> = ({
               <span>Total Merged</span>
             </div>
             <div className="text-sm font-semibold text-[var(--text-main)]">
-              {syncStatus?.companiesCount || 683} companies
+              {syncStatus?.companiesCount?.toLocaleString() || '—'} companies
             </div>
           </div>
 
@@ -133,7 +134,7 @@ export const SyncModal: React.FC<SyncModalProps> = ({
               <span>Unique Problems</span>
             </div>
             <div className="text-sm font-semibold text-[var(--text-main)]">
-              {syncStatus?.uniqueProblemsCount ? syncStatus.uniqueProblemsCount.toLocaleString() : '3,422+'}
+              {syncStatus?.uniqueProblemsCount?.toLocaleString() || '—'}
             </div>
           </div>
 

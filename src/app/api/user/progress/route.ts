@@ -1,137 +1,171 @@
-import { NextResponse } from 'next/server';
-import { cookies } from 'next/headers';
 import fs from 'fs';
 import path from 'path';
-import { UserProfile, SolvedProblemRecord } from '@/types';
+import { randomUUID } from 'crypto';
+import { auth } from '@clerk/nextjs/server';
+import { NextResponse } from 'next/server';
+import { SolvedProblemRecord } from '@/types';
+import { isTrustedMutationRequest } from '@/utils/request-security';
 
-function getUserDir() {
-  const dir = path.join(process.cwd(), 'data', 'user-progress');
-  if (!fs.existsSync(dir)) {
-    fs.mkdirSync(dir, { recursive: true });
-  }
-  return dir;
-}
-
-function getSafeFilePath(username: string): string {
-  // sanitize username to prevent path traversal
-  const safe = username.toLowerCase().replace(/[^a-z0-9_-]/g, '_');
-  return path.join(getUserDir(), `${safe}.json`);
-}
+const MAX_BODY_BYTES = 1024 * 1024;
+const MAX_RECORDS = 5000;
+const SLUG_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+const DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
 
 interface UserStorageData {
-  username: string;
+  userId: string;
   solvedSlugs: string[];
   activityRecords: SolvedProblemRecord[];
   updatedAt: string;
 }
 
-function readUserData(username: string): UserStorageData {
-  const filepath = getSafeFilePath(username);
-  if (!fs.existsSync(filepath)) {
-    return {
-      username,
-      solvedSlugs: [],
-      activityRecords: [],
-      updatedAt: new Date().toISOString(),
-    };
+function getUserDir(): string {
+  const directory = path.join(process.cwd(), 'data', 'user-progress');
+  if (!fs.existsSync(directory)) {
+    fs.mkdirSync(directory, { recursive: true, mode: 0o700 });
   }
+  fs.chmodSync(directory, 0o700);
+  return directory;
+}
+
+function getSafeFilePath(userId: string): string {
+  const safeUserId = userId.toLowerCase().replace(/[^a-z0-9_-]/g, '_');
+  return path.join(getUserDir(), `${safeUserId}.json`);
+}
+
+function emptyUserData(userId: string): UserStorageData {
+  return {
+    userId,
+    solvedSlugs: [],
+    activityRecords: [],
+    updatedAt: new Date(0).toISOString(),
+  };
+}
+
+function isSolvedProblemRecord(value: unknown): value is SolvedProblemRecord {
+  if (!value || typeof value !== 'object') return false;
+  const record = value as Partial<SolvedProblemRecord>;
+  return (
+    typeof record.slug === 'string' &&
+    SLUG_PATTERN.test(record.slug) &&
+    typeof record.solvedAt === 'string' &&
+    record.solvedAt.length <= 40 &&
+    Number.isFinite(Date.parse(record.solvedAt)) &&
+    typeof record.date === 'string' &&
+    DATE_PATTERN.test(record.date) &&
+    (record.title === undefined || (typeof record.title === 'string' && record.title.length <= 200)) &&
+    (record.difficulty === undefined || ['EASY', 'MEDIUM', 'HARD'].includes(record.difficulty))
+  );
+}
+
+function readUserData(userId: string): UserStorageData {
+  const filePath = getSafeFilePath(userId);
+  if (!fs.existsSync(filePath)) return emptyUserData(userId);
+
   try {
-    const raw = fs.readFileSync(filepath, 'utf8');
-    const parsed = JSON.parse(raw);
+    const parsed: unknown = JSON.parse(fs.readFileSync(filePath, 'utf8'));
+    if (!parsed || typeof parsed !== 'object') return emptyUserData(userId);
+
+    const stored = parsed as Partial<UserStorageData>;
     return {
-      username,
-      solvedSlugs: Array.isArray(parsed.solvedSlugs) ? parsed.solvedSlugs : [],
-      activityRecords: Array.isArray(parsed.activityRecords) ? parsed.activityRecords : [],
-      updatedAt: parsed.updatedAt || new Date().toISOString(),
+      userId,
+      solvedSlugs: Array.isArray(stored.solvedSlugs)
+        ? stored.solvedSlugs.filter((slug): slug is string => typeof slug === 'string')
+        : [],
+      activityRecords: Array.isArray(stored.activityRecords)
+        ? stored.activityRecords.filter(isSolvedProblemRecord)
+        : [],
+      updatedAt: typeof stored.updatedAt === 'string' ? stored.updatedAt : new Date(0).toISOString(),
     };
-  } catch (e) {
-    return {
-      username,
-      solvedSlugs: [],
-      activityRecords: [],
-      updatedAt: new Date().toISOString(),
-    };
+  } catch {
+    return emptyUserData(userId);
   }
 }
 
-function writeUserData(username: string, data: UserStorageData): void {
-  const filepath = getSafeFilePath(username);
-  fs.writeFileSync(filepath, JSON.stringify(data, null, 2), 'utf8');
+function writeUserData(userId: string, data: UserStorageData): void {
+  const filePath = getSafeFilePath(userId);
+  const temporaryPath = `${filePath}.${randomUUID()}.tmp`;
+  fs.writeFileSync(temporaryPath, JSON.stringify(data, null, 2), {
+    encoding: 'utf8',
+    flag: 'wx',
+    mode: 0o600,
+  });
+  fs.renameSync(temporaryPath, filePath);
 }
 
-async function getSessionUser(): Promise<UserProfile | null> {
-  try {
-    const cookieStore = await cookies();
-    const sessionCookie = cookieStore.get('leetmap_session')?.value;
-    if (!sessionCookie) return null;
-    return JSON.parse(sessionCookie);
-  } catch (e) {
-    return null;
+async function readRequestBody(request: Request): Promise<unknown> {
+  const contentLength = Number(request.headers.get('content-length') || 0);
+  if (contentLength > MAX_BODY_BYTES) throw new RangeError('Request body too large');
+
+  const rawBody = await request.text();
+  if (Buffer.byteLength(rawBody, 'utf8') > MAX_BODY_BYTES) {
+    throw new RangeError('Request body too large');
   }
+  return JSON.parse(rawBody);
 }
 
 export async function GET() {
-  const user = await getSessionUser();
-  if (!user || !user.username) {
-    return NextResponse.json({ authenticated: false, solvedSlugs: [], activityRecords: [] });
+  const { userId } = await auth();
+  if (!userId) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
-  const data = readUserData(user.username);
-  return NextResponse.json({
-    authenticated: true,
-    username: user.username,
-    solvedSlugs: data.solvedSlugs,
-    activityRecords: data.activityRecords,
-    updatedAt: data.updatedAt,
-  });
+  return NextResponse.json(readUserData(userId), { headers: { 'Cache-Control': 'no-store' } });
 }
 
 export async function POST(request: Request) {
-  const user = await getSessionUser();
-  if (!user || !user.username) {
-    return NextResponse.json(
-      { error: 'Unauthorized. Sign in to save cloud progress.' },
-      { status: 401 }
-    );
+  const { userId } = await auth();
+  if (!userId) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
+  if (!isTrustedMutationRequest(request)) {
+    return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
   }
 
   try {
-    const body = await request.json();
-    const current = readUserData(user.username);
+    const body = await readRequestBody(request);
+    if (!body || typeof body !== 'object') {
+      return NextResponse.json({ error: 'Invalid request body' }, { status: 400 });
+    }
 
-    // Merge client-provided data (two-way sync)
-    const clientSlugs: string[] = Array.isArray(body.solvedSlugs) ? body.solvedSlugs : [];
-    const clientRecords: SolvedProblemRecord[] = Array.isArray(body.activityRecords) ? body.activityRecords : [];
-
-    const mergedSlugsSet = new Set([...current.solvedSlugs, ...clientSlugs]);
-
-    // Merge records by slug
-    const recordMap = new Map<string, SolvedProblemRecord>();
-    current.activityRecords.forEach((r) => recordMap.set(r.slug, r));
-    clientRecords.forEach((r) => {
-      if (!recordMap.has(r.slug)) {
-        recordMap.set(r.slug, r);
-      }
-    });
+    const payload = body as { solvedSlugs?: unknown; activityRecords?: unknown };
+    const solvedSlugs = Array.isArray(payload.solvedSlugs)
+      ? Array.from(
+          new Set(
+            payload.solvedSlugs.filter(
+              (slug): slug is string => typeof slug === 'string' && SLUG_PATTERN.test(slug)
+            )
+          )
+        ).slice(0, MAX_RECORDS)
+      : [];
+    const solvedSet = new Set(solvedSlugs);
+    const activityRecords = Array.isArray(payload.activityRecords)
+      ? payload.activityRecords
+          .filter(isSolvedProblemRecord)
+          .filter((record) => solvedSet.has(record.slug))
+          .slice(0, MAX_RECORDS)
+      : [];
 
     const updatedData: UserStorageData = {
-      username: user.username,
-      solvedSlugs: Array.from(mergedSlugsSet),
-      activityRecords: Array.from(recordMap.values()),
+      userId,
+      solvedSlugs,
+      activityRecords,
       updatedAt: new Date().toISOString(),
     };
+    writeUserData(userId, updatedData);
 
-    writeUserData(user.username, updatedData);
-
-    return NextResponse.json({
-      success: true,
-      username: user.username,
-      solvedSlugs: updatedData.solvedSlugs,
-      activityRecords: updatedData.activityRecords,
-      updatedAt: updatedData.updatedAt,
-    });
-  } catch (err: any) {
-    console.error('Failed to update user progress on server:', err);
-    return NextResponse.json({ error: err.message || 'Internal server error' }, { status: 500 });
+    return NextResponse.json(
+      { success: true, ...updatedData },
+      { headers: { 'Cache-Control': 'no-store' } }
+    );
+  } catch (error) {
+    console.error('Failed to update user progress on server:', error);
+    if (error instanceof RangeError) {
+      return NextResponse.json({ error: error.message }, { status: 413 });
+    }
+    if (error instanceof SyntaxError) {
+      return NextResponse.json({ error: 'Invalid JSON body' }, { status: 400 });
+    }
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

@@ -8,7 +8,10 @@ export async function GET(
 ) {
   try {
     const { slug } = await params;
-    const safeSlug = slug.toLowerCase().replace(/[^a-z0-9\-]/g, '');
+    const safeSlug = slug.toLowerCase();
+    if (!/^[a-z0-9-]{1,100}$/.test(safeSlug)) {
+      return NextResponse.json({ error: 'Invalid company slug' }, { status: 400 });
+    }
     const filePath = path.join(process.cwd(), 'public', 'data', 'companies', `${safeSlug}.json`);
 
     if (!fs.existsSync(filePath)) {
@@ -19,8 +22,9 @@ export async function GET(
     const companyData = JSON.parse(raw);
     return NextResponse.json(companyData);
   } catch (error) {
+    console.error('Failed to retrieve company data:', error);
     return NextResponse.json(
-      { error: 'Failed to retrieve company data', details: String(error) },
+      { error: 'Failed to retrieve company data' },
       { status: 500 }
     );
   }

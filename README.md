@@ -6,7 +6,7 @@ A fast, responsive, modern web application for practicing LeetCode problems cate
 
 ## ⚡ Features
 
-- **470+ Companies Catalog**: Browse questions for Google, Amazon, Meta, Bloomberg, Uber, Citadel, Jane Street, Stripe, Apple, Microsoft, and hundreds more.
+- **680+ Companies Catalog**: Browse questions for Google, Amazon, Meta, Bloomberg, Uber, Citadel, Jane Street, Stripe, Apple, Microsoft, and hundreds more.
 - **5 Recency Windows**:
   - `Last 30 Days` (current interview trends)
   - `Last 3 Months`
@@ -23,9 +23,8 @@ A fast, responsive, modern web application for practicing LeetCode problems cate
 - **Export to CSV**: Export filtered problem sets directly for import into Notion, Obsidian, or Excel.
 - **Dark & Light Mode**: Seamless theme toggle with zero flash on page load.
 - **Realtime Sync Pipeline & Dashboard**:
-  - Automated in-memory tarball streaming parses all 2,350 CSV files across 470 companies in **~2 seconds**.
-  - On-demand sync via `/api/sync` or UI modal button.
-  - Scheduled automated daily sync via GitHub Actions (`.github/workflows/sync.yml`).
+  - Size-bounded in-memory tarball parsing aggregates upstream company datasets.
+  - Clerk-authenticated, administrator-only on-demand sync via `/api/sync`.
 
 ---
 
@@ -35,8 +34,7 @@ A fast, responsive, modern web application for practicing LeetCode problems cate
 ┌────────────────────────────────────────────────────────┐
 │ Upstream GitHub Repository                             │
 │ (liquidslr/leetcode-company-wise-problems)             │
-│ - 470 company directories                              │
-│ - 2,350 CSVs (30 Days, 3 Months, 6 Months, etc.)      │
+│ - Company directories and recency-window CSVs          │
 └──────────────────────────┬─────────────────────────────┘
                            │ Single tar.gz stream (~1.3MB)
                            ▼
@@ -63,7 +61,7 @@ A fast, responsive, modern web application for practicing LeetCode problems cate
 ## 🚀 Getting Started
 
 ### Prerequisites
-- Node.js 18+ or 20+
+- Node.js 20.9+
 - Python 3.8+ (for running the sync script)
 
 ### 1. Install dependencies
@@ -75,9 +73,18 @@ npm install
 ```bash
 npm run sync
 ```
-*This downloads the latest tarball from upstream, parses all 2,350 CSVs, and updates `public/data/` in ~2 seconds.*
+*This downloads size-bounded upstream archives, parses their CSV files, and updates `public/data/`.*
 
 ### 3. Run Development Server
+
+Configure Clerk and the sync administrator allowlist in `.env.local`:
+
+```bash
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=your_publishable_key
+CLERK_SECRET_KEY=your_secret_key
+SYNC_ADMIN_USER_IDS=user_your_clerk_user_id
+```
+
 ```bash
 npm run dev
 ```
@@ -94,12 +101,16 @@ npm run start
 ## 🔄 Realtime Sync Endpoints
 
 - **`GET /api/status`**: Returns current sync metadata (upstream commit SHA, last sync date, company count, problem count).
-- **`POST /api/sync`**: Triggers a live sync run and returns stdout logs and updated stats.
+- **`POST /api/sync`**: Triggers a rate-limited sync for Clerk users listed in `SYNC_ADMIN_USER_IDS`.
 - **`GET /api/companies?q=google`**: Search companies with optional search query.
 - **`GET /api/company/:slug`**: Retrieves the full dataset for a specific company.
 
 ---
 
-## 🤖 Automated Daily Sync (GitHub Actions)
+## 🔐 Security
 
-A GitHub Actions workflow is located at `.github/workflows/sync.yml` that runs automatically every day at `02:00 UTC`. It fetches changes from the upstream dataset, updates `public/data/`, and commits any updates automatically.
+- Clerk is the only authentication provider used by the application.
+- Progress and sync endpoints require a verified Clerk session.
+- Sync authorization fails closed unless `SYNC_ADMIN_USER_IDS` is configured.
+- Security headers and a Clerk-compatible Content Security Policy are applied globally.
+- Run `npm run security:audit` to check dependencies for known vulnerabilities.

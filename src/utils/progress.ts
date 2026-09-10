@@ -1,15 +1,25 @@
 import { UserProfile, SolvedProblemRecord, UserActivityStats } from '@/types';
 
-const GUEST_KEY = 'leetmap_solved_guest';
-const ACTIVE_USER_KEY = 'leetmap_active_user';
+interface ActiveUserReference {
+  id: string;
+}
 
-export function getActiveUser(): UserProfile | null {
+const GUEST_KEY = 'leetmap_solved_guest';
+const GUEST_ACTIVITY_KEY = 'leetmap_activity_guest';
+const ACTIVE_USER_KEY = 'leetmap_active_user';
+const initializedServerUsers = new Set<string>();
+
+function getActiveUser(): ActiveUserReference | null {
   if (typeof window === 'undefined') return null;
   try {
     const raw = localStorage.getItem(ACTIVE_USER_KEY);
     if (!raw) return null;
-    return JSON.parse(raw);
-  } catch (e) {
+    const parsed: unknown = JSON.parse(raw);
+    if (!parsed || typeof parsed !== 'object' || typeof (parsed as ActiveUserReference).id !== 'string') {
+      return null;
+    }
+    return { id: (parsed as ActiveUserReference).id };
+  } catch {
     return null;
   }
 }
@@ -18,9 +28,8 @@ export function setActiveUser(user: UserProfile | null): void {
   if (typeof window === 'undefined') return;
   try {
     if (user) {
-      localStorage.setItem(ACTIVE_USER_KEY, JSON.stringify(user));
-      // Background sync with persistent server storage
-      syncUserProgressWithServer(user.username).catch(() => {});
+      localStorage.setItem(ACTIVE_USER_KEY, JSON.stringify({ id: user.id }));
+      syncUserProgressWithServer(user.id).catch(() => {});
     } else {
       localStorage.removeItem(ACTIVE_USER_KEY);
     }
@@ -31,26 +40,26 @@ export function setActiveUser(user: UserProfile | null): void {
   window.dispatchEvent(new CustomEvent('leetmap-solved-updated', { detail: { count: getSolvedCount() } }));
 }
 
-export function getStorageKey(username?: string): string {
-  if (username) {
-    return `leetmap_solved_${username.toLowerCase()}`;
+export function getStorageKey(userId?: string): string {
+  if (userId) {
+    return `leetmap_solved_${userId.toLowerCase()}`;
   }
   const user = getActiveUser();
-  if (user?.username) {
-    return `leetmap_solved_${user.username.toLowerCase()}`;
+  if (user?.id) {
+    return `leetmap_solved_${user.id.toLowerCase()}`;
   }
   return GUEST_KEY;
 }
 
-export function getActivityKey(username?: string): string {
-  if (username) {
-    return `leetmap_activity_${username.toLowerCase()}`;
+function getActivityKey(userId?: string): string {
+  if (userId) {
+    return `leetmap_activity_${userId.toLowerCase()}`;
   }
   const user = getActiveUser();
-  if (user?.username) {
-    return `leetmap_activity_${user.username.toLowerCase()}`;
+  if (user?.id) {
+    return `leetmap_activity_${user.id.toLowerCase()}`;
   }
-  return 'leetmap_activity_guest';
+  return GUEST_ACTIVITY_KEY;
 }
 
 function getLocalDateString(d: Date = new Date()): string {
@@ -60,22 +69,22 @@ function getLocalDateString(d: Date = new Date()): string {
   return `${year}-${month}-${day}`;
 }
 
-export function getSolvedProblems(username?: string): Set<string> {
+function getSolvedProblems(username?: string): Set<string> {
   if (typeof window === 'undefined') return new Set();
   const key = getStorageKey(username);
   try {
-    let raw = localStorage.getItem(key);
+    const raw = localStorage.getItem(key);
 
     if (!raw) return new Set();
     const parsed = JSON.parse(raw);
     return new Set(Array.isArray(parsed) ? parsed : []);
-  } catch (e) {
-    console.error(`Failed to parse solved problems for key ${key}:`, e);
+  } catch (error) {
+    console.error(`Failed to parse solved problems for key ${key}:`, error);
     return new Set();
   }
 }
 
-export function getSolvedRecords(username?: string): SolvedProblemRecord[] {
+function getSolvedRecords(username?: string): SolvedProblemRecord[] {
   if (typeof window === 'undefined') return [];
   const key = getActivityKey(username);
   try {
@@ -97,13 +106,9 @@ export function getSolvedRecords(username?: string): SolvedProblemRecord[] {
     }
     const parsed = JSON.parse(raw);
     return Array.isArray(parsed) ? parsed : [];
-  } catch (e) {
+  } catch {
     return [];
   }
-}
-
-export function isProblemSolved(slug: string, username?: string): boolean {
-  return getSolvedProblems(username).has(slug);
 }
 
 export function toggleProblemSolved(
@@ -164,9 +169,9 @@ export function toggleProblemSolved(
     );
 
     // Sync to user's server record if signed in
-    const activeUsername = username || getActiveUser()?.username;
-    if (activeUsername) {
-      syncUserProgressWithServer(activeUsername).catch(() => {});
+    const activeUserId = username || getActiveUser()?.id;
+    if (activeUserId) {
+      syncUserProgressWithServer(activeUserId).catch(() => {});
     }
   } catch (e) {
     console.error(`Failed to save solved problems for key ${key}:`, e);
@@ -175,7 +180,7 @@ export function toggleProblemSolved(
   return solved;
 }
 
-export function getSolvedCount(username?: string): number {
+function getSolvedCount(username?: string): number {
   return getSolvedProblems(username).size;
 }
 
@@ -278,11 +283,32 @@ export function getUserActivityStats(username?: string): UserActivityStats {
  */
 export function migrateGuestToUser(targetUsername: string): number {
   if (typeof window === 'undefined' || !targetUsername) return 0;
-  const guestSet = getSolvedProblems(undefined);
+  let parsedGuestSlugs: unknown = [];
+  let parsedGuestRecords: unknown = [];
+  try {
+    const guestRaw = localStorage.getItem(GUEST_KEY);
+    const guestRecordsRaw = localStorage.getItem(GUEST_ACTIVITY_KEY);
+    parsedGuestSlugs = guestRaw ? JSON.parse(guestRaw) : [];
+    parsedGuestRecords = guestRecordsRaw ? JSON.parse(guestRecordsRaw) : [];
+  } catch {
+    return 0;
+  }
+  const guestSet = new Set<string>(
+    Array.isArray(parsedGuestSlugs)
+      ? parsedGuestSlugs.filter((slug): slug is string => typeof slug === 'string')
+      : []
+  );
   if (guestSet.size === 0) return 0;
 
   const userSet = getSolvedProblems(targetUsername);
-  const guestRecords = getSolvedRecords(undefined);
+  const guestRecords = Array.isArray(parsedGuestRecords)
+    ? parsedGuestRecords.filter(
+        (record): record is SolvedProblemRecord =>
+          typeof record === 'object' &&
+          record !== null &&
+          typeof (record as SolvedProblemRecord).slug === 'string'
+      )
+    : [];
   const userRecords = getSolvedRecords(targetUsername);
   const userRecordSlugs = new Set(userRecords.map((r) => r.slug));
 
@@ -317,17 +343,41 @@ export function migrateGuestToUser(targetUsername: string): number {
  * This guarantees that across 100+ different users and devices,
  * each user's streak, solved problems, and timestamps stay 100% persistent and isolated.
  */
-export async function syncUserProgressWithServer(username?: string): Promise<void> {
+async function syncUserProgressWithServer(username?: string): Promise<void> {
   if (typeof window === 'undefined') return;
-  const target = username || getActiveUser()?.username;
+  const target = username || getActiveUser()?.id;
   if (!target) return;
 
   const localKey = getStorageKey(target);
   const actKey = getActivityKey(target);
-  const solvedSlugs = Array.from(getSolvedProblems(target));
-  const activityRecords = getSolvedRecords(target);
 
   try {
+    if (!initializedServerUsers.has(target)) {
+      const remoteResponse = await fetch('/api/user/progress');
+      if (remoteResponse.ok) {
+        const remote = await remoteResponse.json();
+        const localSlugs = getSolvedProblems(target);
+        const remoteSlugs: string[] = Array.isArray(remote.solvedSlugs)
+          ? remote.solvedSlugs.filter((slug: unknown): slug is string => typeof slug === 'string')
+          : [];
+        remoteSlugs.forEach((slug) => localSlugs.add(slug));
+
+        const recordMap = new Map<string, SolvedProblemRecord>();
+        const remoteRecords: SolvedProblemRecord[] = Array.isArray(remote.activityRecords)
+          ? remote.activityRecords
+          : [];
+        [...remoteRecords, ...getSolvedRecords(target)].forEach((record) => {
+          if (record?.slug) recordMap.set(record.slug, record);
+        });
+
+        localStorage.setItem(localKey, JSON.stringify(Array.from(localSlugs)));
+        localStorage.setItem(actKey, JSON.stringify(Array.from(recordMap.values())));
+      }
+      initializedServerUsers.add(target);
+    }
+
+    const solvedSlugs = Array.from(getSolvedProblems(target));
+    const activityRecords = getSolvedRecords(target);
     const res = await fetch('/api/user/progress', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -351,7 +401,7 @@ export async function syncUserProgressWithServer(username?: string): Promise<voi
         );
       }
     }
-  } catch (err) {
+  } catch {
     // Offline mode / network hiccup: local storage continues uninterrupted
   }
 }

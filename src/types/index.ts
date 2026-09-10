@@ -5,13 +5,12 @@ export interface Problem {
   difficulty: 'EASY' | 'MEDIUM' | 'HARD';
   frequency: number;
   acceptance: number;
-  link: string;
   topics: string[];
   isSql?: boolean;
   verifiedSources?: string[];
 }
 
-export interface ProblemWindow {
+interface ProblemWindow {
   name: string;
   key: '30_days' | '3_months' | '6_months' | 'more_than_6_months' | 'all';
   count: number;
@@ -99,7 +98,6 @@ export interface SqlProblem {
   slug: string;
   difficulty: 'EASY' | 'MEDIUM' | 'HARD';
   acceptance: number;
-  link: string;
   topics: string[];
   isSql: boolean;
   maxFrequency: number;
@@ -141,7 +139,6 @@ export interface PatternProblem {
   slug: string;
   difficulty: 'EASY' | 'MEDIUM' | 'HARD';
   acceptance: number;
-  link: string;
   topics: string[];
   maxFrequency: number;
   companiesCount: number;
@@ -176,17 +173,7 @@ export interface UserProfile {
   username: string;
   name: string;
   avatarUrl: string;
-  bio?: string;
-  githubUrl: string;
   email?: string;
-  createdAt?: string;
-}
-
-export interface UserStats {
-  totalSolved: number;
-  easySolved: number;
-  mediumSolved: number;
-  hardSolved: number;
 }
 
 export interface SolvedProblemRecord {
@@ -205,4 +192,3 @@ export interface UserActivityStats {
   dailyHistory: Record<string, number>;
   recentSolved: SolvedProblemRecord[];
 }
-

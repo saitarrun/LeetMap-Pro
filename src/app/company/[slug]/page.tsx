@@ -2,7 +2,7 @@ import React from 'react';
 import fs from 'fs';
 import path from 'path';
 import { notFound } from 'next/navigation';
-import { CompanyDetail, CompanySummary, SyncStatus } from '@/types';
+import { CompanyDetail, SyncStatus } from '@/types';
 import { Header } from '@/components/Header';
 import { CompanyDetailView } from '@/components/CompanyDetailView';
 

@@ -2,6 +2,7 @@
 
 import React, { useState, useMemo, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import {
   ArrowLeft,
   Search,
@@ -12,12 +13,14 @@ import {
   ShieldCheck,
   Database,
   Code2,
-  Clock,
   X,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { CompanyDetail, Problem } from '@/types';
-import { getSolvedProblems, toggleProblemSolved } from '@/utils/progress';
+import { toggleProblemSolved } from '@/utils/progress';
+import { useSolvedProblems } from '@/utils/useSolvedProblems';
+import { getLeetCodeProblemUrl } from '@/utils/urls';
+import { downloadCsv } from '@/utils/csv';
 
 interface SqlCompanyDetailViewProps {
   company: CompanyDetail;
@@ -28,19 +31,12 @@ export const SqlCompanyDetailView: React.FC<SqlCompanyDetailViewProps> = ({ comp
   const [searchQuery, setSearchQuery] = useState('');
   const [difficultyFilter, setDifficultyFilter] = useState<'ALL' | 'EASY' | 'MEDIUM' | 'HARD'>('ALL');
   const [hideSolved, setHideSolved] = useState(false);
-  const [solvedSet, setSolvedSet] = useState<Set<string>>(new Set());
+  const solvedSet = useSolvedProblems();
 
   const [sortBy, setSortBy] = useState<'frequency' | 'difficulty' | 'title' | 'acceptance' | 'id'>('frequency');
   const [sortDir, setSortDir] = useState<'asc' | 'desc'>('desc');
 
   useEffect(() => {
-    setSolvedSet(getSolvedProblems());
-
-    const handleSolvedChange = () => {
-      setSolvedSet(getSolvedProblems());
-    };
-    window.addEventListener('leetmap-solved-updated', handleSolvedChange);
-
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape' && searchQuery) {
         e.preventDefault();
@@ -50,14 +46,12 @@ export const SqlCompanyDetailView: React.FC<SqlCompanyDetailViewProps> = ({ comp
     window.addEventListener('keydown', handleKeyDown);
 
     return () => {
-      window.removeEventListener('leetmap-solved-updated', handleSolvedChange);
       window.removeEventListener('keydown', handleKeyDown);
     };
   }, [searchQuery]);
 
   const handleToggleSolved = (prob: Problem) => {
     const solved = toggleProblemSolved(prob.slug, { title: prob.title, difficulty: prob.difficulty });
-    setSolvedSet(getSolvedProblems());
 
     if (solved) {
       toast.success(`Solved: ${prob.title}`, {
@@ -87,7 +81,7 @@ export const SqlCompanyDetailView: React.FC<SqlCompanyDetailViewProps> = ({ comp
   }, [company.windows]);
 
   const currentWindow = sqlWindows[activeTab] || sqlWindows[sqlWindows.length - 1];
-  const allProblems = currentWindow?.problems || [];
+  const allProblems = useMemo(() => currentWindow?.problems || [], [currentWindow]);
 
   const filteredProblems = useMemo(() => {
     return allProblems.filter((p) => {
@@ -147,7 +141,7 @@ export const SqlCompanyDetailView: React.FC<SqlCompanyDetailViewProps> = ({ comp
     toast.info(`Random SQL problem selected`, {
       description: `${random.id ? `#${random.id} · ` : ''}${random.title}`,
     });
-    window.open(random.link, '_blank');
+    window.open(getLeetCodeProblemUrl(random.slug), '_blank', 'noopener,noreferrer');
   };
 
   const handleExportCSV = () => {
@@ -158,22 +152,15 @@ export const SqlCompanyDetailView: React.FC<SqlCompanyDetailViewProps> = ({ comp
         : '-';
       return [
         p.id || '',
-        `"${p.title.replace(/"/g, '""')}"`,
+        p.title,
         p.difficulty,
         p.frequency,
         accStr,
         solvedSet.has(p.slug) ? 'YES' : 'NO',
-        p.link,
+        getLeetCodeProblemUrl(p.slug),
       ];
     });
-    const csvContent = 'data:text/csv;charset=utf-8,' + [headers.join(','), ...rows.map((r) => r.join(','))].join('\n');
-    const encodedUri = encodeURI(csvContent);
-    const link = document.createElement('a');
-    link.setAttribute('href', encodedUri);
-    link.setAttribute('download', `${company.slug}-sql-questions-${currentWindow.key}.csv`);
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    downloadCsv(`${company.slug}-sql-questions-${currentWindow.key}.csv`, headers, rows);
 
     toast.success('Downloaded SQL CSV', {
       description: `Exported ${sortedProblems.length} SQL questions for ${company.name}`,
@@ -227,7 +214,7 @@ export const SqlCompanyDetailView: React.FC<SqlCompanyDetailViewProps> = ({ comp
         <div className="flex items-center gap-4">
           <div className="w-14 h-14 rounded-2xl bg-white border border-black/5 dark:border-white/10 flex items-center justify-center shrink-0 overflow-hidden shadow-xs">
             {faviconUrl ? (
-              <img src={faviconUrl} alt="" width={36} height={36} className="w-9 h-9 object-contain" />
+              <Image src={faviconUrl} alt="" width={36} height={36} className="w-9 h-9 object-contain" />
             ) : (
               <span className="text-base font-bold text-stone-700">{initials}</span>
             )}
@@ -522,7 +509,7 @@ export const SqlCompanyDetailView: React.FC<SqlCompanyDetailViewProps> = ({ comp
                         <div className="flex flex-col gap-1">
                           <div className="flex items-center gap-2">
                             <a
-                              href={prob.link}
+                              href={getLeetCodeProblemUrl(prob.slug)}
                               target="_blank"
                               rel="noopener noreferrer"
                               className={`inline-flex items-center gap-1.5 font-medium hover:text-[var(--text-main)] hover:underline transition-colors ${

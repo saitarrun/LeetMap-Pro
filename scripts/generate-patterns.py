@@ -454,7 +454,7 @@ def main():
 
     print("🧩 Compiling LeetCode DSA Patterns Catalog...")
 
-    # 1. Collect all unique DSA problems across all 683 companies
+    # 1. Collect all unique DSA problems across the company catalog
     unique_probs = {}
     for fpath in glob.glob(os.path.join(companies_dir, "*.json")):
         with open(fpath, "r", encoding="utf-8") as f:

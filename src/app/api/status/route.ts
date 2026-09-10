@@ -14,8 +14,9 @@ export async function GET() {
       message: 'No sync has been executed yet'
     });
   } catch (error) {
+    console.error('Failed to read sync status:', error);
     return NextResponse.json(
-      { error: 'Failed to read status', details: String(error) },
+      { error: 'Failed to read status' },
       { status: 500 }
     );
   }

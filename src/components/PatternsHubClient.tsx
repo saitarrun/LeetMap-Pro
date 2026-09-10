@@ -13,7 +13,7 @@ import {
 import { PatternSummary, SyncStatus } from '@/types';
 import { Header } from '@/components/Header';
 import { PatternCard } from '@/components/PatternCard';
-import { getSolvedProblems } from '@/utils/progress';
+import { useSolvedProblems } from '@/utils/useSolvedProblems';
 
 interface PatternsHubClientProps {
   patterns: PatternSummary[];
@@ -27,18 +27,11 @@ export const PatternsHubClient: React.FC<PatternsHubClientProps> = ({
   const [searchQuery, setSearchQuery] = useState('');
   const [categoryFilter, setCategoryFilter] = useState<'ALL' | 'Fundamentals' | 'Data Structures' | 'Trees & Graphs' | 'Advanced & DP'>('ALL');
   const [sortBy, setSortBy] = useState<'total' | 'name' | 'hard'>('total');
-  const [solvedSet, setSolvedSet] = useState<Set<string>>(new Set());
+  const solvedSet = useSolvedProblems();
 
   const searchInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    setSolvedSet(getSolvedProblems());
-
-    const handleUpdate = () => {
-      setSolvedSet(getSolvedProblems());
-    };
-    window.addEventListener('leetmap-solved-updated', handleUpdate);
-
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === '/' && document.activeElement !== searchInputRef.current) {
         e.preventDefault();
@@ -52,7 +45,6 @@ export const PatternsHubClient: React.FC<PatternsHubClientProps> = ({
     window.addEventListener('keydown', handleKeyDown);
 
     return () => {
-      window.removeEventListener('leetmap-solved-updated', handleUpdate);
       window.removeEventListener('keydown', handleKeyDown);
     };
   }, [searchQuery]);
@@ -167,7 +159,7 @@ export const PatternsHubClient: React.FC<PatternsHubClientProps> = ({
               ].map((tab) => (
                 <button
                   key={tab.key}
-                  onClick={() => setCategoryFilter(tab.key as any)}
+                  onClick={() => setCategoryFilter(tab.key as typeof categoryFilter)}
                   className={`apple-press flex items-center gap-1.5 px-3 py-1.5 rounded-xl font-medium transition-all cursor-pointer ${
                     categoryFilter === tab.key
                       ? 'bg-[var(--bg-card)] text-[var(--text-main)] shadow-xs font-semibold'
@@ -187,7 +179,7 @@ export const PatternsHubClient: React.FC<PatternsHubClientProps> = ({
                 <span className="text-[var(--text-muted)] font-normal">Sort:</span>
                 <select
                   value={sortBy}
-                  onChange={(e) => setSortBy(e.target.value as any)}
+                  onChange={(e) => setSortBy(e.target.value as typeof sortBy)}
                   className="bg-transparent text-[var(--text-main)] font-medium focus:outline-none cursor-pointer"
                 >
                   <option value="total">Most Questions</option>
