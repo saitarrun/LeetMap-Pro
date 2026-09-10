@@ -173,16 +173,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenSync, syncStatus }) => {
           </Show>
 
           <Show when="signed-in">
-            <div className="flex items-center gap-2">
-              <UserProfileMenu />
-              <UserButton
-                appearance={{
-                  elements: {
-                    avatarBox: 'w-8 h-8 rounded-full border border-black/10 dark:border-white/15',
-                  },
-                }}
-              />
-            </div>
+            <UserProfileMenu />
           </Show>
 
           {/* Theme Toggle */}

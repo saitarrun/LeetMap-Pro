@@ -2,6 +2,7 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import { useAuth } from '@/context/AuthContext';
+import { useClerk } from '@clerk/nextjs';
 import { getUserActivityStats } from '@/utils/progress';
 import { ActivityTracker } from '@/components/ActivityTracker';
 import { UserActivityStats } from '@/types';
@@ -24,6 +25,7 @@ export interface UserProfileMenuProps {
 
 export const UserProfileMenu: React.FC<UserProfileMenuProps> = ({ variant = 'full' }) => {
   const { user, logout, openLoginModal } = useAuth();
+  const clerk = useClerk();
   const [isOpen, setIsOpen] = useState(false);
   const [isManageAccountOpen, setIsManageAccountOpen] = useState(false);
   const [activityStats, setActivityStats] = useState<UserActivityStats | null>(null);
@@ -236,10 +238,24 @@ export const UserProfileMenu: React.FC<UserProfileMenuProps> = ({ variant = 'ful
                 setIsOpen(false);
                 setIsManageAccountOpen(true);
               }}
-              className="apple-press w-full flex items-center gap-3 px-4 py-3 text-xs text-[var(--text-main)] hover:bg-[var(--bg-hover)] transition-colors cursor-pointer text-left"
+              className="apple-press w-full flex items-center gap-3 px-4 py-2.5 text-xs text-[var(--text-main)] hover:bg-[var(--bg-hover)] transition-colors cursor-pointer text-left"
             >
               <Settings className="w-4 h-4 text-[var(--text-muted)] shrink-0" />
-              <span className="font-normal">Manage account</span>
+              <span className="font-normal">Streaks & Problem Solves</span>
+            </button>
+            <button
+              onClick={() => {
+                setIsOpen(false);
+                if (clerk && typeof clerk.openUserProfile === 'function') {
+                  clerk.openUserProfile();
+                } else {
+                  setIsManageAccountOpen(true);
+                }
+              }}
+              className="apple-press w-full flex items-center gap-3 px-4 py-2.5 text-xs text-[var(--text-main)] hover:bg-[var(--bg-hover)] transition-colors cursor-pointer text-left"
+            >
+              <UserCheck className="w-4 h-4 text-[var(--text-muted)] shrink-0" />
+              <span className="font-normal">Account Security & Settings</span>
             </button>
           </div>
 
@@ -252,7 +268,7 @@ export const UserProfileMenu: React.FC<UserProfileMenuProps> = ({ variant = 'ful
                 setIsOpen(false);
                 logout();
               }}
-              className="apple-press w-full flex items-center gap-3 px-4 py-3 text-xs text-[var(--text-main)] hover:bg-[var(--bg-hover)] transition-colors cursor-pointer text-left"
+              className="apple-press w-full flex items-center gap-3 px-4 py-2.5 text-xs text-[var(--text-main)] hover:bg-[var(--bg-hover)] transition-colors cursor-pointer text-left"
             >
               <LogOut className="w-4 h-4 text-[var(--text-muted)] shrink-0" />
               <span className="font-normal">Sign out</span>
