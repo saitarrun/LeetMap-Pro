@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
+import { Toaster } from "sonner";
 import "./globals.css";
 
 export const metadata: Metadata = {
   title: "GrindMap Pro — Company Wise LeetCode Questions",
-  description: "Browse coding interview problems actually asked by 470+ tech companies, ranked by frequency and recency. Free, realtime sync.",
+  description: "Browse coding interview problems actually asked by 680+ tech companies, ranked by frequency and recency. Free, realtime multi-source sync.",
 };
 
 export default function RootLayout({
@@ -30,6 +31,7 @@ export default function RootLayout({
       </head>
       <body className="antialiased selection:bg-blue-500/20 selection:text-blue-500">
         {children}
+        <Toaster position="bottom-right" richColors closeButton />
       </body>
     </html>
   );

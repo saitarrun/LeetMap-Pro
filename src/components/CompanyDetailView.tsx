@@ -15,6 +15,7 @@ import {
   Download,
   ShieldCheck,
 } from 'lucide-react';
+import { toast } from 'sonner';
 import { CompanyDetail, Problem } from '@/types';
 import { getSolvedProblems, toggleProblemSolved } from '@/utils/progress';
 
@@ -45,9 +46,23 @@ export const CompanyDetailView: React.FC<CompanyDetailViewProps> = ({ company })
     return () => window.removeEventListener('grindmap-solved-updated', handleSolvedChange);
   }, []);
 
-  const handleToggleSolved = (slug: string) => {
-    toggleProblemSolved(slug);
+  const handleToggleSolved = (prob: Problem) => {
+    const solved = toggleProblemSolved(prob.slug);
     setSolvedSet(getSolvedProblems());
+
+    if (solved) {
+      toast.success(`Solved: ${prob.title}`, {
+        description: `${prob.id ? `#${prob.id} · ` : ''}${prob.difficulty} · Frequency ${prob.frequency.toFixed(0)}%`,
+        action: {
+          label: 'Undo',
+          onClick: () => handleToggleSolved(prob),
+        },
+      });
+    } else {
+      toast('Unmarked problem', {
+        description: prob.title,
+      });
+    }
   };
 
   const currentWindow = company.windows[activeTab] || company.windows[0];
@@ -120,6 +135,10 @@ export const CompanyDetailView: React.FC<CompanyDetailViewProps> = ({ company })
     const unsolved = sortedProblems.filter((p) => !solvedSet.has(p.slug));
     const pool = unsolved.length > 0 ? unsolved : sortedProblems;
     const random = pool[Math.floor(Math.random() * pool.length)];
+    
+    toast.info(`Random problem selected`, {
+      description: `${random.id ? `#${random.id} · ` : ''}${random.title}`,
+    });
     window.open(random.link, '_blank');
   };
 
@@ -149,6 +168,10 @@ export const CompanyDetailView: React.FC<CompanyDetailViewProps> = ({ company })
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+
+    toast.success('Downloaded CSV', {
+      description: `Exported ${sortedProblems.length} questions for ${company.name}`,
+    });
   };
 
   const companySolvedCount = useMemo(() => {
@@ -479,7 +502,7 @@ export const CompanyDetailView: React.FC<CompanyDetailViewProps> = ({ company })
                       <td className="py-3 px-4 text-center">
                         <button
                           type="button"
-                          onClick={() => handleToggleSolved(prob.slug)}
+                          onClick={() => handleToggleSolved(prob)}
                           className={`apple-press w-4 h-4 rounded-md border flex items-center justify-center transition-all cursor-pointer ${
                             isSolved
                               ? 'bg-emerald-500 border-emerald-500 text-white'

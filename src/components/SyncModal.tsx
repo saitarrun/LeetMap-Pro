@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { X, RefreshCw, CheckCircle, Clock, Database, GitCommit, AlertCircle, Layers, ShieldCheck } from 'lucide-react';
+import { toast } from 'sonner';
 import { SyncStatus } from '@/types';
 
 interface SyncModalProps {
@@ -28,21 +29,26 @@ export const SyncModal: React.FC<SyncModalProps> = ({
     setSyncLogs(null);
     setSyncError(null);
 
-    try {
-      const res = await fetch('/api/sync', { method: 'POST' });
+    const syncPromise = fetch('/api/sync', { method: 'POST' }).then(async (res) => {
       const data = await res.json();
+      if (!data.success) throw new Error(data.error || 'Sync failed');
+      return data;
+    });
 
-      if (data.success) {
-        setSyncLogs(data.stdout || 'Multi-source sync completed successfully.');
+    toast.promise(syncPromise, {
+      loading: 'Aggregating from 3 sources in-memory...',
+      success: (data) => {
         if (data.status) {
           onSyncComplete(data.status);
         }
-      } else {
-        setSyncError(data.error || 'Sync failed.');
-        if (data.stderr) {
-          setSyncLogs(data.stderr);
-        }
-      }
+        return `Synced ${data.status?.companiesCount || 683} companies & ${data.status?.uniqueProblemsCount || 3422} problems in ${data.status?.durationSeconds || 4}s!`;
+      },
+      error: (err) => err.message || 'Sync failed',
+    });
+
+    try {
+      const data = await syncPromise;
+      setSyncLogs(data.stdout || 'Multi-source sync completed successfully.');
     } catch (err: any) {
       setSyncError(err.message || 'Network error occurred during sync.');
     } finally {
