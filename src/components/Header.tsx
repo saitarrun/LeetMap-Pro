@@ -16,21 +16,45 @@ export const Header: React.FC<HeaderProps> = ({ onOpenSync, syncStatus }) => {
   const [theme, setTheme] = useState<'light' | 'dark'>('dark');
 
   useEffect(() => {
+    const currentTheme = document.documentElement.getAttribute('data-theme') as 'light' | 'dark' | null;
     const saved = localStorage.getItem('theme') as 'light' | 'dark' | null;
-    const initial = saved || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    const initial = saved || currentTheme || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
     setTheme(initial);
-    document.documentElement.setAttribute('data-theme', initial);
+    if (document.documentElement.getAttribute('data-theme') !== initial) {
+      document.documentElement.setAttribute('data-theme', initial);
+    }
   }, []);
 
   const toggleTheme = () => {
     const next = theme === 'dark' ? 'light' : 'dark';
+
+    // Temporarily suppress transitions across the entire DOM during the theme swap
+    // to prevent muddy color blending, dark-on-dark contrast inversion, and flashing effects
+    const css = document.createElement('style');
+    css.appendChild(
+      document.createTextNode(
+        '*, *::before, *::after { -webkit-transition: none !important; -moz-transition: none !important; -o-transition: none !important; -ms-transition: none !important; transition: none !important; }'
+      )
+    );
+    document.head.appendChild(css);
+
     setTheme(next);
     localStorage.setItem('theme', next);
     document.documentElement.setAttribute('data-theme', next);
+
+    // Force browser reflow to apply new CSS variables instantaneously
+    window.getComputedStyle(document.body);
+
+    // Re-enable interactions on next paint cycle
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        document.head.removeChild(css);
+      });
+    });
   };
 
   return (
-    <header className="sticky top-0 z-40 border-b border-[var(--border)] bg-[var(--bg-page)]/80 backdrop-blur-2xl transition-colors">
+    <header className="sticky top-0 z-40 border-b border-[var(--border)] bg-[var(--bg-page)]/80 backdrop-blur-2xl">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between gap-3">
         {/* Brand & Track Switcher */}
         <div className="flex items-center gap-2.5 sm:gap-5">

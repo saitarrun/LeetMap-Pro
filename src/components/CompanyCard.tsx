@@ -27,7 +27,7 @@ export const CompanyCard: React.FC<CompanyCardProps> = ({ company, solvedCount =
   return (
     <Link
       href={`/company/${company.slug}`}
-      className="apple-card group relative flex items-center justify-between p-4 rounded-2xl border border-[var(--border)] bg-[var(--bg-card)] hover:border-[var(--text-muted)]/20 transition-all select-none"
+      className="apple-card group relative flex items-center justify-between p-4 rounded-2xl border border-[var(--border)] bg-[var(--bg-card)] hover:border-[var(--text-muted)]/20 select-none"
     >
       <div className="flex items-center gap-3.5 min-w-0">
         {/* Apple Squircle Logo Container */}
