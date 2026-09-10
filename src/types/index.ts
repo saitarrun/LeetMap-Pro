@@ -170,3 +170,22 @@ export interface PatternDetail extends PatternSummary {
   clues: string[];
   problems: PatternProblem[];
 }
+
+export interface UserProfile {
+  id: string;
+  username: string;
+  name: string;
+  avatarUrl: string;
+  bio?: string;
+  githubUrl: string;
+  email?: string;
+  createdAt?: string;
+}
+
+export interface UserStats {
+  totalSolved: number;
+  easySolved: number;
+  mediumSolved: number;
+  hardSolved: number;
+}
+

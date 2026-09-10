@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { RefreshCw, Sun, Moon, Database, GitBranch, Building2 } from 'lucide-react';
 import { SyncStatus } from '@/types';
+import { UserProfileMenu } from '@/components/UserProfileMenu';
 
 interface HeaderProps {
   onOpenSync?: () => void;
@@ -126,6 +127,9 @@ export const Header: React.FC<HeaderProps> = ({ onOpenSync, syncStatus }) => {
               {syncStatus?.companiesCount ? `${syncStatus.companiesCount} cos` : '683 cos'}
             </span>
           </button>
+
+          {/* User Profile / GitHub Sign In */}
+          <UserProfileMenu />
 
           {/* User Github Profile */}
           <a
