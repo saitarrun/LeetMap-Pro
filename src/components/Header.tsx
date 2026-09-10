@@ -160,9 +160,9 @@ export const Header: React.FC<HeaderProps> = ({ onOpenSync, syncStatus }) => {
             </div>
           </Show>
 
-          <Show when="signed-in">
-            <UserProfileMenu />
-          </Show>
+          <div className="inline-flex items-center">
+              <UserProfileMenu />
+            </div>
 
           {/* Theme Toggle */}
           <button
