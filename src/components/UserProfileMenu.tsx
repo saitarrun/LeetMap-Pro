@@ -209,7 +209,7 @@ export const UserProfileMenu: React.FC<UserProfileMenuProps> = ({ variant = 'ful
 
       {/* Popover Dropdown matching LeetMap / Clerk modal */}
       {isOpen && (
-        <div className="apple-pop-in absolute right-0 top-full mt-2 w-72 rounded-2xl border border-[var(--border)] bg-[var(--bg-card)] shadow-2xl z-50 overflow-hidden text-left">
+        <div className="apple-dropdown-in absolute right-0 top-full mt-2 w-72 rounded-2xl border border-[var(--border)] bg-[var(--bg-card)] shadow-2xl z-50 overflow-hidden text-left">
           {/* Top Section: Avatar + Name + Username */}
           <div className="p-4 flex items-center gap-3">
             <div className="w-10 h-10 rounded-full overflow-hidden border border-[var(--border)] shrink-0 bg-[var(--bg-subtle)]">
