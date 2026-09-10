@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useState, useMemo, useEffect, useRef } from 'react';
-import Link from 'next/link';
 import {
   Search,
   Database,
@@ -11,8 +10,6 @@ import {
   ArrowUpDown,
   LayoutGrid,
   ListFilter,
-  ArrowLeft,
-  Code2,
 } from 'lucide-react';
 import { SqlCompanySummary, SqlCatalog, SyncStatus } from '@/types';
 import { Header } from '@/components/Header';
@@ -108,15 +105,6 @@ export const SqlHubClient: React.FC<SqlHubClientProps> = ({
       <Header syncStatus={syncStatus} />
 
       <main className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 py-8 w-full space-y-8">
-        {/* Breadcrumb */}
-        <nav className="flex items-center gap-2 text-xs text-[var(--text-muted)] font-normal flex-wrap">
-          <Link href="/" className="apple-press hover:text-[var(--text-main)] flex items-center gap-1.5 transition-colors">
-            <ArrowLeft className="w-3.5 h-3.5" />
-            <span>DSA Track</span>
-          </Link>
-          <span>/</span>
-          <span className="text-[var(--text-main)] font-medium">SQL & Database Track</span>
-        </nav>
 
         {/* Hero Section */}
         <section className="text-center max-w-2xl mx-auto space-y-3.5">
@@ -144,14 +132,6 @@ export const SqlHubClient: React.FC<SqlHubClientProps> = ({
               <Database className="w-3.5 h-3.5 text-[var(--text-muted)]" />
               <span><strong>{catalog.totalSqlProblems}</strong> unique SQL queries</span>
             </div>
-
-            <Link
-              href="/"
-              className="apple-press flex items-center gap-2 text-xs font-medium text-[var(--text-main)] bg-[var(--bg-card)] border border-[var(--border)] px-3.5 py-1.5 rounded-full shadow-xs hover:border-[var(--text-muted)]/30 transition-all"
-            >
-              <Code2 className="w-3.5 h-3.5 text-[var(--text-muted)]" />
-              <span>DSA Track <strong>(683 Cos)</strong> →</span>
-            </Link>
 
             <div className="flex items-center gap-2 text-xs font-medium text-[var(--text-main)] bg-[var(--bg-card)] border border-[var(--border)] px-3.5 py-1.5 rounded-full shadow-xs">
               <Trophy className="w-3.5 h-3.5 text-amber-500" />
@@ -230,26 +210,6 @@ export const SqlHubClient: React.FC<SqlHubClientProps> = ({
                       {tab.label}
                     </button>
                   ))}
-
-                  <span className="w-px h-4 bg-[var(--border)] mx-0.5" />
-
-                  <button
-                    onClick={() => setActiveView('problems')}
-                    className="apple-press flex items-center gap-1.5 px-3 py-1.5 rounded-xl font-medium transition-all text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--bg-hover)] cursor-pointer"
-                  >
-                    <Database className="w-3.5 h-3.5 opacity-70" />
-                    <span>All Problems</span>
-                    <span className="font-mono text-[11px] text-[var(--text-light)]">{catalog.totalSqlProblems}</span>
-                  </button>
-
-                  <Link
-                    href="/"
-                    className="apple-press flex items-center gap-1.5 px-3 py-1.5 rounded-xl font-medium transition-all text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--bg-hover)]"
-                  >
-                    <Code2 className="w-3.5 h-3.5 opacity-70" />
-                    <span>DSA</span>
-                    <span className="font-mono text-[11px] text-[var(--text-light)]">683</span>
-                  </Link>
                 </div>
 
                 {/* Sort Dropdown */}

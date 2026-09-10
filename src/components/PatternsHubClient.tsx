@@ -1,17 +1,13 @@
 'use client';
 
 import React, { useState, useMemo, useEffect, useRef } from 'react';
-import Link from 'next/link';
 import {
   Search,
   Sparkles,
   GitBranch,
   Trophy,
-  ArrowLeft,
   ArrowUpDown,
   BookOpen,
-  Building2,
-  Database,
 } from 'lucide-react';
 import { PatternSummary, SyncStatus } from '@/types';
 import { Header } from '@/components/Header';
@@ -88,15 +84,6 @@ export const PatternsHubClient: React.FC<PatternsHubClientProps> = ({
       <Header syncStatus={syncStatus} />
 
       <main className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 py-8 w-full space-y-8">
-        {/* Breadcrumb */}
-        <nav className="flex items-center gap-2 text-xs text-[var(--text-muted)] font-normal">
-          <Link href="/" className="apple-press hover:text-[var(--text-main)] flex items-center gap-1.5 transition-colors">
-            <ArrowLeft className="w-3.5 h-3.5" />
-            <span>All Companies</span>
-          </Link>
-          <span>/</span>
-          <span className="text-[var(--text-main)] font-medium">Algorithmic Patterns</span>
-        </nav>
 
         {/* Hero Section */}
         <section className="text-center max-w-2xl mx-auto space-y-3.5">
@@ -152,17 +139,6 @@ export const PatternsHubClient: React.FC<PatternsHubClientProps> = ({
           {/* Category Tabs */}
           <div className="flex flex-wrap items-center justify-between gap-3 text-xs">
             <div className="flex flex-wrap items-center p-1 rounded-2xl bg-[var(--bg-subtle)] border border-[var(--border)] gap-1">
-              <Link
-                href="/"
-                className="apple-press flex items-center gap-1.5 px-3 py-1.5 rounded-xl font-medium transition-all text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--bg-hover)]"
-              >
-                <Building2 className="w-3.5 h-3.5 opacity-70" />
-                <span>Companies</span>
-                <span className="font-mono text-[11px] text-[var(--text-light)]">683</span>
-              </Link>
-
-              <span className="w-px h-4 bg-[var(--border)] mx-0.5" />
-
               {[
                 { key: 'ALL', label: `All Patterns (${patterns.length})` },
                 { key: 'Fundamentals', label: 'Fundamentals' },
@@ -183,17 +159,6 @@ export const PatternsHubClient: React.FC<PatternsHubClientProps> = ({
                   <span>{tab.label}</span>
                 </button>
               ))}
-
-              <span className="w-px h-4 bg-[var(--border)] mx-0.5" />
-
-              <Link
-                href="/sql"
-                className="apple-press flex items-center gap-1.5 px-3 py-1.5 rounded-xl font-medium transition-all text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--bg-hover)]"
-              >
-                <Database className="w-3.5 h-3.5 opacity-70" />
-                <span>SQL</span>
-                <span className="font-mono text-[11px] text-[var(--text-light)]">73</span>
-              </Link>
             </div>
 
             {/* Sort Dropdown */}

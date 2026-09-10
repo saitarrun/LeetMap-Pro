@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { RefreshCw, Sun, Moon, Database, GitBranch, Code2 } from 'lucide-react';
+import { RefreshCw, Sun, Moon, Database, GitBranch, Building2 } from 'lucide-react';
 import { SyncStatus } from '@/types';
 
 interface HeaderProps {
@@ -13,8 +13,6 @@ interface HeaderProps {
 
 export const Header: React.FC<HeaderProps> = ({ onOpenSync, syncStatus }) => {
   const pathname = usePathname() || '/';
-  const isSqlTrack = pathname.startsWith('/sql');
-  const isDsaTrack = !isSqlTrack;
   const [theme, setTheme] = useState<'light' | 'dark'>('dark');
 
   useEffect(() => {
@@ -47,76 +45,47 @@ export const Header: React.FC<HeaderProps> = ({ onOpenSync, syncStatus }) => {
             <span className="font-bold text-base tracking-tight">grindmap</span>
           </Link>
 
-          {/* Apple Segmented Track Switcher (DSA vs SQL) */}
-          <div className="flex items-center p-0.5 rounded-2xl bg-[var(--bg-subtle)] border border-[var(--border)] text-xs font-semibold shadow-2xs">
+          {/* Apple Primary Segmented Navigation */}
+          <nav className="flex items-center p-1 rounded-2xl bg-[var(--bg-subtle)] border border-[var(--border)] text-xs font-semibold shadow-2xs">
             <Link
               href="/"
               className={`apple-press flex items-center gap-1.5 px-3 py-1.5 rounded-xl transition-all ${
-                isDsaTrack
+                pathname === '/' || pathname.startsWith('/company')
                   ? 'bg-[var(--bg-card)] text-[var(--text-main)] shadow-xs font-bold'
                   : 'text-[var(--text-muted)] hover:text-[var(--text-main)]'
               }`}
             >
-              <Code2 className="w-3.5 h-3.5 opacity-80" />
-              <span>DSA</span>
-              <span className="hidden md:inline font-normal text-[11px] text-[var(--text-muted)]">Coding</span>
+              <Building2 className="w-3.5 h-3.5 opacity-80" />
+              <span>Companies</span>
+              <span className="font-mono text-[10px] text-[var(--text-light)]">683</span>
+            </Link>
+
+            <Link
+              href="/patterns"
+              className={`apple-press flex items-center gap-1.5 px-3 py-1.5 rounded-xl transition-all ${
+                pathname.startsWith('/patterns')
+                  ? 'bg-[var(--bg-card)] text-[var(--text-main)] shadow-xs font-bold'
+                  : 'text-[var(--text-muted)] hover:text-[var(--text-main)]'
+              }`}
+            >
+              <GitBranch className="w-3.5 h-3.5 opacity-80" />
+              <span>Patterns</span>
+              <span className="font-mono text-[10px] text-[var(--text-light)]">22</span>
             </Link>
 
             <Link
               href="/sql"
               className={`apple-press flex items-center gap-1.5 px-3 py-1.5 rounded-xl transition-all ${
-                isSqlTrack
+                pathname.startsWith('/sql')
                   ? 'bg-[var(--bg-card)] text-[var(--text-main)] shadow-xs font-bold'
                   : 'text-[var(--text-muted)] hover:text-[var(--text-main)]'
               }`}
             >
               <Database className="w-3.5 h-3.5 opacity-80" />
               <span>SQL</span>
-              <span className="hidden md:inline font-normal text-[11px] text-[var(--text-muted)]">& DB</span>
+              <span className="font-mono text-[10px] text-[var(--text-light)]">73</span>
             </Link>
-          </div>
-
-          {/* Sub-nav for DSA track */}
-          {isDsaTrack && (
-            <nav className="hidden md:flex items-center gap-1 text-xs font-medium">
-              <Link
-                href="/"
-                className={`apple-press px-2.5 py-1 rounded-xl transition-colors ${
-                  pathname === '/' || pathname.startsWith('/company')
-                    ? 'text-[var(--text-main)] bg-[var(--bg-subtle)] font-semibold'
-                    : 'text-[var(--text-muted)] hover:text-[var(--text-main)]'
-                }`}
-              >
-                Companies <span className="font-mono text-[11px] text-[var(--text-light)]">683</span>
-              </Link>
-              <Link
-                href="/patterns"
-                className={`apple-press flex items-center gap-1.5 px-2.5 py-1 rounded-xl transition-colors ${
-                  pathname.startsWith('/patterns')
-                    ? 'text-[var(--text-main)] bg-[var(--bg-subtle)] font-semibold'
-                    : 'text-[var(--text-muted)] hover:text-[var(--text-main)]'
-                }`}
-              >
-                <GitBranch className="w-3.5 h-3.5 opacity-70" />
-                <span>Patterns</span>
-                <span className="font-mono text-[11px] text-[var(--text-light)]">22</span>
-              </Link>
-            </nav>
-          )}
-
-          {/* Sub-nav for SQL track */}
-          {isSqlTrack && (
-            <nav className="hidden md:flex items-center gap-1 text-xs font-medium">
-              <Link
-                href="/sql"
-                className="apple-press flex items-center gap-1.5 px-2.5 py-1 rounded-xl text-[var(--text-main)] bg-[var(--bg-subtle)] font-semibold transition-colors"
-              >
-                <Database className="w-3.5 h-3.5 opacity-70" />
-                <span>Companies</span>
-                <span className="font-mono text-[11px] text-[var(--text-light)]">73</span>
-              </Link>
-            </nav>
-          )}
+          </nav>
         </div>
 
         {/* Right Actions */}

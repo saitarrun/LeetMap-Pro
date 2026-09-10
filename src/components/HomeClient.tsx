@@ -1,8 +1,7 @@
 'use client';
 
 import React, { useState, useMemo, useEffect, useRef } from 'react';
-import Link from 'next/link';
-import { Search, Sparkles, Trophy, Database, Building2, GitBranch, Code2 } from 'lucide-react';
+import { Search, Sparkles, Trophy, Database, Building2, Code2 } from 'lucide-react';
 import { CompanySummary, SyncStatus } from '@/types';
 import { Header } from '@/components/Header';
 import { SyncModal } from '@/components/SyncModal';
@@ -127,22 +126,6 @@ export const HomeClient: React.FC<HomeClientProps> = ({
               </span>
             </div>
 
-            <Link
-              href="/patterns"
-              className="apple-press flex items-center gap-2 text-xs font-medium text-[var(--text-main)] bg-[var(--bg-card)] border border-[var(--border)] px-3.5 py-1.5 rounded-full shadow-xs hover:border-[var(--text-muted)]/30 transition-all"
-            >
-              <GitBranch className="w-3.5 h-3.5 text-[var(--text-muted)]" />
-              <span><strong>22</strong> DSA patterns</span>
-            </Link>
-
-            <Link
-              href="/sql"
-              className="apple-press flex items-center gap-2 text-xs font-medium text-[var(--text-main)] bg-[var(--bg-card)] border border-[var(--border)] px-3.5 py-1.5 rounded-full shadow-xs hover:border-[var(--text-muted)]/30 transition-all"
-            >
-              <Database className="w-3.5 h-3.5 text-[var(--text-muted)]" />
-              <span>SQL Track <strong>(73 Cos)</strong> →</span>
-            </Link>
-
             <div className="flex items-center gap-2 text-xs font-medium text-[var(--text-main)] bg-[var(--bg-card)] border border-[var(--border)] px-3.5 py-1.5 rounded-full shadow-xs">
               <Trophy className="w-3.5 h-3.5 text-amber-500" />
               <span><strong>{userSolvedCount}</strong> solved</span>
@@ -188,26 +171,6 @@ export const HomeClient: React.FC<HomeClientProps> = ({
                   {tab.label}
                 </button>
               ))}
-
-              <span className="w-px h-4 bg-[var(--border)] mx-0.5" />
-
-              <Link
-                href="/patterns"
-                className="apple-press flex items-center gap-1.5 px-3 py-1.5 rounded-xl font-medium transition-all text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--bg-hover)]"
-              >
-                <GitBranch className="w-3.5 h-3.5 opacity-70" />
-                <span>Patterns</span>
-                <span className="font-mono text-[11px] text-[var(--text-light)]">22</span>
-              </Link>
-
-              <Link
-                href="/sql"
-                className="apple-press flex items-center gap-1.5 px-3 py-1.5 rounded-xl font-medium transition-all text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--bg-hover)]"
-              >
-                <Database className="w-3.5 h-3.5 opacity-70" />
-                <span>SQL</span>
-                <span className="font-mono text-[11px] text-[var(--text-light)]">73</span>
-              </Link>
             </div>
 
             <div className="flex items-center gap-2">
