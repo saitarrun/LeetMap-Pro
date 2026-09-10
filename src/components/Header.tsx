@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { RefreshCw, Sun, Moon, Database } from 'lucide-react';
+import { RefreshCw, Sun, Moon, Database, GitBranch } from 'lucide-react';
 import { SyncStatus } from '@/types';
 
 interface HeaderProps {
@@ -52,6 +52,14 @@ export const Header: React.FC<HeaderProps> = ({ onOpenSync, syncStatus }) => {
               className="apple-press px-2.5 py-1 rounded-xl text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--bg-hover)] transition-colors"
             >
               Companies
+            </Link>
+            <Link
+              href="/patterns"
+              className="apple-press flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-blue-500/10 text-blue-600 dark:text-blue-400 hover:bg-blue-500/15 border border-blue-500/20 transition-all"
+            >
+              <GitBranch className="w-3.5 h-3.5" />
+              <span>Patterns</span>
+              <span className="text-[10px] font-mono px-1 py-0.2 rounded bg-blue-500/20">22</span>
             </Link>
             <Link
               href="/sql"

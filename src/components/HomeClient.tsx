@@ -2,7 +2,7 @@
 
 import React, { useState, useMemo, useEffect, useRef } from 'react';
 import Link from 'next/link';
-import { Search, Sparkles, Trophy, Database, Building2 } from 'lucide-react';
+import { Search, Sparkles, Trophy, Database, Building2, GitBranch } from 'lucide-react';
 import { CompanySummary, SyncStatus } from '@/types';
 import { Header } from '@/components/Header';
 import { SyncModal } from '@/components/SyncModal';
@@ -126,6 +126,14 @@ export const HomeClient: React.FC<HomeClientProps> = ({
                 <strong>{syncStatus?.uniqueProblemsCount ? syncStatus.uniqueProblemsCount.toLocaleString() : '3,422'}</strong> problems
               </span>
             </div>
+
+            <Link
+              href="/patterns"
+              className="apple-press flex items-center gap-2 text-xs font-medium text-blue-600 dark:text-blue-400 bg-blue-500/10 border border-blue-500/20 px-3.5 py-1.5 rounded-full shadow-xs hover:bg-blue-500/15 transition-all"
+            >
+              <GitBranch className="w-3.5 h-3.5" />
+              <span><strong>22</strong> DSA patterns</span>
+            </Link>
 
             <Link
               href="/sql"

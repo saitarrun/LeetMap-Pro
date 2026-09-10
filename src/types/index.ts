@@ -131,5 +131,42 @@ export interface SyncStatus {
   companiesCount: number;
   uniqueProblemsCount: number;
   sqlProblemsCount?: number;
+  patternsCount?: number;
   durationSeconds: number;
+}
+
+export interface PatternProblem {
+  id?: string;
+  title: string;
+  slug: string;
+  difficulty: 'EASY' | 'MEDIUM' | 'HARD';
+  acceptance: number;
+  link: string;
+  topics: string[];
+  maxFrequency: number;
+  companiesCount: number;
+  companies: Array<{
+    name: string;
+    slug: string;
+    frequency: number;
+  }>;
+}
+
+export interface PatternSummary {
+  slug: string;
+  name: string;
+  category: 'Fundamentals' | 'Data Structures' | 'Trees & Graphs' | 'Advanced & DP';
+  icon: string;
+  tagline: string;
+  total: number;
+  easy: number;
+  medium: number;
+  hard: number;
+  topCompanies: string[];
+}
+
+export interface PatternDetail extends PatternSummary {
+  strategy: string;
+  clues: string[];
+  problems: PatternProblem[];
 }

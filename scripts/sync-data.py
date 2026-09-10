@@ -522,6 +522,15 @@ def main():
     with open(sql_path, "w", encoding="utf-8") as f:
         json.dump(sql_dataset, f, separators=(',', ':'))
 
+    # Compile patterns catalog
+    try:
+        patterns_script = os.path.join(os.path.dirname(__file__), "generate-patterns.py")
+        if os.path.exists(patterns_script):
+            import subprocess
+            subprocess.run(["python3", patterns_script], check=True)
+    except Exception as e:
+        print(f"⚠️ Failed to auto-compile patterns: {e}")
+
     duration = round(time.time() - start_time, 2)
 
     status_obj = {
