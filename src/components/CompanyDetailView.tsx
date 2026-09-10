@@ -16,6 +16,7 @@ import {
   ShieldCheck,
   Database,
   Code2,
+  X,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { CompanyDetail, Problem } from '@/types';
@@ -286,58 +287,74 @@ export const CompanyDetailView: React.FC<CompanyDetailViewProps> = ({ company })
         </div>
       </div>
 
-      {/* Recency Tabs */}
-      <div className="border-b border-[var(--border)] flex gap-1.5 overflow-x-auto pb-px scrollbar-none">
-        {company.windows.map((win, idx) => (
-          <button
-            key={win.key}
-            onClick={() => {
-              setActiveTab(idx);
-              setSelectedTopic(null);
-            }}
-            className={`apple-press flex items-center gap-2 px-4 py-2.5 text-xs font-medium border-b-2 whitespace-nowrap transition-all cursor-pointer ${
-              activeTab === idx
-                ? 'border-[var(--text-main)] text-[var(--text-main)] font-semibold'
-                : 'border-transparent text-[var(--text-muted)] hover:text-[var(--text-main)]'
-            }`}
-          >
-            <span>{win.name}</span>
-            <span
-              className={`px-1.5 py-0.5 rounded-full text-[10px] ${
+      {/* Recency Tabs: Apple Segmented Capsule */}
+      <div className="flex items-center overflow-x-auto pb-1 scrollbar-none">
+        <div className="inline-flex p-1 rounded-2xl bg-[var(--bg-subtle)] border border-[var(--border)] gap-1 shadow-2xs">
+          {company.windows.map((win, idx) => (
+            <button
+              key={win.key}
+              onClick={() => {
+                setActiveTab(idx);
+                setSelectedTopic(null);
+              }}
+              className={`apple-press flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-medium whitespace-nowrap transition-all cursor-pointer ${
                 activeTab === idx
-                  ? 'bg-[var(--bg-subtle)] text-[var(--text-main)] font-semibold'
-                  : 'bg-[var(--border-subtle)] text-[var(--text-muted)]'
+                  ? 'bg-[var(--bg-card)] text-[var(--text-main)] shadow-xs font-semibold'
+                  : 'text-[var(--text-muted)] hover:text-[var(--text-main)]'
               }`}
             >
-              {win.count}
-            </span>
-          </button>
-        ))}
+              <span>{win.name}</span>
+              <span
+                className={`px-1.5 py-0.2 rounded-full text-[10px] font-mono ${
+                  activeTab === idx
+                    ? 'bg-[var(--bg-subtle)] text-[var(--text-main)] font-semibold'
+                    : 'text-[var(--text-light)]'
+                }`}
+              >
+                {win.count}
+              </span>
+            </button>
+          ))}
+        </div>
       </div>
 
       {/* Controls Bar */}
       <div className="flex flex-col lg:flex-row gap-3 items-stretch lg:items-center justify-between">
-        <div className="relative flex-1 max-w-md">
-          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--text-light)]" />
+        <div className="relative flex-1 max-w-md group">
+          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--text-light)] group-focus-within:text-[var(--text-main)] transition-colors" />
           <input
             type="search"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Filter problems (#1, Two Sum, dynamic programming...)"
-            className="w-full pl-10 pr-4 py-2.5 rounded-2xl text-xs bg-[var(--bg-card)] border border-[var(--border)] text-[var(--text-main)] placeholder:text-[var(--text-light)] focus:outline-none focus:border-[var(--text-muted)]/40 focus:ring-4 focus:ring-[var(--border)]/40 transition-all"
+            className="w-full pl-10 pr-9 py-2.5 rounded-2xl text-xs bg-[var(--bg-card)] border border-[var(--border)] text-[var(--text-main)] placeholder:text-[var(--text-light)] shadow-xs focus:outline-none focus:border-[var(--text-muted)]/40 focus:ring-4 focus:ring-[var(--border)]/40 transition-all"
           />
+          {searchQuery ? (
+            <button
+              type="button"
+              onClick={() => setSearchQuery('')}
+              className="apple-press absolute right-3 top-1/2 -translate-y-1/2 p-0.5 rounded-full text-[var(--text-light)] hover:text-[var(--text-main)] transition-colors cursor-pointer"
+              title="Clear search"
+            >
+              <X className="w-3.5 h-3.5" />
+            </button>
+          ) : (
+            <kbd className="absolute right-3 top-1/2 -translate-y-1/2 px-1.5 py-0.5 rounded text-[10px] font-mono text-[var(--text-light)] border border-[var(--border)] bg-[var(--bg-subtle)]">
+              /
+            </kbd>
+          )}
         </div>
 
         <div className="flex flex-wrap items-center gap-2">
           {/* Difficulty Filter */}
-          <div className="flex items-center p-1 rounded-2xl bg-[var(--bg-card)] border border-[var(--border)] text-xs">
+          <div className="inline-flex items-center p-1 rounded-2xl bg-[var(--bg-subtle)] border border-[var(--border)] text-xs font-medium shadow-2xs">
             {(['ALL', 'EASY', 'MEDIUM', 'HARD'] as const).map((diff) => (
               <button
                 key={diff}
                 onClick={() => setDifficultyFilter(diff)}
-                className={`apple-press px-3 py-1 rounded-xl font-medium transition-all cursor-pointer ${
+                className={`apple-press px-3 py-1 rounded-xl transition-all cursor-pointer ${
                   difficultyFilter === diff
-                    ? 'bg-[var(--bg-subtle)] text-[var(--text-main)] shadow-xs font-semibold'
+                    ? 'bg-[var(--bg-card)] text-[var(--text-main)] shadow-xs font-semibold'
                     : 'text-[var(--text-muted)] hover:text-[var(--text-main)]'
                 }`}
               >
@@ -348,7 +365,7 @@ export const CompanyDetailView: React.FC<CompanyDetailViewProps> = ({ company })
 
           {/* Type Filter (Algorithms vs SQL) */}
           {Boolean(company.sqlTotal && company.sqlTotal > 0) && (
-            <div className="flex items-center p-1 rounded-2xl bg-[var(--bg-card)] border border-[var(--border)] text-xs">
+            <div className="inline-flex items-center p-1 rounded-2xl bg-[var(--bg-subtle)] border border-[var(--border)] text-xs font-medium shadow-2xs">
               {[
                 { key: 'ALL', label: 'All' },
                 { key: 'ALGO', label: 'DSA' },
@@ -357,9 +374,9 @@ export const CompanyDetailView: React.FC<CompanyDetailViewProps> = ({ company })
                 <button
                   key={t.key}
                   onClick={() => setTypeFilter(t.key as any)}
-                  className={`apple-press px-2.5 py-1 rounded-xl font-medium transition-all cursor-pointer ${
+                  className={`apple-press px-2.5 py-1 rounded-xl transition-all cursor-pointer ${
                     typeFilter === t.key
-                      ? 'bg-[var(--bg-subtle)] text-[var(--text-main)] shadow-xs font-semibold'
+                      ? 'bg-[var(--bg-card)] text-[var(--text-main)] shadow-xs font-semibold'
                       : 'text-[var(--text-muted)] hover:text-[var(--text-main)]'
                   }`}
                 >
@@ -372,45 +389,46 @@ export const CompanyDetailView: React.FC<CompanyDetailViewProps> = ({ company })
           {/* Random */}
           <button
             onClick={handleRandomProblem}
-            className="apple-press flex items-center gap-1.5 px-3.5 py-1.5 rounded-2xl border border-[var(--border)] bg-[var(--bg-card)] hover:bg-[var(--bg-hover)] text-xs font-medium text-[var(--text-main)] shadow-2xs cursor-pointer"
+            className="apple-press flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl border border-[var(--border)] bg-[var(--bg-card)] hover:bg-[var(--bg-hover)] text-xs font-medium text-[var(--text-main)] shadow-2xs cursor-pointer"
             title="Open a random problem in LeetCode"
           >
             <Shuffle className="w-3.5 h-3.5 text-[var(--text-muted)]" />
             <span>Random</span>
           </button>
 
-          {/* Hide Topics */}
-          <button
-            onClick={() => setHideTopics(!hideTopics)}
-            className={`apple-press flex items-center gap-1.5 px-3.5 py-1.5 rounded-2xl border text-xs font-medium transition-all cursor-pointer ${
-              hideTopics
-                ? 'border-[var(--border)] bg-[var(--bg-subtle)] text-[var(--text-main)] font-semibold shadow-xs'
-                : 'border-[var(--border)] bg-[var(--bg-card)] hover:bg-[var(--bg-hover)] text-[var(--text-muted)] shadow-2xs'
-            }`}
-            title="Hide topic tags for blind interview prep"
-          >
-            {hideTopics ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
-            <span>Hide topics</span>
-          </button>
+          {/* Toggles Group: Hide Topics & Hide Solved */}
+          <div className="inline-flex items-center p-0.5 rounded-xl border border-[var(--border)] bg-[var(--bg-card)] shadow-2xs">
+            <button
+              onClick={() => setHideTopics(!hideTopics)}
+              className={`apple-press flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-medium transition-all cursor-pointer ${
+                hideTopics
+                  ? 'bg-[var(--bg-subtle)] text-[var(--text-main)] font-semibold shadow-xs'
+                  : 'text-[var(--text-muted)] hover:text-[var(--text-main)]'
+              }`}
+              title="Hide topic tags for blind interview prep"
+            >
+              {hideTopics ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
+              <span>Topics</span>
+            </button>
+            <span className="w-px h-3.5 bg-[var(--border)]" />
+            <button
+              onClick={() => setHideSolved(!hideSolved)}
+              className={`apple-press flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-medium transition-all cursor-pointer ${
+                hideSolved
+                  ? 'bg-[var(--bg-subtle)] text-[var(--text-main)] font-semibold shadow-xs'
+                  : 'text-[var(--text-muted)] hover:text-[var(--text-main)]'
+              }`}
+              title="Hide problems you already solved"
+            >
+              <CheckCircle2 className="w-3.5 h-3.5" />
+              <span>Solved</span>
+            </button>
+          </div>
 
-          {/* Hide Solved */}
-          <button
-            onClick={() => setHideSolved(!hideSolved)}
-            className={`apple-press flex items-center gap-1.5 px-3.5 py-1.5 rounded-2xl border text-xs font-medium transition-all cursor-pointer ${
-              hideSolved
-                ? 'border-[var(--border)] bg-[var(--bg-subtle)] text-[var(--text-main)] font-semibold shadow-xs'
-                : 'border-[var(--border)] bg-[var(--bg-card)] hover:bg-[var(--bg-hover)] text-[var(--text-muted)] shadow-2xs'
-            }`}
-            title="Hide problems you already solved"
-          >
-            <CheckCircle2 className="w-3.5 h-3.5" />
-            <span>Hide solved</span>
-          </button>
-
-          {/* Export */}
+          {/* Export CSV */}
           <button
             onClick={handleExportCSV}
-            className="apple-press p-2 rounded-2xl border border-[var(--border)] bg-[var(--bg-card)] hover:bg-[var(--bg-hover)] text-[var(--text-muted)] hover:text-[var(--text-main)] shadow-2xs cursor-pointer"
+            className="apple-press p-2 rounded-xl border border-[var(--border)] bg-[var(--bg-card)] hover:bg-[var(--bg-hover)] text-[var(--text-muted)] hover:text-[var(--text-main)] shadow-2xs cursor-pointer"
             title="Export filtered list to CSV"
             aria-label="Export to CSV"
           >
@@ -419,45 +437,45 @@ export const CompanyDetailView: React.FC<CompanyDetailViewProps> = ({ company })
         </div>
       </div>
 
-      {/* Topic Chips */}
+      {/* Topic Chips: Sleek Horizontal Scroll Strip */}
       {topicCounts.length > 0 && !hideTopics && (
-        <div className="flex flex-wrap items-center gap-1.5 pt-0.5">
-          {(showAllTopics ? topicCounts : topicCounts.slice(0, 12)).map(([topic, count]) => {
+        <div className="flex items-center gap-2 overflow-x-auto py-1 scrollbar-none">
+          <button
+            onClick={() => setSelectedTopic(null)}
+            className={`apple-press shrink-0 inline-flex items-center px-3 py-1 rounded-xl text-xs transition-all cursor-pointer ${
+              selectedTopic === null
+                ? 'bg-[var(--text-main)] text-[var(--bg-page)] font-semibold shadow-xs'
+                : 'bg-[var(--bg-card)] border border-[var(--border)] text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--bg-hover)] shadow-2xs'
+            }`}
+          >
+            All Topics
+          </button>
+          {topicCounts.map(([topic, count]) => {
             const isSelected = selectedTopic === topic;
+            const displayCount = count >= 1000 ? `${(count / 1000).toFixed(1)}k` : count;
             return (
               <button
                 key={topic}
                 onClick={() => setSelectedTopic(isSelected ? null : topic)}
-                className={`apple-press inline-flex items-center gap-1.5 px-3 py-1 rounded-xl text-xs transition-all cursor-pointer ${
+                className={`apple-press shrink-0 inline-flex items-center gap-1.5 px-3 py-1 rounded-xl text-xs transition-all cursor-pointer whitespace-nowrap ${
                   isSelected
                     ? 'bg-[var(--text-main)] text-[var(--bg-page)] font-semibold shadow-xs'
                     : 'bg-[var(--bg-card)] border border-[var(--border)] text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--bg-hover)] shadow-2xs'
                 }`}
               >
                 <span>{topic}</span>
-                <span className={`text-[10px] ${isSelected ? 'opacity-80' : 'text-[var(--text-light)]'}`}>
-                  {count}
+                <span className={`text-[10px] font-mono ${isSelected ? 'opacity-90' : 'text-[var(--text-light)]'}`}>
+                  {displayCount}
                 </span>
               </button>
             );
           })}
-
-          {topicCounts.length > 12 && (
-            <button
-              onClick={() => setShowAllTopics(!showAllTopics)}
-              className="apple-press inline-flex items-center gap-1 px-3 py-1 rounded-xl text-xs font-medium text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--bg-hover)] transition-colors cursor-pointer"
-            >
-              <span>{showAllTopics ? 'Show less' : `+${topicCounts.length - 12} more`}</span>
-              {showAllTopics ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
-            </button>
-          )}
-
           {selectedTopic && (
             <button
               onClick={() => setSelectedTopic(null)}
-              className="text-xs text-[var(--text-main)] underline hover:text-[var(--text-muted)] ml-2 cursor-pointer transition-colors"
+              className="shrink-0 text-xs text-[var(--text-muted)] hover:text-[var(--text-main)] underline pl-1 cursor-pointer transition-colors"
             >
-              Clear filter
+              Reset
             </button>
           )}
         </div>
@@ -468,14 +486,16 @@ export const CompanyDetailView: React.FC<CompanyDetailViewProps> = ({ company })
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs border-collapse">
             <thead>
-              <tr className="border-b border-[var(--border)] bg-[var(--bg-subtle)]/70 text-[var(--text-muted)] font-medium">
-                <th className="py-3 px-4 w-12 text-center" aria-label="Solved">✓</th>
+              <tr className="border-b border-[var(--border)] bg-[var(--bg-subtle)]/60 text-[var(--text-muted)] text-[11px] font-semibold uppercase tracking-wider">
+                <th className="py-3 px-3 w-12 text-center" aria-label="Solved">
+                  <CheckCircle2 className="w-3.5 h-3.5 mx-auto opacity-50" />
+                </th>
                 <th
                   onClick={() => handleSort('id')}
                   className="py-3 px-3 w-16 text-center cursor-pointer hover:text-[var(--text-main)] select-none"
                 >
                   <div className="flex items-center justify-center gap-0.5">
-                    <span>#ID</span>
+                    <span>#</span>
                     {sortBy === 'id' && (sortDir === 'asc' ? '↑' : '↓')}
                   </div>
                 </th>
@@ -490,9 +510,9 @@ export const CompanyDetailView: React.FC<CompanyDetailViewProps> = ({ company })
                 </th>
                 <th
                   onClick={() => handleSort('difficulty')}
-                  className="py-3 px-4 cursor-pointer hover:text-[var(--text-main)] select-none w-28"
+                  className="py-3 px-4 cursor-pointer hover:text-[var(--text-main)] select-none w-28 text-center"
                 >
-                  <div className="flex items-center gap-1">
+                  <div className="flex items-center justify-center gap-1">
                     <span>Difficulty</span>
                     {sortBy === 'difficulty' && (sortDir === 'asc' ? '↑' : '↓')}
                   </div>
@@ -520,8 +540,21 @@ export const CompanyDetailView: React.FC<CompanyDetailViewProps> = ({ company })
             <tbody className="divide-y divide-[var(--border)]">
               {sortedProblems.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="py-12 text-center text-[var(--text-muted)]">
-                    No problems match the current filter criteria.
+                  <td colSpan={6} className="py-16 text-center">
+                    <div className="max-w-xs mx-auto space-y-2">
+                      <p className="text-sm font-semibold text-[var(--text-main)]">No matching problems</p>
+                      <p className="text-xs text-[var(--text-muted)]">Try adjusting your difficulty or search filters.</p>
+                      <button
+                        onClick={() => {
+                          setSearchQuery('');
+                          setDifficultyFilter('ALL');
+                          setSelectedTopic(null);
+                        }}
+                        className="apple-press mt-2 inline-flex items-center px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-[var(--bg-subtle)] text-[var(--text-main)] hover:bg-[var(--bg-hover)] border border-[var(--border)] cursor-pointer"
+                      >
+                        Reset filters
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ) : (
@@ -532,33 +565,33 @@ export const CompanyDetailView: React.FC<CompanyDetailViewProps> = ({ company })
                     : '-';
                   const freq = Math.min(100, Math.max(0, prob.frequency));
 
-                  let diffColorClass = 'text-[var(--diff-easy-text)] bg-[var(--diff-easy-bg)]';
+                  let diffColorClass = 'text-emerald-700 dark:text-emerald-400 bg-emerald-500/10 border-emerald-500/20';
                   if (prob.difficulty === 'MEDIUM') {
-                    diffColorClass = 'text-[var(--diff-medium-text)] bg-[var(--diff-medium-bg)]';
+                    diffColorClass = 'text-amber-700 dark:text-amber-400 bg-amber-500/10 border-amber-500/20';
                   } else if (prob.difficulty === 'HARD') {
-                    diffColorClass = 'text-[var(--diff-hard-text)] bg-[var(--diff-hard-bg)]';
+                    diffColorClass = 'text-rose-700 dark:text-rose-400 bg-rose-500/10 border-rose-500/20';
                   }
 
                   return (
                     <tr
                       key={prob.slug || prob.title}
-                      className={`hover:bg-[var(--bg-hover)] transition-colors group ${
-                        isSolved ? 'opacity-65 bg-emerald-500/[0.02]' : ''
+                      className={`hover:bg-[var(--bg-subtle)]/50 transition-colors group ${
+                        isSolved ? 'opacity-60 bg-emerald-500/[0.02]' : ''
                       }`}
                     >
                       {/* Solved Checkbox */}
-                      <td className="py-3 px-4 text-center">
+                      <td className="py-3 px-3 text-center">
                         <button
                           type="button"
                           onClick={() => handleToggleSolved(prob)}
-                          className={`apple-press w-4 h-4 rounded-md border flex items-center justify-center transition-all cursor-pointer ${
+                          className={`apple-press w-4.5 h-4.5 rounded-md border flex items-center justify-center transition-all cursor-pointer mx-auto ${
                             isSolved
-                              ? 'bg-emerald-500 border-emerald-500 text-white'
-                              : 'border-[var(--border)] hover:border-emerald-500'
+                              ? 'bg-emerald-500 border-emerald-500 text-white shadow-2xs'
+                              : 'border-[var(--border)] hover:border-[var(--text-muted)] bg-[var(--bg-card)]'
                           }`}
                           aria-label={`Mark ${prob.title} as ${isSolved ? 'unsolved' : 'solved'}`}
                         >
-                          {isSolved && <CheckCircle2 className="w-3.5 h-3.5 stroke-[3]" />}
+                          {isSolved && <CheckCircle2 className="w-3.5 h-3.5 stroke-[2.5]" />}
                         </button>
                       </td>
 
@@ -604,14 +637,14 @@ export const CompanyDetailView: React.FC<CompanyDetailViewProps> = ({ company })
                           </div>
 
                           {!hideTopics && prob.topics.length > 0 && (
-                            <div className="flex flex-wrap gap-1">
-                              {prob.topics.map((t) => (
+                            <div className="flex flex-wrap items-center gap-1">
+                              {prob.topics.map((t, tIdx) => (
                                 <button
                                   key={t}
                                   onClick={() => setSelectedTopic(t)}
-                                  className="text-[10px] text-[var(--text-light)] hover:text-[var(--text-muted)] hover:underline"
+                                  className="text-[10px] text-[var(--text-light)] hover:text-[var(--text-muted)] hover:underline cursor-pointer"
                                 >
-                                  {t}
+                                  {t}{tIdx < prob.topics.length - 1 ? ' ·' : ''}
                                 </button>
                               ))}
                             </div>
@@ -620,8 +653,8 @@ export const CompanyDetailView: React.FC<CompanyDetailViewProps> = ({ company })
                       </td>
 
                       {/* Difficulty */}
-                      <td className="py-3 px-4 whitespace-nowrap">
-                        <span className={`px-2.5 py-0.5 rounded-lg text-[11px] font-semibold ${diffColorClass}`}>
+                      <td className="py-3 px-4 whitespace-nowrap text-center">
+                        <span className={`px-2.5 py-0.5 rounded-full text-[11px] font-semibold border inline-flex items-center justify-center min-w-[62px] ${diffColorClass}`}>
                           {prob.difficulty.charAt(0) + prob.difficulty.slice(1).toLowerCase()}
                         </span>
                       </td>
@@ -631,18 +664,18 @@ export const CompanyDetailView: React.FC<CompanyDetailViewProps> = ({ company })
                         <div className="flex items-center gap-2">
                           <div className="w-16 h-1.5 bg-[var(--bg-subtle)] rounded-full overflow-hidden">
                             <div
-                              className="h-full bg-[var(--text-main)]/60 rounded-full"
+                              className="h-full bg-gradient-to-r from-emerald-500/80 to-emerald-500 rounded-full"
                               style={{ width: `${freq}%` }}
                             />
                           </div>
-                          <span className="font-mono text-[11px] text-[var(--text-muted)] font-medium">
+                          <span className="font-mono text-[11px] text-[var(--text-muted)] font-semibold tabular-nums">
                             {freq.toFixed(0)}%
                           </span>
                         </div>
                       </td>
 
                       {/* Acceptance */}
-                      <td className="py-3 px-4 text-right font-mono text-[11px] text-[var(--text-muted)] whitespace-nowrap">
+                      <td className="py-3 px-4 text-right font-mono text-[11px] tabular-nums text-[var(--text-muted)] whitespace-nowrap">
                         {accPercent}
                       </td>
                     </tr>
