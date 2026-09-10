@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useMemo, useEffect, useRef } from 'react';
-import { Search, Sparkles, Trophy, Database, RefreshCw, Flame, Building2 } from 'lucide-react';
+import { Search, Sparkles, Trophy, Database, Building2 } from 'lucide-react';
 import { CompanySummary, SyncStatus } from '@/types';
 import { Header } from '@/components/Header';
 import { SyncModal } from '@/components/SyncModal';
@@ -36,7 +36,6 @@ export const HomeClient: React.FC<HomeClientProps> = ({
 
   const searchInputRef = useRef<HTMLInputElement>(null);
 
-  // Solved counter and keyboard shortcut
   useEffect(() => {
     setUserSolvedCount(getSolvedCount());
 
@@ -62,7 +61,6 @@ export const HomeClient: React.FC<HomeClientProps> = ({
   const filteredCompanies = useMemo(() => {
     return companies
       .filter((c) => {
-        // Text search
         if (searchQuery.trim()) {
           const q = searchQuery.toLowerCase().trim();
           const matchName = c.name.toLowerCase().includes(q);
@@ -71,32 +69,20 @@ export const HomeClient: React.FC<HomeClientProps> = ({
           if (!matchName && !matchSlug && !matchDomain) return false;
         }
 
-        // Category filter
-        if (categoryFilter === 'FAANG') {
-          return FAANG_SLUGS.has(c.slug);
-        }
-        if (categoryFilter === 'FINTECH') {
-          return FINTECH_SLUGS.has(c.slug);
-        }
-        if (categoryFilter === 'POPULAR') {
-          return c.total >= 100;
-        }
+        if (categoryFilter === 'FAANG') return FAANG_SLUGS.has(c.slug);
+        if (categoryFilter === 'FINTECH') return FINTECH_SLUGS.has(c.slug);
+        if (categoryFilter === 'POPULAR') return c.total >= 100;
         return true;
       })
       .sort((a, b) => {
-        if (sortBy === 'name') {
-          return a.name.localeCompare(b.name);
-        }
-        if (sortBy === 'hard') {
-          return b.hard - a.hard;
-        }
+        if (sortBy === 'name') return a.name.localeCompare(b.name);
+        if (sortBy === 'hard') return b.hard - a.hard;
         return b.total - a.total;
       });
   }, [companies, searchQuery, categoryFilter, sortBy]);
 
   const handleSyncComplete = (newStatus: SyncStatus) => {
     setSyncStatus(newStatus);
-    // Re-fetch companies index
     fetch('/api/companies')
       .then((r) => r.json())
       .then((data) => {
@@ -110,78 +96,75 @@ export const HomeClient: React.FC<HomeClientProps> = ({
       <Header onOpenSync={() => setIsSyncModalOpen(true)} syncStatus={syncStatus} />
 
       <main className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 py-10 w-full space-y-8">
-        {/* Hero Section */}
-        <section className="text-center max-w-3xl mx-auto space-y-4 pt-4">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-medium bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20">
+        {/* Apple Centered Hero */}
+        <section className="text-center max-w-2xl mx-auto space-y-3.5 pt-2">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-[var(--diff-easy-bg)] text-[var(--diff-easy-text)] border border-emerald-500/20 shadow-2xs">
             <Sparkles className="w-3.5 h-3.5" />
-            <span>Always up-to-date company interview frequency</span>
+            <span>Multi-source real-time interview questions</span>
           </div>
 
           <h1 className="text-3xl sm:text-5xl font-bold tracking-tight text-[var(--text-main)]">
-            Company-wise LeetCode Questions
+            Company-wise LeetCode
           </h1>
 
-          <p className="text-sm sm:text-base text-[var(--text-muted)] leading-relaxed">
-            The coding interview problems top tech & finance companies actually ask, ranked by recency
-            and frequency. Filter by last 30 days, 3 months, 6 months, or all-time.
+          <p className="text-sm sm:text-base text-[var(--text-muted)] leading-relaxed font-normal">
+            Interview problems top tech & finance companies actually ask, ranked by frequency and recency.
           </p>
 
-          {/* Quick Metrics */}
-          <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-6 pt-2">
-            <div className="flex items-center gap-2 text-xs font-medium text-[var(--text-main)] bg-[var(--bg-card)] border border-[var(--border)] px-3 py-1.5 rounded-xl shadow-xs">
-              <Building2 className="w-4 h-4 text-blue-500" />
+          {/* Apple Pill Metrics */}
+          <div className="flex flex-wrap items-center justify-center gap-2.5 pt-2">
+            <div className="flex items-center gap-2 text-xs font-medium text-[var(--text-main)] bg-[var(--bg-card)] border border-[var(--border)] px-3.5 py-1.5 rounded-full shadow-xs">
+              <Building2 className="w-3.5 h-3.5 text-blue-500" />
               <span><strong>{companies.length}</strong> companies</span>
             </div>
 
-            <div className="flex items-center gap-2 text-xs font-medium text-[var(--text-main)] bg-[var(--bg-card)] border border-[var(--border)] px-3 py-1.5 rounded-xl shadow-xs">
-              <Database className="w-4 h-4 text-emerald-500" />
+            <div className="flex items-center gap-2 text-xs font-medium text-[var(--text-main)] bg-[var(--bg-card)] border border-[var(--border)] px-3.5 py-1.5 rounded-full shadow-xs">
+              <Database className="w-3.5 h-3.5 text-emerald-500" />
               <span>
-                <strong>
-                  {syncStatus?.uniqueProblemsCount ? syncStatus.uniqueProblemsCount.toLocaleString() : '3,392+'}
-                </strong> problem entries
+                <strong>{syncStatus?.uniqueProblemsCount ? syncStatus.uniqueProblemsCount.toLocaleString() : '3,422'}</strong> problems
               </span>
             </div>
 
-            <div className="flex items-center gap-2 text-xs font-medium text-[var(--text-main)] bg-[var(--bg-card)] border border-[var(--border)] px-3 py-1.5 rounded-xl shadow-xs">
-              <Trophy className="w-4 h-4 text-amber-500" />
-              <span><strong>{userSolvedCount}</strong> solved by you</span>
+            <div className="flex items-center gap-2 text-xs font-medium text-[var(--text-main)] bg-[var(--bg-card)] border border-[var(--border)] px-3.5 py-1.5 rounded-full shadow-xs">
+              <Trophy className="w-3.5 h-3.5 text-amber-500" />
+              <span><strong>{userSolvedCount}</strong> solved</span>
             </div>
           </div>
         </section>
 
-        {/* Search & Controls */}
+        {/* Apple Spotlight Search & Controls */}
         <section className="max-w-2xl mx-auto space-y-4">
-          <div className="relative">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--text-light)]" />
+          <div className="relative group">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--text-light)] group-focus-within:text-[var(--text-main)] transition-colors" />
             <input
               ref={searchInputRef}
               type="search"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search 470 companies... (Google, Amazon, Citadel, Stripe)"
-              className="w-full pl-11 pr-12 py-3 rounded-2xl text-sm bg-[var(--bg-card)] border border-[var(--border)] text-[var(--text-main)] placeholder:text-[var(--text-light)] shadow-xs focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all"
+              placeholder="Search 683 companies... (Google, Citadel, Jane Street, Stripe)"
+              className="w-full pl-11 pr-12 py-3 rounded-2xl text-sm bg-[var(--bg-card)] border border-[var(--border)] text-[var(--text-main)] placeholder:text-[var(--text-light)] shadow-xs focus:outline-none focus:border-[var(--text-muted)]/40 focus:ring-4 focus:ring-blue-500/10 transition-all"
             />
-            <kbd className="absolute right-3.5 top-1/2 -translate-y-1/2 px-2 py-0.5 rounded text-[11px] font-mono text-[var(--text-light)] border border-[var(--border)] bg-[var(--bg-subtle)]">
+            <kbd className="absolute right-3.5 top-1/2 -translate-y-1/2 px-2 py-0.5 rounded-lg text-[10px] font-mono text-[var(--text-light)] border border-[var(--border)] bg-[var(--bg-subtle)]">
               /
             </kbd>
           </div>
 
-          {/* Category Chips & Sort */}
+          {/* Segmented Category Filter Bar */}
           <div className="flex flex-wrap items-center justify-between gap-3 text-xs">
-            <div className="flex flex-wrap items-center gap-1.5">
+            <div className="flex flex-wrap items-center p-1 rounded-2xl bg-[var(--bg-subtle)] border border-[var(--border)] gap-1">
               {[
-                { key: 'ALL', label: 'All Companies' },
-                { key: 'FAANG', label: 'Big Tech / FAANG' },
+                { key: 'ALL', label: 'All' },
+                { key: 'FAANG', label: 'FAANG & Big Tech' },
                 { key: 'FINTECH', label: 'FinTech & Quant' },
                 { key: 'POPULAR', label: '100+ Questions' },
               ].map((tab) => (
                 <button
                   key={tab.key}
                   onClick={() => setCategoryFilter(tab.key as any)}
-                  className={`px-3 py-1.5 rounded-xl font-medium transition-colors cursor-pointer ${
+                  className={`apple-press px-3 py-1.5 rounded-xl font-medium transition-all cursor-pointer ${
                     categoryFilter === tab.key
-                      ? 'bg-[var(--text-main)] text-[var(--bg-page)]'
-                      : 'bg-[var(--bg-card)] border border-[var(--border)] text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--bg-hover)]'
+                      ? 'bg-[var(--bg-card)] text-[var(--text-main)] shadow-xs font-semibold'
+                      : 'text-[var(--text-muted)] hover:text-[var(--text-main)]'
                   }`}
                 >
                   {tab.label}
@@ -190,15 +173,15 @@ export const HomeClient: React.FC<HomeClientProps> = ({
             </div>
 
             <div className="flex items-center gap-2">
-              <span className="text-[var(--text-light)]">Sort:</span>
+              <span className="text-[var(--text-muted)] text-[11px]">Sort by:</span>
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value as any)}
-                className="bg-[var(--bg-card)] border border-[var(--border)] text-[var(--text-main)] px-2.5 py-1 rounded-xl focus:outline-none cursor-pointer"
+                className="apple-press bg-[var(--bg-card)] border border-[var(--border)] text-[var(--text-main)] px-3 py-1.5 rounded-xl text-xs focus:outline-none cursor-pointer shadow-2xs"
               >
-                <option value="total">Most Problems</option>
-                <option value="name">Alphabetical (A-Z)</option>
-                <option value="hard">Most Hard Problems</option>
+                <option value="total">Most Questions</option>
+                <option value="name">Name (A-Z)</option>
+                <option value="hard">Most Hard Questions</option>
               </select>
             </div>
           </div>
@@ -206,7 +189,7 @@ export const HomeClient: React.FC<HomeClientProps> = ({
 
         {/* Results Counter */}
         <div className="flex items-center justify-between text-xs text-[var(--text-muted)] px-1">
-          <span>{filteredCompanies.length} companies found</span>
+          <span>Showing <strong>{filteredCompanies.length}</strong> companies</span>
           {searchQuery && (
             <button
               onClick={() => setSearchQuery('')}

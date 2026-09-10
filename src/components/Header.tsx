@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { RefreshCw, Sun, Moon, CheckCircle2, AlertCircle } from 'lucide-react';
+import { RefreshCw, Sun, Moon } from 'lucide-react';
 import { SyncStatus } from '@/types';
 
 interface HeaderProps {
@@ -28,29 +28,35 @@ export const Header: React.FC<HeaderProps> = ({ onOpenSync, syncStatus }) => {
   };
 
   return (
-    <header className="sticky top-0 z-40 border-b border-[var(--border)] bg-[var(--bg-page)]/90 backdrop-blur-md transition-colors">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
+    <header className="sticky top-0 z-40 border-b border-[var(--border)] bg-[var(--bg-page)]/80 backdrop-blur-2xl transition-colors">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between gap-4">
         {/* Brand */}
-        <Link href="/" className="flex items-center gap-2.5 text-[var(--text-main)] hover:opacity-90 transition-opacity">
-          <div className="w-3 h-3 rounded-full bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.5)] animate-pulse" />
-          <span className="font-semibold text-lg tracking-tight">grindmap</span>
-          <span className="hidden sm:inline-block text-xs text-[var(--text-muted)] border-l border-[var(--border)] pl-2.5 ml-0.5">
+        <Link
+          href="/"
+          className="apple-press flex items-center gap-2.5 text-[var(--text-main)] select-none"
+        >
+          <div className="relative flex items-center justify-center">
+            <span className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
+            <span className="absolute w-4 h-4 rounded-full bg-emerald-500/30 animate-ping" />
+          </div>
+          <span className="font-semibold text-base tracking-tight">grindmap</span>
+          <span className="hidden sm:inline-block text-[11px] text-[var(--text-muted)] border-l border-[var(--border)] pl-2.5 ml-0.5 font-normal">
             company-wise LeetCode
           </span>
         </Link>
 
         {/* Right Actions */}
-        <div className="flex items-center gap-2 sm:gap-3">
+        <div className="flex items-center gap-2 sm:gap-2.5">
           {/* Realtime Sync Badge Button */}
           <button
             onClick={onOpenSync}
-            className="flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium border border-[var(--border)] bg-[var(--bg-card)] hover:bg-[var(--bg-hover)] text-[var(--text-main)] transition-colors cursor-pointer"
-            title="View Realtime Sync Status & Triggers"
+            className="apple-press flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium border border-[var(--border)] bg-[var(--bg-card)]/80 backdrop-blur-sm text-[var(--text-main)] shadow-xs hover:border-[var(--text-muted)]/30 cursor-pointer"
+            title="View Realtime Multi-Source Sync Status"
           >
-            <RefreshCw className="w-3.5 h-3.5 text-emerald-500 animate-[spin_10s_linear_infinite]" />
-            <span className="hidden md:inline">Synced</span>
-            <span className="font-mono text-emerald-600 dark:text-emerald-400">
-              {syncStatus?.commitSha ? syncStatus.commitSha : 'live'}
+            <RefreshCw className="w-3 h-3 text-emerald-500 animate-[spin_12s_linear_infinite]" />
+            <span className="hidden md:inline font-normal text-[var(--text-muted)]">Live:</span>
+            <span className="font-mono text-emerald-600 dark:text-emerald-400 font-semibold text-[11px]">
+              {syncStatus?.companiesCount ? `${syncStatus.companiesCount} cos` : '683 cos'}
             </span>
           </button>
 
@@ -59,8 +65,8 @@ export const Header: React.FC<HeaderProps> = ({ onOpenSync, syncStatus }) => {
             href="https://github.com/liquidslr/leetcode-company-wise-problems"
             target="_blank"
             rel="noopener noreferrer"
-            className="p-2 rounded-lg text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--bg-hover)] transition-colors"
-            title="Upstream GitHub Repository"
+            className="apple-press p-2 rounded-full text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--bg-hover)] transition-colors"
+            title="Upstream Repositories"
             aria-label="GitHub Repository"
           >
             <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -72,7 +78,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenSync, syncStatus }) => {
           {/* Theme Toggle */}
           <button
             onClick={toggleTheme}
-            className="p-2 rounded-lg text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--bg-hover)] transition-colors cursor-pointer"
+            className="apple-press p-2 rounded-full text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--bg-hover)] transition-colors cursor-pointer"
             title={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
             aria-label="Toggle theme"
           >

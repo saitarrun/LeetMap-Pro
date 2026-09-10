@@ -32,7 +32,6 @@ export const CompanyDetailView: React.FC<CompanyDetailViewProps> = ({ company })
   const [showAllTopics, setShowAllTopics] = useState(false);
   const [solvedSet, setSolvedSet] = useState<Set<string>>(new Set());
 
-  // Sort state: default by frequency descending
   const [sortBy, setSortBy] = useState<'frequency' | 'difficulty' | 'title' | 'acceptance' | 'id'>('frequency');
   const [sortDir, setSortDir] = useState<'asc' | 'desc'>('desc');
 
@@ -178,9 +177,9 @@ export const CompanyDetailView: React.FC<CompanyDetailViewProps> = ({ company })
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 space-y-6">
-      {/* Breadcrumbs */}
-      <nav className="flex items-center gap-2 text-xs text-[var(--text-muted)]">
-        <Link href="/" className="hover:text-[var(--text-main)] flex items-center gap-1 transition-colors">
+      {/* Apple Breadcrumb */}
+      <nav className="flex items-center gap-2 text-xs text-[var(--text-muted)] font-normal">
+        <Link href="/" className="apple-press hover:text-[var(--text-main)] flex items-center gap-1.5 transition-colors">
           <ArrowLeft className="w-3.5 h-3.5" />
           <span>All companies</span>
         </Link>
@@ -188,10 +187,10 @@ export const CompanyDetailView: React.FC<CompanyDetailViewProps> = ({ company })
         <span className="text-[var(--text-main)] font-medium">{company.name}</span>
       </nav>
 
-      {/* Header Info */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-6 rounded-2xl border border-[var(--border)] bg-[var(--bg-card)]">
+      {/* Header Info Card */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-6 rounded-3xl border border-[var(--border)] bg-[var(--bg-card)] shadow-xs">
         <div className="flex items-center gap-4">
-          <div className="w-14 h-14 rounded-2xl bg-white border border-stone-200/80 flex items-center justify-center shrink-0 overflow-hidden shadow-xs">
+          <div className="w-14 h-14 rounded-2xl bg-white border border-black/5 dark:border-white/10 flex items-center justify-center shrink-0 overflow-hidden shadow-xs">
             {faviconUrl ? (
               <img src={faviconUrl} alt="" width={36} height={36} className="w-9 h-9 object-contain" />
             ) : (
@@ -199,35 +198,35 @@ export const CompanyDetailView: React.FC<CompanyDetailViewProps> = ({ company })
             )}
           </div>
           <div>
-            <div className="flex items-center gap-2">
+            <div className="flex flex-wrap items-center gap-2.5">
               <h1 className="text-2xl font-bold text-[var(--text-main)] tracking-tight">
                 {company.name} LeetCode Questions
               </h1>
-              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20" title="Cross-referenced across multiple community datasets">
+              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20" title="Cross-referenced across multiple community datasets">
                 <ShieldCheck className="w-3 h-3" />
                 <span>Multi-Source Verified</span>
               </span>
             </div>
-            <div className="flex flex-wrap items-center gap-2 mt-1 text-xs text-[var(--text-muted)]">
+            <div className="flex flex-wrap items-center gap-2 mt-1.5 text-xs text-[var(--text-muted)]">
               <span className="font-semibold text-[var(--text-main)]">{company.total}</span> questions all-time
               <span>•</span>
-              <span className="text-emerald-600 dark:text-emerald-400 font-medium">{company.easy} Easy</span>
+              <span className="font-semibold text-[var(--diff-easy-text)]">{company.easy} Easy</span>
               <span>•</span>
-              <span className="text-amber-600 dark:text-amber-400 font-medium">{company.medium} Medium</span>
+              <span className="font-semibold text-[var(--diff-medium-text)]">{company.medium} Medium</span>
               <span>•</span>
-              <span className="text-rose-600 dark:text-rose-400 font-medium">{company.hard} Hard</span>
+              <span className="font-semibold text-[var(--diff-hard-text)]">{company.hard} Hard</span>
             </div>
           </div>
         </div>
 
-        {/* Solved Progress Counter */}
-        <div className="flex items-center gap-3 bg-[var(--bg-subtle)] border border-[var(--border)] px-4 py-2.5 rounded-xl self-start md:self-auto">
-          <CheckCircle2 className="w-5 h-5 text-emerald-500" />
+        {/* Progress Card */}
+        <div className="flex items-center gap-3 bg-[var(--bg-subtle)] border border-[var(--border)] px-4 py-2.5 rounded-2xl self-start md:self-auto">
+          <CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0" />
           <div>
             <div className="text-xs font-semibold text-[var(--text-main)]">
               {companySolvedCount} / {company.total} solved
             </div>
-            <div className="w-28 h-1.5 bg-[var(--border)] rounded-full mt-1 overflow-hidden">
+            <div className="w-28 h-1.5 bg-[var(--border)] rounded-full mt-1.5 overflow-hidden">
               <div
                 className="h-full bg-emerald-500 rounded-full transition-all duration-300"
                 style={{
@@ -239,8 +238,8 @@ export const CompanyDetailView: React.FC<CompanyDetailViewProps> = ({ company })
         </div>
       </div>
 
-      {/* Time Window Tabs */}
-      <div className="border-b border-[var(--border)] flex gap-2 overflow-x-auto pb-px scrollbar-none">
+      {/* Recency Tabs */}
+      <div className="border-b border-[var(--border)] flex gap-1.5 overflow-x-auto pb-px scrollbar-none">
         {company.windows.map((win, idx) => (
           <button
             key={win.key}
@@ -248,7 +247,7 @@ export const CompanyDetailView: React.FC<CompanyDetailViewProps> = ({ company })
               setActiveTab(idx);
               setSelectedTopic(null);
             }}
-            className={`flex items-center gap-2 px-4 py-2.5 text-xs font-medium border-b-2 whitespace-nowrap transition-colors cursor-pointer ${
+            className={`apple-press flex items-center gap-2 px-4 py-2.5 text-xs font-medium border-b-2 whitespace-nowrap transition-all cursor-pointer ${
               activeTab === idx
                 ? 'border-[var(--text-main)] text-[var(--text-main)] font-semibold'
                 : 'border-transparent text-[var(--text-muted)] hover:text-[var(--text-main)]'
@@ -268,9 +267,8 @@ export const CompanyDetailView: React.FC<CompanyDetailViewProps> = ({ company })
         ))}
       </div>
 
-      {/* Toolbar Controls */}
+      {/* Controls Bar */}
       <div className="flex flex-col lg:flex-row gap-3 items-stretch lg:items-center justify-between">
-        {/* Search */}
         <div className="relative flex-1 max-w-md">
           <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--text-light)]" />
           <input
@@ -278,21 +276,20 @@ export const CompanyDetailView: React.FC<CompanyDetailViewProps> = ({ company })
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Filter problems (#1, Two Sum, dynamic programming...)"
-            className="w-full pl-10 pr-4 py-2 rounded-xl text-xs bg-[var(--bg-card)] border border-[var(--border)] text-[var(--text-main)] placeholder:text-[var(--text-light)] focus:outline-none focus:border-blue-500 transition-colors"
+            className="w-full pl-10 pr-4 py-2.5 rounded-2xl text-xs bg-[var(--bg-card)] border border-[var(--border)] text-[var(--text-main)] placeholder:text-[var(--text-light)] focus:outline-none focus:border-[var(--text-muted)]/40 focus:ring-4 focus:ring-blue-500/10 transition-all"
           />
         </div>
 
-        {/* Filter buttons */}
         <div className="flex flex-wrap items-center gap-2">
-          {/* Difficulty Group */}
-          <div className="flex items-center p-1 rounded-xl bg-[var(--bg-card)] border border-[var(--border)] text-xs">
+          {/* Difficulty Filter */}
+          <div className="flex items-center p-1 rounded-2xl bg-[var(--bg-card)] border border-[var(--border)] text-xs">
             {(['ALL', 'EASY', 'MEDIUM', 'HARD'] as const).map((diff) => (
               <button
                 key={diff}
                 onClick={() => setDifficultyFilter(diff)}
-                className={`px-2.5 py-1 rounded-lg font-medium transition-colors cursor-pointer ${
+                className={`apple-press px-3 py-1 rounded-xl font-medium transition-all cursor-pointer ${
                   difficultyFilter === diff
-                    ? 'bg-[var(--bg-subtle)] text-[var(--text-main)] shadow-xs'
+                    ? 'bg-[var(--bg-subtle)] text-[var(--text-main)] shadow-xs font-semibold'
                     : 'text-[var(--text-muted)] hover:text-[var(--text-main)]'
                 }`}
               >
@@ -301,23 +298,23 @@ export const CompanyDetailView: React.FC<CompanyDetailViewProps> = ({ company })
             ))}
           </div>
 
-          {/* Random Problem */}
+          {/* Random */}
           <button
             onClick={handleRandomProblem}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-[var(--border)] bg-[var(--bg-card)] hover:bg-[var(--bg-hover)] text-xs font-medium text-[var(--text-main)] transition-colors cursor-pointer"
+            className="apple-press flex items-center gap-1.5 px-3.5 py-1.5 rounded-2xl border border-[var(--border)] bg-[var(--bg-card)] hover:bg-[var(--bg-hover)] text-xs font-medium text-[var(--text-main)] shadow-2xs cursor-pointer"
             title="Open a random problem in LeetCode"
           >
             <Shuffle className="w-3.5 h-3.5 text-blue-500" />
             <span>Random</span>
           </button>
 
-          {/* Hide Topics Toggle */}
+          {/* Hide Topics */}
           <button
             onClick={() => setHideTopics(!hideTopics)}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-xs font-medium transition-colors cursor-pointer ${
+            className={`apple-press flex items-center gap-1.5 px-3.5 py-1.5 rounded-2xl border text-xs font-medium transition-all cursor-pointer ${
               hideTopics
-                ? 'border-blue-500/50 bg-blue-500/10 text-blue-600 dark:text-blue-400'
-                : 'border-[var(--border)] bg-[var(--bg-card)] hover:bg-[var(--bg-hover)] text-[var(--text-muted)]'
+                ? 'border-blue-500/40 bg-blue-500/10 text-blue-600 dark:text-blue-400 font-semibold'
+                : 'border-[var(--border)] bg-[var(--bg-card)] hover:bg-[var(--bg-hover)] text-[var(--text-muted)] shadow-2xs'
             }`}
             title="Hide topic tags for blind interview prep"
           >
@@ -325,13 +322,13 @@ export const CompanyDetailView: React.FC<CompanyDetailViewProps> = ({ company })
             <span>Hide topics</span>
           </button>
 
-          {/* Hide Solved Toggle */}
+          {/* Hide Solved */}
           <button
             onClick={() => setHideSolved(!hideSolved)}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-xs font-medium transition-colors cursor-pointer ${
+            className={`apple-press flex items-center gap-1.5 px-3.5 py-1.5 rounded-2xl border text-xs font-medium transition-all cursor-pointer ${
               hideSolved
-                ? 'border-emerald-500/50 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400'
-                : 'border-[var(--border)] bg-[var(--bg-card)] hover:bg-[var(--bg-hover)] text-[var(--text-muted)]'
+                ? 'border-emerald-500/40 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-semibold'
+                : 'border-[var(--border)] bg-[var(--bg-card)] hover:bg-[var(--bg-hover)] text-[var(--text-muted)] shadow-2xs'
             }`}
             title="Hide problems you already solved"
           >
@@ -339,10 +336,10 @@ export const CompanyDetailView: React.FC<CompanyDetailViewProps> = ({ company })
             <span>Hide solved</span>
           </button>
 
-          {/* Export CSV */}
+          {/* Export */}
           <button
             onClick={handleExportCSV}
-            className="p-2 rounded-xl border border-[var(--border)] bg-[var(--bg-card)] hover:bg-[var(--bg-hover)] text-[var(--text-muted)] hover:text-[var(--text-main)] transition-colors cursor-pointer"
+            className="apple-press p-2 rounded-2xl border border-[var(--border)] bg-[var(--bg-card)] hover:bg-[var(--bg-hover)] text-[var(--text-muted)] hover:text-[var(--text-main)] shadow-2xs cursor-pointer"
             title="Export filtered list to CSV"
             aria-label="Export to CSV"
           >
@@ -353,21 +350,21 @@ export const CompanyDetailView: React.FC<CompanyDetailViewProps> = ({ company })
 
       {/* Topic Chips */}
       {topicCounts.length > 0 && !hideTopics && (
-        <div className="flex flex-wrap items-center gap-1.5 pt-1">
+        <div className="flex flex-wrap items-center gap-1.5 pt-0.5">
           {(showAllTopics ? topicCounts : topicCounts.slice(0, 12)).map(([topic, count]) => {
             const isSelected = selectedTopic === topic;
             return (
               <button
                 key={topic}
                 onClick={() => setSelectedTopic(isSelected ? null : topic)}
-                className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs transition-colors cursor-pointer ${
+                className={`apple-press inline-flex items-center gap-1.5 px-3 py-1 rounded-xl text-xs transition-all cursor-pointer ${
                   isSelected
-                    ? 'bg-blue-600 text-white font-medium shadow-xs'
-                    : 'bg-[var(--bg-card)] border border-[var(--border)] text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--bg-hover)]'
+                    ? 'bg-[var(--text-main)] text-[var(--bg-page)] font-semibold shadow-xs'
+                    : 'bg-[var(--bg-card)] border border-[var(--border)] text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--bg-hover)] shadow-2xs'
                 }`}
               >
                 <span>{topic}</span>
-                <span className={`text-[10px] ${isSelected ? 'text-blue-100' : 'text-[var(--text-light)]'}`}>
+                <span className={`text-[10px] ${isSelected ? 'opacity-80' : 'text-[var(--text-light)]'}`}>
                   {count}
                 </span>
               </button>
@@ -377,7 +374,7 @@ export const CompanyDetailView: React.FC<CompanyDetailViewProps> = ({ company })
           {topicCounts.length > 12 && (
             <button
               onClick={() => setShowAllTopics(!showAllTopics)}
-              className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-medium text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--bg-hover)] transition-colors cursor-pointer"
+              className="apple-press inline-flex items-center gap-1 px-3 py-1 rounded-xl text-xs font-medium text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--bg-hover)] transition-colors cursor-pointer"
             >
               <span>{showAllTopics ? 'Show less' : `+${topicCounts.length - 12} more`}</span>
               {showAllTopics ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
@@ -395,12 +392,12 @@ export const CompanyDetailView: React.FC<CompanyDetailViewProps> = ({ company })
         </div>
       )}
 
-      {/* Problems Table */}
-      <div className="border border-[var(--border)] rounded-2xl bg-[var(--bg-card)] overflow-hidden shadow-xs">
+      {/* Apple Squircle Table */}
+      <div className="border border-[var(--border)] rounded-3xl bg-[var(--bg-card)] overflow-hidden shadow-xs">
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs border-collapse">
             <thead>
-              <tr className="border-b border-[var(--border)] bg-[var(--bg-subtle)] text-[var(--text-muted)] font-medium">
+              <tr className="border-b border-[var(--border)] bg-[var(--bg-subtle)]/70 text-[var(--text-muted)] font-medium">
                 <th className="py-3 px-4 w-12 text-center" aria-label="Solved">✓</th>
                 <th
                   onClick={() => handleSort('id')}
@@ -464,18 +461,18 @@ export const CompanyDetailView: React.FC<CompanyDetailViewProps> = ({ company })
                     : '-';
                   const freq = Math.min(100, Math.max(0, prob.frequency));
 
-                  let diffColorClass = 'text-emerald-600 bg-emerald-500/10 dark:text-emerald-400';
+                  let diffColorClass = 'text-[var(--diff-easy-text)] bg-[var(--diff-easy-bg)]';
                   if (prob.difficulty === 'MEDIUM') {
-                    diffColorClass = 'text-amber-600 bg-amber-500/10 dark:text-amber-400';
+                    diffColorClass = 'text-[var(--diff-medium-text)] bg-[var(--diff-medium-bg)]';
                   } else if (prob.difficulty === 'HARD') {
-                    diffColorClass = 'text-rose-600 bg-rose-500/10 dark:text-rose-400';
+                    diffColorClass = 'text-[var(--diff-hard-text)] bg-[var(--diff-hard-bg)]';
                   }
 
                   return (
                     <tr
                       key={prob.slug || prob.title}
                       className={`hover:bg-[var(--bg-hover)] transition-colors group ${
-                        isSolved ? 'opacity-70 bg-emerald-500/[0.02]' : ''
+                        isSolved ? 'opacity-65 bg-emerald-500/[0.02]' : ''
                       }`}
                     >
                       {/* Solved Checkbox */}
@@ -483,7 +480,7 @@ export const CompanyDetailView: React.FC<CompanyDetailViewProps> = ({ company })
                         <button
                           type="button"
                           onClick={() => handleToggleSolved(prob.slug)}
-                          className={`w-4 h-4 rounded border flex items-center justify-center transition-colors cursor-pointer ${
+                          className={`apple-press w-4 h-4 rounded-md border flex items-center justify-center transition-all cursor-pointer ${
                             isSolved
                               ? 'bg-emerald-500 border-emerald-500 text-white'
                               : 'border-[var(--border)] hover:border-emerald-500'
@@ -517,7 +514,7 @@ export const CompanyDetailView: React.FC<CompanyDetailViewProps> = ({ company })
 
                             {prob.verifiedSources && prob.verifiedSources.length > 1 && (
                               <span
-                                className="text-[9px] px-1.5 py-0.2 rounded bg-stone-500/10 text-[var(--text-muted)] font-mono border border-[var(--border)]"
+                                className="text-[9px] px-1.5 py-0.2 rounded-md bg-[var(--bg-subtle)] text-[var(--text-muted)] font-mono border border-[var(--border)]"
                                 title={`Verified across: ${prob.verifiedSources.join(', ')}`}
                               >
                                 {prob.verifiedSources.length} sources
@@ -543,7 +540,7 @@ export const CompanyDetailView: React.FC<CompanyDetailViewProps> = ({ company })
 
                       {/* Difficulty */}
                       <td className="py-3 px-4 whitespace-nowrap">
-                        <span className={`px-2 py-0.5 rounded-md text-[11px] font-semibold ${diffColorClass}`}>
+                        <span className={`px-2.5 py-0.5 rounded-lg text-[11px] font-semibold ${diffColorClass}`}>
                           {prob.difficulty.charAt(0) + prob.difficulty.slice(1).toLowerCase()}
                         </span>
                       </td>
@@ -557,7 +554,7 @@ export const CompanyDetailView: React.FC<CompanyDetailViewProps> = ({ company })
                               style={{ width: `${freq}%` }}
                             />
                           </div>
-                          <span className="font-mono text-[11px] text-[var(--text-muted)]">
+                          <span className="font-mono text-[11px] text-[var(--text-muted)] font-medium">
                             {freq.toFixed(0)}%
                           </span>
                         </div>
@@ -575,8 +572,8 @@ export const CompanyDetailView: React.FC<CompanyDetailViewProps> = ({ company })
           </table>
         </div>
 
-        {/* Footer Info */}
-        <div className="py-3 px-4 border-t border-[var(--border)] bg-[var(--bg-subtle)]/50 text-xs text-[var(--text-muted)] flex items-center justify-between">
+        {/* Footer */}
+        <div className="py-3 px-5 border-t border-[var(--border)] bg-[var(--bg-subtle)]/40 text-xs text-[var(--text-muted)] flex items-center justify-between">
           <span>Showing {sortedProblems.length} of {allProblems.length} questions</span>
           <span>Window: {currentWindow.name}</span>
         </div>

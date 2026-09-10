@@ -13,7 +13,6 @@ interface CompanyCardProps {
 export const CompanyCard: React.FC<CompanyCardProps> = ({ company, solvedCount = 0 }) => {
   const [imgFailed, setImgFailed] = useState(false);
 
-  // Generate nice 2-letter fallback abbreviation
   const initials = company.name
     .split(' ')
     .filter(Boolean)
@@ -28,52 +27,52 @@ export const CompanyCard: React.FC<CompanyCardProps> = ({ company, solvedCount =
   return (
     <Link
       href={`/company/${company.slug}`}
-      className="group relative flex items-center justify-between p-4 rounded-xl border border-[var(--border)] bg-[var(--bg-card)] hover:bg-[var(--bg-hover)] hover:border-[var(--border-subtle)] transition-all duration-150 shadow-xs"
+      className="apple-card group relative flex items-center justify-between p-4 rounded-2xl border border-[var(--border)] bg-[var(--bg-card)] hover:border-[var(--text-muted)]/20 transition-all select-none"
     >
       <div className="flex items-center gap-3.5 min-w-0">
-        {/* Company Logo / Avatar */}
-        <div className="w-10 h-10 rounded-xl bg-white border border-stone-200/80 flex items-center justify-center shrink-0 overflow-hidden shadow-xs">
+        {/* Apple Squircle Logo Container */}
+        <div className="w-11 h-11 rounded-xl bg-white border border-black/5 dark:border-white/10 flex items-center justify-center shrink-0 overflow-hidden shadow-xs">
           {faviconUrl && !imgFailed ? (
             <img
               src={faviconUrl}
               alt=""
-              width={24}
-              height={24}
+              width={26}
+              height={26}
               loading="lazy"
               onError={() => setImgFailed(true)}
               className="w-6 h-6 object-contain"
             />
           ) : (
-            <span className="text-xs font-bold text-stone-700">{initials || 'CO'}</span>
+            <span className="text-xs font-semibold text-stone-800 tracking-tight">{initials || 'CO'}</span>
           )}
         </div>
 
-        {/* Info */}
+        {/* Company Meta */}
         <div className="min-w-0">
           <div className="flex items-center gap-2">
             <h3 className="text-sm font-semibold text-[var(--text-main)] group-hover:text-blue-500 transition-colors truncate">
               {company.name}
             </h3>
             {solvedCount > 0 && (
-              <span className="inline-flex items-center gap-1 text-[11px] font-medium text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-1.5 py-0.5 rounded-full">
+              <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-[var(--diff-easy-text)] bg-[var(--diff-easy-bg)] px-1.5 py-0.5 rounded-full">
                 <CheckCircle2 className="w-3 h-3" />
                 {solvedCount}
               </span>
             )}
           </div>
 
-          {/* Difficulty breakdown */}
+          {/* Difficulty breakdown with Apple system colors */}
           <div className="flex items-center gap-2 mt-1 text-xs text-[var(--text-muted)]">
             <span className="font-medium text-[var(--text-main)]">{company.total}</span>
-            <span className="text-[11px]">problems</span>
+            <span className="text-[11px]">questions</span>
             <span className="text-[var(--border)]">•</span>
-            <span className="text-emerald-600 dark:text-emerald-400 font-medium">
+            <span className="font-semibold text-[var(--diff-easy-text)]">
               {company.easy}E
             </span>
-            <span className="text-amber-600 dark:text-amber-400 font-medium">
+            <span className="font-semibold text-[var(--diff-medium-text)]">
               {company.medium}M
             </span>
-            <span className="text-rose-600 dark:text-rose-400 font-medium">
+            <span className="font-semibold text-[var(--diff-hard-text)]">
               {company.hard}H
             </span>
           </div>
