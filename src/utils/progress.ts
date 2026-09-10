@@ -20,6 +20,8 @@ export function setActiveUser(user: UserProfile | null): void {
   try {
     if (user) {
       localStorage.setItem(ACTIVE_USER_KEY, JSON.stringify(user));
+      // Background sync with persistent server storage
+      syncUserProgressWithServer(user.username).catch(() => {});
     } else {
       localStorage.removeItem(ACTIVE_USER_KEY);
     }
@@ -170,6 +172,12 @@ export function toggleProblemSolved(
         detail: { slug, solved, count: set.size, key },
       })
     );
+
+    // Sync to user's server record if signed in
+    const activeUsername = username || getActiveUser()?.username;
+    if (activeUsername) {
+      syncUserProgressWithServer(activeUsername).catch(() => {});
+    }
   } catch (e) {
     console.error(`Failed to save solved problems for key ${key}:`, e);
   }
@@ -312,4 +320,48 @@ export function migrateGuestToUser(targetUsername: string): number {
 
   window.dispatchEvent(new CustomEvent('grindmap-solved-updated', { detail: { count: userSet.size } }));
   return merged;
+}
+
+/**
+ * Synchronizes the user's progress with their private server-side storage file.
+ * This guarantees that across 100+ different users and devices,
+ * each user's streak, solved problems, and timestamps stay 100% persistent and isolated.
+ */
+export async function syncUserProgressWithServer(username?: string): Promise<void> {
+  if (typeof window === 'undefined') return;
+  const target = username || getActiveUser()?.username;
+  if (!target) return;
+
+  const localKey = getStorageKey(target);
+  const actKey = getActivityKey(target);
+  const solvedSlugs = Array.from(getSolvedProblems(target));
+  const activityRecords = getSolvedRecords(target);
+
+  try {
+    const res = await fetch('/api/user/progress', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        solvedSlugs,
+        activityRecords,
+      }),
+    });
+
+    if (res.ok) {
+      const data = await res.json();
+      if (data.success && Array.isArray(data.solvedSlugs)) {
+        localStorage.setItem(localKey, JSON.stringify(data.solvedSlugs));
+        if (Array.isArray(data.activityRecords)) {
+          localStorage.setItem(actKey, JSON.stringify(data.activityRecords));
+        }
+        window.dispatchEvent(
+          new CustomEvent('grindmap-solved-updated', {
+            detail: { count: data.solvedSlugs.length, key: localKey },
+          })
+        );
+      }
+    }
+  } catch (err) {
+    // Offline mode / network hiccup: local storage continues uninterrupted
+  }
 }

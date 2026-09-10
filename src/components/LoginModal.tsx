@@ -12,7 +12,7 @@ const GithubIcon: React.FC<{ className?: string }> = ({ className = 'w-4 h-4' })
 
 export const LoginModal: React.FC = () => {
   const { isModalOpen, closeLoginModal, loginWithUsername, oauthConfigured } = useAuth();
-  const [username, setUsername] = useState('saitarrun');
+  const [username, setUsername] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   if (!isModalOpen) return null;
@@ -57,7 +57,7 @@ export const LoginModal: React.FC = () => {
               Sign In with GitHub
             </h2>
             <p className="text-xs text-[var(--text-muted)]">
-              Isolate your solved problems and interview progress
+              Independent profile, streak, and solved tracking for every user
             </p>
           </div>
         </div>
@@ -66,11 +66,11 @@ export const LoginModal: React.FC = () => {
         <div className="grid grid-cols-2 gap-2 text-[11px] text-[var(--text-muted)]">
           <div className="flex items-center gap-2 p-2.5 rounded-xl bg-[var(--bg-subtle)] border border-[var(--border)]">
             <UserCheck className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
-            <span>Separate progress per profile</span>
+            <span>Independent streak & storage</span>
           </div>
           <div className="flex items-center gap-2 p-2.5 rounded-xl bg-[var(--bg-subtle)] border border-[var(--border)]">
             <Shield className="w-3.5 h-3.5 text-blue-500 shrink-0" />
-            <span>GitHub avatar & verified stats</span>
+            <span>Live GitHub avatar & verified bio</span>
           </div>
         </div>
 
@@ -87,17 +87,17 @@ export const LoginModal: React.FC = () => {
             </button>
             <div className="flex items-center gap-3 text-[11px] text-[var(--text-light)]">
               <span className="flex-1 h-px bg-[var(--border)]" />
-              <span>or instant profile sign-in</span>
+              <span>or sign in directly with username</span>
               <span className="flex-1 h-px bg-[var(--border)]" />
             </div>
           </div>
         ) : null}
 
-        {/* Instant GitHub Username Sign-in */}
+        {/* GitHub Username Sign-in */}
         <form onSubmit={handleSubmit} className="space-y-3">
           <div>
             <label className="block text-xs font-semibold text-[var(--text-main)] mb-1.5">
-              GitHub Username
+              Enter Your GitHub Username
             </label>
             <div className="relative">
               <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-xs font-mono text-[var(--text-light)]">
@@ -107,35 +107,41 @@ export const LoginModal: React.FC = () => {
                 type="text"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                placeholder="saitarrun"
+                placeholder="e.g. your-github-handle"
                 className="w-full pl-8 pr-4 py-2.5 rounded-2xl text-xs bg-[var(--bg-card)] border border-[var(--border)] text-[var(--text-main)] placeholder:text-[var(--text-light)] focus:outline-none focus:border-[var(--text-muted)]/40 focus:ring-4 focus:ring-[var(--border)]/40 transition-[box-shadow,border-color] duration-150 font-mono"
                 required
+                autoFocus
               />
             </div>
-            <p className="text-[11px] text-[var(--text-light)] mt-1.5 flex items-center gap-1.5">
-              <span>Quick pick:</span>
-              <button
-                type="button"
-                onClick={() => setUsername('saitarrun')}
-                className="font-mono text-emerald-600 dark:text-emerald-400 hover:underline cursor-pointer"
-              >
-                @saitarrun
-              </button>
-            </p>
+            <div className="text-[11px] text-[var(--text-light)] mt-2 flex flex-wrap items-center gap-1.5">
+              <span>Quick test accounts:</span>
+              {['saitarrun', 'torvalds', 'octocat'].map((u) => (
+                <button
+                  key={u}
+                  type="button"
+                  onClick={() => setUsername(u)}
+                  className="font-mono px-2 py-0.5 rounded-md bg-[var(--bg-subtle)] border border-[var(--border)] text-emerald-600 dark:text-emerald-400 hover:border-emerald-500/40 text-[10px] cursor-pointer"
+                >
+                  @{u}
+                </button>
+              ))}
+            </div>
           </div>
 
           <button
             type="submit"
             disabled={isSubmitting || !username.trim()}
-            className="apple-press w-full flex items-center justify-center gap-2 py-2.5 rounded-2xl bg-[var(--text-main)] text-[var(--bg-page)] font-semibold text-xs shadow-xs disabled:opacity-50 cursor-pointer"
+            className="apple-press w-full flex items-center justify-center gap-2 py-2.5 rounded-2xl bg-[var(--text-main)] text-[var(--bg-page)] font-semibold text-xs shadow-xs disabled:opacity-40 cursor-pointer"
           >
             {isSubmitting ? (
               <span>Verifying GitHub profile...</span>
-            ) : (
+            ) : username.trim() ? (
               <>
                 <GithubIcon className="w-3.5 h-3.5" />
-                <span>Sign in as @{username.replace(/^@/, '') || 'user'}</span>
+                <span>Sign in as @{username.replace(/^@/, '')}</span>
               </>
+            ) : (
+              <span>Enter GitHub username to sign in</span>
             )}
           </button>
         </form>
