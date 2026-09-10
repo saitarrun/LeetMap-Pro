@@ -2,7 +2,7 @@
 
 import React, { useState, useMemo, useEffect, useRef } from 'react';
 import Link from 'next/link';
-import { Search, Sparkles, Trophy, Database, Building2, GitBranch } from 'lucide-react';
+import { Search, Sparkles, Trophy, Database, Building2, GitBranch, Code2 } from 'lucide-react';
 import { CompanySummary, SyncStatus } from '@/types';
 import { Header } from '@/components/Header';
 import { SyncModal } from '@/components/SyncModal';
@@ -100,17 +100,17 @@ export const HomeClient: React.FC<HomeClientProps> = ({
       <main className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 py-10 w-full space-y-8">
         {/* Apple Centered Hero */}
         <section className="text-center max-w-2xl mx-auto space-y-3.5 pt-2">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-[var(--diff-easy-bg)] text-[var(--diff-easy-text)] border border-emerald-500/20 shadow-2xs">
-            <Sparkles className="w-3.5 h-3.5" />
-            <span>Multi-source real-time interview questions</span>
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20 shadow-2xs">
+            <Code2 className="w-3.5 h-3.5" />
+            <span>DSA & Algorithmic Interview Track</span>
           </div>
 
           <h1 className="text-3xl sm:text-5xl font-bold tracking-tight text-[var(--text-main)]">
-            Company-wise LeetCode
+            Company-wise LeetCode DSA
           </h1>
 
           <p className="text-sm sm:text-base text-[var(--text-muted)] leading-relaxed font-normal">
-            Interview problems top tech & finance companies actually ask, ranked by frequency and recency.
+            Coding interview problems top tech & finance companies actually ask, ranked by frequency and recency.
           </p>
 
           {/* Apple Pill Metrics */}
@@ -140,7 +140,7 @@ export const HomeClient: React.FC<HomeClientProps> = ({
               className="apple-press flex items-center gap-2 text-xs font-medium text-cyan-600 dark:text-cyan-400 bg-cyan-500/10 border border-cyan-500/20 px-3.5 py-1.5 rounded-full shadow-xs hover:bg-cyan-500/15 transition-all"
             >
               <Database className="w-3.5 h-3.5" />
-              <span><strong>194</strong> SQL questions</span>
+              <span>Switch to SQL Track (73 Cos) →</span>
             </Link>
 
             <div className="flex items-center gap-2 text-xs font-medium text-[var(--text-main)] bg-[var(--bg-card)] border border-[var(--border)] px-3.5 py-1.5 rounded-full shadow-xs">
@@ -171,11 +171,10 @@ export const HomeClient: React.FC<HomeClientProps> = ({
           <div className="flex flex-wrap items-center justify-between gap-3 text-xs">
             <div className="flex flex-wrap items-center p-1 rounded-2xl bg-[var(--bg-subtle)] border border-[var(--border)] gap-1">
               {[
-                { key: 'ALL', label: 'All' },
+                { key: 'ALL', label: 'All Companies' },
                 { key: 'FAANG', label: 'FAANG & Big Tech' },
                 { key: 'FINTECH', label: 'FinTech & Quant' },
                 { key: 'POPULAR', label: '100+ Questions' },
-                { key: 'SQL', label: 'SQL Questions' },
               ].map((tab) => (
                 <button
                   key={tab.key}

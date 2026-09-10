@@ -12,6 +12,7 @@ import {
   LayoutGrid,
   ListFilter,
   ArrowLeft,
+  Code2,
 } from 'lucide-react';
 import { SqlCompanySummary, SqlCatalog, SyncStatus } from '@/types';
 import { Header } from '@/components/Header';
@@ -108,28 +109,32 @@ export const SqlHubClient: React.FC<SqlHubClientProps> = ({
 
       <main className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 py-8 w-full space-y-8">
         {/* Breadcrumb */}
-        <nav className="flex items-center gap-2 text-xs text-[var(--text-muted)] font-normal">
+        <nav className="flex items-center gap-2 text-xs text-[var(--text-muted)] font-normal flex-wrap">
           <Link href="/" className="apple-press hover:text-[var(--text-main)] flex items-center gap-1.5 transition-colors">
             <ArrowLeft className="w-3.5 h-3.5" />
-            <span>All Companies (DSA)</span>
+            <span>Switch to DSA Track</span>
           </Link>
           <span>/</span>
-          <span className="text-[var(--text-main)] font-medium">SQL & Database Hub</span>
+          <span className="px-2 py-0.5 rounded-md bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 font-semibold border border-cyan-500/20 text-[10px]">
+            SQL Track
+          </span>
+          <span>/</span>
+          <span className="text-[var(--text-main)] font-medium">SQL Companies & Questions</span>
         </nav>
 
         {/* Hero Section */}
         <section className="text-center max-w-2xl mx-auto space-y-3.5">
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 border border-cyan-500/20 shadow-2xs">
             <Database className="w-3.5 h-3.5" />
-            <span>Company-Wise SQL & Database Questions</span>
+            <span>SQL & Database Interview Track</span>
           </div>
 
           <h1 className="text-3xl sm:text-5xl font-bold tracking-tight text-[var(--text-main)]">
-            Company-wise SQL Questions
+            Company-wise LeetCode SQL
           </h1>
 
           <p className="text-sm sm:text-base text-[var(--text-muted)] leading-relaxed font-normal">
-            LeetCode database problems asked in interviews across {companies.length} top tech firms, organized company by company with recency and frequency.
+            LeetCode database queries asked in interviews across {companies.length} top tech firms, organized company by company with recency and frequency.
           </p>
 
           {/* Metric Pills */}
@@ -143,6 +148,14 @@ export const SqlHubClient: React.FC<SqlHubClientProps> = ({
               <Database className="w-3.5 h-3.5 text-emerald-500" />
               <span><strong>{catalog.totalSqlProblems}</strong> unique SQL queries</span>
             </div>
+
+            <Link
+              href="/"
+              className="apple-press flex items-center gap-2 text-xs font-medium text-blue-600 dark:text-blue-400 bg-blue-500/10 border border-blue-500/20 px-3.5 py-1.5 rounded-full shadow-xs hover:bg-blue-500/15 transition-all"
+            >
+              <Code2 className="w-3.5 h-3.5 text-blue-500" />
+              <span>Switch to DSA Track (683 Cos) →</span>
+            </Link>
 
             <div className="flex items-center gap-2 text-xs font-medium text-[var(--text-main)] bg-[var(--bg-card)] border border-[var(--border)] px-3.5 py-1.5 rounded-full shadow-xs">
               <Trophy className="w-3.5 h-3.5 text-amber-500" />

@@ -201,15 +201,14 @@ export const SqlCompanyDetailView: React.FC<SqlCompanyDetailViewProps> = ({ comp
     <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 space-y-6">
       {/* Breadcrumb */}
       <nav className="flex items-center gap-2 text-xs text-[var(--text-muted)] font-normal flex-wrap">
-        <Link href="/" className="apple-press hover:text-[var(--text-main)] flex items-center gap-1.5 transition-colors">
+        <Link href="/sql" className="apple-press hover:text-[var(--text-main)] flex items-center gap-1.5 transition-colors">
           <ArrowLeft className="w-3.5 h-3.5" />
-          <span>All companies</span>
+          <span>All SQL Companies</span>
         </Link>
         <span>/</span>
-        <Link href="/sql" className="apple-press hover:text-[var(--text-main)] flex items-center gap-1 transition-colors">
-          <Database className="w-3.5 h-3.5 text-cyan-500" />
-          <span>SQL Hub</span>
-        </Link>
+        <span className="px-2 py-0.5 rounded-md bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 font-semibold border border-cyan-500/20 text-[10px]">
+          SQL Track
+        </span>
         <span>/</span>
         <span className="text-[var(--text-main)] font-medium">{company.name} SQL</span>
       </nav>
@@ -244,14 +243,21 @@ export const SqlCompanyDetailView: React.FC<SqlCompanyDetailViewProps> = ({ comp
               <span className="font-semibold text-[var(--diff-medium-text)]">{sqlMed} Medium</span>
               <span>•</span>
               <span className="font-semibold text-[var(--diff-hard-text)]">{sqlHard} Hard</span>
-              <span>•</span>
+            </div>
+
+            {/* Track Switcher Pill */}
+            <div className="flex items-center p-0.5 rounded-2xl bg-[var(--bg-subtle)] border border-[var(--border)] text-xs font-semibold mt-2.5 self-start w-fit">
               <Link
                 href={`/company/${company.slug}`}
-                className="apple-press inline-flex items-center gap-1 text-blue-500 hover:text-blue-600 font-medium ml-1 underline decoration-blue-500/30"
+                className="apple-press px-3 py-1 rounded-xl text-blue-600 dark:text-blue-400 hover:text-blue-500 transition-colors flex items-center gap-1.5 font-medium"
               >
-                <Code2 className="w-3 h-3" />
-                <span>View all {company.total} DSA questions</span>
+                <Code2 className="w-3.5 h-3.5 text-blue-500" />
+                <span>Switch to {company.total - totalSqlCount} DSA Questions →</span>
               </Link>
+              <span className="px-3 py-1 rounded-xl bg-[var(--bg-card)] text-cyan-600 dark:text-cyan-400 shadow-xs font-bold flex items-center gap-1.5">
+                <Database className="w-3.5 h-3.5" />
+                <span>SQL & DB</span>
+              </span>
             </div>
           </div>
         </div>

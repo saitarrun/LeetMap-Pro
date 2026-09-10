@@ -2,7 +2,8 @@
 
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { RefreshCw, Sun, Moon, Database, GitBranch } from 'lucide-react';
+import { usePathname } from 'next/navigation';
+import { RefreshCw, Sun, Moon, Database, GitBranch, Code2 } from 'lucide-react';
 import { SyncStatus } from '@/types';
 
 interface HeaderProps {
@@ -11,6 +12,9 @@ interface HeaderProps {
 }
 
 export const Header: React.FC<HeaderProps> = ({ onOpenSync, syncStatus }) => {
+  const pathname = usePathname() || '/';
+  const isSqlTrack = pathname.startsWith('/sql');
+  const isDsaTrack = !isSqlTrack;
   const [theme, setTheme] = useState<'light' | 'dark'>('dark');
 
   useEffect(() => {
@@ -29,47 +33,87 @@ export const Header: React.FC<HeaderProps> = ({ onOpenSync, syncStatus }) => {
 
   return (
     <header className="sticky top-0 z-40 border-b border-[var(--border)] bg-[var(--bg-page)]/80 backdrop-blur-2xl transition-colors">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between gap-4">
-        {/* Brand & Nav */}
-        <div className="flex items-center gap-4 sm:gap-6">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between gap-3">
+        {/* Brand & Track Switcher */}
+        <div className="flex items-center gap-2.5 sm:gap-5">
           <Link
             href="/"
-            className="apple-press flex items-center gap-2.5 text-[var(--text-main)] select-none"
+            className="apple-press flex items-center gap-2 text-[var(--text-main)] select-none shrink-0"
           >
             <div className="relative flex items-center justify-center">
               <span className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
               <span className="absolute w-4 h-4 rounded-full bg-emerald-500/30 animate-ping" />
             </div>
-            <span className="font-semibold text-base tracking-tight">grindmap</span>
-            <span className="hidden sm:inline-block text-[11px] text-[var(--text-muted)] border-l border-[var(--border)] pl-2.5 ml-0.5 font-normal">
-              company-wise LeetCode
-            </span>
+            <span className="font-bold text-base tracking-tight">grindmap</span>
           </Link>
 
-          <nav className="flex items-center gap-1 sm:gap-1.5 text-xs font-medium">
+          {/* Apple Segmented Track Switcher (DSA vs SQL) */}
+          <div className="flex items-center p-0.5 rounded-2xl bg-[var(--bg-subtle)] border border-[var(--border)] text-xs font-semibold shadow-2xs">
             <Link
               href="/"
-              className="apple-press px-2.5 py-1 rounded-xl text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--bg-hover)] transition-colors"
+              className={`apple-press flex items-center gap-1.5 px-3 py-1.5 rounded-xl transition-all ${
+                isDsaTrack
+                  ? 'bg-[var(--bg-card)] text-[var(--text-main)] shadow-xs font-bold'
+                  : 'text-[var(--text-muted)] hover:text-[var(--text-main)]'
+              }`}
             >
-              Companies
+              <Code2 className="w-3.5 h-3.5 text-blue-500" />
+              <span>DSA</span>
+              <span className="hidden md:inline font-normal text-[11px] text-[var(--text-muted)]">Coding</span>
             </Link>
-            <Link
-              href="/patterns"
-              className="apple-press flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-blue-500/10 text-blue-600 dark:text-blue-400 hover:bg-blue-500/15 border border-blue-500/20 transition-all"
-            >
-              <GitBranch className="w-3.5 h-3.5" />
-              <span>Patterns</span>
-              <span className="text-[10px] font-mono px-1 py-0.2 rounded bg-blue-500/20">22</span>
-            </Link>
+
             <Link
               href="/sql"
-              className="apple-press flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 hover:bg-cyan-500/15 border border-cyan-500/20 transition-all"
+              className={`apple-press flex items-center gap-1.5 px-3 py-1.5 rounded-xl transition-all ${
+                isSqlTrack
+                  ? 'bg-[var(--bg-card)] text-cyan-600 dark:text-cyan-400 shadow-xs font-bold'
+                  : 'text-[var(--text-muted)] hover:text-[var(--text-main)]'
+              }`}
             >
-              <Database className="w-3.5 h-3.5" />
+              <Database className="w-3.5 h-3.5 text-cyan-500" />
               <span>SQL</span>
-              <span className="text-[10px] font-mono px-1 py-0.2 rounded bg-cyan-500/20">194</span>
+              <span className="hidden md:inline font-normal text-[11px] text-[var(--text-muted)]">& DB</span>
             </Link>
-          </nav>
+          </div>
+
+          {/* Sub-nav for DSA track */}
+          {isDsaTrack && (
+            <nav className="hidden md:flex items-center gap-1 text-xs font-medium">
+              <Link
+                href="/"
+                className={`apple-press px-2.5 py-1 rounded-xl transition-colors ${
+                  pathname === '/'
+                    ? 'text-[var(--text-main)] bg-[var(--bg-subtle)] font-semibold'
+                    : 'text-[var(--text-muted)] hover:text-[var(--text-main)]'
+                }`}
+              >
+                Companies (683)
+              </Link>
+              <Link
+                href="/patterns"
+                className={`apple-press flex items-center gap-1.5 px-2.5 py-1 rounded-xl transition-all ${
+                  pathname.startsWith('/patterns')
+                    ? 'bg-blue-500/15 text-blue-600 dark:text-blue-400 font-semibold'
+                    : 'text-[var(--text-muted)] hover:text-[var(--text-main)]'
+                }`}
+              >
+                <GitBranch className="w-3.5 h-3.5" />
+                <span>Patterns (22)</span>
+              </Link>
+            </nav>
+          )}
+
+          {/* Sub-nav for SQL track */}
+          {isSqlTrack && (
+            <nav className="hidden md:flex items-center gap-1 text-xs font-medium">
+              <Link
+                href="/sql"
+                className="apple-press px-2.5 py-1 rounded-xl text-cyan-600 dark:text-cyan-400 bg-cyan-500/10 font-semibold border border-cyan-500/20"
+              >
+                73 Companies Asking SQL
+              </Link>
+            </nav>
+          )}
         </div>
 
         {/* Right Actions */}

@@ -15,6 +15,7 @@ import {
   Download,
   ShieldCheck,
   Database,
+  Code2,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { CompanyDetail, Problem } from '@/types';
@@ -209,11 +210,15 @@ export const CompanyDetailView: React.FC<CompanyDetailViewProps> = ({ company })
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 space-y-6">
       {/* Apple Breadcrumb */}
-      <nav className="flex items-center gap-2 text-xs text-[var(--text-muted)] font-normal">
+      <nav className="flex items-center gap-2 text-xs text-[var(--text-muted)] font-normal flex-wrap">
         <Link href="/" className="apple-press hover:text-[var(--text-main)] flex items-center gap-1.5 transition-colors">
           <ArrowLeft className="w-3.5 h-3.5" />
           <span>All companies</span>
         </Link>
+        <span>/</span>
+        <span className="px-2 py-0.5 rounded-md bg-blue-500/10 text-blue-600 dark:text-blue-400 font-semibold border border-blue-500/20 text-[10px]">
+          DSA Track
+        </span>
         <span>/</span>
         <span className="text-[var(--text-main)] font-medium">{company.name}</span>
       </nav>
@@ -246,19 +251,23 @@ export const CompanyDetailView: React.FC<CompanyDetailViewProps> = ({ company })
               <span className="font-semibold text-[var(--diff-medium-text)]">{company.medium} Medium</span>
               <span>•</span>
               <span className="font-semibold text-[var(--diff-hard-text)]">{company.hard} Hard</span>
-              {Boolean(company.sqlTotal && company.sqlTotal > 0) && (
-                <>
-                  <span>•</span>
-                  <Link
-                    href={`/sql/${company.slug}`}
-                    className="apple-press inline-flex items-center gap-1 text-cyan-600 dark:text-cyan-400 hover:text-cyan-500 font-semibold underline decoration-cyan-500/30"
-                  >
-                    <Database className="w-3 h-3" />
-                    <span>View {company.sqlTotal} SQL questions →</span>
-                  </Link>
-                </>
-              )}
             </div>
+
+            {Boolean(company.sqlTotal && company.sqlTotal > 0) && (
+              <div className="flex items-center p-0.5 rounded-2xl bg-[var(--bg-subtle)] border border-[var(--border)] text-xs font-semibold mt-2.5 self-start w-fit">
+                <span className="px-3 py-1 rounded-xl bg-[var(--bg-card)] text-[var(--text-main)] shadow-xs font-bold flex items-center gap-1.5">
+                  <Code2 className="w-3.5 h-3.5 text-blue-500" />
+                  <span>DSA Coding</span>
+                </span>
+                <Link
+                  href={`/sql/${company.slug}`}
+                  className="apple-press px-3 py-1 rounded-xl text-cyan-600 dark:text-cyan-400 hover:text-cyan-500 transition-colors flex items-center gap-1.5 font-medium"
+                >
+                  <Database className="w-3.5 h-3.5" />
+                  <span>Switch to {company.sqlTotal} SQL Questions →</span>
+                </Link>
+              </div>
+            )}
           </div>
         </div>
 
