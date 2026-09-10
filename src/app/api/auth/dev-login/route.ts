@@ -5,42 +5,74 @@ import { UserProfile } from '@/types';
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const rawUsername = body.username?.trim();
+    const rawInput = (body.username || body.email || '').trim();
+    const provider = body.provider || 'github';
 
-    if (!rawUsername) {
-      return NextResponse.json({ success: false, error: 'GitHub username is required' }, { status: 400 });
+    if (!rawInput && provider !== 'google') {
+      return NextResponse.json({ success: false, error: 'Email or GitHub username is required' }, { status: 400 });
     }
 
-    // Clean username (remove leading @ if provided)
-    const username = rawUsername.replace(/^@/, '');
+    let userProfile: UserProfile;
 
-    // Fetch public profile from GitHub API
-    const ghRes = await fetch(`https://api.github.com/users/${encodeURIComponent(username)}`, {
-      headers: {
-        'User-Agent': 'grindmap-web',
-        Accept: 'application/vnd.github.v3+json',
-      },
-      next: { revalidate: 3600 },
-    });
+    if (provider === 'google') {
+      const email = rawInput || 'user@gmail.com';
+      const cleanName = email.includes('@') ? email.split('@')[0] : 'Google User';
+      const username = cleanName.toLowerCase().replace(/[^a-z0-9_-]/g, '_');
+      userProfile = {
+        id: `google_${Date.now()}`,
+        username: username,
+        name: cleanName.charAt(0).toUpperCase() + cleanName.slice(1),
+        email: email,
+        avatarUrl: `https://api.dicebear.com/7.x/bottts/svg?seed=${username}`,
+        githubUrl: `https://github.com/${username}`,
+        createdAt: new Date().toISOString(),
+      };
+    } else {
+      // Determine username from email or direct handle
+      const isEmail = rawInput.includes('@');
+      const targetHandle = isEmail ? rawInput.split('@')[0] : rawInput.replace(/^@/, '');
 
-    if (!ghRes.ok) {
-      if (ghRes.status === 404) {
-        return NextResponse.json({ success: false, error: `GitHub user "@${username}" not found` }, { status: 404 });
+      // Try fetching public profile from GitHub API
+      let ghUser: any = null;
+      try {
+        const ghRes = await fetch(`https://api.github.com/users/${encodeURIComponent(targetHandle)}`, {
+          headers: {
+            'User-Agent': 'grindmap-web',
+            Accept: 'application/vnd.github.v3+json',
+          },
+          next: { revalidate: 3600 },
+        });
+        if (ghRes.ok) {
+          ghUser = await ghRes.json();
+        }
+      } catch (err) {
+        // Fallback below
       }
-      return NextResponse.json({ success: false, error: 'Failed to query GitHub API' }, { status: ghRes.status });
+
+      if (ghUser) {
+        userProfile = {
+          id: String(ghUser.id),
+          username: ghUser.login,
+          name: ghUser.name || ghUser.login,
+          avatarUrl: ghUser.avatar_url,
+          bio: ghUser.bio || undefined,
+          githubUrl: ghUser.html_url,
+          email: isEmail ? rawInput : ghUser.email || undefined,
+          createdAt: new Date().toISOString(),
+        };
+      } else {
+        // Fallback profile if user does not exist on GitHub
+        userProfile = {
+          id: `user_${Date.now()}`,
+          username: targetHandle.toLowerCase().replace(/[^a-z0-9_-]/g, '_'),
+          name: targetHandle,
+          avatarUrl: `https://api.dicebear.com/7.x/identicon/svg?seed=${targetHandle}`,
+          email: isEmail ? rawInput : `${targetHandle}@grindmap.dev`,
+          githubUrl: `https://github.com/${targetHandle}`,
+          createdAt: new Date().toISOString(),
+        };
+      }
     }
-
-    const ghUser = await ghRes.json();
-
-    const userProfile: UserProfile = {
-      id: String(ghUser.id),
-      username: ghUser.login,
-      name: ghUser.name || ghUser.login,
-      avatarUrl: ghUser.avatar_url,
-      bio: ghUser.bio || undefined,
-      githubUrl: ghUser.html_url,
-      createdAt: new Date().toISOString(),
-    };
 
     // Save session cookie for 30 days
     const cookieStore = await cookies();
