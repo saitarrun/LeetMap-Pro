@@ -93,7 +93,7 @@ export const PatternCard: React.FC<PatternCardProps> = ({ pattern, solvedCount =
   return (
     <Link
       href={`/patterns/${pattern.slug}`}
-      className="apple-card group relative flex flex-col justify-between p-5 rounded-3xl border border-[var(--border)] bg-[var(--bg-card)] hover:border-[var(--text-muted)]/30 transition-all select-none shadow-xs"
+      className="apple-card group relative flex flex-col justify-between p-5 rounded-3xl border border-[var(--border)] bg-[var(--bg-card)] hover:border-[var(--text-muted)]/30 select-none shadow-xs"
     >
       <div className="space-y-3.5">
         {/* Header row: Icon + Category Badge */}

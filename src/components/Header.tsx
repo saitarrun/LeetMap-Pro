@@ -145,11 +145,13 @@ export const Header: React.FC<HeaderProps> = ({ onOpenSync, syncStatus }) => {
           {/* Theme Toggle */}
           <button
             onClick={toggleTheme}
-            className="apple-press p-2 rounded-full text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--bg-hover)] transition-colors cursor-pointer"
+            className="apple-press p-2 rounded-full text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--bg-hover)] transition-colors cursor-pointer overflow-hidden"
             title={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
             aria-label="Toggle theme"
           >
-            {theme === 'dark' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+            <span key={theme} className="apple-theme-icon block">
+              {theme === 'dark' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+            </span>
           </button>
         </div>
       </div>

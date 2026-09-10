@@ -12,6 +12,7 @@ import {
   ExternalLink,
   Download,
   Building2,
+  X,
   Lightbulb,
   Sparkles,
   ArrowLeftRight,
@@ -296,7 +297,7 @@ export const PatternDetailView: React.FC<PatternDetailViewProps> = ({ pattern })
               </div>
               <div className="w-32 h-1.5 bg-[var(--border)] rounded-full mt-1.5 overflow-hidden">
                 <div
-                  className="h-full bg-emerald-500 rounded-full transition-all duration-300"
+                  className="h-full bg-emerald-500 rounded-full transition-[width] duration-300 ease-out"
                   style={{
                     width: `${pattern.total ? Math.min(100, (patternSolvedCount / pattern.total) * 100) : 0}%`,
                   }}
@@ -349,8 +350,18 @@ export const PatternDetailView: React.FC<PatternDetailViewProps> = ({ pattern })
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder={`Filter ${pattern.name} problems (#15, 3Sum, Two Pointers...)`}
-            className="w-full pl-10 pr-4 py-2.5 rounded-2xl text-xs bg-[var(--bg-card)] border border-[var(--border)] text-[var(--text-main)] placeholder:text-[var(--text-light)] focus:outline-none focus:border-[var(--text-muted)]/40 focus:ring-4 focus:ring-[var(--border)]/40 transition-all"
+            className="w-full pl-10 pr-9 py-2.5 rounded-2xl text-xs bg-[var(--bg-card)] border border-[var(--border)] text-[var(--text-main)] placeholder:text-[var(--text-light)] focus:outline-none focus:border-[var(--text-muted)]/40 focus:ring-4 focus:ring-[var(--border)]/40 transition-[box-shadow,border-color] duration-150"
           />
+          {searchQuery && (
+            <button
+              type="button"
+              onClick={() => setSearchQuery('')}
+              className="apple-press apple-pop-in absolute right-3 top-1/2 -translate-y-1/2 p-0.5 rounded-full text-[var(--text-light)] hover:text-[var(--text-main)] transition-colors cursor-pointer"
+              title="Clear search"
+            >
+              <X className="w-3.5 h-3.5" />
+            </button>
+          )}
         </div>
 
         {/* Controls */}
@@ -440,7 +451,7 @@ export const PatternDetailView: React.FC<PatternDetailViewProps> = ({ pattern })
       </div>
 
       {/* Problem Table */}
-      <div className="border border-[var(--border)] rounded-3xl bg-[var(--bg-card)] overflow-hidden shadow-xs">
+      <div className="apple-enter border border-[var(--border)] rounded-3xl bg-[var(--bg-card)] overflow-hidden shadow-xs">
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs border-collapse">
             <thead>
@@ -543,7 +554,7 @@ export const PatternDetailView: React.FC<PatternDetailViewProps> = ({ pattern })
                           }`}
                           aria-label={`Mark ${prob.title} as ${isSolved ? 'unsolved' : 'solved'}`}
                         >
-                          {isSolved && <CheckCircle2 className="w-3.5 h-3.5 stroke-[3]" />}
+                          {isSolved && <CheckCircle2 className="w-3.5 h-3.5 stroke-[3] apple-check-pop" />}
                         </button>
                       </td>
 

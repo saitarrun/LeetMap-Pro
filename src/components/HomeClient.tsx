@@ -147,7 +147,7 @@ export const HomeClient: React.FC<HomeClientProps> = ({
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search 683 companies... (Google, Citadel, Jane Street, Stripe)"
-              className="w-full pl-11 pr-12 py-3 rounded-2xl text-sm bg-[var(--bg-card)] border border-[var(--border)] text-[var(--text-main)] placeholder:text-[var(--text-light)] shadow-xs focus:outline-none focus:border-[var(--text-muted)]/40 focus:ring-4 focus:ring-[var(--border)]/40 transition-all"
+              className="w-full pl-11 pr-12 py-3 rounded-2xl text-sm bg-[var(--bg-card)] border border-[var(--border)] text-[var(--text-main)] placeholder:text-[var(--text-light)] shadow-xs focus:outline-none focus:border-[var(--text-muted)]/40 focus:ring-4 focus:ring-[var(--border)]/40 transition-[box-shadow,border-color] duration-150"
             />
             {searchQuery ? (
               <button
@@ -156,7 +156,7 @@ export const HomeClient: React.FC<HomeClientProps> = ({
                   setSearchQuery('');
                   searchInputRef.current?.focus();
                 }}
-                className="apple-press absolute right-3.5 top-1/2 -translate-y-1/2 p-1 rounded-full text-[var(--text-light)] hover:text-[var(--text-main)] hover:bg-[var(--bg-subtle)] transition-colors cursor-pointer"
+                className="apple-press apple-pop-in absolute right-3.5 top-1/2 -translate-y-1/2 p-1 rounded-full text-[var(--text-light)] hover:text-[var(--text-main)] hover:bg-[var(--bg-subtle)] transition-colors cursor-pointer"
                 title="Clear search (Esc)"
               >
                 <X className="w-3.5 h-3.5" />
@@ -247,7 +247,7 @@ export const HomeClient: React.FC<HomeClientProps> = ({
             </button>
           </div>
         ) : (
-          <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+          <section className="apple-enter grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
             {filteredCompanies.map((company) => (
               <CompanyCard key={company.slug} company={company} />
             ))}

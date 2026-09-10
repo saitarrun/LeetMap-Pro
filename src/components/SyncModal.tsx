@@ -62,11 +62,11 @@ export const SyncModal: React.FC<SyncModalProps> = ({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-md animate-in fade-in duration-150"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-md apple-modal-backdrop"
       onClick={onClose}
     >
       <div
-        className="bg-[var(--bg-card)] border border-[var(--border)] rounded-3xl max-w-lg w-full p-6 shadow-2xl relative animate-in zoom-in-95 duration-200"
+        className="bg-[var(--bg-card)] border border-[var(--border)] rounded-3xl max-w-lg w-full p-6 shadow-2xl relative apple-modal-surface"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Apple Close Pill */}
