@@ -59,6 +59,11 @@ export const CompanyCard: React.FC<CompanyCardProps> = ({ company, solvedCount =
                 {solvedCount}
               </span>
             )}
+            {Boolean(company.sqlTotal && company.sqlTotal > 0) && (
+              <span className="inline-flex items-center gap-0.5 text-[10px] font-semibold text-cyan-600 dark:text-cyan-400 bg-cyan-500/10 border border-cyan-500/20 px-1.5 py-0.5 rounded-md">
+                {company.sqlTotal} SQL
+              </span>
+            )}
           </div>
 
           {/* Difficulty breakdown with Apple system colors */}

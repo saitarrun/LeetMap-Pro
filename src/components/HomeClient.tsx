@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useMemo, useEffect, useRef } from 'react';
+import Link from 'next/link';
 import { Search, Sparkles, Trophy, Database, Building2 } from 'lucide-react';
 import { CompanySummary, SyncStatus } from '@/types';
 import { Header } from '@/components/Header';
@@ -30,7 +31,7 @@ export const HomeClient: React.FC<HomeClientProps> = ({
   const [syncStatus, setSyncStatus] = useState<SyncStatus | null>(initialSyncStatus);
   const [isSyncModalOpen, setIsSyncModalOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-  const [categoryFilter, setCategoryFilter] = useState<'ALL' | 'FAANG' | 'FINTECH' | 'POPULAR'>('ALL');
+  const [categoryFilter, setCategoryFilter] = useState<'ALL' | 'FAANG' | 'FINTECH' | 'POPULAR' | 'SQL'>('ALL');
   const [sortBy, setSortBy] = useState<'total' | 'name' | 'hard'>('total');
   const [userSolvedCount, setUserSolvedCount] = useState(0);
 
@@ -72,6 +73,7 @@ export const HomeClient: React.FC<HomeClientProps> = ({
         if (categoryFilter === 'FAANG') return FAANG_SLUGS.has(c.slug);
         if (categoryFilter === 'FINTECH') return FINTECH_SLUGS.has(c.slug);
         if (categoryFilter === 'POPULAR') return c.total >= 100;
+        if (categoryFilter === 'SQL') return (c.sqlTotal ?? 0) > 0;
         return true;
       })
       .sort((a, b) => {
@@ -125,6 +127,14 @@ export const HomeClient: React.FC<HomeClientProps> = ({
               </span>
             </div>
 
+            <Link
+              href="/sql"
+              className="apple-press flex items-center gap-2 text-xs font-medium text-cyan-600 dark:text-cyan-400 bg-cyan-500/10 border border-cyan-500/20 px-3.5 py-1.5 rounded-full shadow-xs hover:bg-cyan-500/15 transition-all"
+            >
+              <Database className="w-3.5 h-3.5" />
+              <span><strong>194</strong> SQL questions</span>
+            </Link>
+
             <div className="flex items-center gap-2 text-xs font-medium text-[var(--text-main)] bg-[var(--bg-card)] border border-[var(--border)] px-3.5 py-1.5 rounded-full shadow-xs">
               <Trophy className="w-3.5 h-3.5 text-amber-500" />
               <span><strong>{userSolvedCount}</strong> solved</span>
@@ -157,6 +167,7 @@ export const HomeClient: React.FC<HomeClientProps> = ({
                 { key: 'FAANG', label: 'FAANG & Big Tech' },
                 { key: 'FINTECH', label: 'FinTech & Quant' },
                 { key: 'POPULAR', label: '100+ Questions' },
+                { key: 'SQL', label: 'SQL Questions' },
               ].map((tab) => (
                 <button
                   key={tab.key}

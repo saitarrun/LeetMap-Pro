@@ -1,12 +1,7 @@
 #!/usr/bin/env python3
 """
 Multi-Source LeetCode Company Questions Aggregator & Real-Time Sync Engine.
-Does NOT rely on a single source:
-1. Upstream Source 1: liquidslr/leetcode-company-wise-problems (CSVs with topic tags & 5 time windows)
-2. Upstream Source 2: snehasishroy/leetcode-companywise-interview-questions (CSVs with problem IDs, exact acceptance %, recent 2026 commits)
-3. Upstream Source 3: Official LeetCode GraphQL (companyTags list for live 984 companies and problem count cross-referencing)
-4. Upstream Source 4: Optional Direct LeetCode Session (via LEETCODE_SESSION env var or cookie argument)
-5. Fallback Cache: grindmap.xevrion.dev/data/
+Supports both Algorithms (DSA) and SQL/Database interview questions.
 """
 
 import os
@@ -46,10 +41,8 @@ def fetch_commit_sha(repo: str, branch: str = "main") -> str:
             data = json.loads(resp.read().decode())
             return data.get("sha", "")[:8]
     except Exception as e:
-        # try master if main failed
         if branch == "main":
             return fetch_commit_sha(repo, "master")
-        print(f"Warning: Could not fetch commit SHA for {repo} ({e})")
         return "latest"
 
 def fetch_tarball(repo: str, branch: str = "main") -> Optional[bytes]:
@@ -61,11 +54,9 @@ def fetch_tarball(repo: str, branch: str = "main") -> Optional[bytes]:
     except Exception as e:
         if branch == "main":
             return fetch_tarball(repo, "master")
-        print(f"Error downloading {repo}: {e}")
         return None
 
 def fetch_leetcode_official_company_tags() -> Dict[str, Dict[str, Any]]:
-    """Fetch live company tags and question counts directly from LeetCode GraphQL."""
     query = """
     query getCompanyTagList {
       companyTags {
@@ -95,7 +86,7 @@ def fetch_leetcode_official_company_tags() -> Dict[str, Dict[str, Any]]:
                     }
         print(f"🌐 Connected to Official LeetCode GraphQL: {len(tags_map)} live company tags.")
     except Exception as e:
-        print(f"Notice: LeetCode public GraphQL companyTags ({e})")
+        print(f"Notice: LeetCode public GraphQL ({e})")
     return tags_map
 
 def fetch_curated_domains() -> Dict[str, str]:
@@ -138,6 +129,12 @@ def parse_float_safe(val: Any) -> float:
     except ValueError:
         return 0.0
 
+def is_sql_problem(topics: List[str], title: str = "") -> bool:
+    lower_topics = [t.lower() for t in topics]
+    if any(k in lower_topics for k in ("database", "sql", "mysql", "postgresql")):
+        return True
+    return False
+
 def parse_liquidslr_tar(tar_bytes: bytes) -> Dict[str, Dict[int, List[Dict[str, Any]]]]:
     data: Dict[str, Dict[int, List[Dict[str, Any]]]] = {}
     with tarfile.open(fileobj=io.BytesIO(tar_bytes), mode="r:gz") as tar:
@@ -174,7 +171,6 @@ def parse_liquidslr_tar(tar_bytes: bytes) -> Dict[str, Dict[int, List[Dict[str, 
                     diff = "MEDIUM"
                 freq = round(parse_float_safe(row.get("Frequency")), 1)
                 acc = parse_float_safe(row.get("Acceptance Rate"))
-                # If acceptance is raw float <= 1, keep it
                 link = (row.get("Link") or "").strip()
                 slug = extract_slug_from_link(link)
                 raw_topics = (row.get("Topics") or "").strip()
@@ -188,6 +184,7 @@ def parse_liquidslr_tar(tar_bytes: bytes) -> Dict[str, Dict[int, List[Dict[str, 
                     "acceptance": acc,
                     "link": link or f"https://leetcode.com/problems/{slug}",
                     "topics": topics,
+                    "isSql": is_sql_problem(topics, title),
                     "source": "liquidslr"
                 })
                 
@@ -225,7 +222,6 @@ def parse_snehasishroy_tar(tar_bytes: bytes) -> Dict[str, Dict[int, List[Dict[st
             reader = csv.DictReader(io.StringIO(text))
             problems = []
             for row in reader:
-                # Headers: ID,URL,Title,Difficulty,Acceptance %,Frequency %
                 title = (row.get("Title") or "").strip()
                 if not title:
                     continue
@@ -271,24 +267,21 @@ def merge_company_datasets(
         s_comp = snehasishroy_data.get(slug)
 
         name = (l_comp and l_comp.get("name")) or (s_comp and s_comp.get("name")) or slug.replace('-', ' ').title()
-        # Check leetcode tags for canonical display name if available
         if slug in leetcode_tags:
             name = leetcode_tags[slug].get("name", name)
             
         domain = domain_map.get(slug) or domain_map.get(name.lower()) or f"{slug}.com"
         
-        # Merge windows 0..4
         merged_windows = []
         for win in WINDOW_DEFINITIONS:
             w_idx = win["index"]
             l_probs = l_comp["windows"].get(w_idx, []) if l_comp else []
             s_probs = s_comp["windows"].get(w_idx, []) if s_comp else []
 
-            # Map by slug
             prob_map: Dict[str, Dict[str, Any]] = {}
 
-            # First ingest liquidslr (has topics)
             for p in l_probs:
+                is_sql = p.get("isSql") or is_sql_problem(p.get("topics", []), p["title"])
                 prob_map[p["slug"]] = {
                     "id": "",
                     "title": p["title"],
@@ -298,23 +291,22 @@ def merge_company_datasets(
                     "acceptance": p["acceptance"],
                     "link": p["link"],
                     "topics": p["topics"],
+                    "isSql": is_sql,
                     "verifiedSources": ["liquidslr"]
                 }
 
-            # Then merge snehasishroy (has IDs and human percentage)
             for p in s_probs:
                 if p["slug"] in prob_map:
                     entry = prob_map[p["slug"]]
                     entry["id"] = p.get("id") or entry.get("id", "")
-                    # Use snehasishroy acceptance percentage if valid
                     if p.get("acceptance", 0) > 0:
                         entry["acceptance"] = p["acceptance"]
-                    # Use highest frequency score reported
                     if p.get("frequency", 0) > entry["frequency"]:
                         entry["frequency"] = p["frequency"]
                     if "snehasishroy" not in entry["verifiedSources"]:
                         entry["verifiedSources"].append("snehasishroy")
                 else:
+                    is_sql = is_sql_problem([], p["title"])
                     prob_map[p["slug"]] = {
                         "id": p.get("id", ""),
                         "title": p["title"],
@@ -323,11 +315,11 @@ def merge_company_datasets(
                         "frequency": p["frequency"],
                         "acceptance": p["acceptance"],
                         "link": p["link"],
-                        "topics": [],
+                        "topics": ["Database"] if is_sql else [],
+                        "isSql": is_sql,
                         "verifiedSources": ["snehasishroy"]
                     }
 
-            # Sort window problems by frequency descending
             sorted_probs = sorted(prob_map.values(), key=lambda x: x["frequency"], reverse=True)
             merged_windows.append({
                 "name": win["name"],
@@ -336,10 +328,8 @@ def merge_company_datasets(
                 "problems": sorted_probs
             })
 
-        # Calculate all-time summary
         all_time_probs = merged_windows[4]["problems"]
         if not all_time_probs:
-            # Fallback: combine all windows
             comb: Dict[str, Any] = {}
             for w in merged_windows:
                 for p in w["problems"]:
@@ -351,9 +341,9 @@ def merge_company_datasets(
         easy_c = sum(1 for p in all_time_probs if p["difficulty"] == "EASY")
         med_c = sum(1 for p in all_time_probs if p["difficulty"] == "MEDIUM")
         hard_c = sum(1 for p in all_time_probs if p["difficulty"] == "HARD")
+        sql_c = sum(1 for p in all_time_probs if p.get("isSql", False))
         total_c = len(all_time_probs)
 
-        # Skip companies with zero questions
         if total_c == 0:
             continue
 
@@ -365,6 +355,7 @@ def merge_company_datasets(
             "easy": easy_c,
             "medium": med_c,
             "hard": hard_c,
+            "sqlTotal": sql_c,
             "windows": merged_windows,
             "windowsCount": {
                 "30_days": merged_windows[0]["count"],
@@ -375,53 +366,88 @@ def merge_company_datasets(
             }
         })
 
-    # Sort companies by total questions descending
     merged_companies.sort(key=lambda c: c["total"], reverse=True)
     return merged_companies
 
+def build_global_sql_dataset(merged_companies: List[Dict[str, Any]]) -> Dict[str, Any]:
+    """Aggregate all SQL questions across all companies into a unified SQL catalog."""
+    sql_catalog: Dict[str, Dict[str, Any]] = {}
+
+    for c in merged_companies:
+        c_name = c["name"]
+        c_slug = c["slug"]
+        for p in c["windows"][4]["problems"]:
+            if p.get("isSql") or "database" in [t.lower() for t in p.get("topics", [])]:
+                pslug = p["slug"]
+                if pslug not in sql_catalog:
+                    sql_catalog[pslug] = {
+                        "id": p.get("id", ""),
+                        "title": p["title"],
+                        "slug": pslug,
+                        "difficulty": p["difficulty"],
+                        "acceptance": p["acceptance"],
+                        "link": p["link"],
+                        "topics": p.get("topics", ["Database"]),
+                        "isSql": True,
+                        "maxFrequency": p["frequency"],
+                        "companiesCount": 0,
+                        "companies": []
+                    }
+                sql_catalog[pslug]["companies"].append({
+                    "name": c_name,
+                    "slug": c_slug,
+                    "frequency": p["frequency"]
+                })
+                if p["frequency"] > sql_catalog[pslug]["maxFrequency"]:
+                    sql_catalog[pslug]["maxFrequency"] = p["frequency"]
+
+    for item in sql_catalog.values():
+        item["companiesCount"] = len(item["companies"])
+        # Sort companies asking this question by frequency descending
+        item["companies"].sort(key=lambda x: x["frequency"], reverse=True)
+
+    # Sort catalog by companiesCount descending (most popular interview SQL questions first)
+    sorted_sql_problems = sorted(
+        sql_catalog.values(),
+        key=lambda x: (x["companiesCount"], x["maxFrequency"]),
+        reverse=True
+    )
+
+    return {
+        "totalSqlProblems": len(sorted_sql_problems),
+        "lastUpdated": int(time.time() * 1000),
+        "problems": sorted_sql_problems
+    }
+
 def main():
     start_time = time.time()
-    print("🚀 Initializing Multi-Source Real-Time Synchronization...")
+    print("🚀 Initializing Multi-Source Real-Time Synchronization (DSA + SQL)...")
 
-    # Fetch Git commit metadata
     sha1 = fetch_commit_sha(SOURCE_LIQUIDSLR, "main")
     sha2 = fetch_commit_sha(SOURCE_SNEHASISHROY, "master")
     print(f"📌 Source 1 [{SOURCE_LIQUIDSLR}]: commit {sha1}")
     print(f"📌 Source 2 [{SOURCE_SNEHASISHROY}]: commit {sha2}")
 
-    # Fetch official LeetCode GraphQL company tags
     leetcode_tags = fetch_leetcode_official_company_tags()
-
-    # Curated domain map
     domain_map = fetch_curated_domains()
 
-    # Download Source 1
     print(f"📦 Downloading Source 1 [{SOURCE_LIQUIDSLR}]...")
     l_bytes = fetch_tarball(SOURCE_LIQUIDSLR, "main")
-    if l_bytes:
-        print(f"   Downloaded {len(l_bytes):,} bytes from Source 1.")
-        liquidslr_data = parse_liquidslr_tar(l_bytes)
-        print(f"   Parsed {len(liquidslr_data)} companies from Source 1.")
-    else:
-        print("   Warning: Source 1 download failed, continuing with other sources...")
-        liquidslr_data = {}
+    liquidslr_data = parse_liquidslr_tar(l_bytes) if l_bytes else {}
 
-    # Download Source 2
     print(f"📦 Downloading Source 2 [{SOURCE_SNEHASISHROY}]...")
     s_bytes = fetch_tarball(SOURCE_SNEHASISHROY, "master")
-    if s_bytes:
-        print(f"   Downloaded {len(s_bytes):,} bytes from Source 2.")
-        snehasishroy_data = parse_snehasishroy_tar(s_bytes)
-        print(f"   Parsed {len(snehasishroy_data)} companies from Source 2.")
-    else:
-        print("   Warning: Source 2 download failed, continuing with other sources...")
-        snehasishroy_data = {}
+    snehasishroy_data = parse_snehasishroy_tar(s_bytes) if s_bytes else {}
 
-    # Merge and cross-validate
-    print("🔄 Merging and cross-validating multi-source datasets...")
+    print("🔄 Merging datasets and calculating DSA + SQL distributions...")
     merged_companies = merge_company_datasets(
         liquidslr_data, snehasishroy_data, domain_map, leetcode_tags
     )
+
+    # Build dedicated SQL dataset
+    print("🗄️  Extracting and compiling dedicated SQL / Database questions catalog...")
+    sql_dataset = build_global_sql_dataset(merged_companies)
+    print(f"   Found {sql_dataset['totalSqlProblems']} distinct SQL interview questions.")
 
     total_unique_slugs = set()
     for c in merged_companies:
@@ -429,13 +455,12 @@ def main():
             for p in w["problems"]:
                 total_unique_slugs.add(p["slug"])
 
-    # Output paths
     base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     public_data_dir = os.path.join(base_dir, "public", "data")
     companies_dir = os.path.join(public_data_dir, "companies")
     os.makedirs(companies_dir, exist_ok=True)
 
-    # Save individual company JSON files
+    # Save individual companies
     for c in merged_companies:
         company_path = os.path.join(companies_dir, f"{c['slug']}.json")
         with open(company_path, "w", encoding="utf-8") as f:
@@ -452,6 +477,7 @@ def main():
             "easy": c["easy"],
             "medium": c["medium"],
             "hard": c["hard"],
+            "sqlTotal": c["sqlTotal"],
             "windowsCount": c["windowsCount"]
         })
 
@@ -459,9 +485,13 @@ def main():
     with open(index_path, "w", encoding="utf-8") as f:
         json.dump(index_list, f, separators=(',', ':'))
 
+    # Save dedicated sql-problems.json
+    sql_path = os.path.join(public_data_dir, "sql-problems.json")
+    with open(sql_path, "w", encoding="utf-8") as f:
+        json.dump(sql_dataset, f, separators=(',', ':'))
+
     duration = round(time.time() - start_time, 2)
 
-    # Save sync status
     status_obj = {
         "status": "success",
         "lastSynced": int(time.time() * 1000),
@@ -474,6 +504,7 @@ def main():
         ],
         "companiesCount": len(merged_companies),
         "uniqueProblemsCount": len(total_unique_slugs),
+        "sqlProblemsCount": sql_dataset["totalSqlProblems"],
         "durationSeconds": duration
     }
 
@@ -484,7 +515,7 @@ def main():
     print(f"\n✅ Multi-Source Sync completed in {duration}s!")
     print(f"📊 Total Companies: {len(merged_companies)}")
     print(f"🧩 Unique Problems: {len(total_unique_slugs)}")
-    print(f"🛡️  Sources: liquidslr ({len(liquidslr_data)} co), snehasishroy ({len(snehasishroy_data)} co), LeetCode GraphQL ({len(leetcode_tags)} tags)")
+    print(f"🗄️  SQL Problems: {sql_dataset['totalSqlProblems']}")
 
 if __name__ == "__main__":
     main()

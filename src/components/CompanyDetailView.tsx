@@ -14,6 +14,7 @@ import {
   ChevronUp,
   Download,
   ShieldCheck,
+  Database,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { CompanyDetail, Problem } from '@/types';
@@ -27,6 +28,7 @@ export const CompanyDetailView: React.FC<CompanyDetailViewProps> = ({ company })
   const [activeTab, setActiveTab] = useState<number>(4);
   const [searchQuery, setSearchQuery] = useState('');
   const [difficultyFilter, setDifficultyFilter] = useState<'ALL' | 'EASY' | 'MEDIUM' | 'HARD'>('ALL');
+  const [typeFilter, setTypeFilter] = useState<'ALL' | 'ALGO' | 'SQL'>('ALL');
   const [selectedTopic, setSelectedTopic] = useState<string | null>(null);
   const [hideTopics, setHideTopics] = useState(false);
   const [hideSolved, setHideSolved] = useState(false);
@@ -90,6 +92,12 @@ export const CompanyDetailView: React.FC<CompanyDetailViewProps> = ({ company })
       if (difficultyFilter !== 'ALL' && p.difficulty !== difficultyFilter) {
         return false;
       }
+      if (typeFilter === 'SQL' && !p.isSql && !p.topics.includes('Database')) {
+        return false;
+      }
+      if (typeFilter === 'ALGO' && (p.isSql || p.topics.includes('Database'))) {
+        return false;
+      }
       if (selectedTopic && !p.topics.includes(selectedTopic)) {
         return false;
       }
@@ -98,7 +106,7 @@ export const CompanyDetailView: React.FC<CompanyDetailViewProps> = ({ company })
       }
       return true;
     });
-  }, [allProblems, searchQuery, difficultyFilter, selectedTopic, hideSolved, solvedSet]);
+  }, [allProblems, searchQuery, difficultyFilter, typeFilter, selectedTopic, hideSolved, solvedSet]);
 
   const sortedProblems = useMemo(() => {
     return [...filteredProblems].sort((a, b) => {
@@ -321,6 +329,29 @@ export const CompanyDetailView: React.FC<CompanyDetailViewProps> = ({ company })
             ))}
           </div>
 
+          {/* Type Filter (Algorithms vs SQL) */}
+          {Boolean(company.sqlTotal && company.sqlTotal > 0) && (
+            <div className="flex items-center p-1 rounded-2xl bg-[var(--bg-card)] border border-[var(--border)] text-xs">
+              {[
+                { key: 'ALL', label: 'All' },
+                { key: 'ALGO', label: 'DSA' },
+                { key: 'SQL', label: `SQL (${company.sqlTotal})` },
+              ].map((t) => (
+                <button
+                  key={t.key}
+                  onClick={() => setTypeFilter(t.key as any)}
+                  className={`apple-press px-2.5 py-1 rounded-xl font-medium transition-all cursor-pointer ${
+                    typeFilter === t.key
+                      ? 'bg-[var(--bg-subtle)] text-[var(--text-main)] shadow-xs font-semibold'
+                      : 'text-[var(--text-muted)] hover:text-[var(--text-main)]'
+                  }`}
+                >
+                  {t.label}
+                </button>
+              ))}
+            </div>
+          )}
+
           {/* Random */}
           <button
             onClick={handleRandomProblem}
@@ -541,6 +572,16 @@ export const CompanyDetailView: React.FC<CompanyDetailViewProps> = ({ company })
                                 title={`Verified across: ${prob.verifiedSources.join(', ')}`}
                               >
                                 {prob.verifiedSources.length} sources
+                              </span>
+                            )}
+
+                            {Boolean(prob.isSql || prob.topics.includes('Database')) && (
+                              <span
+                                className="inline-flex items-center gap-1 text-[9px] px-1.5 py-0.2 rounded-md bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 font-semibold border border-cyan-500/20"
+                                title="SQL & Database Problem"
+                              >
+                                <Database className="w-2.5 h-2.5" />
+                                SQL
                               </span>
                             )}
                           </div>

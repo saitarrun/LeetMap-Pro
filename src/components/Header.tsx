@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { RefreshCw, Sun, Moon } from 'lucide-react';
+import { RefreshCw, Sun, Moon, Database } from 'lucide-react';
 import { SyncStatus } from '@/types';
 
 interface HeaderProps {
@@ -30,20 +30,39 @@ export const Header: React.FC<HeaderProps> = ({ onOpenSync, syncStatus }) => {
   return (
     <header className="sticky top-0 z-40 border-b border-[var(--border)] bg-[var(--bg-page)]/80 backdrop-blur-2xl transition-colors">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between gap-4">
-        {/* Brand */}
-        <Link
-          href="/"
-          className="apple-press flex items-center gap-2.5 text-[var(--text-main)] select-none"
-        >
-          <div className="relative flex items-center justify-center">
-            <span className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
-            <span className="absolute w-4 h-4 rounded-full bg-emerald-500/30 animate-ping" />
-          </div>
-          <span className="font-semibold text-base tracking-tight">grindmap</span>
-          <span className="hidden sm:inline-block text-[11px] text-[var(--text-muted)] border-l border-[var(--border)] pl-2.5 ml-0.5 font-normal">
-            company-wise LeetCode
-          </span>
-        </Link>
+        {/* Brand & Nav */}
+        <div className="flex items-center gap-4 sm:gap-6">
+          <Link
+            href="/"
+            className="apple-press flex items-center gap-2.5 text-[var(--text-main)] select-none"
+          >
+            <div className="relative flex items-center justify-center">
+              <span className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
+              <span className="absolute w-4 h-4 rounded-full bg-emerald-500/30 animate-ping" />
+            </div>
+            <span className="font-semibold text-base tracking-tight">grindmap</span>
+            <span className="hidden sm:inline-block text-[11px] text-[var(--text-muted)] border-l border-[var(--border)] pl-2.5 ml-0.5 font-normal">
+              company-wise LeetCode
+            </span>
+          </Link>
+
+          <nav className="flex items-center gap-1 sm:gap-1.5 text-xs font-medium">
+            <Link
+              href="/"
+              className="apple-press px-2.5 py-1 rounded-xl text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--bg-hover)] transition-colors"
+            >
+              Companies
+            </Link>
+            <Link
+              href="/sql"
+              className="apple-press flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 hover:bg-cyan-500/15 border border-cyan-500/20 transition-all"
+            >
+              <Database className="w-3.5 h-3.5" />
+              <span>SQL</span>
+              <span className="text-[10px] font-mono px-1 py-0.2 rounded bg-cyan-500/20">194</span>
+            </Link>
+          </nav>
+        </div>
 
         {/* Right Actions */}
         <div className="flex items-center gap-2 sm:gap-2.5">

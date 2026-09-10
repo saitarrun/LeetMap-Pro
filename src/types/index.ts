@@ -7,6 +7,7 @@ export interface Problem {
   acceptance: number;
   link: string;
   topics: string[];
+  isSql?: boolean;
   verifiedSources?: string[];
 }
 
@@ -25,6 +26,7 @@ export interface CompanyDetail {
   easy: number;
   medium: number;
   hard: number;
+  sqlTotal?: number;
   windows: ProblemWindow[];
 }
 
@@ -36,6 +38,7 @@ export interface CompanySummary {
   easy: number;
   medium: number;
   hard: number;
+  sqlTotal?: number;
   windowsCount: {
     '30_days': number;
     '3_months': number;
@@ -43,6 +46,30 @@ export interface CompanySummary {
     'more_than_6_months': number;
     'all': number;
   };
+}
+
+export interface SqlProblem {
+  id?: string;
+  title: string;
+  slug: string;
+  difficulty: 'EASY' | 'MEDIUM' | 'HARD';
+  acceptance: number;
+  link: string;
+  topics: string[];
+  isSql: boolean;
+  maxFrequency: number;
+  companiesCount: number;
+  companies: Array<{
+    name: string;
+    slug: string;
+    frequency: number;
+  }>;
+}
+
+export interface SqlCatalog {
+  totalSqlProblems: number;
+  lastUpdated: number;
+  problems: SqlProblem[];
 }
 
 export interface SyncStatus {
@@ -58,5 +85,6 @@ export interface SyncStatus {
   }>;
   companiesCount: number;
   uniqueProblemsCount: number;
+  sqlProblemsCount?: number;
   durationSeconds: number;
 }
