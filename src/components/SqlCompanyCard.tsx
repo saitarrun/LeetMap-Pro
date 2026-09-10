@@ -33,7 +33,7 @@ export const SqlCompanyCard: React.FC<SqlCompanyCardProps> = ({ company, solvedC
   return (
     <Link
       href={`/sql/${company.slug}`}
-      className="apple-card group relative flex items-center justify-between p-4 rounded-2xl border border-[var(--border)] bg-[var(--bg-card)] hover:border-cyan-500/30 transition-all select-none"
+      className="apple-card group relative flex items-center justify-between p-4 rounded-2xl border border-[var(--border)] bg-[var(--bg-card)] hover:border-[var(--text-muted)]/20 transition-all select-none"
     >
       <div className="flex items-center gap-3.5 min-w-0">
         {/* Apple Squircle Logo Container */}
@@ -56,7 +56,7 @@ export const SqlCompanyCard: React.FC<SqlCompanyCardProps> = ({ company, solvedC
         {/* Company Meta */}
         <div className="min-w-0">
           <div className="flex items-center gap-2">
-            <h3 className="text-sm font-semibold text-[var(--text-main)] group-hover:text-cyan-600 dark:group-hover:text-cyan-400 transition-colors truncate">
+            <h3 className="text-sm font-semibold text-[var(--text-main)] transition-colors truncate">
               {company.name}
             </h3>
             {solvedCount > 0 && (
@@ -65,7 +65,7 @@ export const SqlCompanyCard: React.FC<SqlCompanyCardProps> = ({ company, solvedC
                 {solvedCount}
               </span>
             )}
-            <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-cyan-600 dark:text-cyan-400 bg-cyan-500/10 border border-cyan-500/20 px-1.5 py-0.5 rounded-md">
+            <span className="inline-flex items-center gap-1 text-[10px] font-medium text-[var(--text-muted)] bg-[var(--bg-subtle)] border border-[var(--border)] px-1.5 py-0.5 rounded-md">
               <Database className="w-2.5 h-2.5" />
               {company.sqlTotal} SQL
             </span>
@@ -85,7 +85,7 @@ export const SqlCompanyCard: React.FC<SqlCompanyCardProps> = ({ company, solvedC
             {recentCount > 0 && (
               <>
                 <span className="text-[var(--border)]">•</span>
-                <span className="inline-flex items-center gap-1 text-[10px] text-blue-500/90 font-medium">
+                <span className="inline-flex items-center gap-1 text-[10px] text-[var(--text-muted)] font-medium">
                   <Clock className="w-2.5 h-2.5" />
                   {recentCount} in 3mo
                 </span>

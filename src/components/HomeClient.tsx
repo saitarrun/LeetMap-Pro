@@ -100,8 +100,8 @@ export const HomeClient: React.FC<HomeClientProps> = ({
       <main className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 py-10 w-full space-y-8">
         {/* Apple Centered Hero */}
         <section className="text-center max-w-2xl mx-auto space-y-3.5 pt-2">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20 shadow-2xs">
-            <Code2 className="w-3.5 h-3.5" />
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-[var(--bg-subtle)] text-[var(--text-muted)] border border-[var(--border)] shadow-2xs">
+            <Code2 className="w-3.5 h-3.5 opacity-80" />
             <span>DSA & Algorithmic Interview Track</span>
           </div>
 
@@ -116,12 +116,12 @@ export const HomeClient: React.FC<HomeClientProps> = ({
           {/* Apple Pill Metrics */}
           <div className="flex flex-wrap items-center justify-center gap-2.5 pt-2">
             <div className="flex items-center gap-2 text-xs font-medium text-[var(--text-main)] bg-[var(--bg-card)] border border-[var(--border)] px-3.5 py-1.5 rounded-full shadow-xs">
-              <Building2 className="w-3.5 h-3.5 text-blue-500" />
+              <Building2 className="w-3.5 h-3.5 text-[var(--text-muted)]" />
               <span><strong>{companies.length}</strong> companies</span>
             </div>
 
             <div className="flex items-center gap-2 text-xs font-medium text-[var(--text-main)] bg-[var(--bg-card)] border border-[var(--border)] px-3.5 py-1.5 rounded-full shadow-xs">
-              <Database className="w-3.5 h-3.5 text-emerald-500" />
+              <Database className="w-3.5 h-3.5 text-[var(--text-muted)]" />
               <span>
                 <strong>{syncStatus?.uniqueProblemsCount ? syncStatus.uniqueProblemsCount.toLocaleString() : '3,422'}</strong> problems
               </span>
@@ -129,18 +129,18 @@ export const HomeClient: React.FC<HomeClientProps> = ({
 
             <Link
               href="/patterns"
-              className="apple-press flex items-center gap-2 text-xs font-medium text-blue-600 dark:text-blue-400 bg-blue-500/10 border border-blue-500/20 px-3.5 py-1.5 rounded-full shadow-xs hover:bg-blue-500/15 transition-all"
+              className="apple-press flex items-center gap-2 text-xs font-medium text-[var(--text-main)] bg-[var(--bg-card)] border border-[var(--border)] px-3.5 py-1.5 rounded-full shadow-xs hover:border-[var(--text-muted)]/30 transition-all"
             >
-              <GitBranch className="w-3.5 h-3.5" />
+              <GitBranch className="w-3.5 h-3.5 text-[var(--text-muted)]" />
               <span><strong>22</strong> DSA patterns</span>
             </Link>
 
             <Link
               href="/sql"
-              className="apple-press flex items-center gap-2 text-xs font-medium text-cyan-600 dark:text-cyan-400 bg-cyan-500/10 border border-cyan-500/20 px-3.5 py-1.5 rounded-full shadow-xs hover:bg-cyan-500/15 transition-all"
+              className="apple-press flex items-center gap-2 text-xs font-medium text-[var(--text-main)] bg-[var(--bg-card)] border border-[var(--border)] px-3.5 py-1.5 rounded-full shadow-xs hover:border-[var(--text-muted)]/30 transition-all"
             >
-              <Database className="w-3.5 h-3.5" />
-              <span>Switch to SQL Track (73 Cos) →</span>
+              <Database className="w-3.5 h-3.5 text-[var(--text-muted)]" />
+              <span>SQL Track <strong>(73 Cos)</strong> →</span>
             </Link>
 
             <div className="flex items-center gap-2 text-xs font-medium text-[var(--text-main)] bg-[var(--bg-card)] border border-[var(--border)] px-3.5 py-1.5 rounded-full shadow-xs">
@@ -160,7 +160,7 @@ export const HomeClient: React.FC<HomeClientProps> = ({
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search 683 companies... (Google, Citadel, Jane Street, Stripe)"
-              className="w-full pl-11 pr-12 py-3 rounded-2xl text-sm bg-[var(--bg-card)] border border-[var(--border)] text-[var(--text-main)] placeholder:text-[var(--text-light)] shadow-xs focus:outline-none focus:border-[var(--text-muted)]/40 focus:ring-4 focus:ring-blue-500/10 transition-all"
+              className="w-full pl-11 pr-12 py-3 rounded-2xl text-sm bg-[var(--bg-card)] border border-[var(--border)] text-[var(--text-main)] placeholder:text-[var(--text-light)] shadow-xs focus:outline-none focus:border-[var(--text-muted)]/40 focus:ring-4 focus:ring-[var(--border)]/40 transition-all"
             />
             <kbd className="absolute right-3.5 top-1/2 -translate-y-1/2 px-2 py-0.5 rounded-lg text-[10px] font-mono text-[var(--text-light)] border border-[var(--border)] bg-[var(--bg-subtle)]">
               /
@@ -211,7 +211,7 @@ export const HomeClient: React.FC<HomeClientProps> = ({
           {searchQuery && (
             <button
               onClick={() => setSearchQuery('')}
-              className="text-blue-500 hover:underline cursor-pointer"
+              className="text-[var(--text-main)] underline hover:text-[var(--text-muted)] cursor-pointer transition-colors"
             >
               Reset search
             </button>

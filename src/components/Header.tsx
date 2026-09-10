@@ -57,7 +57,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenSync, syncStatus }) => {
                   : 'text-[var(--text-muted)] hover:text-[var(--text-main)]'
               }`}
             >
-              <Code2 className="w-3.5 h-3.5 text-blue-500" />
+              <Code2 className="w-3.5 h-3.5 opacity-80" />
               <span>DSA</span>
               <span className="hidden md:inline font-normal text-[11px] text-[var(--text-muted)]">Coding</span>
             </Link>
@@ -66,11 +66,11 @@ export const Header: React.FC<HeaderProps> = ({ onOpenSync, syncStatus }) => {
               href="/sql"
               className={`apple-press flex items-center gap-1.5 px-3 py-1.5 rounded-xl transition-all ${
                 isSqlTrack
-                  ? 'bg-[var(--bg-card)] text-cyan-600 dark:text-cyan-400 shadow-xs font-bold'
+                  ? 'bg-[var(--bg-card)] text-[var(--text-main)] shadow-xs font-bold'
                   : 'text-[var(--text-muted)] hover:text-[var(--text-main)]'
               }`}
             >
-              <Database className="w-3.5 h-3.5 text-cyan-500" />
+              <Database className="w-3.5 h-3.5 opacity-80" />
               <span>SQL</span>
               <span className="hidden md:inline font-normal text-[11px] text-[var(--text-muted)]">& DB</span>
             </Link>
@@ -82,23 +82,24 @@ export const Header: React.FC<HeaderProps> = ({ onOpenSync, syncStatus }) => {
               <Link
                 href="/"
                 className={`apple-press px-2.5 py-1 rounded-xl transition-colors ${
-                  pathname === '/'
+                  pathname === '/' || pathname.startsWith('/company')
                     ? 'text-[var(--text-main)] bg-[var(--bg-subtle)] font-semibold'
                     : 'text-[var(--text-muted)] hover:text-[var(--text-main)]'
                 }`}
               >
-                Companies (683)
+                Companies <span className="font-mono text-[11px] text-[var(--text-light)]">683</span>
               </Link>
               <Link
                 href="/patterns"
-                className={`apple-press flex items-center gap-1.5 px-2.5 py-1 rounded-xl transition-all ${
+                className={`apple-press flex items-center gap-1.5 px-2.5 py-1 rounded-xl transition-colors ${
                   pathname.startsWith('/patterns')
-                    ? 'bg-blue-500/15 text-blue-600 dark:text-blue-400 font-semibold'
+                    ? 'text-[var(--text-main)] bg-[var(--bg-subtle)] font-semibold'
                     : 'text-[var(--text-muted)] hover:text-[var(--text-main)]'
                 }`}
               >
-                <GitBranch className="w-3.5 h-3.5" />
-                <span>Patterns (22)</span>
+                <GitBranch className="w-3.5 h-3.5 opacity-70" />
+                <span>Patterns</span>
+                <span className="font-mono text-[11px] text-[var(--text-light)]">22</span>
               </Link>
             </nav>
           )}
@@ -108,9 +109,11 @@ export const Header: React.FC<HeaderProps> = ({ onOpenSync, syncStatus }) => {
             <nav className="hidden md:flex items-center gap-1 text-xs font-medium">
               <Link
                 href="/sql"
-                className="apple-press px-2.5 py-1 rounded-xl text-cyan-600 dark:text-cyan-400 bg-cyan-500/10 font-semibold border border-cyan-500/20"
+                className="apple-press flex items-center gap-1.5 px-2.5 py-1 rounded-xl text-[var(--text-main)] bg-[var(--bg-subtle)] font-semibold transition-colors"
               >
-                73 Companies Asking SQL
+                <Database className="w-3.5 h-3.5 opacity-70" />
+                <span>Companies</span>
+                <span className="font-mono text-[11px] text-[var(--text-light)]">73</span>
               </Link>
             </nav>
           )}

@@ -98,8 +98,8 @@ export const PatternsHubClient: React.FC<PatternsHubClientProps> = ({
 
         {/* Hero Section */}
         <section className="text-center max-w-2xl mx-auto space-y-3.5">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20 shadow-2xs">
-            <Sparkles className="w-3.5 h-3.5" />
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-[var(--bg-subtle)] text-[var(--text-muted)] border border-[var(--border)] shadow-2xs">
+            <Sparkles className="w-3.5 h-3.5 opacity-80" />
             <span>22 Core Coding Interview Blueprints</span>
           </div>
 
@@ -114,12 +114,12 @@ export const PatternsHubClient: React.FC<PatternsHubClientProps> = ({
           {/* Metric Pills */}
           <div className="flex flex-wrap items-center justify-center gap-2.5 pt-2">
             <div className="flex items-center gap-2 text-xs font-medium text-[var(--text-main)] bg-[var(--bg-card)] border border-[var(--border)] px-3.5 py-1.5 rounded-full shadow-xs">
-              <GitBranch className="w-3.5 h-3.5 text-blue-500" />
+              <GitBranch className="w-3.5 h-3.5 text-[var(--text-muted)]" />
               <span><strong>{totalPatterns}</strong> core patterns</span>
             </div>
 
             <div className="flex items-center gap-2 text-xs font-medium text-[var(--text-main)] bg-[var(--bg-card)] border border-[var(--border)] px-3.5 py-1.5 rounded-full shadow-xs">
-              <BookOpen className="w-3.5 h-3.5 text-purple-500" />
+              <BookOpen className="w-3.5 h-3.5 text-[var(--text-muted)]" />
               <span><strong>{totalQuestionsMapped.toLocaleString()}</strong> pattern problems</span>
             </div>
 
@@ -140,7 +140,7 @@ export const PatternsHubClient: React.FC<PatternsHubClientProps> = ({
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search 22 patterns... (Two Pointers, Sliding Window, Monotonic Stack)"
-              className="w-full pl-11 pr-12 py-3 rounded-2xl text-sm bg-[var(--bg-card)] border border-[var(--border)] text-[var(--text-main)] placeholder:text-[var(--text-light)] shadow-xs focus:outline-none focus:border-blue-500/40 focus:ring-4 focus:ring-blue-500/10 transition-all"
+              className="w-full pl-11 pr-12 py-3 rounded-2xl text-sm bg-[var(--bg-card)] border border-[var(--border)] text-[var(--text-main)] placeholder:text-[var(--text-light)] shadow-xs focus:outline-none focus:border-[var(--text-muted)]/40 focus:ring-4 focus:ring-[var(--border)]/40 transition-all"
             />
             <kbd className="absolute right-3.5 top-1/2 -translate-y-1/2 px-2 py-0.5 rounded-lg text-[10px] font-mono text-[var(--text-light)] border border-[var(--border)] bg-[var(--bg-subtle)]">
               /

@@ -50,7 +50,7 @@ export const CompanyCard: React.FC<CompanyCardProps> = ({ company, solvedCount =
         {/* Company Meta */}
         <div className="min-w-0">
           <div className="flex items-center gap-2">
-            <h3 className="text-sm font-semibold text-[var(--text-main)] group-hover:text-blue-500 transition-colors truncate">
+            <h3 className="text-sm font-semibold text-[var(--text-main)] transition-colors truncate">
               {company.name}
             </h3>
             {solvedCount > 0 && (
@@ -60,7 +60,7 @@ export const CompanyCard: React.FC<CompanyCardProps> = ({ company, solvedCount =
               </span>
             )}
             {Boolean(company.sqlTotal && company.sqlTotal > 0) && (
-              <span className="inline-flex items-center gap-0.5 text-[10px] font-semibold text-cyan-600 dark:text-cyan-400 bg-cyan-500/10 border border-cyan-500/20 px-1.5 py-0.5 rounded-md">
+              <span className="inline-flex items-center gap-1 text-[10px] font-medium text-[var(--text-muted)] bg-[var(--bg-subtle)] border border-[var(--border)] px-1.5 py-0.5 rounded-md">
                 {company.sqlTotal} SQL
               </span>
             )}

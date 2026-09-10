@@ -112,20 +112,16 @@ export const SqlHubClient: React.FC<SqlHubClientProps> = ({
         <nav className="flex items-center gap-2 text-xs text-[var(--text-muted)] font-normal flex-wrap">
           <Link href="/" className="apple-press hover:text-[var(--text-main)] flex items-center gap-1.5 transition-colors">
             <ArrowLeft className="w-3.5 h-3.5" />
-            <span>Switch to DSA Track</span>
+            <span>DSA Track</span>
           </Link>
           <span>/</span>
-          <span className="px-2 py-0.5 rounded-md bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 font-semibold border border-cyan-500/20 text-[10px]">
-            SQL Track
-          </span>
-          <span>/</span>
-          <span className="text-[var(--text-main)] font-medium">SQL Companies & Questions</span>
+          <span className="text-[var(--text-main)] font-medium">SQL & Database Track</span>
         </nav>
 
         {/* Hero Section */}
         <section className="text-center max-w-2xl mx-auto space-y-3.5">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 border border-cyan-500/20 shadow-2xs">
-            <Database className="w-3.5 h-3.5" />
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-[var(--bg-subtle)] text-[var(--text-muted)] border border-[var(--border)] shadow-2xs">
+            <Database className="w-3.5 h-3.5 opacity-80" />
             <span>SQL & Database Interview Track</span>
           </div>
 
@@ -140,21 +136,21 @@ export const SqlHubClient: React.FC<SqlHubClientProps> = ({
           {/* Metric Pills */}
           <div className="flex flex-wrap items-center justify-center gap-2.5 pt-2">
             <div className="flex items-center gap-2 text-xs font-medium text-[var(--text-main)] bg-[var(--bg-card)] border border-[var(--border)] px-3.5 py-1.5 rounded-full shadow-xs">
-              <Building2 className="w-3.5 h-3.5 text-cyan-500" />
+              <Building2 className="w-3.5 h-3.5 text-[var(--text-muted)]" />
               <span><strong>{companies.length}</strong> companies asking SQL</span>
             </div>
 
             <div className="flex items-center gap-2 text-xs font-medium text-[var(--text-main)] bg-[var(--bg-card)] border border-[var(--border)] px-3.5 py-1.5 rounded-full shadow-xs">
-              <Database className="w-3.5 h-3.5 text-emerald-500" />
+              <Database className="w-3.5 h-3.5 text-[var(--text-muted)]" />
               <span><strong>{catalog.totalSqlProblems}</strong> unique SQL queries</span>
             </div>
 
             <Link
               href="/"
-              className="apple-press flex items-center gap-2 text-xs font-medium text-blue-600 dark:text-blue-400 bg-blue-500/10 border border-blue-500/20 px-3.5 py-1.5 rounded-full shadow-xs hover:bg-blue-500/15 transition-all"
+              className="apple-press flex items-center gap-2 text-xs font-medium text-[var(--text-main)] bg-[var(--bg-card)] border border-[var(--border)] px-3.5 py-1.5 rounded-full shadow-xs hover:border-[var(--text-muted)]/30 transition-all"
             >
-              <Code2 className="w-3.5 h-3.5 text-blue-500" />
-              <span>Switch to DSA Track (683 Cos) →</span>
+              <Code2 className="w-3.5 h-3.5 text-[var(--text-muted)]" />
+              <span>DSA Track <strong>(683 Cos)</strong> →</span>
             </Link>
 
             <div className="flex items-center gap-2 text-xs font-medium text-[var(--text-main)] bg-[var(--bg-card)] border border-[var(--border)] px-3.5 py-1.5 rounded-full shadow-xs">
@@ -174,7 +170,7 @@ export const SqlHubClient: React.FC<SqlHubClientProps> = ({
                     : 'text-[var(--text-muted)] hover:text-[var(--text-main)]'
                 }`}
               >
-                <LayoutGrid className="w-3.5 h-3.5 text-cyan-500" />
+                <LayoutGrid className="w-3.5 h-3.5 text-[var(--text-muted)]" />
                 <span>Browse by Company ({companies.length})</span>
               </button>
               <button
@@ -185,7 +181,7 @@ export const SqlHubClient: React.FC<SqlHubClientProps> = ({
                     : 'text-[var(--text-muted)] hover:text-[var(--text-main)]'
                 }`}
               >
-                <ListFilter className="w-3.5 h-3.5 text-emerald-500" />
+                <ListFilter className="w-3.5 h-3.5 text-[var(--text-muted)]" />
                 <span>All {catalog.totalSqlProblems} SQL Problems</span>
               </button>
             </div>
@@ -205,7 +201,7 @@ export const SqlHubClient: React.FC<SqlHubClientProps> = ({
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder={`Search ${companies.length} companies asking SQL... (Amazon, Google, Meta, Bloomberg)`}
-                  className="w-full pl-11 pr-12 py-3 rounded-2xl text-sm bg-[var(--bg-card)] border border-[var(--border)] text-[var(--text-main)] placeholder:text-[var(--text-light)] shadow-xs focus:outline-none focus:border-cyan-500/40 focus:ring-4 focus:ring-cyan-500/10 transition-all"
+                  className="w-full pl-11 pr-12 py-3 rounded-2xl text-sm bg-[var(--bg-card)] border border-[var(--border)] text-[var(--text-main)] placeholder:text-[var(--text-light)] shadow-xs focus:outline-none focus:border-[var(--text-muted)]/40 focus:ring-4 focus:ring-[var(--border)]/40 transition-all"
                 />
                 <kbd className="absolute right-3.5 top-1/2 -translate-y-1/2 px-2 py-0.5 rounded-lg text-[10px] font-mono text-[var(--text-light)] border border-[var(--border)] bg-[var(--bg-subtle)]">
                   /

@@ -58,24 +58,24 @@ const ICON_MAP: Record<string, LucideIcon> = {
 
 const CATEGORY_COLORS: Record<string, { bg: string; text: string; border: string }> = {
   Fundamentals: {
-    bg: 'bg-blue-500/10',
-    text: 'text-blue-600 dark:text-blue-400',
-    border: 'border-blue-500/20',
+    bg: 'bg-[var(--bg-subtle)]',
+    text: 'text-[var(--text-main)]',
+    border: 'border-[var(--border)]',
   },
   'Data Structures': {
-    bg: 'bg-purple-500/10',
-    text: 'text-purple-600 dark:text-purple-400',
-    border: 'border-purple-500/20',
+    bg: 'bg-[var(--bg-subtle)]',
+    text: 'text-[var(--text-main)]',
+    border: 'border-[var(--border)]',
   },
   'Trees & Graphs': {
-    bg: 'bg-emerald-500/10',
-    text: 'text-emerald-600 dark:text-emerald-400',
-    border: 'border-emerald-500/20',
+    bg: 'bg-[var(--bg-subtle)]',
+    text: 'text-[var(--text-main)]',
+    border: 'border-[var(--border)]',
   },
   'Advanced & DP': {
-    bg: 'bg-amber-500/10',
-    text: 'text-amber-600 dark:text-amber-400',
-    border: 'border-amber-500/20',
+    bg: 'bg-[var(--bg-subtle)]',
+    text: 'text-[var(--text-main)]',
+    border: 'border-[var(--border)]',
   },
 };
 
@@ -99,7 +99,7 @@ export const PatternCard: React.FC<PatternCardProps> = ({ pattern, solvedCount =
         {/* Header row: Icon + Category Badge */}
         <div className="flex items-center justify-between gap-3">
           <div className="w-12 h-12 rounded-2xl bg-[var(--bg-subtle)] border border-[var(--border)] flex items-center justify-center shrink-0 text-[var(--text-main)] shadow-xs group-hover:scale-105 transition-transform">
-            <IconComponent className="w-6 h-6 text-blue-500" />
+            <IconComponent className="w-6 h-6 opacity-80" />
           </div>
 
           <div className="flex items-center gap-1.5">
@@ -119,7 +119,7 @@ export const PatternCard: React.FC<PatternCardProps> = ({ pattern, solvedCount =
 
         {/* Title & Tagline */}
         <div>
-          <h3 className="text-base font-bold text-[var(--text-main)] group-hover:text-blue-500 transition-colors">
+          <h3 className="text-base font-bold text-[var(--text-main)] transition-colors">
             {pattern.name}
           </h3>
           <p className="text-xs text-[var(--text-muted)] mt-1 line-clamp-2 leading-relaxed font-normal">
@@ -168,7 +168,7 @@ export const PatternCard: React.FC<PatternCardProps> = ({ pattern, solvedCount =
           </div>
         </div>
 
-        <div className="w-7 h-7 rounded-full bg-[var(--bg-subtle)] flex items-center justify-center shrink-0 group-hover:bg-blue-500 group-hover:text-white transition-colors text-[var(--text-light)]">
+        <div className="w-7 h-7 rounded-full bg-[var(--bg-subtle)] flex items-center justify-center shrink-0 group-hover:bg-[var(--text-main)] group-hover:text-[var(--bg-page)] transition-colors text-[var(--text-light)]">
           <ChevronRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
         </div>
       </div>

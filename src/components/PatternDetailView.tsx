@@ -244,7 +244,7 @@ export const PatternDetailView: React.FC<PatternDetailViewProps> = ({ pattern })
         </Link>
         <span>/</span>
         <Link href="/patterns" className="apple-press hover:text-[var(--text-main)] flex items-center gap-1 transition-colors">
-          <GitBranch className="w-3.5 h-3.5 text-blue-500" />
+          <GitBranch className="w-3.5 h-3.5 opacity-70" />
           <span>Patterns Hub</span>
         </Link>
         <span>/</span>
@@ -255,8 +255,8 @@ export const PatternDetailView: React.FC<PatternDetailViewProps> = ({ pattern })
       <div className="p-6 sm:p-8 rounded-3xl border border-[var(--border)] bg-[var(--bg-card)] shadow-xs space-y-6">
         <div className="flex flex-col md:flex-row md:items-start justify-between gap-6">
           <div className="flex items-start gap-4">
-            <div className="w-16 h-16 rounded-2xl bg-[var(--bg-subtle)] border border-[var(--border)] flex items-center justify-center shrink-0 text-blue-500 shadow-xs">
-              <IconComponent className="w-8 h-8" />
+            <div className="w-16 h-16 rounded-2xl bg-[var(--bg-subtle)] border border-[var(--border)] flex items-center justify-center shrink-0 text-[var(--text-main)] shadow-xs">
+              <IconComponent className="w-8 h-8 opacity-80" />
             </div>
 
             <div className="space-y-1.5">
@@ -264,7 +264,7 @@ export const PatternDetailView: React.FC<PatternDetailViewProps> = ({ pattern })
                 <h1 className="text-2xl sm:text-3xl font-bold text-[var(--text-main)] tracking-tight">
                   {pattern.name}
                 </h1>
-                <span className="px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20">
+                <span className="px-2.5 py-0.5 rounded-full text-[10px] font-medium bg-[var(--bg-subtle)] text-[var(--text-muted)] border border-[var(--border)]">
                   {pattern.category}
                 </span>
                 <span className="px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-[var(--bg-subtle)] text-[var(--text-muted)] border border-[var(--border)]">
@@ -322,7 +322,7 @@ export const PatternDetailView: React.FC<PatternDetailViewProps> = ({ pattern })
           {/* Interview Clues Block */}
           <div className="p-4 rounded-2xl bg-[var(--bg-subtle)]/70 border border-[var(--border)] space-y-2">
             <div className="flex items-center gap-2 text-xs font-semibold text-[var(--text-main)]">
-              <Sparkles className="w-4 h-4 text-blue-500" />
+              <Sparkles className="w-4 h-4 opacity-80" />
               <span>Common Interview Clues & Keywords</span>
             </div>
             <div className="flex flex-wrap gap-1.5 pt-0.5">
@@ -349,7 +349,7 @@ export const PatternDetailView: React.FC<PatternDetailViewProps> = ({ pattern })
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder={`Filter ${pattern.name} problems (#15, 3Sum, Two Pointers...)`}
-            className="w-full pl-10 pr-4 py-2.5 rounded-2xl text-xs bg-[var(--bg-card)] border border-[var(--border)] text-[var(--text-main)] placeholder:text-[var(--text-light)] focus:outline-none focus:border-blue-500/40 focus:ring-4 focus:ring-blue-500/10 transition-all"
+            className="w-full pl-10 pr-4 py-2.5 rounded-2xl text-xs bg-[var(--bg-card)] border border-[var(--border)] text-[var(--text-main)] placeholder:text-[var(--text-light)] focus:outline-none focus:border-[var(--text-muted)]/40 focus:ring-4 focus:ring-[var(--border)]/40 transition-all"
           />
         </div>
 
@@ -395,7 +395,7 @@ export const PatternDetailView: React.FC<PatternDetailViewProps> = ({ pattern })
             className="apple-press flex items-center gap-1.5 px-3.5 py-1.5 rounded-2xl border border-[var(--border)] bg-[var(--bg-card)] hover:bg-[var(--bg-hover)] text-xs font-medium text-[var(--text-main)] shadow-2xs cursor-pointer"
             title="Open a random problem in this pattern"
           >
-            <Shuffle className="w-3.5 h-3.5 text-blue-500" />
+            <Shuffle className="w-3.5 h-3.5 text-[var(--text-muted)]" />
             <span>Random</span>
           </button>
 
@@ -404,7 +404,7 @@ export const PatternDetailView: React.FC<PatternDetailViewProps> = ({ pattern })
             onClick={() => setHideTopics(!hideTopics)}
             className={`apple-press flex items-center gap-1.5 px-3.5 py-1.5 rounded-2xl border text-xs font-medium transition-all cursor-pointer ${
               hideTopics
-                ? 'border-blue-500/40 bg-blue-500/10 text-blue-600 dark:text-blue-400 font-semibold'
+                ? 'border-[var(--border)] bg-[var(--bg-subtle)] text-[var(--text-main)] font-semibold shadow-xs'
                 : 'border-[var(--border)] bg-[var(--bg-card)] hover:bg-[var(--bg-hover)] text-[var(--text-muted)] shadow-2xs'
             }`}
             title="Hide topic tags for blind interview prep"
@@ -418,7 +418,7 @@ export const PatternDetailView: React.FC<PatternDetailViewProps> = ({ pattern })
             onClick={() => setHideSolved(!hideSolved)}
             className={`apple-press flex items-center gap-1.5 px-3.5 py-1.5 rounded-2xl border text-xs font-medium transition-all cursor-pointer ${
               hideSolved
-                ? 'border-emerald-500/40 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-semibold'
+                ? 'border-[var(--border)] bg-[var(--bg-subtle)] text-[var(--text-main)] font-semibold shadow-xs'
                 : 'border-[var(--border)] bg-[var(--bg-card)] hover:bg-[var(--bg-hover)] text-[var(--text-muted)] shadow-2xs'
             }`}
             title="Hide problems you already solved"
@@ -559,7 +559,7 @@ export const PatternDetailView: React.FC<PatternDetailViewProps> = ({ pattern })
                             href={prob.link}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className={`inline-flex items-center gap-1.5 font-medium hover:text-blue-500 transition-colors ${
+                            className={`inline-flex items-center gap-1.5 font-medium hover:text-[var(--text-main)] hover:underline transition-colors ${
                               isSolved ? 'line-through text-[var(--text-muted)]' : 'text-[var(--text-main)]'
                             }`}
                           >
@@ -617,7 +617,7 @@ export const PatternDetailView: React.FC<PatternDetailViewProps> = ({ pattern })
                         <div className="flex items-center gap-2">
                           <div className="w-16 h-1.5 bg-[var(--bg-subtle)] rounded-full overflow-hidden">
                             <div
-                              className="h-full rounded-full bg-blue-500/80 transition-all duration-300"
+                              className="h-full rounded-full bg-[var(--text-main)]/60 transition-all duration-300"
                               style={{ width: `${freq}%` }}
                             />
                           </div>

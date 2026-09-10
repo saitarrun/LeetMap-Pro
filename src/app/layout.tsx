@@ -29,7 +29,7 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className="antialiased selection:bg-blue-500/20 selection:text-blue-500">
+      <body className="antialiased selection:bg-[var(--text-main)]/15 selection:text-[var(--text-main)]">
         {children}
         <Toaster position="bottom-right" richColors closeButton />
       </body>

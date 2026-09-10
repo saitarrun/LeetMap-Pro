@@ -193,15 +193,15 @@ export const SqlExplorerView: React.FC<SqlExplorerViewProps> = ({ catalog }) => 
       {/* Header Info Card */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-6 rounded-3xl border border-[var(--border)] bg-[var(--bg-card)] shadow-xs">
         <div className="flex items-center gap-4">
-          <div className="w-14 h-14 rounded-2xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center shrink-0 overflow-hidden text-cyan-600 dark:text-cyan-400 shadow-xs">
-            <Database className="w-7 h-7" />
+          <div className="w-14 h-14 rounded-2xl bg-[var(--bg-subtle)] border border-[var(--border)] flex items-center justify-center shrink-0 overflow-hidden text-[var(--text-main)] shadow-xs">
+            <Database className="w-7 h-7 opacity-80" />
           </div>
           <div>
             <div className="flex flex-wrap items-center gap-2.5">
               <h1 className="text-2xl font-bold text-[var(--text-main)] tracking-tight">
                 Top Company SQL Questions
               </h1>
-              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 border border-cyan-500/20">
+              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-medium bg-[var(--bg-subtle)] text-[var(--text-muted)] border border-[var(--border)]">
                 <span>{catalog.totalSqlProblems} SQL Problems</span>
               </span>
             </div>
@@ -240,7 +240,7 @@ export const SqlExplorerView: React.FC<SqlExplorerViewProps> = ({ catalog }) => 
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Filter SQL problems (#176, Second Highest Salary, JOIN...)"
-            className="w-full pl-10 pr-4 py-2.5 rounded-2xl text-xs bg-[var(--bg-card)] border border-[var(--border)] text-[var(--text-main)] placeholder:text-[var(--text-light)] focus:outline-none focus:border-[var(--text-muted)]/40 focus:ring-4 focus:ring-blue-500/10 transition-all"
+            className="w-full pl-10 pr-4 py-2.5 rounded-2xl text-xs bg-[var(--bg-card)] border border-[var(--border)] text-[var(--text-main)] placeholder:text-[var(--text-light)] focus:outline-none focus:border-[var(--text-muted)]/40 focus:ring-4 focus:ring-[var(--border)]/40 transition-all"
           />
         </div>
 
@@ -286,7 +286,7 @@ export const SqlExplorerView: React.FC<SqlExplorerViewProps> = ({ catalog }) => 
             className="apple-press flex items-center gap-1.5 px-3.5 py-1.5 rounded-2xl border border-[var(--border)] bg-[var(--bg-card)] hover:bg-[var(--bg-hover)] text-xs font-medium text-[var(--text-main)] shadow-2xs cursor-pointer"
             title="Open a random SQL problem"
           >
-            <Shuffle className="w-3.5 h-3.5 text-blue-500" />
+            <Shuffle className="w-3.5 h-3.5 text-[var(--text-muted)]" />
             <span>Random SQL</span>
           </button>
 
@@ -295,7 +295,7 @@ export const SqlExplorerView: React.FC<SqlExplorerViewProps> = ({ catalog }) => 
             onClick={() => setHideSolved(!hideSolved)}
             className={`apple-press flex items-center gap-1.5 px-3.5 py-1.5 rounded-2xl border text-xs font-medium transition-all cursor-pointer ${
               hideSolved
-                ? 'border-emerald-500/40 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-semibold'
+                ? 'border-[var(--border)] bg-[var(--bg-subtle)] text-[var(--text-main)] font-semibold shadow-xs'
                 : 'border-[var(--border)] bg-[var(--bg-card)] hover:bg-[var(--bg-hover)] text-[var(--text-muted)] shadow-2xs'
             }`}
             title="Hide problems you already solved"
@@ -425,7 +425,7 @@ export const SqlExplorerView: React.FC<SqlExplorerViewProps> = ({ catalog }) => 
                           href={prob.link}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className={`inline-flex items-center gap-1.5 font-medium hover:text-blue-500 transition-colors ${
+                          className={`inline-flex items-center gap-1.5 font-medium hover:text-[var(--text-main)] hover:underline transition-colors ${
                             isSolved ? 'line-through text-[var(--text-muted)]' : 'text-[var(--text-main)]'
                           }`}
                         >

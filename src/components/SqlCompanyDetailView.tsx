@@ -206,10 +206,6 @@ export const SqlCompanyDetailView: React.FC<SqlCompanyDetailViewProps> = ({ comp
           <span>All SQL Companies</span>
         </Link>
         <span>/</span>
-        <span className="px-2 py-0.5 rounded-md bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 font-semibold border border-cyan-500/20 text-[10px]">
-          SQL Track
-        </span>
-        <span>/</span>
         <span className="text-[var(--text-main)] font-medium">{company.name} SQL</span>
       </nav>
 
@@ -228,8 +224,8 @@ export const SqlCompanyDetailView: React.FC<SqlCompanyDetailViewProps> = ({ comp
               <h1 className="text-2xl font-bold text-[var(--text-main)] tracking-tight">
                 {company.name} SQL Questions
               </h1>
-              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 border border-cyan-500/20">
-                <Database className="w-3 h-3" />
+              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-medium bg-[var(--bg-subtle)] text-[var(--text-muted)] border border-[var(--border)]">
+                <Database className="w-3 h-3 opacity-70" />
                 <span>{totalSqlCount} SQL Questions</span>
               </span>
               <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
@@ -249,14 +245,14 @@ export const SqlCompanyDetailView: React.FC<SqlCompanyDetailViewProps> = ({ comp
             <div className="flex items-center p-0.5 rounded-2xl bg-[var(--bg-subtle)] border border-[var(--border)] text-xs font-semibold mt-2.5 self-start w-fit">
               <Link
                 href={`/company/${company.slug}`}
-                className="apple-press px-3 py-1 rounded-xl text-blue-600 dark:text-blue-400 hover:text-blue-500 transition-colors flex items-center gap-1.5 font-medium"
+                className="apple-press px-3 py-1 rounded-xl text-[var(--text-muted)] hover:text-[var(--text-main)] transition-colors flex items-center gap-1.5 font-medium"
               >
-                <Code2 className="w-3.5 h-3.5 text-blue-500" />
-                <span>Switch to {company.total - totalSqlCount} DSA Questions →</span>
+                <Code2 className="w-3.5 h-3.5 opacity-70" />
+                <span>DSA ({company.total - totalSqlCount})</span>
               </Link>
-              <span className="px-3 py-1 rounded-xl bg-[var(--bg-card)] text-cyan-600 dark:text-cyan-400 shadow-xs font-bold flex items-center gap-1.5">
-                <Database className="w-3.5 h-3.5" />
-                <span>SQL & DB</span>
+              <span className="px-3 py-1 rounded-xl bg-[var(--bg-card)] text-[var(--text-main)] shadow-xs font-semibold flex items-center gap-1.5">
+                <Database className="w-3.5 h-3.5 opacity-80" />
+                <span>SQL ({totalSqlCount})</span>
               </span>
             </div>
           </div>
@@ -289,7 +285,7 @@ export const SqlCompanyDetailView: React.FC<SqlCompanyDetailViewProps> = ({ comp
             onClick={() => setActiveTab(idx)}
             className={`apple-press flex items-center gap-2 px-4 py-2.5 text-xs font-medium border-b-2 whitespace-nowrap transition-all cursor-pointer ${
               activeTab === idx
-                ? 'border-cyan-500 text-cyan-600 dark:text-cyan-400 font-semibold'
+                ? 'border-[var(--text-main)] text-[var(--text-main)] font-semibold'
                 : 'border-transparent text-[var(--text-muted)] hover:text-[var(--text-main)]'
             }`}
           >
@@ -297,7 +293,7 @@ export const SqlCompanyDetailView: React.FC<SqlCompanyDetailViewProps> = ({ comp
             <span
               className={`px-1.5 py-0.5 rounded-full text-[10px] ${
                 activeTab === idx
-                  ? 'bg-cyan-500/15 text-cyan-700 dark:text-cyan-300 font-semibold'
+                  ? 'bg-[var(--text-main)] text-[var(--bg-card)] font-semibold'
                   : 'bg-[var(--bg-subtle)] text-[var(--text-muted)]'
               }`}
             >
@@ -316,7 +312,7 @@ export const SqlCompanyDetailView: React.FC<SqlCompanyDetailViewProps> = ({ comp
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder={`Filter ${company.name} SQL questions (#176, Second Highest...)`}
-            className="w-full pl-10 pr-4 py-2.5 rounded-2xl text-xs bg-[var(--bg-card)] border border-[var(--border)] text-[var(--text-main)] placeholder:text-[var(--text-light)] focus:outline-none focus:border-cyan-500/40 focus:ring-4 focus:ring-cyan-500/10 transition-all"
+            className="w-full pl-10 pr-4 py-2.5 rounded-2xl text-xs bg-[var(--bg-card)] border border-[var(--border)] text-[var(--text-main)] placeholder:text-[var(--text-light)] focus:outline-none focus:border-[var(--text-muted)]/40 focus:ring-4 focus:ring-[var(--border)]/40 transition-all"
           />
         </div>
 
@@ -344,7 +340,7 @@ export const SqlCompanyDetailView: React.FC<SqlCompanyDetailViewProps> = ({ comp
             className="apple-press flex items-center gap-1.5 px-3.5 py-1.5 rounded-2xl border border-[var(--border)] bg-[var(--bg-card)] hover:bg-[var(--bg-hover)] text-xs font-medium text-[var(--text-main)] shadow-2xs cursor-pointer"
             title="Open a random SQL problem in LeetCode"
           >
-            <Shuffle className="w-3.5 h-3.5 text-cyan-500" />
+            <Shuffle className="w-3.5 h-3.5 text-[var(--text-muted)]" />
             <span>Random SQL</span>
           </button>
 
@@ -353,7 +349,7 @@ export const SqlCompanyDetailView: React.FC<SqlCompanyDetailViewProps> = ({ comp
             onClick={() => setHideSolved(!hideSolved)}
             className={`apple-press flex items-center gap-1.5 px-3.5 py-1.5 rounded-2xl border text-xs font-medium transition-all cursor-pointer ${
               hideSolved
-                ? 'border-emerald-500/40 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-semibold'
+                ? 'border-[var(--border)] bg-[var(--bg-subtle)] text-[var(--text-main)] font-semibold shadow-xs'
                 : 'border-[var(--border)] bg-[var(--bg-card)] hover:bg-[var(--bg-hover)] text-[var(--text-muted)] shadow-2xs'
             }`}
             title="Hide problems you already solved"
@@ -486,7 +482,7 @@ export const SqlCompanyDetailView: React.FC<SqlCompanyDetailViewProps> = ({ comp
                               href={prob.link}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className={`inline-flex items-center gap-1.5 font-medium hover:text-blue-500 transition-colors ${
+                              className={`inline-flex items-center gap-1.5 font-medium hover:text-[var(--text-main)] hover:underline transition-colors ${
                                 isSolved ? 'line-through text-[var(--text-muted)]' : 'text-[var(--text-main)]'
                               }`}
                             >
@@ -518,7 +514,7 @@ export const SqlCompanyDetailView: React.FC<SqlCompanyDetailViewProps> = ({ comp
                         <div className="flex items-center gap-2.5">
                           <div className="flex-1 h-1.5 bg-[var(--bg-subtle)] rounded-full overflow-hidden">
                             <div
-                              className="h-full rounded-full bg-cyan-500/80 transition-all duration-300"
+                              className="h-full rounded-full bg-[var(--text-main)]/60 transition-all duration-300"
                               style={{ width: `${freq}%` }}
                             />
                           </div>

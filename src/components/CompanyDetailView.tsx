@@ -216,10 +216,6 @@ export const CompanyDetailView: React.FC<CompanyDetailViewProps> = ({ company })
           <span>All companies</span>
         </Link>
         <span>/</span>
-        <span className="px-2 py-0.5 rounded-md bg-blue-500/10 text-blue-600 dark:text-blue-400 font-semibold border border-blue-500/20 text-[10px]">
-          DSA Track
-        </span>
-        <span>/</span>
         <span className="text-[var(--text-main)] font-medium">{company.name}</span>
       </nav>
 
@@ -255,16 +251,16 @@ export const CompanyDetailView: React.FC<CompanyDetailViewProps> = ({ company })
 
             {Boolean(company.sqlTotal && company.sqlTotal > 0) && (
               <div className="flex items-center p-0.5 rounded-2xl bg-[var(--bg-subtle)] border border-[var(--border)] text-xs font-semibold mt-2.5 self-start w-fit">
-                <span className="px-3 py-1 rounded-xl bg-[var(--bg-card)] text-[var(--text-main)] shadow-xs font-bold flex items-center gap-1.5">
-                  <Code2 className="w-3.5 h-3.5 text-blue-500" />
+                <span className="px-3 py-1 rounded-xl bg-[var(--bg-card)] text-[var(--text-main)] shadow-xs font-semibold flex items-center gap-1.5">
+                  <Code2 className="w-3.5 h-3.5 opacity-80" />
                   <span>DSA Coding</span>
                 </span>
                 <Link
                   href={`/sql/${company.slug}`}
-                  className="apple-press px-3 py-1 rounded-xl text-cyan-600 dark:text-cyan-400 hover:text-cyan-500 transition-colors flex items-center gap-1.5 font-medium"
+                  className="apple-press px-3 py-1 rounded-xl text-[var(--text-muted)] hover:text-[var(--text-main)] transition-colors flex items-center gap-1.5 font-medium"
                 >
-                  <Database className="w-3.5 h-3.5" />
-                  <span>Switch to {company.sqlTotal} SQL Questions →</span>
+                  <Database className="w-3.5 h-3.5 opacity-70" />
+                  <span>SQL ({company.sqlTotal})</span>
                 </Link>
               </div>
             )}
@@ -328,7 +324,7 @@ export const CompanyDetailView: React.FC<CompanyDetailViewProps> = ({ company })
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Filter problems (#1, Two Sum, dynamic programming...)"
-            className="w-full pl-10 pr-4 py-2.5 rounded-2xl text-xs bg-[var(--bg-card)] border border-[var(--border)] text-[var(--text-main)] placeholder:text-[var(--text-light)] focus:outline-none focus:border-[var(--text-muted)]/40 focus:ring-4 focus:ring-blue-500/10 transition-all"
+            className="w-full pl-10 pr-4 py-2.5 rounded-2xl text-xs bg-[var(--bg-card)] border border-[var(--border)] text-[var(--text-main)] placeholder:text-[var(--text-light)] focus:outline-none focus:border-[var(--text-muted)]/40 focus:ring-4 focus:ring-[var(--border)]/40 transition-all"
           />
         </div>
 
@@ -379,7 +375,7 @@ export const CompanyDetailView: React.FC<CompanyDetailViewProps> = ({ company })
             className="apple-press flex items-center gap-1.5 px-3.5 py-1.5 rounded-2xl border border-[var(--border)] bg-[var(--bg-card)] hover:bg-[var(--bg-hover)] text-xs font-medium text-[var(--text-main)] shadow-2xs cursor-pointer"
             title="Open a random problem in LeetCode"
           >
-            <Shuffle className="w-3.5 h-3.5 text-blue-500" />
+            <Shuffle className="w-3.5 h-3.5 text-[var(--text-muted)]" />
             <span>Random</span>
           </button>
 
@@ -388,7 +384,7 @@ export const CompanyDetailView: React.FC<CompanyDetailViewProps> = ({ company })
             onClick={() => setHideTopics(!hideTopics)}
             className={`apple-press flex items-center gap-1.5 px-3.5 py-1.5 rounded-2xl border text-xs font-medium transition-all cursor-pointer ${
               hideTopics
-                ? 'border-blue-500/40 bg-blue-500/10 text-blue-600 dark:text-blue-400 font-semibold'
+                ? 'border-[var(--border)] bg-[var(--bg-subtle)] text-[var(--text-main)] font-semibold shadow-xs'
                 : 'border-[var(--border)] bg-[var(--bg-card)] hover:bg-[var(--bg-hover)] text-[var(--text-muted)] shadow-2xs'
             }`}
             title="Hide topic tags for blind interview prep"
@@ -402,7 +398,7 @@ export const CompanyDetailView: React.FC<CompanyDetailViewProps> = ({ company })
             onClick={() => setHideSolved(!hideSolved)}
             className={`apple-press flex items-center gap-1.5 px-3.5 py-1.5 rounded-2xl border text-xs font-medium transition-all cursor-pointer ${
               hideSolved
-                ? 'border-emerald-500/40 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-semibold'
+                ? 'border-[var(--border)] bg-[var(--bg-subtle)] text-[var(--text-main)] font-semibold shadow-xs'
                 : 'border-[var(--border)] bg-[var(--bg-card)] hover:bg-[var(--bg-hover)] text-[var(--text-muted)] shadow-2xs'
             }`}
             title="Hide problems you already solved"
@@ -459,7 +455,7 @@ export const CompanyDetailView: React.FC<CompanyDetailViewProps> = ({ company })
           {selectedTopic && (
             <button
               onClick={() => setSelectedTopic(null)}
-              className="text-xs text-blue-500 hover:underline ml-2 cursor-pointer"
+              className="text-xs text-[var(--text-main)] underline hover:text-[var(--text-muted)] ml-2 cursor-pointer transition-colors"
             >
               Clear filter
             </button>
@@ -579,7 +575,7 @@ export const CompanyDetailView: React.FC<CompanyDetailViewProps> = ({ company })
                               href={prob.link}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className={`inline-flex items-center gap-1.5 font-medium hover:text-blue-500 transition-colors ${
+                              className={`inline-flex items-center gap-1.5 font-medium hover:text-[var(--text-main)] hover:underline transition-colors ${
                                 isSolved ? 'line-through text-[var(--text-muted)]' : 'text-[var(--text-main)]'
                               }`}
                             >
@@ -598,10 +594,10 @@ export const CompanyDetailView: React.FC<CompanyDetailViewProps> = ({ company })
 
                             {Boolean(prob.isSql || prob.topics.includes('Database')) && (
                               <span
-                                className="inline-flex items-center gap-1 text-[9px] px-1.5 py-0.2 rounded-md bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 font-semibold border border-cyan-500/20"
+                                className="inline-flex items-center gap-1 text-[9px] px-1.5 py-0.2 rounded-md bg-[var(--bg-subtle)] text-[var(--text-muted)] font-medium border border-[var(--border)]"
                                 title="SQL & Database Problem"
                               >
-                                <Database className="w-2.5 h-2.5" />
+                                <Database className="w-2.5 h-2.5 opacity-80" />
                                 SQL
                               </span>
                             )}
@@ -635,7 +631,7 @@ export const CompanyDetailView: React.FC<CompanyDetailViewProps> = ({ company })
                         <div className="flex items-center gap-2">
                           <div className="w-16 h-1.5 bg-[var(--bg-subtle)] rounded-full overflow-hidden">
                             <div
-                              className="h-full bg-blue-500 rounded-full"
+                              className="h-full bg-[var(--text-main)]/60 rounded-full"
                               style={{ width: `${freq}%` }}
                             />
                           </div>
