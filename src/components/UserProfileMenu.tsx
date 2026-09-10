@@ -177,7 +177,7 @@ export const UserProfileMenu: React.FC<UserProfileMenuProps> = ({ variant = 'ful
   }
 
   return (
-    <div className="relative shrink-0 flex items-center gap-1.5 sm:gap-2" ref={menuRef}>
+    <div className="relative h-8 shrink-0 flex items-center gap-1.5 sm:gap-2" ref={menuRef}>
       {/* Streak Badge Trigger */}
       <button
         onClick={() => setIsManageAccountOpen(true)}
