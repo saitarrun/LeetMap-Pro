@@ -1,4 +1,5 @@
 export interface Problem {
+  id?: string;
   title: string;
   slug: string;
   difficulty: 'EASY' | 'MEDIUM' | 'HARD';
@@ -6,6 +7,7 @@ export interface Problem {
   acceptance: number;
   link: string;
   topics: string[];
+  verifiedSources?: string[];
 }
 
 export interface ProblemWindow {
@@ -48,8 +50,13 @@ export interface SyncStatus {
   lastSynced: number;
   lastSyncedISO: string;
   commitSha: string;
+  sources?: Array<{
+    name: string;
+    commit?: string;
+    companies?: number;
+    tagsCount?: number;
+  }>;
   companiesCount: number;
   uniqueProblemsCount: number;
   durationSeconds: number;
-  upstreamRepo: string;
 }

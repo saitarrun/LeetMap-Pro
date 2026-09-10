@@ -1,10 +1,25 @@
 {
   "status": "success",
-  "lastSynced": 1789069593592,
-  "lastSyncedISO": "2026-09-10T19:46:33Z",
-  "commitSha": "03850eb5",
-  "companiesCount": 470,
-  "uniqueProblemsCount": 3392,
-  "durationSeconds": 2.19,
-  "upstreamRepo": "liquidslr/leetcode-company-wise-problems"
+  "lastSynced": 1789070003783,
+  "lastSyncedISO": "2026-09-10T19:53:23Z",
+  "commitSha": "03850eb5+e095c259",
+  "sources": [
+    {
+      "name": "liquidslr/leetcode-company-wise-problems",
+      "commit": "03850eb5",
+      "companies": 470
+    },
+    {
+      "name": "snehasishroy/leetcode-companywise-interview-questions",
+      "commit": "e095c259",
+      "companies": 659
+    },
+    {
+      "name": "LeetCode GraphQL",
+      "tagsCount": 984
+    }
+  ],
+  "companiesCount": 683,
+  "uniqueProblemsCount": 3422,
+  "durationSeconds": 4.2
 }

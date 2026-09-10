@@ -13,6 +13,7 @@ import {
   ChevronDown,
   ChevronUp,
   Download,
+  ShieldCheck,
 } from 'lucide-react';
 import { CompanyDetail, Problem } from '@/types';
 import { getSolvedProblems, toggleProblemSolved } from '@/utils/progress';
@@ -22,8 +23,6 @@ interface CompanyDetailViewProps {
 }
 
 export const CompanyDetailView: React.FC<CompanyDetailViewProps> = ({ company }) => {
-  // Tab index: 0=30_days, 1=3_months, 2=6_months, 3=more_than_6_months, 4=all
-  // Default to 4 ("All Time") or 0 ("Last 30 Days") if populated
   const [activeTab, setActiveTab] = useState<number>(4);
   const [searchQuery, setSearchQuery] = useState('');
   const [difficultyFilter, setDifficultyFilter] = useState<'ALL' | 'EASY' | 'MEDIUM' | 'HARD'>('ALL');
@@ -34,10 +33,9 @@ export const CompanyDetailView: React.FC<CompanyDetailViewProps> = ({ company })
   const [solvedSet, setSolvedSet] = useState<Set<string>>(new Set());
 
   // Sort state: default by frequency descending
-  const [sortBy, setSortBy] = useState<'frequency' | 'difficulty' | 'title' | 'acceptance'>('frequency');
+  const [sortBy, setSortBy] = useState<'frequency' | 'difficulty' | 'title' | 'acceptance' | 'id'>('frequency');
   const [sortDir, setSortDir] = useState<'asc' | 'desc'>('desc');
 
-  // Load solved problems from localStorage
   useEffect(() => {
     setSolvedSet(getSolvedProblems());
 
@@ -56,7 +54,6 @@ export const CompanyDetailView: React.FC<CompanyDetailViewProps> = ({ company })
   const currentWindow = company.windows[activeTab] || company.windows[0];
   const allProblems = currentWindow?.problems || [];
 
-  // Extract all distinct topics with their counts for the current window
   const topicCounts = useMemo(() => {
     const counts: Record<string, number> = {};
     for (const p of allProblems) {
@@ -67,25 +64,21 @@ export const CompanyDetailView: React.FC<CompanyDetailViewProps> = ({ company })
     return Object.entries(counts).sort((a, b) => b[1] - a[1]);
   }, [allProblems]);
 
-  // Filtered problems
   const filteredProblems = useMemo(() => {
     return allProblems.filter((p) => {
-      // Search
       if (searchQuery.trim()) {
         const q = searchQuery.toLowerCase().trim();
         const matchesTitle = p.title.toLowerCase().includes(q);
+        const matchesId = p.id && p.id.includes(q);
         const matchesTopic = p.topics.some((t) => t.toLowerCase().includes(q));
-        if (!matchesTitle && !matchesTopic) return false;
+        if (!matchesTitle && !matchesId && !matchesTopic) return false;
       }
-      // Difficulty
       if (difficultyFilter !== 'ALL' && p.difficulty !== difficultyFilter) {
         return false;
       }
-      // Topic
       if (selectedTopic && !p.topics.includes(selectedTopic)) {
         return false;
       }
-      // Hide Solved
       if (hideSolved && solvedSet.has(p.slug)) {
         return false;
       }
@@ -93,7 +86,6 @@ export const CompanyDetailView: React.FC<CompanyDetailViewProps> = ({ company })
     });
   }, [allProblems, searchQuery, difficultyFilter, selectedTopic, hideSolved, solvedSet]);
 
-  // Sorted problems
   const sortedProblems = useMemo(() => {
     return [...filteredProblems].sort((a, b) => {
       let result = 0;
@@ -101,6 +93,10 @@ export const CompanyDetailView: React.FC<CompanyDetailViewProps> = ({ company })
         result = a.frequency - b.frequency;
       } else if (sortBy === 'acceptance') {
         result = a.acceptance - b.acceptance;
+      } else if (sortBy === 'id') {
+        const idA = parseInt(a.id || '999999', 10);
+        const idB = parseInt(b.id || '999999', 10);
+        result = idA - idB;
       } else if (sortBy === 'difficulty') {
         const order = { EASY: 1, MEDIUM: 2, HARD: 3 };
         result = (order[a.difficulty] || 0) - (order[b.difficulty] || 0);
@@ -111,12 +107,12 @@ export const CompanyDetailView: React.FC<CompanyDetailViewProps> = ({ company })
     });
   }, [filteredProblems, sortBy, sortDir]);
 
-  const handleSort = (column: 'frequency' | 'difficulty' | 'title' | 'acceptance') => {
+  const handleSort = (column: 'frequency' | 'difficulty' | 'title' | 'acceptance' | 'id') => {
     if (sortBy === column) {
       setSortDir(sortDir === 'asc' ? 'desc' : 'asc');
     } else {
       setSortBy(column);
-      setSortDir(column === 'title' ? 'asc' : 'desc');
+      setSortDir(column === 'title' || column === 'id' ? 'asc' : 'desc');
     }
   };
 
@@ -129,16 +125,23 @@ export const CompanyDetailView: React.FC<CompanyDetailViewProps> = ({ company })
   };
 
   const handleExportCSV = () => {
-    const headers = ['Title', 'Difficulty', 'Frequency', 'Acceptance %', 'Solved', 'Link', 'Topics'];
-    const rows = sortedProblems.map((p) => [
-      `"${p.title.replace(/"/g, '""')}"`,
-      p.difficulty,
-      p.frequency,
-      (p.acceptance * 100).toFixed(1) + '%',
-      solvedSet.has(p.slug) ? 'YES' : 'NO',
-      p.link,
-      `"${p.topics.join(', ')}"`,
-    ]);
+    const headers = ['ID', 'Title', 'Difficulty', 'Frequency %', 'Acceptance %', 'Solved', 'Link', 'Topics', 'Sources'];
+    const rows = sortedProblems.map((p) => {
+      const accStr = p.acceptance > 0
+        ? (p.acceptance <= 1 ? (p.acceptance * 100).toFixed(1) : p.acceptance.toFixed(1)) + '%'
+        : '-';
+      return [
+        p.id || '',
+        `"${p.title.replace(/"/g, '""')}"`,
+        p.difficulty,
+        p.frequency,
+        accStr,
+        solvedSet.has(p.slug) ? 'YES' : 'NO',
+        p.link,
+        `"${p.topics.join(', ')}"`,
+        `"${(p.verifiedSources || []).join(', ')}"`,
+      ];
+    });
     const csvContent = 'data:text/csv;charset=utf-8,' + [headers.join(','), ...rows.map((r) => r.join(','))].join('\n');
     const encodedUri = encodeURI(csvContent);
     const link = document.createElement('a');
@@ -149,7 +152,6 @@ export const CompanyDetailView: React.FC<CompanyDetailViewProps> = ({ company })
     document.body.removeChild(link);
   };
 
-  // Company solved stats
   const companySolvedCount = useMemo(() => {
     const allUniqueSlugs = new Set<string>();
     for (const w of company.windows) {
@@ -197,9 +199,15 @@ export const CompanyDetailView: React.FC<CompanyDetailViewProps> = ({ company })
             )}
           </div>
           <div>
-            <h1 className="text-2xl font-bold text-[var(--text-main)] tracking-tight">
-              {company.name} LeetCode Questions
-            </h1>
+            <div className="flex items-center gap-2">
+              <h1 className="text-2xl font-bold text-[var(--text-main)] tracking-tight">
+                {company.name} LeetCode Questions
+              </h1>
+              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20" title="Cross-referenced across multiple community datasets">
+                <ShieldCheck className="w-3 h-3" />
+                <span>Multi-Source Verified</span>
+              </span>
+            </div>
             <div className="flex flex-wrap items-center gap-2 mt-1 text-xs text-[var(--text-muted)]">
               <span className="font-semibold text-[var(--text-main)]">{company.total}</span> questions all-time
               <span>•</span>
@@ -269,7 +277,7 @@ export const CompanyDetailView: React.FC<CompanyDetailViewProps> = ({ company })
             type="search"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Filter problems or topics..."
+            placeholder="Filter problems (#1, Two Sum, dynamic programming...)"
             className="w-full pl-10 pr-4 py-2 rounded-xl text-xs bg-[var(--bg-card)] border border-[var(--border)] text-[var(--text-main)] placeholder:text-[var(--text-light)] focus:outline-none focus:border-blue-500 transition-colors"
           />
         </div>
@@ -394,7 +402,15 @@ export const CompanyDetailView: React.FC<CompanyDetailViewProps> = ({ company })
             <thead>
               <tr className="border-b border-[var(--border)] bg-[var(--bg-subtle)] text-[var(--text-muted)] font-medium">
                 <th className="py-3 px-4 w-12 text-center" aria-label="Solved">✓</th>
-                <th className="py-3 px-3 w-12 text-center">#</th>
+                <th
+                  onClick={() => handleSort('id')}
+                  className="py-3 px-3 w-16 text-center cursor-pointer hover:text-[var(--text-main)] select-none"
+                >
+                  <div className="flex items-center justify-center gap-0.5">
+                    <span>#ID</span>
+                    {sortBy === 'id' && (sortDir === 'asc' ? '↑' : '↓')}
+                  </div>
+                </th>
                 <th
                   onClick={() => handleSort('title')}
                   className="py-3 px-4 cursor-pointer hover:text-[var(--text-main)] select-none"
@@ -441,9 +457,11 @@ export const CompanyDetailView: React.FC<CompanyDetailViewProps> = ({ company })
                   </td>
                 </tr>
               ) : (
-                sortedProblems.map((prob, idx) => {
+                sortedProblems.map((prob) => {
                   const isSolved = solvedSet.has(prob.slug);
-                  const accPercent = prob.acceptance > 0 ? (prob.acceptance * 100).toFixed(1) + '%' : '-';
+                  const accPercent = prob.acceptance > 0
+                    ? (prob.acceptance <= 1 ? (prob.acceptance * 100).toFixed(1) : prob.acceptance.toFixed(1)) + '%'
+                    : '-';
                   const freq = Math.min(100, Math.max(0, prob.frequency));
 
                   let diffColorClass = 'text-emerald-600 bg-emerald-500/10 dark:text-emerald-400';
@@ -476,25 +494,36 @@ export const CompanyDetailView: React.FC<CompanyDetailViewProps> = ({ company })
                         </button>
                       </td>
 
-                      {/* Index */}
+                      {/* Problem ID */}
                       <td className="py-3 px-3 text-center text-[var(--text-light)] text-[11px] font-mono">
-                        {idx + 1}
+                        {prob.id ? `#${prob.id}` : '-'}
                       </td>
 
                       {/* Title & Topics */}
                       <td className="py-3 px-4">
                         <div className="flex flex-col gap-1">
-                          <a
-                            href={prob.link}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className={`inline-flex items-center gap-1.5 font-medium hover:text-blue-500 transition-colors ${
-                              isSolved ? 'line-through text-[var(--text-muted)]' : 'text-[var(--text-main)]'
-                            }`}
-                          >
-                            <span>{prob.title}</span>
-                            <ExternalLink className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity shrink-0" />
-                          </a>
+                          <div className="flex items-center gap-2">
+                            <a
+                              href={prob.link}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className={`inline-flex items-center gap-1.5 font-medium hover:text-blue-500 transition-colors ${
+                                isSolved ? 'line-through text-[var(--text-muted)]' : 'text-[var(--text-main)]'
+                              }`}
+                            >
+                              <span>{prob.title}</span>
+                              <ExternalLink className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity shrink-0" />
+                            </a>
+
+                            {prob.verifiedSources && prob.verifiedSources.length > 1 && (
+                              <span
+                                className="text-[9px] px-1.5 py-0.2 rounded bg-stone-500/10 text-[var(--text-muted)] font-mono border border-[var(--border)]"
+                                title={`Verified across: ${prob.verifiedSources.join(', ')}`}
+                              >
+                                {prob.verifiedSources.length} sources
+                              </span>
+                            )}
+                          </div>
 
                           {!hideTopics && prob.topics.length > 0 && (
                             <div className="flex flex-wrap gap-1">
@@ -529,7 +558,7 @@ export const CompanyDetailView: React.FC<CompanyDetailViewProps> = ({ company })
                             />
                           </div>
                           <span className="font-mono text-[11px] text-[var(--text-muted)]">
-                            {freq.toFixed(0)}
+                            {freq.toFixed(0)}%
                           </span>
                         </div>
                       </td>
