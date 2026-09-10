@@ -58,14 +58,50 @@ body {
   letter-spacing: -0.01em;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
   transition: background-color 0.2s var(--ease-apple-spring), color 0.2s var(--ease-apple-spring);
   min-height: 100vh;
+}
+
+/* Apple Optical Sizing & Tracking */
+h1 {
+  letter-spacing: -0.03em;
+  line-height: 1.12;
+}
+
+h2 {
+  letter-spacing: -0.022em;
+  line-height: 1.18;
+}
+
+h3 {
+  letter-spacing: -0.015em;
+  line-height: 1.25;
+}
+
+/* Positive tracking for micro-captions & kbd tags */
+kbd,
+.font-mono,
+[class*="text-[10px]"],
+[class*="text-[11px]"] {
+  letter-spacing: 0.02em;
+}
+
+/* Apple text selection */
+::selection {
+  background-color: rgba(0, 113, 227, 0.2);
+}
+[data-theme="dark"] ::selection {
+  background-color: rgba(41, 151, 255, 0.3);
 }
 
 /* Apple tactile press feedback */
 .apple-press {
   transition: transform 120ms var(--ease-apple-spring), opacity 120ms var(--ease-apple-spring), background-color 120ms var(--ease-apple-spring);
   will-change: transform;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
 }
 .apple-press:active {
   transform: scale(0.97);
@@ -74,21 +110,60 @@ body {
 .apple-card {
   transition: transform 200ms var(--ease-apple-spring), box-shadow 200ms var(--ease-apple-spring), border-color 200ms var(--ease-apple-spring), background-color 200ms var(--ease-apple-spring);
   will-change: transform;
+  box-shadow: inset 0 1px 0 0 var(--specular-border);
 }
 .apple-card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 12px 30px -10px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 12px 30px -10px rgba(0, 0, 0, 0.15), inset 0 1px 0 0 var(--specular-border);
 }
 .apple-card:active {
   transform: translateY(0px) scale(0.985);
 }
 
-/* Apple Frosted Glass */
+/* Apple Frosted Glass with Vibrancy */
 .apple-glass {
   background: var(--bg-card-glass);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
   border: 1px solid var(--border);
+  box-shadow: inset 0 1px 0 0 var(--specular-border);
+}
+
+/* Accessibility: Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  *, ::before, ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .apple-card:hover,
+  .apple-card:active,
+  .apple-press:active {
+    transform: none !important;
+  }
+}
+
+/* Accessibility: Reduced Transparency */
+@media (prefers-reduced-transparency: reduce) {
+  .apple-glass,
+  header {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    background: var(--bg-card) !important;
+  }
+}
+
+/* Accessibility: Increased Contrast */
+@media (prefers-contrast: more) {
+  :root {
+    --border: rgba(0, 0, 0, 0.25);
+    --text-muted: #48484a;
+  }
+  [data-theme="dark"] {
+    --border: rgba(255, 255, 255, 0.35);
+    --text-muted: #aeaeb2;
+  }
 }
 
 /* Minimal smooth scrollbar */

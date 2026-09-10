@@ -10,6 +10,7 @@ import {
   ArrowUpDown,
   LayoutGrid,
   ListFilter,
+  X,
 } from 'lucide-react';
 import { SqlCompanySummary, SqlCatalog, SyncStatus } from '@/types';
 import { Header } from '@/components/Header';
@@ -57,6 +58,10 @@ export const SqlHubClient: React.FC<SqlHubClientProps> = ({
       if (e.key === '/' && document.activeElement !== searchInputRef.current) {
         e.preventDefault();
         searchInputRef.current?.focus();
+      } else if (e.key === 'Escape' && (document.activeElement === searchInputRef.current || searchQuery)) {
+        e.preventDefault();
+        setSearchQuery('');
+        searchInputRef.current?.blur();
       }
     };
     window.addEventListener('keydown', handleKeyDown);
@@ -65,7 +70,7 @@ export const SqlHubClient: React.FC<SqlHubClientProps> = ({
       window.removeEventListener('grindmap-solved-updated', handleUpdate);
       window.removeEventListener('keydown', handleKeyDown);
     };
-  }, []);
+  }, [searchQuery]);
 
   // Filtered SQL Companies
   const filteredCompanies = useMemo(() => {
@@ -183,9 +188,23 @@ export const SqlHubClient: React.FC<SqlHubClientProps> = ({
                   placeholder={`Search ${companies.length} companies asking SQL... (Amazon, Google, Meta, Bloomberg)`}
                   className="w-full pl-11 pr-12 py-3 rounded-2xl text-sm bg-[var(--bg-card)] border border-[var(--border)] text-[var(--text-main)] placeholder:text-[var(--text-light)] shadow-xs focus:outline-none focus:border-[var(--text-muted)]/40 focus:ring-4 focus:ring-[var(--border)]/40 transition-all"
                 />
-                <kbd className="absolute right-3.5 top-1/2 -translate-y-1/2 px-2 py-0.5 rounded-lg text-[10px] font-mono text-[var(--text-light)] border border-[var(--border)] bg-[var(--bg-subtle)]">
-                  /
-                </kbd>
+                {searchQuery ? (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSearchQuery('');
+                      searchInputRef.current?.focus();
+                    }}
+                    className="apple-press absolute right-3.5 top-1/2 -translate-y-1/2 p-1 rounded-full text-[var(--text-light)] hover:text-[var(--text-main)] hover:bg-[var(--bg-subtle)] transition-colors cursor-pointer"
+                    title="Clear search (Esc)"
+                  >
+                    <X className="w-3.5 h-3.5" />
+                  </button>
+                ) : (
+                  <kbd className="absolute right-3.5 top-1/2 -translate-y-1/2 px-2 py-0.5 rounded-lg text-[10px] font-mono text-[var(--text-light)] border border-[var(--border)] bg-[var(--bg-subtle)]">
+                    /
+                  </kbd>
+                )}
               </div>
 
               {/* Segmented Category Filter Bar */}
@@ -234,8 +253,27 @@ export const SqlHubClient: React.FC<SqlHubClientProps> = ({
             {/* Company Cards Grid */}
             <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5">
               {filteredCompanies.length === 0 ? (
-                <div className="col-span-full py-16 text-center text-xs text-[var(--text-muted)] border border-dashed border-[var(--border)] rounded-3xl bg-[var(--bg-card)]/50">
-                  No companies matching &quot;{searchQuery}&quot; found asking SQL questions.
+                <div className="col-span-full py-20 text-center rounded-3xl border border-[var(--border)] bg-[var(--bg-card)] p-8 max-w-md mx-auto space-y-4 shadow-xs">
+                  <div className="w-12 h-12 rounded-2xl bg-[var(--bg-subtle)] border border-[var(--border)] flex items-center justify-center mx-auto text-[var(--text-muted)]">
+                    <Search className="w-5 h-5 opacity-70" />
+                  </div>
+                  <div className="space-y-1">
+                    <h3 className="text-base font-semibold text-[var(--text-main)]">No SQL companies found</h3>
+                    <p className="text-xs text-[var(--text-muted)] leading-relaxed">
+                      {searchQuery
+                        ? `No company matching "${searchQuery}" found asking SQL questions.`
+                        : 'No companies match the selected category filter.'}
+                    </p>
+                  </div>
+                  <button
+                    onClick={() => {
+                      setSearchQuery('');
+                      setCategoryFilter('ALL');
+                    }}
+                    className="apple-press inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-semibold bg-[var(--bg-subtle)] hover:bg-[var(--bg-hover)] text-[var(--text-main)] border border-[var(--border)] transition-colors cursor-pointer"
+                  >
+                    <span>Reset all filters</span>
+                  </button>
                 </div>
               ) : (
                 filteredCompanies.map((c) => (
