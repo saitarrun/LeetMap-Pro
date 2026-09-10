@@ -188,6 +188,26 @@ export const HomeClient: React.FC<HomeClientProps> = ({
                   {tab.label}
                 </button>
               ))}
+
+              <span className="w-px h-4 bg-[var(--border)] mx-0.5" />
+
+              <Link
+                href="/patterns"
+                className="apple-press flex items-center gap-1.5 px-3 py-1.5 rounded-xl font-medium transition-all text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--bg-hover)]"
+              >
+                <GitBranch className="w-3.5 h-3.5 opacity-70" />
+                <span>Patterns</span>
+                <span className="font-mono text-[11px] text-[var(--text-light)]">22</span>
+              </Link>
+
+              <Link
+                href="/sql"
+                className="apple-press flex items-center gap-1.5 px-3 py-1.5 rounded-xl font-medium transition-all text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--bg-hover)]"
+              >
+                <Database className="w-3.5 h-3.5 opacity-70" />
+                <span>SQL</span>
+                <span className="font-mono text-[11px] text-[var(--text-light)]">73</span>
+              </Link>
             </div>
 
             <div className="flex items-center gap-2">

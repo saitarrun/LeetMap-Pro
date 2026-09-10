@@ -230,6 +230,26 @@ export const SqlHubClient: React.FC<SqlHubClientProps> = ({
                       {tab.label}
                     </button>
                   ))}
+
+                  <span className="w-px h-4 bg-[var(--border)] mx-0.5" />
+
+                  <button
+                    onClick={() => setActiveView('problems')}
+                    className="apple-press flex items-center gap-1.5 px-3 py-1.5 rounded-xl font-medium transition-all text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--bg-hover)] cursor-pointer"
+                  >
+                    <Database className="w-3.5 h-3.5 opacity-70" />
+                    <span>All Problems</span>
+                    <span className="font-mono text-[11px] text-[var(--text-light)]">{catalog.totalSqlProblems}</span>
+                  </button>
+
+                  <Link
+                    href="/"
+                    className="apple-press flex items-center gap-1.5 px-3 py-1.5 rounded-xl font-medium transition-all text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--bg-hover)]"
+                  >
+                    <Code2 className="w-3.5 h-3.5 opacity-70" />
+                    <span>DSA</span>
+                    <span className="font-mono text-[11px] text-[var(--text-light)]">683</span>
+                  </Link>
                 </div>
 
                 {/* Sort Dropdown */}

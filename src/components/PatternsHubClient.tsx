@@ -10,6 +10,8 @@ import {
   ArrowLeft,
   ArrowUpDown,
   BookOpen,
+  Building2,
+  Database,
 } from 'lucide-react';
 import { PatternSummary, SyncStatus } from '@/types';
 import { Header } from '@/components/Header';
@@ -150,8 +152,19 @@ export const PatternsHubClient: React.FC<PatternsHubClientProps> = ({
           {/* Category Tabs */}
           <div className="flex flex-wrap items-center justify-between gap-3 text-xs">
             <div className="flex flex-wrap items-center p-1 rounded-2xl bg-[var(--bg-subtle)] border border-[var(--border)] gap-1">
+              <Link
+                href="/"
+                className="apple-press flex items-center gap-1.5 px-3 py-1.5 rounded-xl font-medium transition-all text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--bg-hover)]"
+              >
+                <Building2 className="w-3.5 h-3.5 opacity-70" />
+                <span>Companies</span>
+                <span className="font-mono text-[11px] text-[var(--text-light)]">683</span>
+              </Link>
+
+              <span className="w-px h-4 bg-[var(--border)] mx-0.5" />
+
               {[
-                { key: 'ALL', label: `All (${patterns.length})` },
+                { key: 'ALL', label: `All Patterns (${patterns.length})` },
                 { key: 'Fundamentals', label: 'Fundamentals' },
                 { key: 'Data Structures', label: 'Data Structures' },
                 { key: 'Trees & Graphs', label: 'Trees & Graphs' },
@@ -160,15 +173,27 @@ export const PatternsHubClient: React.FC<PatternsHubClientProps> = ({
                 <button
                   key={tab.key}
                   onClick={() => setCategoryFilter(tab.key as any)}
-                  className={`apple-press px-3 py-1.5 rounded-xl font-medium transition-all cursor-pointer ${
+                  className={`apple-press flex items-center gap-1.5 px-3 py-1.5 rounded-xl font-medium transition-all cursor-pointer ${
                     categoryFilter === tab.key
                       ? 'bg-[var(--bg-card)] text-[var(--text-main)] shadow-xs font-semibold'
                       : 'text-[var(--text-muted)] hover:text-[var(--text-main)]'
                   }`}
                 >
-                  {tab.label}
+                  {tab.key === 'ALL' && <GitBranch className="w-3.5 h-3.5 opacity-70" />}
+                  <span>{tab.label}</span>
                 </button>
               ))}
+
+              <span className="w-px h-4 bg-[var(--border)] mx-0.5" />
+
+              <Link
+                href="/sql"
+                className="apple-press flex items-center gap-1.5 px-3 py-1.5 rounded-xl font-medium transition-all text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--bg-hover)]"
+              >
+                <Database className="w-3.5 h-3.5 opacity-70" />
+                <span>SQL</span>
+                <span className="font-mono text-[11px] text-[var(--text-light)]">73</span>
+              </Link>
             </div>
 
             {/* Sort Dropdown */}
