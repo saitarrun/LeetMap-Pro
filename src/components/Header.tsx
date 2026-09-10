@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { RefreshCw, Sun, Moon, Database, GitBranch, Building2 } from 'lucide-react';
+import { RefreshCw, Sun, Moon, Database, GitBranch, Building2, Heart } from 'lucide-react';
 import { SyncStatus } from '@/types';
 import { UserProfileMenu } from '@/components/UserProfileMenu';
 
@@ -114,7 +114,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenSync, syncStatus }) => {
         </div>
 
         {/* Right Actions */}
-        <div className="flex items-center gap-2 sm:gap-2.5">
+        <div className="flex items-center gap-1.5 sm:gap-2">
           {/* Realtime Sync Badge Button */}
           <button
             onClick={onOpenSync}
@@ -128,8 +128,16 @@ export const Header: React.FC<HeaderProps> = ({ onOpenSync, syncStatus }) => {
             </span>
           </button>
 
-          {/* User Profile / GitHub Sign In */}
-          <UserProfileMenu />
+          {/* Source Link */}
+          <a
+            href="https://github.com/liquidslr/leetcode-company-wise-problems"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hidden sm:inline-block text-xs text-[var(--text-muted)] hover:text-[var(--text-main)] transition-colors font-medium px-2 py-1 select-none"
+            title="Upstream Dataset Source"
+          >
+            Source
+          </a>
 
           {/* User Github Profile */}
           <a
@@ -145,6 +153,21 @@ export const Header: React.FC<HeaderProps> = ({ onOpenSync, syncStatus }) => {
               <path d="M9 18c-4.51 2-5-2-7-2" />
             </svg>
           </a>
+
+          {/* Sponsor / Heart Button */}
+          <a
+            href="https://github.com/sponsors/saitarrun"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="apple-press p-2 rounded-full text-[var(--text-muted)] hover:text-rose-500 hover:bg-[var(--bg-hover)] transition-colors"
+            title="Sponsor (@saitarrun)"
+            aria-label="Sponsor"
+          >
+            <Heart className="w-4 h-4" />
+          </a>
+
+          {/* User Profile / GitHub Sign In Menu (GrindMap / Clerk Style) */}
+          <UserProfileMenu />
 
           {/* Theme Toggle */}
           <button
