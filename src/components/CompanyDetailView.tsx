@@ -51,7 +51,7 @@ export const CompanyDetailView: React.FC<CompanyDetailViewProps> = ({ company })
   }, []);
 
   const handleToggleSolved = (prob: Problem) => {
-    const solved = toggleProblemSolved(prob.slug);
+    const solved = toggleProblemSolved(prob.slug, { title: prob.title, difficulty: prob.difficulty });
     setSolvedSet(getSolvedProblems());
 
     if (solved) {

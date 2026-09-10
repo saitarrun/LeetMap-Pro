@@ -189,3 +189,20 @@ export interface UserStats {
   hardSolved: number;
 }
 
+export interface SolvedProblemRecord {
+  slug: string;
+  solvedAt: string;
+  date: string; // "YYYY-MM-DD"
+  title?: string;
+  difficulty?: 'EASY' | 'MEDIUM' | 'HARD';
+}
+
+export interface UserActivityStats {
+  totalSolved: number;
+  todaySolved: number;
+  currentStreak: number;
+  maxStreak: number;
+  dailyHistory: Record<string, number>;
+  recentSolved: SolvedProblemRecord[];
+}
+

@@ -2,7 +2,9 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import { useAuth } from '@/context/AuthContext';
-import { getSolvedProblems } from '@/utils/progress';
+import { getUserActivityStats } from '@/utils/progress';
+import { ActivityTracker } from '@/components/ActivityTracker';
+import { UserActivityStats } from '@/types';
 import {
   Settings,
   LogOut,
@@ -20,13 +22,13 @@ export const UserProfileMenu: React.FC = () => {
   const { user, logout, openLoginModal } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
   const [isManageAccountOpen, setIsManageAccountOpen] = useState(false);
-  const [solvedStats, setSolvedStats] = useState({ total: 0 });
+  const [activityStats, setActivityStats] = useState<UserActivityStats | null>(null);
   const menuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const updateStats = () => {
-      const solved = getSolvedProblems(user?.username);
-      setSolvedStats({ total: solved.size });
+      const stats = getUserActivityStats(user?.username);
+      setActivityStats(stats);
     };
 
     updateStats();
@@ -99,6 +101,17 @@ export const UserProfileMenu: React.FC = () => {
               <p className="text-xs text-[var(--text-muted)] truncate font-normal mt-0.5">
                 {user.username}
               </p>
+              {activityStats && (
+                <div className="flex items-center gap-1.5 mt-1.5 text-[11px] font-mono">
+                  <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-amber-500/10 text-amber-600 dark:text-amber-400 font-semibold border border-amber-500/20">
+                    🔥 {activityStats.currentStreak}d streak
+                  </span>
+                  <span className="text-[var(--text-muted)] font-sans">•</span>
+                  <span className="text-[var(--text-muted)]">
+                    {activityStats.totalSolved} solved
+                  </span>
+                </div>
+              )}
             </div>
           </div>
 
@@ -156,7 +169,7 @@ export const UserProfileMenu: React.FC = () => {
           onClick={() => setIsManageAccountOpen(false)}
         >
           <div
-            className="bg-[var(--bg-card)] border border-[var(--border)] rounded-3xl max-w-md w-full p-6 shadow-2xl relative apple-modal-surface space-y-5"
+            className="bg-[var(--bg-card)] border border-[var(--border)] rounded-3xl max-w-2xl w-full p-6 shadow-2xl relative apple-modal-surface space-y-6 max-h-[92vh] overflow-y-auto"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Close Button */}
@@ -169,7 +182,7 @@ export const UserProfileMenu: React.FC = () => {
             </button>
 
             {/* Header */}
-            <div className="flex items-center gap-3.5">
+            <div className="flex items-center gap-3.5 pr-8">
               <div className="w-14 h-14 rounded-full overflow-hidden border border-[var(--border)] shrink-0 shadow-xs">
                 <img src={user.avatarUrl} alt={user.name} className="w-full h-full object-cover" />
               </div>
@@ -192,24 +205,22 @@ export const UserProfileMenu: React.FC = () => {
               </div>
             </div>
 
-            {/* Progress Card */}
-            <div className="p-4 rounded-2xl bg-[var(--bg-subtle)] border border-[var(--border)] space-y-2">
-              <div className="flex items-center justify-between text-xs">
-                <div className="flex items-center gap-2 font-semibold text-[var(--text-main)]">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-500" />
-                  <span>Interview Readiness</span>
-                </div>
-                <span className="font-mono text-emerald-600 dark:text-emerald-400 font-bold">
-                  {solvedStats.total} problems solved
-                </span>
+            {/* Activity Heatmap & Everyday Streak Tracker */}
+            {activityStats && (
+              <ActivityTracker stats={activityStats} username={user.username} />
+            )}
+
+            {/* Storage Info */}
+            <div className="p-3.5 rounded-2xl bg-[var(--bg-subtle)] border border-[var(--border)] text-xs text-[var(--text-muted)] flex items-start gap-2.5">
+              <ShieldCheck className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
+              <div>
+                <span className="font-semibold text-[var(--text-main)]">Private Local Profile: </span>
+                Your problem solves, timestamps, and streak calculations are isolated under your profile key (<code className="font-mono text-[11px] text-[var(--text-main)]">grindmap_solved_{user.username.toLowerCase()}</code>).
               </div>
-              <p className="text-[11px] text-[var(--text-muted)]">
-                All progress is saved in your private profile storage key (`grindmap_solved_{user.username}`).
-              </p>
             </div>
 
             {/* Account Actions */}
-            <div className="space-y-2 pt-1">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
               <button
                 onClick={() => {
                   setIsManageAccountOpen(false);
@@ -218,7 +229,7 @@ export const UserProfileMenu: React.FC = () => {
                 className="apple-press w-full flex items-center justify-center gap-2 py-2.5 rounded-xl border border-[var(--border)] bg-[var(--bg-card)] hover:bg-[var(--bg-hover)] text-xs font-semibold text-[var(--text-main)] shadow-2xs transition-colors cursor-pointer"
               >
                 <UserCheck className="w-3.5 h-3.5 text-[var(--text-muted)]" />
-                <span>Switch to Another GitHub Profile</span>
+                <span>Switch GitHub Profile</span>
               </button>
 
               <button
