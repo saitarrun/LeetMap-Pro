@@ -128,17 +128,6 @@ export const Header: React.FC<HeaderProps> = ({ onOpenSync, syncStatus }) => {
             </span>
           </button>
 
-          {/* Source Link */}
-          <a
-            href="https://github.com/liquidslr/leetcode-company-wise-problems"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="hidden sm:inline-block text-xs text-[var(--text-muted)] hover:text-[var(--text-main)] transition-colors font-medium px-2 py-1 select-none"
-            title="Upstream Dataset Source"
-          >
-            Source
-          </a>
-
           {/* User Github Profile */}
           <a
             href="https://github.com/saitarrun"
