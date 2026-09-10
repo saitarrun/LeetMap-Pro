@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useMemo, useEffect, useRef } from 'react';
+import Link from 'next/link';
 import {
   Search,
   Sparkles,
@@ -9,6 +10,8 @@ import {
   ArrowUpDown,
   BookOpen,
   X,
+  Clock,
+  ChevronRight,
 } from 'lucide-react';
 import { PatternSummary, SyncStatus } from '@/types';
 import { Header } from '@/components/Header';
@@ -189,6 +192,34 @@ export const PatternsHubClient: React.FC<PatternsHubClientProps> = ({
               </div>
             </div>
           </div>
+        </section>
+
+        {/* Time Complexity Master Notes Banner */}
+        <section>
+          <Link
+            href="/patterns/time-complexity"
+            className="group flex items-center justify-between gap-4 p-4 sm:p-5 rounded-2xl border border-[var(--border)] bg-[var(--bg-card)] hover:border-amber-500/40 hover:bg-amber-500/5 transition-all shadow-xs cursor-pointer"
+          >
+            <div className="flex items-center gap-4 min-w-0">
+              <div className="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/25 flex items-center justify-center shrink-0">
+                <Clock className="w-5 h-5 text-amber-600 dark:text-amber-400" />
+              </div>
+              <div className="min-w-0">
+                <div className="flex flex-wrap items-center gap-2 mb-0.5">
+                  <span className="text-sm font-semibold text-[var(--text-main)]">
+                    Time &amp; Space Complexity — Master Notes
+                  </span>
+                  <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/25 uppercase tracking-wide">
+                    From Scratch
+                  </span>
+                </div>
+                <p className="text-xs text-[var(--text-muted)] leading-snug truncate">
+                  Big O notation · Complexity ladder · 4 calculation rules · Every pattern explained · Space analysis · Interview cheat sheet
+                </p>
+              </div>
+            </div>
+            <ChevronRight className="w-4 h-4 text-[var(--text-muted)] group-hover:text-amber-500 transition-colors shrink-0" />
+          </Link>
         </section>
 
         {/* Pattern Cards Grid */}
