@@ -16,12 +16,12 @@ export const metadata = {
     'Technical Interview Roadmap',
   ],
   alternates: {
-    canonical: '/strategy',
+    canonical: 'https://leetmap-pro.vercel.app/strategy',
   },
   openGraph: {
     title: 'Interview Strategy & Dependency Roadmap — LeetMap Pro',
     description: 'Master the 18 core LeetCode coding interview patterns in optimal prerequisite order with an interactive visual dependency graph.',
-    url: '/strategy',
+    url: 'https://leetmap-pro.vercel.app/strategy',
     type: 'website',
   },
   twitter: {

@@ -70,20 +70,46 @@ export const metadata: Metadata = {
   },
 };
 
-const jsonLd = {
-  '@context': 'https://schema.org',
-  '@type': 'WebApplication',
-  name: 'LeetMap Pro',
-  url: 'https://leetmap-pro.vercel.app',
-  applicationCategory: 'EducationalApplication',
-  operatingSystem: 'All',
-  description: 'Browse coding interview problems actually asked by 680+ tech companies, ranked by frequency and recency. Free interactive strategy roadmap and curated SQL problems.',
-  offers: {
-    '@type': 'Offer',
-    price: '0',
-    priceCurrency: 'USD',
+const jsonLd = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    name: 'LeetMap Pro',
+    url: 'https://leetmap-pro.vercel.app',
+    potentialAction: {
+      '@type': 'SearchAction',
+      target: {
+        '@type': 'EntryPoint',
+        urlTemplate: 'https://leetmap-pro.vercel.app/?search={search_term_string}',
+      },
+      'query-input': 'required name=search_term_string',
+    },
   },
-};
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    name: 'LeetMap Pro',
+    url: 'https://leetmap-pro.vercel.app',
+    logo: 'https://leetmap-pro.vercel.app/apple-touch-icon.png',
+    sameAs: [
+      'https://github.com/saitarrun/LeetMap-Pro',
+    ],
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'WebApplication',
+    name: 'LeetMap Pro',
+    url: 'https://leetmap-pro.vercel.app',
+    applicationCategory: 'EducationalApplication',
+    operatingSystem: 'All',
+    description: 'Browse coding interview problems actually asked by 680+ tech companies, ranked by frequency and recency. Free interactive strategy roadmap and curated SQL problems.',
+    offers: {
+      '@type': 'Offer',
+      price: '0',
+      priceCurrency: 'USD',
+    },
+  },
+];
 
 export default async function RootLayout({
   children,

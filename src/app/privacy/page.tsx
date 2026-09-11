@@ -9,7 +9,7 @@ export const metadata = {
   title: 'Privacy Policy',
   description: 'Learn how LeetMap Pro handles your data with privacy-first engineering, transparent local storage, and zero third-party ads.',
   alternates: {
-    canonical: '/privacy',
+    canonical: 'https://leetmap-pro.vercel.app/privacy',
   },
 };
 

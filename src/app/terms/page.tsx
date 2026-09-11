@@ -9,7 +9,7 @@ export const metadata = {
   title: 'Terms of Service',
   description: 'Review the terms and conditions for using LeetMap Pro, an open-source technical interview preparation and frequency explorer.',
   alternates: {
-    canonical: '/terms',
+    canonical: 'https://leetmap-pro.vercel.app/terms',
   },
 };
 

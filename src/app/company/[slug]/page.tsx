@@ -34,20 +34,35 @@ export async function generateMetadata({ params }: PageProps) {
       `${company.name} software engineer interview`,
     ],
     alternates: {
-      canonical: `/company/${safeSlug}`,
+      canonical: `https://leetmap-pro.vercel.app/company/${safeSlug}`,
     },
     openGraph: {
       title,
       description,
-      url: `/company/${safeSlug}`,
+      url: `https://leetmap-pro.vercel.app/company/${safeSlug}`,
       type: 'article',
     },
     twitter: {
-      card: 'summary',
+      card: 'summary_large_image',
       title,
       description,
     },
   };
+}
+
+export async function generateStaticParams() {
+  try {
+    const companiesPath = path.join(process.cwd(), 'public', 'data', 'companies.json');
+    if (fs.existsSync(companiesPath)) {
+      const companies = JSON.parse(fs.readFileSync(companiesPath, 'utf8'));
+      return companies.slice(0, 50).map((c: { slug: string }) => ({
+        slug: c.slug,
+      }));
+    }
+  } catch (error) {
+    console.error('Failed to generate static params for companies', error);
+  }
+  return [];
 }
 
 export default async function CompanyPage({ params }: PageProps) {
@@ -67,8 +82,52 @@ export default async function CompanyPage({ params }: PageProps) {
     syncStatus = JSON.parse(fs.readFileSync(statusPath, 'utf8'));
   }
 
+  const breadcrumbJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      {
+        '@type': 'ListItem',
+        position: 1,
+        name: 'Home',
+        item: 'https://leetmap-pro.vercel.app',
+      },
+      {
+        '@type': 'ListItem',
+        position: 2,
+        name: 'Companies',
+        item: 'https://leetmap-pro.vercel.app',
+      },
+      {
+        '@type': 'ListItem',
+        position: 3,
+        name: `${company.name} LeetCode Questions`,
+        item: `https://leetmap-pro.vercel.app/company/${safeSlug}`,
+      },
+    ],
+  };
+
+  const topProblems = (company.windows?.find((w) => w.key === 'all')?.problems || []).slice(0, 20);
+  const itemListJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    name: `${company.name} Most Frequent Interview Questions`,
+    description: `Curated coding interview questions asked at ${company.name}`,
+    numberOfItems: topProblems.length,
+    itemListElement: topProblems.map((p, idx) => ({
+      '@type': 'ListItem',
+      position: idx + 1,
+      name: p.title,
+      url: `https://leetcode.com/problems/${p.slug}`,
+    })),
+  };
+
   return (
     <div className="min-h-screen flex flex-col">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify([breadcrumbJsonLd, itemListJsonLd]) }}
+      />
       <Header syncStatus={syncStatus} />
       <main className="flex-1 pb-16">
         <CompanyDetailView company={company} />

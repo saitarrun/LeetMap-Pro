@@ -16,12 +16,12 @@ export const metadata = {
     'SQL Frequency',
   ],
   alternates: {
-    canonical: '/sql',
+    canonical: 'https://leetmap-pro.vercel.app/sql',
   },
   openGraph: {
     title: 'Company-wise LeetCode SQL Questions — LeetMap Pro',
     description: 'Browse coding interview SQL questions asked by 73+ tech firms, ranked by interview frequency and recency.',
-    url: '/sql',
+    url: 'https://leetmap-pro.vercel.app/sql',
     type: 'website',
   },
   twitter: {

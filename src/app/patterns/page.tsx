@@ -17,12 +17,12 @@ export const metadata = {
     'FAANG Patterns',
   ],
   alternates: {
-    canonical: '/patterns',
+    canonical: 'https://leetmap-pro.vercel.app/patterns',
   },
   openGraph: {
     title: 'Browse by Pattern for LeetCode DSA — LeetMap Pro',
     description: 'Master 22 core LeetCode coding interview patterns asked by top tech firms.',
-    url: '/patterns',
+    url: 'https://leetmap-pro.vercel.app/patterns',
     type: 'website',
   },
   twitter: {

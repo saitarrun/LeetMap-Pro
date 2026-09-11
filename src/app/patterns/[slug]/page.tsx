@@ -58,20 +58,35 @@ export async function generateMetadata({ params }: PageProps) {
       'leetcode patterns roadmap',
     ],
     alternates: {
-      canonical: `/patterns/${safeSlug}`,
+      canonical: `https://leetmap-pro.vercel.app/patterns/${safeSlug}`,
     },
     openGraph: {
       title,
       description,
-      url: `/patterns/${safeSlug}`,
+      url: `https://leetmap-pro.vercel.app/patterns/${safeSlug}`,
       type: 'article',
     },
     twitter: {
-      card: 'summary',
+      card: 'summary_large_image',
       title,
       description,
     },
   };
+}
+
+export async function generateStaticParams() {
+  try {
+    const patternsPath = path.join(process.cwd(), 'public', 'data', 'patterns.json');
+    if (fs.existsSync(patternsPath)) {
+      const patterns = JSON.parse(fs.readFileSync(patternsPath, 'utf8'));
+      return patterns.map((p: { slug: string }) => ({
+        slug: p.slug,
+      }));
+    }
+  } catch (error) {
+    console.error('Failed to generate static params for patterns', error);
+  }
+  return [];
 }
 
 export default async function PatternDetailPage({ params }: PageProps) {
@@ -96,8 +111,49 @@ export default async function PatternDetailPage({ params }: PageProps) {
     }
   }
 
+  const breadcrumbJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      {
+        '@type': 'ListItem',
+        position: 1,
+        name: 'Home',
+        item: 'https://leetmap-pro.vercel.app',
+      },
+      {
+        '@type': 'ListItem',
+        position: 2,
+        name: 'Patterns',
+        item: 'https://leetmap-pro.vercel.app/patterns',
+      },
+      {
+        '@type': 'ListItem',
+        position: 3,
+        name: `${pattern.name} Pattern`,
+        item: `https://leetmap-pro.vercel.app/patterns/${safeSlug}`,
+      },
+    ],
+  };
+
+  const articleJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'TechArticle',
+    headline: `${pattern.name} LeetCode Pattern Guide`,
+    description: pattern.tagline,
+    author: {
+      '@type': 'Organization',
+      name: 'LeetMap Pro',
+    },
+    url: `https://leetmap-pro.vercel.app/patterns/${safeSlug}`,
+  };
+
   return (
     <div className="min-h-screen flex flex-col">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify([breadcrumbJsonLd, articleJsonLd]) }}
+      />
       <Header syncStatus={syncStatus} />
       <main className="flex-1 pb-16">
         <PatternDetailView pattern={pattern} />
