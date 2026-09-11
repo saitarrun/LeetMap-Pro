@@ -130,7 +130,10 @@ export const PatternDetailView: React.FC<PatternDetailViewProps> = ({ pattern })
   const companyOptions = useMemo(() => {
     const map: Record<string, { name: string; count: number }> = {};
     for (const p of pattern.problems) {
+      const seen = new Set<string>();
       for (const c of p.companies) {
+        if (seen.has(c.slug)) continue;
+        seen.add(c.slug);
         if (!map[c.slug]) {
           map[c.slug] = { name: c.name, count: 0 };
         }
@@ -306,185 +309,160 @@ export const PatternDetailView: React.FC<PatternDetailViewProps> = ({ pattern })
 
       {/* Pattern Study Guide & Cheat Sheet (Sleek Collapsible) */}
       {guide && (
-        <details className="group max-w-5xl mx-auto rounded-2xl border border-[var(--border)] bg-[var(--bg-card)] overflow-hidden transition-all text-xs shadow-[0_2px_10px_rgba(0,0,0,0.02)]">
-          <summary className="apple-press flex items-center justify-between px-5 py-3.5 cursor-pointer select-none text-[var(--text-muted)] hover:text-[var(--text-main)] transition-colors bg-[var(--bg-subtle)]/40 font-medium">
-            <div className="flex items-center gap-2.5 flex-wrap">
-              <div className="w-6 h-6 rounded-lg bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center">
-                <Sparkles className="w-3.5 h-3.5" />
-              </div>
-              <span className="font-semibold text-sm text-[var(--text-main)]">
-                Pattern Study Guide & Master Cheat Sheet
+        <details className="group max-w-4xl mx-auto rounded-2xl border border-[var(--border)] bg-[var(--bg-card)] overflow-hidden transition-all text-xs">
+          <summary className="apple-press flex items-center justify-between px-5 py-3 cursor-pointer select-none text-[var(--text-muted)] hover:text-[var(--text-main)] transition-colors bg-[var(--bg-subtle)]/30 font-medium">
+            <div className="flex items-center gap-2 flex-wrap">
+              <Sparkles className="w-3.5 h-3.5 text-amber-500" />
+              <span className="text-xs font-semibold text-[var(--text-main)]">
+                Pattern Study Guide & Cheat Sheet
               </span>
-              <span className="hidden sm:inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[11px] font-mono text-[var(--text-light)] bg-[var(--bg-card)] border border-[var(--border)]">
-                {guide.complexity.time}
-              </span>
-              <span className="hidden sm:inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[11px] font-mono text-[var(--text-light)] bg-[var(--bg-card)] border border-[var(--border)]">
-                {guide.complexity.space}
+              <span className="text-[11px] text-[var(--text-light)] font-normal hidden sm:inline">
+                · {guide.complexity.time} · {guide.complexity.space}
               </span>
             </div>
-            <div className="flex items-center gap-2">
-              <span className="text-[11px] text-[var(--text-light)] group-open:hidden">View Blueprint & Template</span>
-              <span className="text-[11px] text-[var(--text-muted)] group-open:rotate-180 transition-transform">▼</span>
-            </div>
+            <span className="text-[11px] text-[var(--text-muted)] group-open:rotate-180 transition-transform">▼</span>
           </summary>
 
-          <div className="border-t border-[var(--border)] divide-y divide-[var(--border)]">
-            {/* Intuition & Invariant Header */}
-            <div className="p-5 sm:p-6 bg-gradient-to-b from-[var(--bg-subtle)]/30 to-transparent space-y-2">
-              <div className="flex items-start gap-2.5">
-                <Lightbulb className="w-4 h-4 text-amber-500 shrink-0 mt-0.5" />
-                <div>
-                  <p className="text-sm font-medium text-[var(--text-main)] leading-relaxed">
-                    {guide.summary}
-                  </p>
-                  <p className="text-xs text-[var(--text-muted)] mt-1.5 leading-relaxed">
-                    <strong className="text-[var(--text-main)] font-medium">Core Invariant: </strong>
-                    {guide.mentalModel}
-                  </p>
-                </div>
-              </div>
+          <div className="border-t border-[var(--border)] p-5 space-y-5">
+            {/* Intuition & Core Invariant */}
+            <div className="space-y-1">
+              <p className="text-xs text-[var(--text-main)] font-medium leading-relaxed">
+                {guide.summary}
+              </p>
+              <p className="text-[11px] text-[var(--text-muted)] leading-relaxed">
+                <span className="text-[var(--text-light)]">Core Invariant: </span>
+                {guide.mentalModel}
+              </p>
             </div>
 
-            {/* Main Content Grid: 2 balanced columns */}
-            <div className="grid grid-cols-1 lg:grid-cols-12 divide-y lg:divide-y-0 lg:divide-x divide-[var(--border)]">
-              {/* Left Column: Recognition & Algorithm Steps */}
-              <div className="lg:col-span-6 p-5 sm:p-6 space-y-5">
+            {/* Clean 2-column layout */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 pt-3 border-t border-[var(--border)]">
+              {/* Left Column: Recognition & Blueprint */}
+              <div className="space-y-4">
                 {/* Recognition Triggers */}
-                <section className="space-y-2.5">
-                  <div className="flex items-center gap-2 text-xs font-semibold text-[var(--text-main)] uppercase tracking-wider">
+                <div className="space-y-1.5">
+                  <div className="flex items-center gap-1.5 text-xs font-semibold text-[var(--text-main)]">
                     <Target className="w-3.5 h-3.5 text-emerald-500" />
-                    <span>How to Spot It (Recognition Triggers)</span>
+                    <span>Recognize it (Keywords & Signals)</span>
                   </div>
-                  <ul className="space-y-2">
+                  <ul className="space-y-1 pl-1">
                     {guide.triggers.map((trigger, idx) => (
-                      <li key={idx} className="flex items-start gap-2.5 text-xs text-[var(--text-muted)] leading-relaxed">
-                        <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0" />
+                      <li key={idx} className="flex items-start gap-2 text-xs text-[var(--text-muted)] leading-relaxed">
+                        <span className="mt-[7px] w-1 h-1 rounded-full bg-emerald-500/80 shrink-0" />
                         <span>{trigger}</span>
                       </li>
                     ))}
                   </ul>
-                </section>
+                </div>
 
-                {/* When NOT to use (Crucial Anti-Pattern) */}
+                {/* When NOT to use */}
                 {guide.whenNotToUse && (
-                  <section className="p-3.5 rounded-xl border border-rose-500/20 bg-rose-500/5 space-y-1">
-                    <div className="flex items-center gap-1.5 text-xs font-semibold text-rose-600 dark:text-rose-400">
-                      <AlertTriangle className="w-3.5 h-3.5 shrink-0" />
-                      <span>When NOT to Use (Avoid This Trap)</span>
-                    </div>
-                    <p className="text-xs text-[var(--text-muted)] leading-relaxed pl-5">
+                  <div className="border-l-2 border-amber-500/40 pl-3 py-1 space-y-0.5">
+                    <span className="text-[11px] font-medium text-amber-600 dark:text-amber-400">
+                      When NOT to use
+                    </span>
+                    <p className="text-xs text-[var(--text-muted)] leading-relaxed">
                       {guide.whenNotToUse}
                     </p>
-                  </section>
+                  </div>
                 )}
 
                 {/* Step-by-Step Blueprint */}
-                <section className="space-y-2.5 pt-1">
-                  <div className="flex items-center gap-2 text-xs font-semibold text-[var(--text-main)] uppercase tracking-wider">
+                <div className="space-y-1.5 pt-1">
+                  <div className="flex items-center gap-1.5 text-xs font-semibold text-[var(--text-main)]">
                     <BookOpen className="w-3.5 h-3.5 text-sky-500" />
-                    <span>Step-by-Step Problem Solving Blueprint</span>
+                    <span>How to solve (Step-by-step)</span>
                   </div>
-                  <ol className="space-y-2.5">
+                  <ol className="space-y-1.5 pl-1">
                     {guide.steps.map((step, index) => (
-                      <li key={index} className="flex items-start gap-2.5 text-xs leading-relaxed text-[var(--text-muted)]">
-                        <span className="w-5 h-5 rounded-full bg-[var(--bg-subtle)] border border-[var(--border)] text-[var(--text-main)] font-mono text-[10px] font-semibold flex items-center justify-center shrink-0 mt-0.5">
-                          {index + 1}
-                        </span>
-                        <span className="pt-0.5">{step}</span>
+                      <li key={index} className="flex items-start gap-2 text-xs leading-relaxed text-[var(--text-muted)]">
+                        <span className="font-mono text-[10px] text-[var(--text-light)] shrink-0 mt-0.5">{index + 1}.</span>
+                        <span>{step}</span>
                       </li>
                     ))}
                   </ol>
-                </section>
+                </div>
 
-                {/* Traps & Pitfalls */}
-                <section className="space-y-2.5 pt-1">
-                  <div className="flex items-center gap-2 text-xs font-semibold text-[var(--text-main)] uppercase tracking-wider">
+                {/* Interview Traps */}
+                <div className="space-y-1.5 pt-1">
+                  <div className="flex items-center gap-1.5 text-xs font-semibold text-[var(--text-main)]">
                     <AlertTriangle className="w-3.5 h-3.5 text-amber-500" />
-                    <span>Interview Traps & Edge Cases</span>
+                    <span>Watch for (Interview Traps)</span>
                   </div>
-                  <ul className="space-y-2">
+                  <ul className="space-y-1 pl-1">
                     {guide.pitfalls.map((pitfall, idx) => (
                       <li key={idx} className="flex items-start gap-2 text-xs text-[var(--text-muted)] leading-relaxed">
-                        <span className="mt-1.5 w-1 h-1 rounded-full bg-amber-500 shrink-0" />
+                        <span className="mt-[7px] w-1 h-1 rounded-full bg-amber-500/70 shrink-0" />
                         <span>{pitfall}</span>
                       </li>
                     ))}
                   </ul>
-                </section>
+                </div>
               </div>
 
               {/* Right Column: Code Template & Canonical Problems */}
-              <div className="lg:col-span-6 p-5 sm:p-6 space-y-5 bg-[var(--bg-subtle)]/15">
-                {/* Python Master Template */}
-                <section className="space-y-2.5">
+              <div className="space-y-4">
+                {/* Python Template */}
+                <div className="space-y-1.5">
                   <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2 text-xs font-semibold text-[var(--text-main)] uppercase tracking-wider">
+                    <div className="flex items-center gap-1.5 text-xs font-semibold text-[var(--text-main)]">
                       <Code2 className="w-3.5 h-3.5 text-indigo-500" />
-                      <span>{guide.templateName || 'Python Master Template'}</span>
+                      <span>{guide.templateName || 'Cheat sheet'}</span>
                     </div>
                     <button
                       type="button"
                       onClick={handleCopyTemplate}
-                      className="apple-press inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg border border-[var(--border)] bg-[var(--bg-card)] hover:bg-[var(--bg-subtle)] text-[11px] font-medium text-[var(--text-muted)] hover:text-[var(--text-main)] transition-colors cursor-pointer"
+                      className="apple-press inline-flex items-center gap-1 px-2 py-0.5 rounded-md border border-[var(--border)] bg-[var(--bg-subtle)]/40 text-[10px] text-[var(--text-muted)] hover:text-[var(--text-main)] transition-colors cursor-pointer"
                       title="Copy code template"
                     >
                       {copiedTemplate ? (
                         <>
-                          <Check className="w-3.5 h-3.5 text-emerald-500" />
-                          <span className="text-emerald-600 dark:text-emerald-400">Copied!</span>
+                          <Check className="w-3 h-3 text-emerald-500" />
+                          <span className="text-emerald-600 dark:text-emerald-400">Copied</span>
                         </>
                       ) : (
                         <>
-                          <Copy className="w-3.5 h-3.5" />
+                          <Copy className="w-3 h-3" />
                           <span>Copy</span>
                         </>
                       )}
                     </button>
                   </div>
 
-                  <div className="relative rounded-xl border border-[var(--border)] bg-[var(--bg-subtle)]/70 overflow-hidden">
-                    <pre className="p-4 font-mono text-[11.5px] leading-relaxed text-[var(--text-main)] overflow-x-auto whitespace-pre">
+                  <div className="rounded-xl overflow-hidden border border-[var(--border)] bg-[var(--bg-subtle)]/40">
+                    <pre className="p-3 text-[11px] leading-relaxed text-[var(--text-main)] overflow-x-auto font-mono whitespace-pre">
                       <code>{guide.template}</code>
                     </pre>
                   </div>
 
-                  {/* Complexity Footnotes */}
-                  <div className="flex items-center justify-between gap-3 text-[11px] pt-0.5 text-[var(--text-muted)] flex-wrap">
-                    <div className="flex items-center gap-3">
-                      <span><strong>Time:</strong> {guide.complexity.time}</span>
-                      <span className="opacity-30">·</span>
-                      <span><strong>Space:</strong> {guide.complexity.space}</span>
+                  <dl className="space-y-1 pt-0.5 text-xs">
+                    <div className="flex gap-2">
+                      <dt className="w-14 shrink-0 text-[var(--text-light)]">Cost</dt>
+                      <dd className="text-[var(--text-muted)]">
+                        {guide.complexity.time} · {guide.complexity.space}
+                        {guide.complexity.note && <span className="opacity-70"> ({guide.complexity.note})</span>}
+                      </dd>
                     </div>
-                    {guide.complexity.note && (
-                      <span className="text-[var(--text-light)] italic">{guide.complexity.note}</span>
-                    )}
-                  </div>
-                </section>
+                  </dl>
+                </div>
 
-                {/* Canonical Problems Mapping */}
-                <section className="space-y-2.5 pt-2">
-                  <div className="flex items-center gap-2 text-xs font-semibold text-[var(--text-main)] uppercase tracking-wider">
+                {/* Canonical Problems */}
+                <div className="space-y-1.5 pt-2 border-t border-[var(--border)]">
+                  <div className="flex items-center gap-1.5 text-xs font-semibold text-[var(--text-main)]">
                     <Sparkles className="w-3.5 h-3.5 text-purple-500" />
-                    <span>Canonical Problems & Solution Mapping</span>
+                    <span>Canonical problems</span>
                   </div>
-                  <div className="space-y-2">
+                  <div className="space-y-1.5 pl-1">
                     {guide.canonicalProblems.map((prob, idx) => (
-                      <div
-                        key={idx}
-                        className="p-3 rounded-xl border border-[var(--border)] bg-[var(--bg-card)] space-y-1 hover:border-[var(--text-muted)]/30 transition-colors"
-                      >
-                        <div className="flex items-center justify-between gap-2">
-                          <span className="font-semibold text-xs text-[var(--text-main)]">
-                            {prob.id ? `#${prob.id} · ` : ''}{prob.name}
-                          </span>
-                        </div>
-                        <p className="text-[11px] text-[var(--text-muted)] leading-relaxed">
-                          {prob.why}
-                        </p>
+                      <div key={idx} className="text-xs text-[var(--text-muted)] leading-relaxed">
+                        <span className="font-medium text-[var(--text-main)]">
+                          {prob.id ? `#${prob.id} ` : ''}{prob.name}:
+                        </span>{' '}
+                        <span>{prob.why}</span>
                       </div>
                     ))}
                   </div>
-                </section>
+                </div>
               </div>
             </div>
           </div>
@@ -755,9 +733,9 @@ export const PatternDetailView: React.FC<PatternDetailViewProps> = ({ pattern })
 
                           {!hideTopics && prob.topics.length > 0 && (
                             <div className="flex flex-wrap gap-1">
-                              {prob.topics.map((t) => (
+                              {prob.topics.map((t, tIdx) => (
                                 <span
-                                  key={t}
+                                  key={`${t}-${tIdx}`}
                                   className="text-[10px] text-[var(--text-light)]"
                                 >
                                   {t}
@@ -778,15 +756,17 @@ export const PatternDetailView: React.FC<PatternDetailViewProps> = ({ pattern })
                       {/* Companies asking */}
                       <td className="py-3 px-4">
                         <div className="flex flex-wrap items-center gap-1">
-                          {prob.companies.slice(0, 4).map((c) => (
-                            <Link
-                              key={c.slug}
-                              href={`/company/${c.slug}`}
-                              className="apple-press inline-flex items-center px-2 py-0.5 rounded-md text-[11px] bg-[var(--bg-subtle)] text-[var(--text-muted)] hover:text-[var(--text-main)] transition-colors"
-                            >
-                              <span>{c.name}</span>
-                            </Link>
-                          ))}
+                          {Array.from(new Map(prob.companies.map((c) => [c.slug, c])).values())
+                            .slice(0, 4)
+                            .map((c, cIdx) => (
+                              <Link
+                                key={`${prob.slug || prob.id || prob.title}-${c.slug}-${cIdx}`}
+                                href={`/company/${c.slug}`}
+                                className="apple-press inline-flex items-center px-2 py-0.5 rounded-md text-[11px] bg-[var(--bg-subtle)] text-[var(--text-muted)] hover:text-[var(--text-main)] transition-colors"
+                              >
+                                <span>{c.name}</span>
+                              </Link>
+                            ))}
                           {prob.companies.length > 4 && (
                             <span className="text-[10px] text-[var(--text-light)] pl-0.5">
                               +{prob.companies.length - 4}

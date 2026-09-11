@@ -442,15 +442,17 @@ export const SqlExplorerView: React.FC<SqlExplorerViewProps> = ({ catalog }) => 
                           <span className="font-semibold text-[var(--text-main)] mr-1">
                             {prob.companiesCount} {prob.companiesCount === 1 ? 'company' : 'companies'}:
                           </span>
-                          {prob.companies.slice(0, 4).map((c) => (
-                            <Link
-                              key={c.slug}
-                              href={`/company/${c.slug}`}
-                              className="apple-press inline-flex items-center gap-1 px-2 py-0.5 rounded-lg text-[11px] bg-[var(--bg-subtle)] text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--bg-hover)] border border-[var(--border)]"
-                            >
-                              <span>{c.name}</span>
-                            </Link>
-                          ))}
+                          {Array.from(new Map(prob.companies.map((c) => [c.slug, c])).values())
+                            .slice(0, 4)
+                            .map((c, cIdx) => (
+                              <Link
+                                key={`${prob.slug || prob.id}-${c.slug}-${cIdx}`}
+                                href={`/company/${c.slug}`}
+                                className="apple-press inline-flex items-center gap-1 px-2 py-0.5 rounded-lg text-[11px] bg-[var(--bg-subtle)] text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--bg-hover)] border border-[var(--border)]"
+                              >
+                                <span>{c.name}</span>
+                              </Link>
+                            ))}
                           {prob.companies.length > 4 && (
                             <span className="text-[10px] text-[var(--text-light)]">
                               +{prob.companies.length - 4} more
