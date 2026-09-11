@@ -461,6 +461,99 @@ def build_global_sql_dataset(merged_companies: List[Dict[str, Any]]) -> Dict[str
         "problems": sorted_sql_problems
     }
 
+def build_neetcode_company(merged_companies: List[Dict[str, Any]]) -> Optional[Dict[str, Any]]:
+    nc_path = os.path.join(os.path.dirname(__file__), "neetcode150.json")
+    if not os.path.exists(nc_path):
+        return None
+
+    try:
+        with open(nc_path, "r", encoding="utf-8") as f:
+            nc_raw = json.load(f)
+    except Exception as e:
+        print(f"⚠️ Failed to load neetcode150.json: {e}")
+        return None
+
+    # Build slug -> problem metadata lookup from merged companies
+    prob_db: Dict[str, Any] = {}
+    for c in merged_companies:
+        for w in c.get("windows", []):
+            for p in w.get("problems", []):
+                slug = p.get("slug")
+                if slug and (slug not in prob_db or len(p.get("topics", [])) > len(prob_db[slug].get("topics", []))):
+                    prob_db[slug] = p
+
+    neetcode_problems = []
+    order = 1
+    for cat, probs in nc_raw.items():
+        for title, info in probs.items():
+            url = info.get("url", "")
+            m = re.search(r'leetcode\.com/problems/([^/]+)', url)
+            slug = m.group(1) if m else ""
+            meta = prob_db.get(slug, {})
+
+            topics = list(meta.get("topics", []))
+            if cat not in topics:
+                topics.insert(0, cat)
+
+            prob = {
+                "id": meta.get("id") or "",
+                "title": meta.get("title") or title,
+                "slug": slug,
+                "difficulty": info.get("difficulty", "").upper(),
+                "frequency": round(max(10.0, 100.0 - (order * 0.3)), 1),
+                "acceptance": meta.get("acceptance") or 0.5,
+                "link": f"https://leetcode.com/problems/{slug}/",
+                "topics": topics,
+                "isSql": False,
+                "verifiedSources": ["neetcode"]
+            }
+            neetcode_problems.append(prob)
+            order += 1
+
+    easy_c = sum(1 for p in neetcode_problems if p["difficulty"] == "EASY")
+    med_c = sum(1 for p in neetcode_problems if p["difficulty"] == "MEDIUM")
+    hard_c = sum(1 for p in neetcode_problems if p["difficulty"] == "HARD")
+    total_c = len(neetcode_problems)
+
+    windows = []
+    for win_def in WINDOW_DEFINITIONS:
+        windows.append({
+            "name": win_def["name"],
+            "key": win_def["key"],
+            "count": total_c,
+            "sqlCount": 0,
+            "problems": list(neetcode_problems)
+        })
+
+    return {
+        "name": "NeetCode 150",
+        "slug": "neetcode-150",
+        "domain": "neetcode.io",
+        "total": total_c,
+        "easy": easy_c,
+        "medium": med_c,
+        "hard": hard_c,
+        "sqlTotal": 0,
+        "sqlEasy": 0,
+        "sqlMedium": 0,
+        "sqlHard": 0,
+        "windows": windows,
+        "windowsCount": {
+            "30_days": total_c,
+            "3_months": total_c,
+            "6_months": total_c,
+            "more_than_6_months": total_c,
+            "all": total_c,
+        },
+        "sqlWindowsCount": {
+            "30_days": 0,
+            "3_months": 0,
+            "6_months": 0,
+            "more_than_6_months": 0,
+            "all": 0,
+        }
+    }
+
 def main():
     start_time = time.time()
     print("🚀 Initializing Multi-Source Real-Time Synchronization (DSA + SQL)...")
@@ -486,6 +579,13 @@ def main():
         liquidslr_data, snehasishroy_data, domain_map, leetcode_tags
     )
 
+    # Append NeetCode 150 to companies
+    nc_company = build_neetcode_company(merged_companies)
+    if nc_company:
+        merged_companies.append(nc_company)
+        merged_companies.sort(key=lambda c: c["total"], reverse=True)
+        print("⚡ Added NeetCode 150 to companies dataset!")
+
     # Build dedicated SQL dataset
     print("🗄️  Extracting and compiling dedicated SQL / Database questions catalog...")
     sql_dataset = build_global_sql_dataset(merged_companies)
@@ -507,6 +607,10 @@ def main():
         company_path = os.path.join(companies_dir, f"{c['slug']}.json")
         with open(company_path, "w", encoding="utf-8") as f:
             json.dump(c, f, separators=(',', ':'))
+        if c["slug"] == "neetcode-150":
+            alias_path = os.path.join(companies_dir, "neetcode.json")
+            with open(alias_path, "w", encoding="utf-8") as f:
+                json.dump(c, f, separators=(',', ':'))
 
     # Save lightweight companies.json index
     index_list = []
