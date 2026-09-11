@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import {
   ArrowLeft,
@@ -83,10 +83,24 @@ export const PatternDetailView: React.FC<PatternDetailViewProps> = ({ pattern })
   const [selectedCompany, setSelectedCompany] = useState<string>('ALL');
   const [hideTopics, setHideTopics] = useState(false);
   const [hideSolved, setHideSolved] = useState(false);
+  const searchInputRef = useRef<HTMLInputElement>(null);
   const solvedSet = useSolvedProblems();
 
   const [sortBy, setSortBy] = useState<'companiesCount' | 'difficulty' | 'title' | 'acceptance' | 'id' | 'frequency'>('companiesCount');
   const [sortDir, setSortDir] = useState<'asc' | 'desc'>('desc');
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === '/' && document.activeElement !== searchInputRef.current) {
+        e.preventDefault();
+        searchInputRef.current?.focus();
+      } else if (e.key === 'Escape' && document.activeElement === searchInputRef.current) {
+        searchInputRef.current?.blur();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
 
   const handleToggleSolved = (prob: PatternProblem) => {
     const solved = toggleProblemSolved(prob.slug, { title: prob.title, difficulty: prob.difficulty });
@@ -231,12 +245,12 @@ export const PatternDetailView: React.FC<PatternDetailViewProps> = ({ pattern })
           <ArrowLeft className="w-3.5 h-3.5" />
           <span>All Companies</span>
         </Link>
-        <span>/</span>
+        <span className="opacity-40">/</span>
         <Link href="/patterns" className="apple-press hover:text-[var(--text-main)] flex items-center gap-1 transition-colors">
           <GitBranch className="w-3.5 h-3.5 opacity-70" />
           <span>Patterns Hub</span>
         </Link>
-        <span>/</span>
+        <span className="opacity-40">/</span>
         <span className="text-[var(--text-main)] font-medium">{pattern.name}</span>
       </nav>
 
@@ -244,19 +258,19 @@ export const PatternDetailView: React.FC<PatternDetailViewProps> = ({ pattern })
       <div className="p-6 sm:p-8 rounded-3xl border border-[var(--border)] bg-[var(--bg-card)] shadow-xs space-y-6">
         <div className="flex flex-col md:flex-row md:items-start justify-between gap-6">
           <div className="flex items-start gap-4">
-            <div className="w-16 h-16 rounded-2xl bg-[var(--bg-subtle)] border border-[var(--border)] flex items-center justify-center shrink-0 text-[var(--text-main)] shadow-xs">
-              <IconComponent className="w-8 h-8 opacity-80" />
+            <div className="w-14 h-14 rounded-2xl bg-[var(--bg-subtle)] border border-[var(--border)] flex items-center justify-center shrink-0 text-[var(--text-main)]">
+              <IconComponent className="w-7 h-7 opacity-80" />
             </div>
 
             <div className="space-y-1.5">
-              <div className="flex flex-wrap items-center gap-2.5">
-                <h1 className="text-2xl sm:text-3xl font-bold text-[var(--text-main)] tracking-tight">
+              <div className="flex flex-wrap items-center gap-2">
+                <h1 className="text-2xl sm:text-3xl font-semibold text-[var(--text-main)] tracking-tight">
                   {pattern.name}
                 </h1>
-                <span className="px-2.5 py-0.5 rounded-full text-[10px] font-medium bg-[var(--bg-subtle)] text-[var(--text-muted)] border border-[var(--border)]">
+                <span className="px-2 py-0.5 rounded-md text-[10px] font-medium bg-[var(--bg-subtle)] text-[var(--text-muted)]">
                   {pattern.category}
                 </span>
-                <span className="px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-[var(--bg-subtle)] text-[var(--text-muted)] border border-[var(--border)]">
+                <span className="px-2 py-0.5 rounded-md text-[10px] font-medium bg-[var(--bg-subtle)] text-[var(--text-muted)]">
                   {pattern.total} Problems
                 </span>
               </div>
@@ -267,37 +281,29 @@ export const PatternDetailView: React.FC<PatternDetailViewProps> = ({ pattern })
 
               {/* Difficulty Breakdown */}
               <div className="flex items-center gap-2 pt-1 text-xs text-[var(--text-muted)]">
-                <span className="font-semibold text-[var(--diff-easy-text)]">{pattern.easy} Easy</span>
-                <span>•</span>
-                <span className="font-semibold text-[var(--diff-medium-text)]">{pattern.medium} Medium</span>
-                <span>•</span>
-                <span className="font-semibold text-[var(--diff-hard-text)]">{pattern.hard} Hard</span>
+                <span className="font-medium text-emerald-600 dark:text-emerald-400">{pattern.easy} Easy</span>
+                <span className="opacity-30">·</span>
+                <span className="font-medium text-amber-600 dark:text-amber-400">{pattern.medium} Medium</span>
+                <span className="opacity-30">·</span>
+                <span className="font-medium text-rose-600 dark:text-rose-400">{pattern.hard} Hard</span>
               </div>
             </div>
           </div>
 
           {/* Solved Progress Counter */}
-          <div className="flex items-center gap-3 bg-[var(--bg-subtle)] border border-[var(--border)] px-4 py-3 rounded-2xl shrink-0 self-start md:self-auto">
-            <CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0" />
-            <div>
-              <div className="text-xs font-semibold text-[var(--text-main)]">
-                {patternSolvedCount} / {pattern.total} solved
-              </div>
-              <div className="w-32 h-1.5 bg-[var(--border)] rounded-full mt-1.5 overflow-hidden">
-                <div
-                  className="h-full bg-emerald-500 rounded-full transition-[width] duration-300 ease-out"
-                  style={{
-                    width: `${pattern.total ? Math.min(100, (patternSolvedCount / pattern.total) * 100) : 0}%`,
-                  }}
-                />
-              </div>
-            </div>
+          <div className="flex items-center gap-2.5 bg-[var(--bg-subtle)] px-3.5 py-2 rounded-xl shrink-0 self-start md:self-auto text-xs text-[var(--text-muted)]">
+            <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />
+            <span>
+              <span className="font-semibold text-[var(--text-main)]">{patternSolvedCount}</span>
+              <span className="opacity-50"> / </span>
+              <span>{pattern.total} solved</span>
+            </span>
           </div>
         </div>
 
         {/* Pattern Notes */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 border-t border-[var(--border)] pt-5">
-          <section className="space-y-3 pb-5 lg:pb-0 lg:pr-5">
+        <div className="grid grid-cols-1 lg:grid-cols-3 border-t border-[var(--border)] pt-5 gap-6 lg:gap-0">
+          <section className="space-y-3 pb-5 lg:pb-0 lg:pr-6">
             <div className="flex items-center gap-2 text-xs font-semibold text-[var(--text-main)]">
               <Sparkles className="size-4 text-emerald-500" />
               <h2>Recognize it</h2>
@@ -312,7 +318,7 @@ export const PatternDetailView: React.FC<PatternDetailViewProps> = ({ pattern })
             </ul>
           </section>
 
-          <section className="space-y-3 border-t border-[var(--border)] py-5 lg:border-l lg:border-t-0 lg:px-5 lg:py-0">
+          <section className="space-y-3 border-t border-[var(--border)] py-5 lg:border-l lg:border-t-0 lg:px-6 lg:py-0">
             <div className="flex items-center gap-2 text-xs font-semibold text-[var(--text-main)]">
               <Lightbulb className="size-4 text-amber-500" />
               <h2>How to solve</h2>
@@ -330,7 +336,7 @@ export const PatternDetailView: React.FC<PatternDetailViewProps> = ({ pattern })
             )}
           </section>
 
-          <section className="space-y-3 border-t border-[var(--border)] pt-5 lg:border-l lg:border-t-0 lg:pl-5 lg:pt-0">
+          <section className="space-y-3 border-t border-[var(--border)] pt-5 lg:border-l lg:border-t-0 lg:pl-6 lg:pt-0">
             <div className="flex items-center gap-2 text-xs font-semibold text-[var(--text-main)]">
               <BookOpen className="size-4 text-sky-500" />
               <h2>Cheat sheet</h2>
@@ -358,17 +364,18 @@ export const PatternDetailView: React.FC<PatternDetailViewProps> = ({ pattern })
 
       {/* Controls Bar */}
       <div className="flex flex-col lg:flex-row gap-3 items-stretch lg:items-center justify-between">
-        {/* Search */}
-        <div className="relative flex-1 max-w-md">
-          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--text-light)]" />
+        {/* Spotlight Search */}
+        <div className="relative flex-1 max-w-md group">
+          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--text-light)] group-focus-within:text-[var(--text-main)] transition-colors pointer-events-none" />
           <input
+            ref={searchInputRef}
             type="search"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder={`Filter ${pattern.name} problems (#15, 3Sum, Two Pointers...)`}
-            className="w-full pl-10 pr-9 py-2.5 rounded-2xl text-xs bg-[var(--bg-card)] border border-[var(--border)] text-[var(--text-main)] placeholder:text-[var(--text-light)] focus:outline-none focus:border-[var(--text-muted)]/40 focus:ring-4 focus:ring-[var(--border)]/40 transition-[box-shadow,border-color] duration-150"
+            className="w-full h-10 pl-10 pr-9 rounded-2xl text-xs bg-[var(--bg-card)] border border-[var(--border)] text-[var(--text-main)] placeholder:text-[var(--text-light)] shadow-xs focus:outline-none focus:border-[var(--text-muted)]/40 focus:ring-4 focus:ring-[var(--border)]/30 transition-all duration-150"
           />
-          {searchQuery && (
+          {searchQuery ? (
             <button
               type="button"
               onClick={() => setSearchQuery('')}
@@ -377,13 +384,17 @@ export const PatternDetailView: React.FC<PatternDetailViewProps> = ({ pattern })
             >
               <X className="w-3.5 h-3.5" />
             </button>
+          ) : (
+            <kbd className="absolute right-3 top-1/2 -translate-y-1/2 px-1.5 py-0.5 rounded text-[10px] font-mono text-[var(--text-light)] border border-[var(--border)] bg-[var(--bg-subtle)]">
+              /
+            </kbd>
           )}
         </div>
 
         {/* Controls */}
         <div className="flex flex-wrap items-center gap-2">
           {/* Company Filter Dropdown */}
-          <div className="flex items-center gap-1.5 bg-[var(--bg-card)] border border-[var(--border)] px-3 py-1.5 rounded-2xl text-xs shadow-2xs">
+          <div className="flex items-center gap-1.5 bg-[var(--bg-card)] border border-[var(--border)] px-2.5 py-1.5 rounded-xl text-xs">
             <Building2 className="w-3.5 h-3.5 text-[var(--text-muted)]" />
             <select
               value={selectedCompany}
@@ -400,14 +411,14 @@ export const PatternDetailView: React.FC<PatternDetailViewProps> = ({ pattern })
           </div>
 
           {/* Difficulty Group */}
-          <div className="flex items-center p-1 rounded-2xl bg-[var(--bg-card)] border border-[var(--border)] text-xs">
+          <div className="inline-flex items-center p-0.5 rounded-xl bg-[var(--bg-subtle)] text-xs font-medium">
             {(['ALL', 'EASY', 'MEDIUM', 'HARD'] as const).map((diff) => (
               <button
                 key={diff}
                 onClick={() => setDifficultyFilter(diff)}
-                className={`apple-press px-3 py-1 rounded-xl font-medium transition-all cursor-pointer ${
+                className={`apple-press px-2.5 py-1 rounded-lg transition-colors cursor-pointer ${
                   difficultyFilter === diff
-                    ? 'bg-[var(--bg-subtle)] text-[var(--text-main)] shadow-xs font-semibold'
+                    ? 'bg-[var(--bg-card)] text-[var(--text-main)] shadow-xs font-medium'
                     : 'text-[var(--text-muted)] hover:text-[var(--text-main)]'
                 }`}
               >
@@ -419,45 +430,46 @@ export const PatternDetailView: React.FC<PatternDetailViewProps> = ({ pattern })
           {/* Random */}
           <button
             onClick={handleRandomProblem}
-            className="apple-press flex items-center gap-1.5 px-3.5 py-1.5 rounded-2xl border border-[var(--border)] bg-[var(--bg-card)] hover:bg-[var(--bg-hover)] text-xs font-medium text-[var(--text-main)] shadow-2xs cursor-pointer"
+            className="apple-press flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-[var(--border)] bg-[var(--bg-card)] hover:bg-[var(--bg-subtle)] text-xs font-medium text-[var(--text-muted)] hover:text-[var(--text-main)] transition-colors cursor-pointer"
             title="Open a random problem in this pattern"
           >
-            <Shuffle className="w-3.5 h-3.5 text-[var(--text-muted)]" />
+            <Shuffle className="w-3.5 h-3.5" />
             <span>Random</span>
           </button>
 
-          {/* Hide Topics */}
-          <button
-            onClick={() => setHideTopics(!hideTopics)}
-            className={`apple-press flex items-center gap-1.5 px-3.5 py-1.5 rounded-2xl border text-xs font-medium transition-all cursor-pointer ${
-              hideTopics
-                ? 'border-[var(--border)] bg-[var(--bg-subtle)] text-[var(--text-main)] font-semibold shadow-xs'
-                : 'border-[var(--border)] bg-[var(--bg-card)] hover:bg-[var(--bg-hover)] text-[var(--text-muted)] shadow-2xs'
-            }`}
-            title="Hide topic tags for blind interview prep"
-          >
-            {hideTopics ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
-            <span>Hide topics</span>
-          </button>
-
-          {/* Hide Solved */}
-          <button
-            onClick={() => setHideSolved(!hideSolved)}
-            className={`apple-press flex items-center gap-1.5 px-3.5 py-1.5 rounded-2xl border text-xs font-medium transition-all cursor-pointer ${
-              hideSolved
-                ? 'border-[var(--border)] bg-[var(--bg-subtle)] text-[var(--text-main)] font-semibold shadow-xs'
-                : 'border-[var(--border)] bg-[var(--bg-card)] hover:bg-[var(--bg-hover)] text-[var(--text-muted)] shadow-2xs'
-            }`}
-            title="Hide problems you already solved"
-          >
-            <CheckCircle2 className="w-3.5 h-3.5" />
-            <span>Hide solved</span>
-          </button>
+          {/* Toggles Group */}
+          <div className="inline-flex items-center p-0.5 rounded-xl border border-[var(--border)] bg-[var(--bg-card)]">
+            <button
+              onClick={() => setHideTopics(!hideTopics)}
+              className={`apple-press flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-medium transition-colors cursor-pointer ${
+                hideTopics
+                  ? 'bg-[var(--bg-subtle)] text-[var(--text-main)] font-semibold shadow-xs'
+                  : 'text-[var(--text-muted)] hover:text-[var(--text-main)]'
+              }`}
+              title="Hide topic tags for blind interview prep"
+            >
+              {hideTopics ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
+              <span>Topics</span>
+            </button>
+            <span className="w-px h-3.5 bg-[var(--border)]" />
+            <button
+              onClick={() => setHideSolved(!hideSolved)}
+              className={`apple-press flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-medium transition-colors cursor-pointer ${
+                hideSolved
+                  ? 'bg-[var(--bg-subtle)] text-[var(--text-main)] font-semibold shadow-xs'
+                  : 'text-[var(--text-muted)] hover:text-[var(--text-main)]'
+              }`}
+              title="Hide problems you already solved"
+            >
+              <CheckCircle2 className="w-3.5 h-3.5" />
+              <span>Solved</span>
+            </button>
+          </div>
 
           {/* Export */}
           <button
             onClick={handleExportCSV}
-            className="apple-press p-2 rounded-2xl border border-[var(--border)] bg-[var(--bg-card)] hover:bg-[var(--bg-hover)] text-[var(--text-muted)] hover:text-[var(--text-main)] shadow-2xs cursor-pointer"
+            className="apple-press p-2 rounded-xl border border-[var(--border)] bg-[var(--bg-card)] hover:bg-[var(--bg-subtle)] text-[var(--text-muted)] hover:text-[var(--text-main)] transition-colors cursor-pointer"
             title="Export pattern problems to CSV"
             aria-label="Export to CSV"
           >
@@ -471,14 +483,16 @@ export const PatternDetailView: React.FC<PatternDetailViewProps> = ({ pattern })
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs border-collapse">
             <thead>
-              <tr className="border-b border-[var(--border)] bg-[var(--bg-subtle)]/70 text-[var(--text-muted)] font-medium">
-                <th className="py-3 px-4 w-12 text-center" aria-label="Solved">✓</th>
+              <tr className="border-b border-[var(--border)] bg-[var(--bg-subtle)]/40 text-[var(--text-muted)] text-[11px] font-medium tracking-normal">
+                <th className="py-3 px-3 w-12 text-center" aria-label="Solved">
+                  <CheckCircle2 className="w-3.5 h-3.5 mx-auto opacity-40" />
+                </th>
                 <th
                   onClick={() => handleSort('id')}
                   className="py-3 px-3 w-16 text-center cursor-pointer hover:text-[var(--text-main)] select-none"
                 >
                   <div className="flex items-center justify-center gap-0.5">
-                    <span>#ID</span>
+                    <span>#</span>
                     {sortBy === 'id' && (sortDir === 'asc' ? '↑' : '↓')}
                   </div>
                 </th>
@@ -493,9 +507,9 @@ export const PatternDetailView: React.FC<PatternDetailViewProps> = ({ pattern })
                 </th>
                 <th
                   onClick={() => handleSort('difficulty')}
-                  className="py-3 px-4 cursor-pointer hover:text-[var(--text-main)] select-none w-28"
+                  className="py-3 px-4 cursor-pointer hover:text-[var(--text-main)] select-none w-28 text-center"
                 >
-                  <div className="flex items-center gap-1">
+                  <div className="flex items-center justify-center gap-1">
                     <span>Difficulty</span>
                     {sortBy === 'difficulty' && (sortDir === 'asc' ? '↑' : '↓')}
                   </div>
@@ -505,16 +519,16 @@ export const PatternDetailView: React.FC<PatternDetailViewProps> = ({ pattern })
                   className="py-3 px-4 cursor-pointer hover:text-[var(--text-main)] select-none"
                 >
                   <div className="flex items-center gap-1">
-                    <span>Asked In Interviews</span>
+                    <span>Top Companies</span>
                     {sortBy === 'companiesCount' && (sortDir === 'asc' ? '↑' : '↓')}
                   </div>
                 </th>
                 <th
                   onClick={() => handleSort('frequency')}
-                  className="py-3 px-4 cursor-pointer hover:text-[var(--text-main)] select-none w-32"
+                  className="py-3 px-4 cursor-pointer hover:text-[var(--text-main)] select-none w-36"
                 >
                   <div className="flex items-center gap-1">
-                    <span>Max Frequency</span>
+                    <span>Frequency</span>
                     {sortBy === 'frequency' && (sortDir === 'asc' ? '↑' : '↓')}
                   </div>
                 </th>
@@ -532,8 +546,21 @@ export const PatternDetailView: React.FC<PatternDetailViewProps> = ({ pattern })
             <tbody className="divide-y divide-[var(--border)]">
               {sortedProblems.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="py-12 text-center text-[var(--text-muted)]">
-                    No problems match your criteria.
+                  <td colSpan={7} className="py-16 text-center">
+                    <div className="max-w-xs mx-auto space-y-2">
+                      <p className="text-sm font-semibold text-[var(--text-main)]">No matching problems</p>
+                      <p className="text-xs text-[var(--text-muted)]">Try adjusting your difficulty or company filters.</p>
+                      <button
+                        onClick={() => {
+                          setSearchQuery('');
+                          setDifficultyFilter('ALL');
+                          setSelectedCompany('ALL');
+                        }}
+                        className="apple-press mt-2 inline-flex items-center px-3.5 py-1.5 rounded-xl text-xs font-medium bg-[var(--bg-subtle)] text-[var(--text-main)] hover:bg-[var(--bg-hover)] border border-[var(--border)] cursor-pointer"
+                      >
+                        Reset filters
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ) : (
@@ -544,33 +571,33 @@ export const PatternDetailView: React.FC<PatternDetailViewProps> = ({ pattern })
                     : '-';
                   const freq = Math.min(100, Math.max(0, prob.maxFrequency));
 
-                  let diffColorClass = 'text-[var(--diff-easy-text)] bg-[var(--diff-easy-bg)]';
+                  let diffColorClass = 'text-emerald-600 dark:text-emerald-400 bg-emerald-500/8';
                   if (prob.difficulty === 'MEDIUM') {
-                    diffColorClass = 'text-[var(--diff-medium-text)] bg-[var(--diff-medium-bg)]';
+                    diffColorClass = 'text-amber-600 dark:text-amber-400 bg-amber-500/8';
                   } else if (prob.difficulty === 'HARD') {
-                    diffColorClass = 'text-[var(--diff-hard-text)] bg-[var(--diff-hard-bg)]';
+                    diffColorClass = 'text-rose-600 dark:text-rose-400 bg-rose-500/8';
                   }
 
                   return (
                     <tr
                       key={prob.slug || prob.title}
-                      className={`hover:bg-[var(--bg-hover)] transition-colors group ${
-                        isSolved ? 'opacity-65 bg-emerald-500/[0.02]' : ''
+                      className={`hover:bg-[var(--bg-subtle)]/40 transition-colors group ${
+                        isSolved ? 'opacity-55' : ''
                       }`}
                     >
                       {/* Solved Checkbox */}
-                      <td className="py-3 px-4 text-center">
+                      <td className="py-3 px-3 text-center">
                         <button
                           type="button"
                           onClick={() => handleToggleSolved(prob)}
-                          className={`apple-press w-4 h-4 rounded-md border flex items-center justify-center transition-all cursor-pointer ${
+                          className={`apple-press w-4 h-4 rounded-md border flex items-center justify-center transition-all cursor-pointer mx-auto ${
                             isSolved
                               ? 'bg-emerald-500 border-emerald-500 text-white'
-                              : 'border-[var(--border)] hover:border-emerald-500'
+                              : 'border-[var(--border)] hover:border-[var(--text-muted)] bg-[var(--bg-card)]'
                           }`}
                           aria-label={`Mark ${prob.title} as ${isSolved ? 'unsolved' : 'solved'}`}
                         >
-                          {isSolved && <CheckCircle2 className="w-3.5 h-3.5 stroke-[3] apple-check-pop" />}
+                          {isSolved && <CheckCircle2 className="w-3 h-3 stroke-[2.5] apple-check-pop" />}
                         </button>
                       </td>
 
@@ -581,7 +608,7 @@ export const PatternDetailView: React.FC<PatternDetailViewProps> = ({ pattern })
 
                       {/* Title & Topics */}
                       <td className="py-3 px-4">
-                        <div className="flex flex-col gap-1">
+                        <div className="flex flex-col gap-0.5">
                           <a
                             href={getLeetCodeProblemUrl(prob.slug)}
                             target="_blank"
@@ -599,7 +626,7 @@ export const PatternDetailView: React.FC<PatternDetailViewProps> = ({ pattern })
                               {prob.topics.map((t) => (
                                 <span
                                   key={t}
-                                  className="text-[10px] text-[var(--text-light)] bg-[var(--bg-subtle)] px-1.5 py-0.2 rounded border border-[var(--border)]"
+                                  className="text-[10px] text-[var(--text-light)]"
                                 >
                                   {t}
                                 </span>
@@ -610,52 +637,49 @@ export const PatternDetailView: React.FC<PatternDetailViewProps> = ({ pattern })
                       </td>
 
                       {/* Difficulty */}
-                      <td className="py-3 px-4 whitespace-nowrap">
-                        <span className={`px-2.5 py-0.5 rounded-lg text-[11px] font-semibold ${diffColorClass}`}>
+                      <td className="py-3 px-4 whitespace-nowrap text-center">
+                        <span className={`px-2 py-0.5 rounded-md text-[11px] font-medium inline-flex items-center justify-center min-w-[56px] ${diffColorClass}`}>
                           {prob.difficulty.charAt(0) + prob.difficulty.slice(1).toLowerCase()}
                         </span>
                       </td>
 
                       {/* Companies asking */}
                       <td className="py-3 px-4">
-                        <div className="flex flex-wrap items-center gap-1.5">
-                          <span className="font-semibold text-[var(--text-main)] mr-1">
-                            {prob.companiesCount} {prob.companiesCount === 1 ? 'co' : 'cos'}:
-                          </span>
+                        <div className="flex flex-wrap items-center gap-1">
                           {prob.companies.slice(0, 4).map((c) => (
                             <Link
                               key={c.slug}
                               href={`/company/${c.slug}`}
-                              className="apple-press inline-flex items-center gap-1 px-2 py-0.5 rounded-lg text-[11px] bg-[var(--bg-subtle)] text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--bg-hover)] border border-[var(--border)]"
+                              className="apple-press inline-flex items-center px-2 py-0.5 rounded-md text-[11px] bg-[var(--bg-subtle)] text-[var(--text-muted)] hover:text-[var(--text-main)] transition-colors"
                             >
                               <span>{c.name}</span>
                             </Link>
                           ))}
                           {prob.companies.length > 4 && (
-                            <span className="text-[10px] text-[var(--text-light)]">
-                              +{prob.companies.length - 4} more
+                            <span className="text-[10px] text-[var(--text-light)] pl-0.5">
+                              +{prob.companies.length - 4}
                             </span>
                           )}
                         </div>
                       </td>
 
                       {/* Max Frequency */}
-                      <td className="py-3 px-4">
+                      <td className="py-3 px-4 whitespace-nowrap">
                         <div className="flex items-center gap-2">
-                          <div className="w-16 h-1.5 bg-[var(--bg-subtle)] rounded-full overflow-hidden">
+                          <div className="w-14 h-1 bg-[var(--bg-subtle)] rounded-full overflow-hidden">
                             <div
-                              className="h-full rounded-full bg-[var(--text-main)]/60 transition-all duration-300"
+                              className="h-full bg-[var(--text-main)]/50 rounded-full"
                               style={{ width: `${freq}%` }}
                             />
                           </div>
-                          <span className="font-mono text-[11px] text-[var(--text-muted)]">
+                          <span className="font-mono text-[11px] text-[var(--text-muted)] tabular-nums">
                             {freq.toFixed(0)}%
                           </span>
                         </div>
                       </td>
 
                       {/* Acceptance */}
-                      <td className="py-3 px-4 text-right font-mono text-[11px] text-[var(--text-muted)] whitespace-nowrap">
+                      <td className="py-3 px-4 text-right font-mono text-[11px] tabular-nums text-[var(--text-muted)] whitespace-nowrap">
                         {accPercent}
                       </td>
                     </tr>

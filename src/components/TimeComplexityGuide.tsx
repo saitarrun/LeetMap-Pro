@@ -20,10 +20,10 @@ function SectionCard({
 }) {
   const [open, setOpen] = useState(defaultOpen);
   return (
-    <div id={id} className="apple-card scroll-mt-20 rounded-2xl border border-[var(--border)] bg-[var(--bg-card)] overflow-hidden shadow-xs">
+    <div id={id} className="apple-card scroll-mt-20 rounded-3xl border border-[var(--border)] bg-[var(--bg-card)] overflow-hidden shadow-xs">
       <button
         onClick={() => setOpen(!open)}
-        className="apple-press w-full flex items-center justify-between gap-4 p-5 text-left hover:bg-[var(--bg-hover)] transition-colors cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-[var(--accent)]"
+        className="apple-press w-full flex items-center justify-between gap-4 p-5 text-left hover:bg-[var(--bg-subtle)]/50 transition-colors cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-[var(--accent)]"
         aria-expanded={open}
         aria-controls={id ? `${id}-content` : undefined}
       >
@@ -404,12 +404,12 @@ export function TimeComplexityGuide() {
       <main className="guide-reading flex-1 max-w-4xl mx-auto px-4 sm:px-6 py-8 w-full space-y-5">
 
         {/* ── Hero ── */}
-        <section className="text-center max-w-2xl mx-auto space-y-3">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-[var(--bg-subtle)] text-[var(--text-muted)] border border-[var(--border)] shadow-2xs">
-            <Clock className="w-3.5 h-3.5 opacity-80" />
+        <section className="text-center max-w-2xl mx-auto space-y-3 pt-2">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-[var(--bg-subtle)] text-[var(--text-muted)] border border-[var(--border)]">
+            <Clock className="w-3.5 h-3.5 opacity-70" />
             <span>Master Notes · From Scratch</span>
           </div>
-          <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-[var(--text-main)]">
+          <h1 className="text-3xl sm:text-4xl font-semibold tracking-tight text-[var(--text-main)]">
             Time &amp; Space Complexity
           </h1>
           <p className="text-sm text-[var(--text-muted)] leading-relaxed">
@@ -419,10 +419,10 @@ export function TimeComplexityGuide() {
         </section>
 
         <nav aria-label="Guide sections" className="flex flex-wrap items-center justify-center gap-2 pt-1">
-          <a href="#time-complexity" className="apple-press rounded-full border border-[var(--border)] bg-[var(--bg-card)] px-3 py-1.5 text-xs font-semibold text-[var(--text-main)] shadow-2xs hover:bg-[var(--bg-hover)]">
+          <a href="#time-complexity" className="apple-press rounded-xl border border-[var(--border)] bg-[var(--bg-card)] px-3 py-1.5 text-xs font-medium text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--bg-subtle)] transition-colors">
             Big O reference
           </a>
-          <a href="#python-essentials" className="apple-press rounded-full border border-[var(--border)] bg-[var(--bg-card)] px-3 py-1.5 text-xs font-semibold text-[var(--text-main)] shadow-2xs hover:bg-[var(--bg-hover)]">
+          <a href="#python-essentials" className="apple-press rounded-xl border border-[var(--border)] bg-[var(--bg-card)] px-3 py-1.5 text-xs font-medium text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--bg-subtle)] transition-colors">
             Python essentials
           </a>
         </nav>
@@ -883,12 +883,12 @@ for value in values:
               { trap: 'Forgetting call stack space',        detail: 'A recursion of depth n uses O(n) call-stack space even if each frame is O(1). Stack overflow is possible for n > ~10,000.' },
               { trap: 'Misidentifying amortized complexity',detail: 'Array push is O(1) amortized, not always O(1). Resizing is O(n) but spread over n pushes gives O(1) average. Don\'t count the resize cost per push.' },
             ].map(({ trap, detail }) => (
-              <div key={trap} className="p-4 rounded-xl border border-[#c2415d]/35 bg-[var(--bg-card)] space-y-1.5 shadow-xs">
-                <p className="text-sm font-semibold text-[#b83250] dark:text-[#ff9aaa] flex items-center gap-1.5">
+              <div key={trap} className="p-4 rounded-xl border border-rose-500/20 bg-rose-500/5 space-y-1.5">
+                <p className="text-xs font-semibold text-rose-600 dark:text-rose-400 flex items-center gap-1.5">
                   <AlertTriangle className="w-3.5 h-3.5 shrink-0" />
                   {trap}
                 </p>
-                <p className="text-sm text-[var(--text-main)] leading-relaxed">{detail}</p>
+                <p className="text-xs text-[var(--text-main)] leading-relaxed">{detail}</p>
               </div>
             ))}
           </div>
