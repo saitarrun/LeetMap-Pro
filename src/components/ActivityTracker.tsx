@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { CalendarDays, CheckCircle2, Flame, Trophy, Zap, Code2, Database } from 'lucide-react';
 import { UserActivityStats } from '@/types';
 import { getLeetCodeProblemUrl } from '@/utils/urls';
@@ -80,6 +80,17 @@ export const ActivityTracker: React.FC<ActivityTrackerProps> = ({ stats, display
     });
     return markers;
   }, [calendar.weeks]);
+
+  const [recentFilter, setRecentFilter] = useState<'ALL' | 'DSA' | 'SQL'>('ALL');
+
+  const filteredRecent = useMemo(() => {
+    return stats.recentSolved.filter((rec) => {
+      const isSql = isSqlProblemSlug(rec.slug);
+      if (recentFilter === 'DSA') return !isSql;
+      if (recentFilter === 'SQL') return isSql;
+      return true;
+    });
+  }, [stats.recentSolved, recentFilter]);
 
   const statCards = [
     { label: 'Current streak', value: stats.currentStreak, suffix: 'days', icon: Flame, color: 'text-amber-500' },
@@ -221,30 +232,62 @@ export const ActivityTracker: React.FC<ActivityTrackerProps> = ({ stats, display
 
       {stats.recentSolved.length > 0 && (
         <section className="rounded-xl border border-[var(--border)]/40 bg-[var(--bg-subtle)]/20 p-3">
-          <h3 className="text-xs font-semibold text-[var(--text-main)]">Recently solved</h3>
-          <div className="mt-1.5 divide-y divide-[var(--border)]/30">
-            {stats.recentSolved.slice(0, 3).map((record) => (
-              <a
-                key={record.slug}
-                href={getLeetCodeProblemUrl(record.slug)}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center justify-between gap-3 py-1.5 text-xs hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors group"
-              >
-                <div className="flex items-center gap-1.5 min-w-0">
-                  <span className={`px-1.5 py-0.5 rounded text-[9px] font-mono font-semibold shrink-0 ${
-                    isSqlProblemSlug(record.slug)
-                      ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20'
-                      : 'bg-sky-500/10 text-sky-600 dark:text-sky-400 border border-sky-500/20'
-                  }`}>
-                    {isSqlProblemSlug(record.slug) ? 'SQL' : 'DSA'}
-                  </span>
-                  <span className="truncate font-medium">{record.title || record.slug.replace(/-/g, ' ')}</span>
-                </div>
-                <span className="shrink-0 font-mono text-[10px] text-[var(--text-muted)]">{record.date}</span>
-              </a>
-            ))}
+          <div className="flex items-center justify-between gap-2 mb-2">
+            <h3 className="text-xs font-semibold text-[var(--text-main)]">Recently solved</h3>
+            <div className="flex items-center gap-1 bg-[var(--bg-subtle)]/80 p-0.5 rounded-lg border border-[var(--border)]/40">
+              {(['ALL', 'DSA', 'SQL'] as const).map((filter) => {
+                const count = filter === 'ALL'
+                  ? stats.totalSolved
+                  : filter === 'DSA'
+                  ? stats.dsaSolved
+                  : stats.sqlSolved;
+                return (
+                  <button
+                    key={filter}
+                    onClick={() => setRecentFilter(filter)}
+                    className={`apple-press px-2 py-0.5 rounded-md text-[10px] font-medium transition-colors cursor-pointer flex items-center gap-1 ${
+                      recentFilter === filter
+                        ? 'bg-[var(--bg-card)] text-[var(--text-main)] shadow-sm font-semibold'
+                        : 'text-[var(--text-muted)] hover:text-[var(--text-main)]'
+                    }`}
+                  >
+                    <span>{filter}</span>
+                    <span className="font-mono text-[9px] opacity-70">({count})</span>
+                  </button>
+                );
+              })}
+            </div>
           </div>
+
+          {filteredRecent.length === 0 ? (
+            <div className="py-3 text-center text-[11px] text-[var(--text-muted)]">
+              No {recentFilter} problems solved yet.
+            </div>
+          ) : (
+            <div className="divide-y divide-[var(--border)]/30 max-h-48 overflow-y-auto pr-0.5">
+              {filteredRecent.slice(0, 6).map((record) => (
+                <a
+                  key={record.slug}
+                  href={getLeetCodeProblemUrl(record.slug)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-between gap-3 py-1.5 text-xs hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors group"
+                >
+                  <div className="flex items-center gap-1.5 min-w-0">
+                    <span className={`px-1.5 py-0.5 rounded text-[9px] font-mono font-semibold shrink-0 ${
+                      isSqlProblemSlug(record.slug)
+                        ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20'
+                        : 'bg-sky-500/10 text-sky-600 dark:text-sky-400 border border-sky-500/20'
+                    }`}>
+                      {isSqlProblemSlug(record.slug) ? 'SQL' : 'DSA'}
+                    </span>
+                    <span className="truncate font-medium">{record.title || record.slug.replace(/-/g, ' ')}</span>
+                  </div>
+                  <span className="shrink-0 font-mono text-[10px] text-[var(--text-muted)]">{record.date}</span>
+                </a>
+              ))}
+            </div>
+          )}
         </section>
       )}
     </div>

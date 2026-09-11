@@ -197,3 +197,14 @@ export interface UserActivityStats {
   dailyHistory: Record<string, number>;
   recentSolved: SolvedProblemRecord[];
 }
+
+export interface DailyChallenge {
+  date: string;
+  link: string;
+  id: string;
+  title: string;
+  slug: string;
+  difficulty: 'EASY' | 'MEDIUM' | 'HARD';
+  topics: string[];
+  fetchedAt: number;
+}

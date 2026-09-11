@@ -1,7 +1,7 @@
 import React from 'react';
 import fs from 'fs';
 import path from 'path';
-import { CompanySummary, SyncStatus } from '@/types';
+import { CompanySummary, SyncStatus, DailyChallenge } from '@/types';
 import { HomeClient } from '@/components/HomeClient';
 
 export const metadata = {
@@ -12,6 +12,7 @@ export const metadata = {
 export default function HomePage() {
   const companiesPath = path.join(process.cwd(), 'public', 'data', 'companies.json');
   const statusPath = path.join(process.cwd(), 'public', 'data', 'sync-status.json');
+  const dailyPath = path.join(process.cwd(), 'public', 'data', 'daily-challenge.json');
 
   let companies: CompanySummary[] = [];
   if (fs.existsSync(companiesPath)) {
@@ -23,5 +24,20 @@ export default function HomePage() {
     syncStatus = JSON.parse(fs.readFileSync(statusPath, 'utf8'));
   }
 
-  return <HomeClient initialCompanies={companies} initialSyncStatus={syncStatus} />;
+  let dailyChallenge: DailyChallenge | null = null;
+  if (fs.existsSync(dailyPath)) {
+    try {
+      dailyChallenge = JSON.parse(fs.readFileSync(dailyPath, 'utf8'));
+    } catch {
+      dailyChallenge = null;
+    }
+  }
+
+  return (
+    <HomeClient
+      initialCompanies={companies}
+      initialSyncStatus={syncStatus}
+      initialDailyChallenge={dailyChallenge}
+    />
+  );
 }

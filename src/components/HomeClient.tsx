@@ -1,17 +1,20 @@
 'use client';
 
 import React, { useState, useMemo, useEffect, useRef } from 'react';
-import { Search, Trophy, Database, Building2, Code2, X, Pin } from 'lucide-react';
-import { CompanySummary, SyncStatus } from '@/types';
+import { Search, Trophy, Database, Building2, Code2, X, Pin, Sparkles, ExternalLink, CheckCircle2 } from 'lucide-react';
+import { toast } from 'sonner';
+import { CompanySummary, SyncStatus, DailyChallenge } from '@/types';
 import { Header } from '@/components/Header';
 import { SyncModal } from '@/components/SyncModal';
 import { CompanyCard } from '@/components/CompanyCard';
 import { useSolvedProblems } from '@/utils/useSolvedProblems';
 import { usePinnedCompanies } from '@/utils/usePinnedCompanies';
+import { toggleProblemSolved } from '@/utils/progress';
 
 interface HomeClientProps {
   initialCompanies: CompanySummary[];
   initialSyncStatus: SyncStatus | null;
+  initialDailyChallenge?: DailyChallenge | null;
 }
 
 const FAANG_SLUGS = new Set([
@@ -26,15 +29,34 @@ const FINTECH_SLUGS = new Set([
 export const HomeClient: React.FC<HomeClientProps> = ({
   initialCompanies,
   initialSyncStatus,
+  initialDailyChallenge = null,
 }) => {
   const [companies, setCompanies] = useState<CompanySummary[]>(initialCompanies);
   const [syncStatus, setSyncStatus] = useState<SyncStatus | null>(initialSyncStatus);
+  const [dailyChallenge] = useState<DailyChallenge | null>(initialDailyChallenge);
   const [isSyncModalOpen, setIsSyncModalOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [categoryFilter, setCategoryFilter] = useState<'ALL' | 'PINNED' | 'FAANG' | 'FINTECH' | 'POPULAR' | 'SQL'>('ALL');
   const [sortBy, setSortBy] = useState<'total' | 'name' | 'hard'>('total');
-  const userSolvedCount = useSolvedProblems().size;
+  const solvedSet = useSolvedProblems();
+  const userSolvedCount = solvedSet.size;
   const { pinnedSet } = usePinnedCompanies();
+  const isDailySolved = dailyChallenge ? solvedSet.has(dailyChallenge.slug) : false;
+
+  const handleToggleSolvedDaily = (prob: DailyChallenge) => {
+    const solved = toggleProblemSolved(prob.slug, { title: prob.title, difficulty: prob.difficulty });
+    if (solved) {
+      toast.success(`Solved: ${prob.title}`, {
+        description: `#${prob.id} · ${prob.difficulty} · Today's Challenge`,
+        action: {
+          label: 'Undo',
+          onClick: () => handleToggleSolvedDaily(prob),
+        },
+      });
+    } else {
+      toast('Unmarked problem', { description: prob.title });
+    }
+  };
 
   const searchInputRef = useRef<HTMLInputElement>(null);
 
@@ -171,6 +193,7 @@ export const HomeClient: React.FC<HomeClientProps> = ({
                 { key: 'FAANG', label: 'FAANG & Big Tech' },
                 { key: 'FINTECH', label: 'FinTech & Quant' },
                 { key: 'POPULAR', label: '100+ Questions' },
+                { key: 'SQL', label: 'Has SQL' },
               ].map((tab) => (
                 <button
                   key={tab.key}
@@ -209,6 +232,74 @@ export const HomeClient: React.FC<HomeClientProps> = ({
             </div>
           </div>
         </section>
+
+        {/* LeetCode Daily Challenge Banner */}
+        {dailyChallenge && !searchQuery && categoryFilter === 'ALL' && (
+          <section className="max-w-2xl mx-auto">
+            <div className={`p-3.5 sm:p-4 rounded-2xl border transition-all ${
+              isDailySolved
+                ? 'bg-emerald-500/5 border-emerald-500/20'
+                : 'bg-[var(--bg-card)] border-[var(--border)] shadow-sm hover:border-[var(--text-muted)]/30'
+            }`}>
+              <div className="flex items-center justify-between gap-3 flex-wrap sm:flex-nowrap">
+                <div className="flex items-center gap-3 min-w-0">
+                  <div className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 ${
+                    isDailySolved
+                      ? 'bg-emerald-500/15 text-emerald-500'
+                      : 'bg-amber-500/10 text-amber-500 border border-amber-500/20'
+                  }`}>
+                    {isDailySolved ? <CheckCircle2 className="w-5 h-5" /> : <Sparkles className="w-4 h-4" />}
+                  </div>
+
+                  <div className="min-w-0">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <span className="text-[10px] font-mono uppercase tracking-wider text-[var(--text-muted)]">
+                        Today&apos;s LeetCode Challenge
+                      </span>
+                      <span className={`px-1.5 py-0.2 rounded text-[9px] font-semibold uppercase ${
+                        dailyChallenge.difficulty === 'EASY'
+                          ? 'text-emerald-500 bg-emerald-500/10'
+                          : dailyChallenge.difficulty === 'MEDIUM'
+                          ? 'text-amber-500 bg-amber-500/10'
+                          : 'text-rose-500 bg-rose-500/10'
+                      }`}>
+                        {dailyChallenge.difficulty}
+                      </span>
+                    </div>
+
+                    <a
+                      href={dailyChallenge.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="group inline-flex items-center gap-1.5 mt-0.5"
+                    >
+                      <h3 className={`text-sm font-semibold truncate hover:underline ${
+                        isDailySolved ? 'line-through text-[var(--text-muted)]' : 'text-[var(--text-main)]'
+                      }`}>
+                        #{dailyChallenge.id} {dailyChallenge.title}
+                      </h3>
+                      <ExternalLink className="w-3 h-3 text-[var(--text-muted)] group-hover:text-[var(--text-main)] shrink-0 transition-colors" />
+                    </a>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2 shrink-0 self-end sm:self-center">
+                  <button
+                    onClick={() => handleToggleSolvedDaily(dailyChallenge)}
+                    className={`apple-press text-xs px-3 py-1.5 rounded-xl font-medium flex items-center gap-1.5 transition-colors cursor-pointer ${
+                      isDailySolved
+                        ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20'
+                        : 'bg-[var(--bg-subtle)] hover:bg-[var(--bg-hover)] text-[var(--text-main)] border border-[var(--border)]'
+                    }`}
+                  >
+                    <CheckCircle2 className={`w-3.5 h-3.5 ${isDailySolved ? 'text-emerald-500' : 'text-[var(--text-muted)]'}`} />
+                    <span>{isDailySolved ? 'Solved Today' : 'Mark Solved'}</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </section>
+        )}
 
         {/* Results Counter (only shown when filtered or searching) */}
         {(searchQuery || categoryFilter !== 'ALL') && (
