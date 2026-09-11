@@ -39,7 +39,7 @@ export const UserProfileMenu: React.FC = () => {
           role="presentation"
         >
           <div
-            className="apple-modal-scroll apple-modal-surface relative my-auto max-h-[calc(100dvh-3rem)] w-full max-w-3xl overflow-y-auto rounded-3xl border border-[var(--border)]/60 bg-[var(--bg-card)] p-5 shadow-2xl sm:p-6"
+            className="apple-modal-scroll apple-modal-surface relative my-auto max-h-[calc(100dvh-3rem)] w-full max-w-xl overflow-y-auto rounded-2xl border border-[var(--border)]/60 bg-[var(--bg-card)] p-4 shadow-2xl sm:p-5"
             onClick={(event) => event.stopPropagation()}
             role="dialog"
             aria-modal="true"
@@ -47,39 +47,39 @@ export const UserProfileMenu: React.FC = () => {
           >
             <button
               onClick={() => setIsActivityOpen(false)}
-              className="apple-press absolute right-5 top-5 h-8 w-8 rounded-full bg-[var(--bg-subtle)]/60 text-[var(--text-muted)] hover:bg-[var(--bg-subtle)] hover:text-[var(--text-main)] flex items-center justify-center cursor-pointer transition-colors focus-visible:outline-2 focus-visible:outline-[var(--accent)]"
+              className="apple-press absolute right-4 top-4 h-7 w-7 rounded-full bg-[var(--bg-subtle)]/60 text-[var(--text-muted)] hover:bg-[var(--bg-subtle)] hover:text-[var(--text-main)] flex items-center justify-center cursor-pointer transition-colors focus-visible:outline-2 focus-visible:outline-[var(--accent)]"
               aria-label="Close activity tracker"
             >
-              <X className="h-4 w-4" />
+              <X className="h-3.5 w-3.5" />
             </button>
 
-            <div className="flex items-center gap-3.5 pr-10">
-              <div className="h-13 w-13 shrink-0 overflow-hidden rounded-full border border-[var(--border)]/60 bg-[var(--bg-subtle)]">
+            <div className="flex items-center gap-3 pr-8">
+              <div className="h-11 w-11 shrink-0 overflow-hidden rounded-full border border-[var(--border)]/60 bg-[var(--bg-subtle)]">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={user.avatarUrl} alt={user.name} className="h-full w-full object-cover" />
               </div>
               <div className="min-w-0">
-                <p className="mb-0.5 text-[10px] font-semibold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">Your progress</p>
-                <h2 className="truncate text-lg font-semibold tracking-tight text-[var(--text-main)]">{user.name}</h2>
+                <p className="text-[10px] font-semibold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">Your progress</p>
+                <h2 className="truncate text-base font-semibold tracking-tight text-[var(--text-main)]">{user.name}</h2>
                 <p className="truncate text-xs text-[var(--text-muted)] font-normal">{user.email || user.username}</p>
               </div>
             </div>
 
-            <div className="mt-5">
+            <div className="mt-4">
               <ActivityTracker stats={activityStats} displayName={user.name} />
             </div>
 
-            <div className="mt-4 flex items-center gap-2 text-xs text-[var(--text-muted)] px-1">
-              <ShieldCheck className="h-3.5 w-3.5 text-emerald-500 shrink-0" />
+            <div className="mt-3.5 flex items-center gap-1.5 text-[11px] text-[var(--text-muted)] px-0.5">
+              <ShieldCheck className="h-3 w-3 text-emerald-500 shrink-0" />
               <span>
-                <strong className="font-medium text-[var(--text-main)]">Private Clerk profile</strong> · Solves and streak are isolated under your account.
+                <strong className="font-medium text-[var(--text-main)]">Private profile</strong> · Solves and streak are tied to your account.
               </span>
             </div>
 
-            <div className="mt-5 grid grid-cols-1 gap-2.5 sm:grid-cols-2">
+            <div className="mt-4 grid grid-cols-2 gap-2">
               <button
                 onClick={openAccountSettings}
-                className="apple-press flex h-10 w-full items-center justify-center gap-2 rounded-xl border border-[var(--border)]/60 bg-[var(--bg-subtle)]/60 hover:bg-[var(--bg-subtle)] text-xs font-medium text-[var(--text-main)] transition-colors cursor-pointer"
+                className="apple-press flex h-9 w-full items-center justify-center gap-1.5 rounded-xl border border-[var(--border)]/60 bg-[var(--bg-subtle)]/60 hover:bg-[var(--bg-subtle)] text-xs font-medium text-[var(--text-main)] transition-colors cursor-pointer"
               >
                 <UserCheck className="h-3.5 w-3.5 text-[var(--text-muted)]" />
                 <span>Manage account</span>
@@ -89,7 +89,7 @@ export const UserProfileMenu: React.FC = () => {
                   setIsActivityOpen(false);
                   void logout();
                 }}
-                className="apple-press flex h-10 w-full items-center justify-center gap-2 rounded-xl border border-rose-500/20 bg-rose-500/5 hover:bg-rose-500/10 text-xs font-medium text-rose-600 dark:text-rose-400 transition-colors cursor-pointer"
+                className="apple-press flex h-9 w-full items-center justify-center gap-1.5 rounded-xl border border-rose-500/20 bg-rose-500/5 hover:bg-rose-500/10 text-xs font-medium text-rose-600 dark:text-rose-400 transition-colors cursor-pointer"
               >
                 <LogOut className="h-3.5 w-3.5" />
                 <span>Sign out</span>
