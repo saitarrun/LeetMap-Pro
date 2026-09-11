@@ -61,7 +61,7 @@ export const UserProfileMenu: React.FC = () => {
   const activityModal = isActivityOpen
     ? createPortal(
         <div
-          className="apple-modal-backdrop fixed inset-0 z-[100] flex items-center justify-center overflow-y-auto bg-black/50 p-4 backdrop-blur-md sm:p-6"
+          className="apple-modal-backdrop fixed inset-0 z-[150] flex items-center justify-center overflow-y-auto bg-black/60 p-4 backdrop-blur-md sm:p-6"
           onClick={() => setIsActivityOpen(false)}
           role="presentation"
         >
@@ -86,14 +86,14 @@ export const UserProfileMenu: React.FC = () => {
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={user.avatarUrl} alt={user.name} className="h-full w-full object-cover" />
               </div>
-              <h2 className="mt-2.5 text-base font-semibold tracking-tight text-[var(--text-main)]">{user.name}</h2>
-              <p className="text-xs text-[var(--text-muted)]">{user.email || user.username}</p>
+              <h2 className="mt-2.5 text-base font-bold tracking-tight text-[var(--text-main)]">{user.name}</h2>
+              <p className="text-xs text-[var(--text-muted)] font-medium">{user.email || user.username}</p>
               
-              <div className="mt-2.5 inline-flex items-center gap-1.5 rounded-full border border-[var(--border)] bg-[var(--bg-subtle)] px-3 py-1 text-[11px] font-medium text-[var(--text-muted)]">
+              <div className="mt-2.5 inline-flex items-center gap-1.5 rounded-full border border-[var(--border)] bg-[var(--bg-subtle)] px-3 py-1 text-[11px] font-medium text-[var(--text-muted)] shadow-2xs">
                 <Flame className="h-3.5 w-3.5 text-amber-500" />
                 <span className="font-semibold text-[var(--text-main)] tabular-nums">{activityStats.currentStreak}d streak</span>
-                <span className="text-[var(--text-light)]">·</span>
-                <span className="tabular-nums">{activityStats.totalSolved} solved</span>
+                <span className="text-[var(--text-muted)]">·</span>
+                <span className="tabular-nums font-medium text-[var(--text-main)]">{activityStats.totalSolved} solved</span>
               </div>
             </header>
 
@@ -101,16 +101,16 @@ export const UserProfileMenu: React.FC = () => {
               <ActivityTracker stats={activityStats} />
             </div>
 
-            <footer className="border-t border-[var(--border)] bg-[var(--bg-card)] px-6 py-3.5 sm:px-7">
-              <div className="mb-2.5 flex items-center justify-between text-xs text-[var(--text-muted)]">
-                <div className="flex items-center gap-1.5">
-                  <ShieldCheck className="h-3.5 w-3.5 shrink-0 text-emerald-500" />
+            <footer className="border-t border-[var(--border)] bg-[var(--bg-card)] px-6 py-4 sm:px-7">
+              <div className="mb-3 flex items-center justify-between text-xs text-[var(--text-muted)]">
+                <div className="flex items-center gap-1.5 font-medium">
+                  <ShieldCheck className="h-4 w-4 shrink-0 text-emerald-500" />
                   <span>Streak &amp; progress synced to your account.</span>
                 </div>
                 <Link
                   href={`/u/${user.username}`}
                   onClick={() => setIsActivityOpen(false)}
-                  className="apple-press text-emerald-600 dark:text-emerald-400 hover:underline inline-flex items-center gap-1 font-medium cursor-pointer"
+                  className="apple-press text-emerald-600 dark:text-emerald-400 hover:underline inline-flex items-center gap-1 font-semibold cursor-pointer"
                 >
                   <span>Public profile</span>
                   <ExternalLink className="w-3 h-3" />
@@ -119,7 +119,7 @@ export const UserProfileMenu: React.FC = () => {
               <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
                 <button
                   onClick={openAccountSettings}
-                  className="apple-press flex h-9.5 w-full items-center justify-center gap-2 rounded-xl border border-[var(--border)] bg-[var(--bg-subtle)] text-xs font-medium text-[var(--text-main)] transition-colors hover:bg-[var(--bg-hover)] cursor-pointer"
+                  className="apple-press flex h-10 w-full items-center justify-center gap-2 rounded-xl border border-[var(--border)] bg-[var(--bg-subtle)] text-xs font-semibold text-[var(--text-main)] shadow-2xs transition-colors hover:bg-[var(--bg-hover)] cursor-pointer"
                 >
                   <UserCheck className="h-3.5 w-3.5 text-[var(--text-muted)]" />
                   <span>Manage account</span>
@@ -129,7 +129,7 @@ export const UserProfileMenu: React.FC = () => {
                     setIsActivityOpen(false);
                     void logout();
                   }}
-                  className="apple-press flex h-9.5 w-full items-center justify-center gap-2 rounded-xl border border-rose-500/20 bg-rose-500/5 text-xs font-medium text-rose-600 transition-colors hover:bg-rose-500/10 dark:text-rose-400 cursor-pointer"
+                  className="apple-press flex h-10 w-full items-center justify-center gap-2 rounded-xl bg-red-600 hover:bg-red-700 active:bg-red-800 text-white text-xs font-semibold shadow-xs transition-colors cursor-pointer"
                 >
                   <LogOut className="h-3.5 w-3.5" />
                   <span>Sign out</span>
