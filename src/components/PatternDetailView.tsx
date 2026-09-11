@@ -479,7 +479,7 @@ export const PatternDetailView: React.FC<PatternDetailViewProps> = ({ pattern })
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder={`Filter ${pattern.name} problems (#15, 3Sum, Two Pointers...)...`}
-            className="w-full h-full pl-12 pr-14 text-sm bg-transparent text-[var(--text-main)] placeholder:text-[var(--text-light)] focus:outline-none"
+            className="w-full h-full pl-12 pr-14 text-sm bg-transparent text-[var(--text-main)] placeholder:text-[var(--text-light)] focus:outline-none focus-visible:outline-none border-none outline-none"
           />
           {searchQuery ? (
             <button

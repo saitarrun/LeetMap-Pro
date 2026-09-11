@@ -109,11 +109,14 @@ a {
   background-color: rgba(0, 113, 227, 0.25);
 }
 
-/* Text fields inside the palette use the palette's own focus language. */
+/* Text fields inside search bars and command palette use the container's own focus language. */
+input[type="search"]:focus,
+input[type="search"]:focus-visible,
 .command-palette-input:focus,
 .command-palette-input:focus-visible {
   outline: none !important;
-  box-shadow: none;
+  outline-offset: 0 !important;
+  box-shadow: none !important;
 }
 
 /* Apple Optical Sizing & Tracking */

@@ -304,7 +304,7 @@ export const CompanyDetailView: React.FC<CompanyDetailViewProps> = ({ company })
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Filter questions by title, #id, or topic..."
-            className="w-full h-full pl-12 pr-14 text-sm bg-transparent text-[var(--text-main)] placeholder:text-[var(--text-light)] focus:outline-none"
+            className="w-full h-full pl-12 pr-14 text-sm bg-transparent text-[var(--text-main)] placeholder:text-[var(--text-light)] focus:outline-none focus-visible:outline-none border-none outline-none"
           />
           {searchQuery ? (
             <button
