@@ -36,12 +36,12 @@ export const SyncModal: React.FC<SyncModalProps> = ({
     });
 
     toast.promise(syncPromise, {
-      loading: 'Aggregating from 3 sources in-memory...',
+      loading: 'Aggregating from 6 upstream sources in-memory...',
       success: (data) => {
         if (data.status) {
           onSyncComplete(data.status);
         }
-        return `Synced ${data.status?.companiesCount?.toLocaleString() || 'updated'} companies and ${data.status?.uniqueProblemsCount?.toLocaleString() || 'updated'} problems.`;
+        return `Synced ${data.status?.companiesCount?.toLocaleString() || 'updated'} companies and ${data.status?.uniqueProblemsCount?.toLocaleString() || 'updated'} problems across 6 sources.`;
       },
       error: (err) => err.message || 'Sync failed',
     });
@@ -67,7 +67,7 @@ export const SyncModal: React.FC<SyncModalProps> = ({
       onClick={onClose}
     >
       <div
-        className="bg-[var(--bg-card)] border border-[var(--border)] rounded-3xl max-w-lg w-full p-6 shadow-2xl relative apple-modal-surface"
+        className="bg-[var(--bg-card)] border border-[var(--border)] rounded-3xl max-w-lg w-full p-6 shadow-2xl relative apple-modal-surface max-h-[90vh] overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Apple Close Pill */}
@@ -89,55 +89,92 @@ export const SyncModal: React.FC<SyncModalProps> = ({
               Realtime Multi-Source Sync
             </h2>
             <p className="text-xs text-[var(--text-muted)]">
-              Aggregation across verified upstream sources
+              Real-time aggregation across 6 active upstream sources with daily cron
             </p>
           </div>
         </div>
 
         {/* Source Breakdown */}
         <div className="mb-4 p-3.5 rounded-2xl bg-[var(--bg-subtle)] border border-[var(--border)] text-xs space-y-2">
-          <div className="font-semibold text-[var(--text-main)] flex items-center gap-1.5">
-            <ShieldCheck className="w-4 h-4 text-emerald-500" />
-            <span>Active Data Sources</span>
+          <div className="flex items-center justify-between pb-1 border-b border-[var(--border)]">
+            <div className="font-semibold text-[var(--text-main)] flex items-center gap-1.5">
+              <ShieldCheck className="w-4 h-4 text-emerald-500" />
+              <span>Active Upstream Sources ({sources.length || 6})</span>
+            </div>
+            <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-500 font-medium">
+              Daily Cron (04:00 UTC)
+            </span>
           </div>
+
           <div className="space-y-1.5 text-[11px] text-[var(--text-muted)] pt-0.5">
-            {sources.length > 0 ? sources.map((source, index) => (
-              <div key={source.name} className="flex items-center justify-between gap-3">
-                <span className="truncate">{index + 1}. <strong>{source.name}</strong></span>
-                <span className="shrink-0 font-mono font-medium text-emerald-600 dark:text-emerald-400">
-                  {source.companies !== undefined
-                    ? `${source.companies} companies`
-                    : `${source.tagsCount ?? 0} tags`}
-                </span>
-              </div>
-            )) : (
+            {sources.length > 0 ? sources.map((source, index) => {
+              let metricText = '';
+              if (source.companies !== undefined) {
+                metricText = `${source.companies} companies`;
+              } else if (source.tagsCount !== undefined) {
+                metricText = `${source.tagsCount} tags`;
+              } else if (source.dailyProblem) {
+                metricText = source.dailyProblem;
+              } else if (source.problemsCount !== undefined) {
+                metricText = `${source.problemsCount} problems`;
+              }
+
+              return (
+                <div key={source.name} className="flex items-start justify-between gap-2.5 py-1 border-b border-[var(--border)]/40 last:border-b-0">
+                  <div className="min-w-0 pr-2">
+                    <div className="flex items-center gap-1.5">
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0" />
+                      <strong className="text-[var(--text-main)] truncate text-[11px]">{source.name}</strong>
+                    </div>
+                    {source.description && (
+                      <p className="text-[10px] text-[var(--text-muted)] pl-3 truncate">{source.description}</p>
+                    )}
+                  </div>
+                  <span className="shrink-0 font-mono font-medium text-emerald-600 dark:text-emerald-400 text-right text-[11px]">
+                    {metricText}
+                  </span>
+                </div>
+              );
+            }) : (
               <span>Source details will appear after the first successful sync.</span>
             )}
           </div>
         </div>
 
         {/* Metric Cards Grid */}
-        <div className="grid grid-cols-2 gap-2.5 mb-4">
+        <div className="grid grid-cols-3 gap-2.5 mb-4">
           <div className="p-3 rounded-2xl bg-[var(--bg-subtle)] border border-[var(--border)]">
             <div className="flex items-center gap-1.5 text-xs text-[var(--text-muted)] mb-1">
               <Database className="w-3.5 h-3.5" />
-              <span>Total Merged</span>
+              <span>Companies</span>
             </div>
             <div className="text-sm font-semibold text-[var(--text-main)]">
-              {syncStatus?.companiesCount?.toLocaleString() || '—'} companies
+              {syncStatus?.companiesCount?.toLocaleString() || '—'}
             </div>
           </div>
 
           <div className="p-3 rounded-2xl bg-[var(--bg-subtle)] border border-[var(--border)]">
             <div className="flex items-center gap-1.5 text-xs text-[var(--text-muted)] mb-1">
               <CheckCircle className="w-3.5 h-3.5" />
-              <span>Unique Problems</span>
+              <span>DSA Problems</span>
             </div>
             <div className="text-sm font-semibold text-[var(--text-main)]">
               {syncStatus?.uniqueProblemsCount?.toLocaleString() || '—'}
             </div>
           </div>
 
+          <div className="p-3 rounded-2xl bg-[var(--bg-subtle)] border border-[var(--border)]">
+            <div className="flex items-center gap-1.5 text-xs text-[var(--text-muted)] mb-1">
+              <Database className="w-3.5 h-3.5 text-emerald-500" />
+              <span>SQL Problems</span>
+            </div>
+            <div className="text-sm font-semibold text-emerald-600 dark:text-emerald-400">
+              {syncStatus?.sqlProblemsCount?.toLocaleString() || '—'}
+            </div>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-2 gap-2.5 mb-4">
           <div className="p-3 rounded-2xl bg-[var(--bg-subtle)] border border-[var(--border)]">
             <div className="flex items-center gap-1.5 text-xs text-[var(--text-muted)] mb-1">
               <GitCommit className="w-3.5 h-3.5" />

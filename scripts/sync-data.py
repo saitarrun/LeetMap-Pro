@@ -16,6 +16,7 @@ from typing import Dict, Any, List, Set, Optional
 
 SOURCE_LIQUIDSLR = "liquidslr/leetcode-company-wise-problems"
 SOURCE_SNEHASISHROY = "snehasishroy/leetcode-companywise-interview-questions"
+SOURCE_SAMIULLAH = "samiullah88/leetcode-company-wise-problems"
 LEETCODE_GRAPHQL = "https://leetcode.com/graphql"
 MAX_API_RESPONSE_BYTES = 2 * 1024 * 1024
 MAX_ARCHIVE_BYTES = 100 * 1024 * 1024
@@ -116,6 +117,53 @@ def fetch_leetcode_official_company_tags() -> Dict[str, Dict[str, Any]]:
         print(f"Notice: LeetCode public GraphQL ({e})")
     return tags_map
 
+def fetch_leetcode_daily_challenge() -> Optional[Dict[str, Any]]:
+    query = """
+    query questionOfToday {
+      activeDailyCodingChallengeQuestion {
+        date
+        userStatus
+        link
+        question {
+          questionId
+          questionFrontendId
+          title
+          titleSlug
+          difficulty
+          topicTags {
+            name
+            slug
+          }
+        }
+      }
+    }
+    """
+    try:
+        req = urllib.request.Request(
+            LEETCODE_GRAPHQL,
+            data=json.dumps({"query": query}).encode("utf-8"),
+            headers={"Content-Type": "application/json", "User-Agent": "Mozilla/5.0"}
+        )
+        with urllib.request.urlopen(req, timeout=12) as resp:
+            data = json.loads(read_limited_response(resp, MAX_API_RESPONSE_BYTES).decode())
+            challenge = data.get("data", {}).get("activeDailyCodingChallengeQuestion", {})
+            if challenge and challenge.get("question"):
+                q = challenge["question"]
+                print(f"🌟 Fetched LeetCode Daily Challenge: #{q.get('questionFrontendId')} {q.get('title')} ({challenge.get('date')})")
+                return {
+                    "date": challenge.get("date"),
+                    "link": f"https://leetcode.com{challenge.get('link', '')}",
+                    "id": q.get("questionFrontendId"),
+                    "title": q.get("title"),
+                    "slug": q.get("titleSlug"),
+                    "difficulty": (q.get("difficulty") or "Medium").upper(),
+                    "topics": [t.get("name") for t in q.get("topicTags", [])],
+                    "fetchedAt": int(time.time() * 1000)
+                }
+    except Exception as e:
+        print(f"Notice: LeetCode Daily Challenge GraphQL ({e})")
+    return None
+
 def fetch_curated_domains() -> Dict[str, str]:
     domains = {}
     local_file = "public/data/companies.json"
@@ -163,7 +211,7 @@ def is_sql_problem(topics: List[str], title: str = "") -> bool:
         return True
     return False
 
-def parse_liquidslr_tar(tar_bytes: bytes) -> Dict[str, Dict[int, List[Dict[str, Any]]]]:
+def parse_liquidslr_tar(tar_bytes: bytes, source_label: str = "liquidslr") -> Dict[str, Dict[int, List[Dict[str, Any]]]]:
     data: Dict[str, Dict[int, List[Dict[str, Any]]]] = {}
     with tarfile.open(fileobj=io.BytesIO(tar_bytes), mode="r:gz") as tar:
         for member in iter_safe_csv_members(tar):
@@ -211,7 +259,7 @@ def parse_liquidslr_tar(tar_bytes: bytes) -> Dict[str, Dict[int, List[Dict[str, 
                     "link": leetcode_problem_url(slug),
                     "topics": topics,
                     "isSql": is_sql_problem(topics, title),
-                    "source": "liquidslr"
+                    "source": source_label
                 })
                 
             comp_slug = slugify(company_name)
@@ -280,17 +328,19 @@ def parse_snehasishroy_tar(tar_bytes: bytes) -> Dict[str, Dict[int, List[Dict[st
 def merge_company_datasets(
     liquidslr_data: Dict[str, Any],
     snehasishroy_data: Dict[str, Any],
+    samiullah_data: Dict[str, Any],
     domain_map: Dict[str, str],
     leetcode_tags: Dict[str, Any]
 ) -> List[Dict[str, Any]]:
-    all_slugs = set(liquidslr_data.keys()).union(set(snehasishroy_data.keys()))
+    all_slugs = set(liquidslr_data.keys()).union(set(snehasishroy_data.keys())).union(set(samiullah_data.keys()))
     merged_companies = []
 
     for slug in sorted(all_slugs):
         l_comp = liquidslr_data.get(slug)
         s_comp = snehasishroy_data.get(slug)
+        sam_comp = samiullah_data.get(slug)
 
-        name = (l_comp and l_comp.get("name")) or (s_comp and s_comp.get("name")) or slug.replace('-', ' ').title()
+        name = (l_comp and l_comp.get("name")) or (sam_comp and sam_comp.get("name")) or (s_comp and s_comp.get("name")) or slug.replace('-', ' ').title()
         if slug in leetcode_tags:
             name = leetcode_tags[slug].get("name", name)
             
@@ -301,6 +351,7 @@ def merge_company_datasets(
             w_idx = win["index"]
             l_probs = l_comp["windows"].get(w_idx, []) if l_comp else []
             s_probs = s_comp["windows"].get(w_idx, []) if s_comp else []
+            sam_probs = sam_comp["windows"].get(w_idx, []) if sam_comp else []
 
             prob_map: Dict[str, Dict[str, Any]] = {}
 
@@ -318,6 +369,30 @@ def merge_company_datasets(
                     "isSql": is_sql,
                     "verifiedSources": ["liquidslr"]
                 }
+
+            for p in sam_probs:
+                if p["slug"] in prob_map:
+                    entry = prob_map[p["slug"]]
+                    if p.get("frequency", 0) > entry["frequency"]:
+                        entry["frequency"] = p["frequency"]
+                    if not entry.get("topics") and p.get("topics"):
+                        entry["topics"] = p["topics"]
+                    if "samiullah88" not in entry["verifiedSources"]:
+                        entry["verifiedSources"].append("samiullah88")
+                else:
+                    is_sql = p.get("isSql") or is_sql_problem(p.get("topics", []), p["title"])
+                    prob_map[p["slug"]] = {
+                        "id": "",
+                        "title": p["title"],
+                        "slug": p["slug"],
+                        "difficulty": p["difficulty"],
+                        "frequency": p["frequency"],
+                        "acceptance": p["acceptance"],
+                        "link": p["link"],
+                        "topics": p["topics"],
+                        "isSql": is_sql,
+                        "verifiedSources": ["samiullah88"]
+                    }
 
             for p in s_probs:
                 if p["slug"] in prob_map:
@@ -554,29 +629,60 @@ def build_neetcode_company(merged_companies: List[Dict[str, Any]]) -> Optional[D
         }
     }
 
+def update_sql_catalog_ts(sql_dataset: Dict[str, Any], base_dir: str):
+    """Autogenerate TypeScript Set of SQL slugs to keep client-side activity tracker in sync."""
+    ts_path = os.path.join(base_dir, "src", "utils", "sqlCatalog.ts")
+    slugs = [p["slug"] for p in sql_dataset.get("problems", [])]
+    lines = [
+        "// Autogenerated list of SQL problem slugs from public/data/sql-problems.json",
+        "export const SQL_PROBLEM_SLUGS = new Set<string>([",
+    ]
+    for i, slug in enumerate(slugs):
+        comma = "," if i < len(slugs) - 1 else ""
+        lines.append(f'  "{slug}"{comma}')
+    lines.extend([
+        "]);",
+        "",
+        "export function isSqlProblemSlug(slug: string): boolean {",
+        "  if (!slug) return false;",
+        "  return SQL_PROBLEM_SLUGS.has(slug);",
+        "}",
+        ""
+    ])
+    with open(ts_path, "w", encoding="utf-8") as f:
+        f.write("\n".join(lines))
+    print(f"📁 Auto-updated {ts_path} with {len(slugs)} SQL problem slugs.")
+
 def main():
     start_time = time.time()
     print("🚀 Initializing Multi-Source Real-Time Synchronization (DSA + SQL)...")
 
     sha1 = fetch_commit_sha(SOURCE_LIQUIDSLR, "main")
     sha2 = fetch_commit_sha(SOURCE_SNEHASISHROY, "master")
+    sha3 = fetch_commit_sha(SOURCE_SAMIULLAH, "main")
     print(f"📌 Source 1 [{SOURCE_LIQUIDSLR}]: commit {sha1}")
     print(f"📌 Source 2 [{SOURCE_SNEHASISHROY}]: commit {sha2}")
+    print(f"📌 Source 3 [{SOURCE_SAMIULLAH}]: commit {sha3}")
 
     leetcode_tags = fetch_leetcode_official_company_tags()
+    daily_challenge = fetch_leetcode_daily_challenge()
     domain_map = fetch_curated_domains()
 
     print(f"📦 Downloading Source 1 [{SOURCE_LIQUIDSLR}]...")
     l_bytes = fetch_tarball(SOURCE_LIQUIDSLR, "main")
-    liquidslr_data = parse_liquidslr_tar(l_bytes) if l_bytes else {}
+    liquidslr_data = parse_liquidslr_tar(l_bytes, "liquidslr") if l_bytes else {}
 
     print(f"📦 Downloading Source 2 [{SOURCE_SNEHASISHROY}]...")
     s_bytes = fetch_tarball(SOURCE_SNEHASISHROY, "master")
     snehasishroy_data = parse_snehasishroy_tar(s_bytes) if s_bytes else {}
 
-    print("🔄 Merging datasets and calculating DSA + SQL distributions...")
+    print(f"📦 Downloading Source 3 [{SOURCE_SAMIULLAH}]...")
+    sam_bytes = fetch_tarball(SOURCE_SAMIULLAH, "main")
+    samiullah_data = parse_liquidslr_tar(sam_bytes, "samiullah88") if sam_bytes else {}
+
+    print("🔄 Merging multi-source datasets and calculating DSA + SQL distributions...")
     merged_companies = merge_company_datasets(
-        liquidslr_data, snehasishroy_data, domain_map, leetcode_tags
+        liquidslr_data, snehasishroy_data, samiullah_data, domain_map, leetcode_tags
     )
 
     # Append NeetCode 150 to companies
@@ -650,6 +756,18 @@ def main():
     with open(sql_path, "w", encoding="utf-8") as f:
         json.dump(sql_dataset, f, separators=(',', ':'))
 
+    # Save daily-challenge.json if fetched
+    if daily_challenge:
+        daily_path = os.path.join(public_data_dir, "daily-challenge.json")
+        with open(daily_path, "w", encoding="utf-8") as f:
+            json.dump(daily_challenge, f, indent=2)
+
+    # Synchronize TypeScript sqlCatalog.ts
+    try:
+        update_sql_catalog_ts(sql_dataset, base_dir)
+    except Exception as e:
+        print(f"⚠️ Failed to update sqlCatalog.ts: {e}")
+
     # Compile patterns catalog
     try:
         patterns_script = os.path.join(os.path.dirname(__file__), "generate-patterns.py")
@@ -661,15 +779,47 @@ def main():
 
     duration = round(time.time() - start_time, 2)
 
+    daily_title = f"#{daily_challenge['id']} {daily_challenge['title']}" if daily_challenge else "Active 24h Daily Challenge"
+
     status_obj = {
         "status": "success",
         "lastSynced": int(time.time() * 1000),
         "lastSyncedISO": time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime()),
-        "commitSha": f"{sha1}+{sha2}",
+        "commitSha": f"{sha1[:7]}+{sha2[:7]}+{sha3[:7]}",
         "sources": [
-            {"name": SOURCE_LIQUIDSLR, "commit": sha1, "companies": len(liquidslr_data)},
-            {"name": SOURCE_SNEHASISHROY, "commit": sha2, "companies": len(snehasishroy_data)},
-            {"name": "LeetCode GraphQL", "tagsCount": len(leetcode_tags)}
+            {
+                "name": SOURCE_LIQUIDSLR,
+                "commit": sha1,
+                "companies": len(liquidslr_data),
+                "description": "Primary high-frequency company problem archives"
+            },
+            {
+                "name": SOURCE_SNEHASISHROY,
+                "commit": sha2,
+                "companies": len(snehasishroy_data),
+                "description": "Multi-window interview questions dataset"
+            },
+            {
+                "name": SOURCE_SAMIULLAH,
+                "commit": sha3,
+                "companies": len(samiullah_data),
+                "description": "Curated company problems mirror"
+            },
+            {
+                "name": "LeetCode Official GraphQL (Company Tags)",
+                "tagsCount": len(leetcode_tags),
+                "description": "Live company tags & frequency metadata from LeetCode"
+            },
+            {
+                "name": "LeetCode Live Daily Challenge",
+                "dailyProblem": daily_title,
+                "description": "Active 24-hour questionOfToday daily challenge"
+            },
+            {
+                "name": "NeetCode 150 & Core Patterns",
+                "problemsCount": len(nc_company["windows"][0]["problems"]) if nc_company else 150,
+                "description": "Canonical high-impact DSA blueprint collection"
+            }
         ],
         "companiesCount": len(merged_companies),
         "uniqueProblemsCount": len(total_unique_slugs),

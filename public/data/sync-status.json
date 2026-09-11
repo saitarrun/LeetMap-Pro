@@ -1,26 +1,45 @@
 {
   "status": "success",
-  "lastSynced": 1789092177920,
-  "lastSyncedISO": "2026-09-11T02:02:57Z",
-  "commitSha": "03850eb5+e095c259",
+  "lastSynced": 1789097733818,
+  "lastSyncedISO": "2026-09-11T03:35:33Z",
+  "commitSha": "03850eb+e095c25+03850eb",
   "sources": [
     {
       "name": "liquidslr/leetcode-company-wise-problems",
       "commit": "03850eb5",
-      "companies": 470
+      "companies": 470,
+      "description": "Primary high-frequency company problem archives"
     },
     {
       "name": "snehasishroy/leetcode-companywise-interview-questions",
       "commit": "e095c259",
-      "companies": 659
+      "companies": 659,
+      "description": "Multi-window interview questions dataset"
     },
     {
-      "name": "LeetCode GraphQL",
-      "tagsCount": 984
+      "name": "samiullah88/leetcode-company-wise-problems",
+      "commit": "03850eb5",
+      "companies": 470,
+      "description": "Curated company problems mirror"
+    },
+    {
+      "name": "LeetCode Official GraphQL (Company Tags)",
+      "tagsCount": 984,
+      "description": "Live company tags & frequency metadata from LeetCode"
+    },
+    {
+      "name": "LeetCode Live Daily Challenge",
+      "dailyProblem": "#3483 Unique 3-Digit Even Numbers",
+      "description": "Active 24-hour questionOfToday daily challenge"
+    },
+    {
+      "name": "NeetCode 150 & Core Patterns",
+      "problemsCount": 150,
+      "description": "Canonical high-impact DSA blueprint collection"
     }
   ],
   "companiesCount": 684,
   "uniqueProblemsCount": 3422,
   "sqlProblemsCount": 194,
-  "durationSeconds": 6.76
+  "durationSeconds": 7.74
 }

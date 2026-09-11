@@ -11,35 +11,51 @@ const SYNC_COOLDOWN_MS = 10_000;
 const lastSyncByUser = new Map<string, number>();
 let syncInProgress = false;
 
+export async function GET(request: Request) {
+  return POST(request);
+}
+
 export async function POST(request: Request) {
-  const { userId } = await auth();
-  if (!userId) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  }
+  const authHeader = request.headers.get('authorization');
+  const isCron =
+    (Boolean(process.env.CRON_SECRET) && authHeader === `Bearer ${process.env.CRON_SECRET}`) ||
+    request.headers.get('x-vercel-cron') === '1';
 
-  if (!isTrustedMutationRequest(request)) {
-    return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
-  }
+  let userId: string | null = null;
 
-  const isDev = process.env.NODE_ENV === 'development';
-  const allowedUserIds = (process.env.SYNC_ADMIN_USER_IDS || '')
-    .split(',')
-    .map((value) => value.trim())
-    .filter(Boolean);
-
-  // In development, allow any authenticated user by default.
-  // In production, check allowlist (or allow if '*' is specified).
-  const isAllowed =
-    isDev ||
-    allowedUserIds.includes('*') ||
-    allowedUserIds.includes(userId);
-
-  if (!isAllowed) {
-    if (allowedUserIds.length === 0) {
-      console.error('SYNC_ADMIN_USER_IDS is not configured');
-      return NextResponse.json({ error: 'Sync is not configured. Set SYNC_ADMIN_USER_IDS in environment.' }, { status: 503 });
+  if (!isCron) {
+    const authSession = await auth();
+    userId = authSession.userId;
+    if (!userId) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
-    return NextResponse.json({ error: 'Forbidden: Admin privileges required to trigger sync' }, { status: 403 });
+
+    if (!isTrustedMutationRequest(request)) {
+      return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+    }
+
+    const isDev = process.env.NODE_ENV === 'development';
+    const allowedUserIds = (process.env.SYNC_ADMIN_USER_IDS || '')
+      .split(',')
+      .map((value) => value.trim())
+      .filter(Boolean);
+
+    // In development, allow any authenticated user by default.
+    // In production, check allowlist (or allow if '*' is specified).
+    const isAllowed =
+      isDev ||
+      allowedUserIds.includes('*') ||
+      allowedUserIds.includes(userId);
+
+    if (!isAllowed) {
+      if (allowedUserIds.length === 0) {
+        console.error('SYNC_ADMIN_USER_IDS is not configured');
+        return NextResponse.json({ error: 'Sync is not configured. Set SYNC_ADMIN_USER_IDS in environment.' }, { status: 503 });
+      }
+      return NextResponse.json({ error: 'Forbidden: Admin privileges required to trigger sync' }, { status: 403 });
+    }
+  } else {
+    userId = 'cron-system';
   }
 
   const now = Date.now();

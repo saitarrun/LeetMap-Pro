@@ -1,4 +1,5 @@
 import { UserProfile, SolvedProblemRecord, UserActivityStats } from '@/types';
+import { isSqlProblemSlug } from '@/utils/sqlCatalog';
 
 interface ActiveUserReference {
   id: string;
@@ -189,7 +190,18 @@ function getSolvedCount(username?: string): number {
  */
 export function getUserActivityStats(username?: string): UserActivityStats {
   const records = getSolvedRecords(username);
-  const totalSolved = getSolvedCount(username);
+  const solvedProblems = getSolvedProblems(username);
+  const totalSolved = solvedProblems.size;
+
+  let sqlSolved = 0;
+  let dsaSolved = 0;
+  solvedProblems.forEach((slug) => {
+    if (isSqlProblemSlug(slug)) {
+      sqlSolved++;
+    } else {
+      dsaSolved++;
+    }
+  });
 
   const dailyHistory: Record<string, number> = {};
   const todayStr = getLocalDateString(new Date());
@@ -270,6 +282,8 @@ export function getUserActivityStats(username?: string): UserActivityStats {
 
   return {
     totalSolved,
+    dsaSolved,
+    sqlSolved,
     todaySolved,
     currentStreak,
     maxStreak,

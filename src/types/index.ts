@@ -125,6 +125,9 @@ export interface SyncStatus {
     commit?: string;
     companies?: number;
     tagsCount?: number;
+    problemsCount?: number;
+    dailyProblem?: string;
+    description?: string;
   }>;
   companiesCount: number;
   uniqueProblemsCount: number;
@@ -186,6 +189,8 @@ export interface SolvedProblemRecord {
 
 export interface UserActivityStats {
   totalSolved: number;
+  dsaSolved: number;
+  sqlSolved: number;
   todaySolved: number;
   currentStreak: number;
   maxStreak: number;

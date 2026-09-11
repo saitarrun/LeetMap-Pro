@@ -19,6 +19,10 @@ export const UserProfileMenu: React.FC = () => {
 
   const activityStats = getUserActivityStats(user?.id);
 
+  const statsSummary = (s: { totalSolved: number; dsaSolved: number; sqlSolved: number }) => {
+    return `${s.totalSolved} solved (${s.dsaSolved} DSA · ${s.sqlSolved} SQL)`;
+  };
+
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (menuRef.current && !menuRef.current.contains(event.target as Node)) setIsOpen(false);
@@ -134,7 +138,7 @@ export const UserProfileMenu: React.FC = () => {
               <h3 className="truncate text-xs font-semibold text-[var(--text-main)]">{user.name}</h3>
               <p className="truncate text-[11px] text-[var(--text-muted)] font-normal">{user.email || user.username}</p>
               <p className="mt-0.5 text-[10px] text-[var(--text-muted)] font-mono">
-                {activityStats.currentStreak}d streak · {activityStats.totalSolved} solved
+                {activityStats.currentStreak}d streak · {statsSummary(activityStats)}
               </p>
             </div>
           </div>

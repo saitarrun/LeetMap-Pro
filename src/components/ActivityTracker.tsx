@@ -1,9 +1,10 @@
 'use client';
 
 import React, { useMemo } from 'react';
-import { CalendarDays, CheckCircle2, Flame, Trophy, Zap } from 'lucide-react';
+import { CalendarDays, CheckCircle2, Flame, Trophy, Zap, Code2, Database } from 'lucide-react';
 import { UserActivityStats } from '@/types';
 import { getLeetCodeProblemUrl } from '@/utils/urls';
+import { isSqlProblemSlug } from '@/utils/sqlCatalog';
 
 interface ActivityTrackerProps {
   stats: UserActivityStats;
@@ -105,6 +106,49 @@ export const ActivityTracker: React.FC<ActivityTrackerProps> = ({ stats, display
         ))}
       </div>
 
+      {/* DSA vs SQL Solved Breakdown Cards */}
+      <div className="grid grid-cols-2 gap-2">
+        <div className="rounded-xl border border-sky-500/20 bg-sky-500/5 p-2.5 flex items-center justify-between">
+          <div className="flex items-center gap-2 min-w-0">
+            <div className="w-7 h-7 rounded-lg bg-sky-500/15 text-sky-600 dark:text-sky-400 flex items-center justify-center shrink-0">
+              <Code2 className="w-4 h-4" />
+            </div>
+            <div className="min-w-0">
+              <p className="text-[10px] font-semibold text-sky-600 dark:text-sky-400 uppercase tracking-wider">DSA Solved</p>
+              <div className="flex items-baseline gap-1 mt-0.5">
+                <span className="font-mono text-base sm:text-lg font-bold text-[var(--text-main)]">{stats.dsaSolved}</span>
+                <span className="text-[10px] text-[var(--text-muted)]">problems</span>
+              </div>
+            </div>
+          </div>
+          {stats.totalSolved > 0 && (
+            <span className="text-[10px] font-mono text-[var(--text-muted)] shrink-0">
+              {Math.round((stats.dsaSolved / stats.totalSolved) * 100)}%
+            </span>
+          )}
+        </div>
+
+        <div className="rounded-xl border border-emerald-500/20 bg-emerald-500/5 p-2.5 flex items-center justify-between">
+          <div className="flex items-center gap-2 min-w-0">
+            <div className="w-7 h-7 rounded-lg bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0">
+              <Database className="w-4 h-4" />
+            </div>
+            <div className="min-w-0">
+              <p className="text-[10px] font-semibold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider">SQL Solved</p>
+              <div className="flex items-baseline gap-1 mt-0.5">
+                <span className="font-mono text-base sm:text-lg font-bold text-[var(--text-main)]">{stats.sqlSolved}</span>
+                <span className="text-[10px] text-[var(--text-muted)]">queries</span>
+              </div>
+            </div>
+          </div>
+          {stats.totalSolved > 0 && (
+            <span className="text-[10px] font-mono text-[var(--text-muted)] shrink-0">
+              {Math.round((stats.sqlSolved / stats.totalSolved) * 100)}%
+            </span>
+          )}
+        </div>
+      </div>
+
       {/* Heatmap Activity Section */}
       <section className="rounded-2xl border border-[var(--border)]/50 bg-[var(--bg-subtle)]/30 p-3.5 sm:p-4">
         <div className="mb-3 flex items-center justify-between gap-3">
@@ -136,37 +180,35 @@ export const ActivityTracker: React.FC<ActivityTrackerProps> = ({ stats, display
             </div>
           </div>
 
-          {/* Calendar grid with day labels */}
           <div className="flex items-center gap-2">
-            <div className="grid w-5 shrink-0 grid-rows-7 gap-1 text-right text-[8px] font-medium text-[var(--text-muted)]/70">
-              <span className="aspect-square flex items-center justify-end" />
-              <span className="aspect-square flex items-center justify-end leading-none">Mon</span>
-              <span className="aspect-square flex items-center justify-end" />
-              <span className="aspect-square flex items-center justify-end leading-none">Wed</span>
-              <span className="aspect-square flex items-center justify-end" />
-              <span className="aspect-square flex items-center justify-end leading-none">Fri</span>
-              <span className="aspect-square flex items-center justify-end" />
+            {/* Day of Week Labels */}
+            <div className="flex flex-col justify-between h-[86px] text-[9px] font-medium text-[var(--text-muted)] select-none shrink-0 w-5">
+              <span>Mon</span>
+              <span>Wed</span>
+              <span>Fri</span>
             </div>
-            <div className="grid min-w-0 flex-1 grid-cols-[repeat(26,minmax(0,1fr))] gap-1">
-              {calendar.weeks.map((week, weekIndex) => (
-                <div key={weekIndex} className="grid min-w-0 grid-rows-7 gap-1">
-                  {week.map((day) => (
-                    <div
-                      key={day.date}
-                      className={`aspect-square w-full rounded-[2px] transition-transform ${getCellClass(day.count, day.isFuture)} ${day.isFuture ? '' : 'hover:scale-125'}`}
-                      title={day.isFuture ? undefined : `${day.count} ${day.count === 1 ? 'problem' : 'problems'} solved on ${day.date}`}
-                      aria-label={day.isFuture ? undefined : `${day.count} problems solved on ${day.date}`}
-                    />
-                  ))}
-                </div>
-              ))}
+
+            {/* Grid */}
+            <div className="grid grid-flow-col grid-rows-7 gap-[3px] flex-1">
+              {calendar.weeks.map((week, wIndex) =>
+                week.map((day, dIndex) => (
+                  <div
+                    key={`${wIndex}-${dIndex}`}
+                    className={`h-[10px] w-full rounded-[2px] transition-colors ${getCellClass(day.count, day.isFuture)}`}
+                    title={day.isFuture ? undefined : `${day.date}: ${day.count} solved`}
+                  />
+                ))
+              )}
             </div>
           </div>
         </div>
 
-        {/* Legend / Status bar */}
-        <div className="mt-3 flex flex-wrap items-center justify-between gap-2 border-t border-[var(--border)]/30 pt-2.5 text-[10px] text-[var(--text-muted)]">
-          <span>{stats.todaySolved > 0 ? 'Great work — today is active.' : 'Solve one problem today to keep your streak moving.'}</span>
+        <div className="mt-3 flex items-center justify-between text-[11px] text-[var(--text-muted)] font-normal border-t border-[var(--border)]/30 pt-2.5">
+          <span>
+            {stats.todaySolved > 0
+              ? `Great work — today is active.`
+              : `Solve a problem today to keep your streak.`}
+          </span>
           <div className="flex items-center gap-1.5 text-[10px]">
             <span>Less</span>
             {[0, 1, 2, 4].map((count) => (
@@ -187,9 +229,18 @@ export const ActivityTracker: React.FC<ActivityTrackerProps> = ({ stats, display
                 href={getLeetCodeProblemUrl(record.slug)}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center justify-between gap-3 py-1.5 text-xs hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors"
+                className="flex items-center justify-between gap-3 py-1.5 text-xs hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors group"
               >
-                <span className="truncate font-medium">{record.title || record.slug.replace(/-/g, ' ')}</span>
+                <div className="flex items-center gap-1.5 min-w-0">
+                  <span className={`px-1.5 py-0.5 rounded text-[9px] font-mono font-semibold shrink-0 ${
+                    isSqlProblemSlug(record.slug)
+                      ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20'
+                      : 'bg-sky-500/10 text-sky-600 dark:text-sky-400 border border-sky-500/20'
+                  }`}>
+                    {isSqlProblemSlug(record.slug) ? 'SQL' : 'DSA'}
+                  </span>
+                  <span className="truncate font-medium">{record.title || record.slug.replace(/-/g, ' ')}</span>
+                </div>
                 <span className="shrink-0 font-mono text-[10px] text-[var(--text-muted)]">{record.date}</span>
               </a>
             ))}
