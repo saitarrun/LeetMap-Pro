@@ -40,13 +40,37 @@ export async function generateMetadata({ params }: PageProps) {
   const filePath = path.join(process.cwd(), 'public', 'data', 'patterns', `${resolvedSlug}.json`);
 
   if (!fs.existsSync(filePath)) {
-    return { title: 'Pattern Not Found — LeetMap Pro' };
+    return { title: 'Pattern Not Found' };
   }
 
   const pattern: PatternDetail = JSON.parse(fs.readFileSync(filePath, 'utf8'));
+  const title = `${pattern.name} Pattern (${pattern.total} Curated Problems)`;
+  const description = `${pattern.tagline}. Master ${pattern.total} LeetCode interview problems in the ${pattern.name} pattern asked by ${pattern.topCompanies.slice(0, 4).join(', ')}. Strategy guide, code templates, and difficulty breakdown.`;
+
   return {
-    title: `${pattern.name} Pattern (${pattern.total} Interview Questions) — LeetMap Pro`,
-    description: `${pattern.tagline}. Master ${pattern.total} LeetCode problems in the ${pattern.name} pattern asked by top tech firms.`,
+    title,
+    description,
+    keywords: [
+      `${pattern.name} leetcode`,
+      `${pattern.name} pattern interview questions`,
+      `${pattern.name} coding problems`,
+      `${pattern.category} interview prep`,
+      'leetcode patterns roadmap',
+    ],
+    alternates: {
+      canonical: `/patterns/${safeSlug}`,
+    },
+    openGraph: {
+      title,
+      description,
+      url: `/patterns/${safeSlug}`,
+      type: 'article',
+    },
+    twitter: {
+      card: 'summary',
+      title,
+      description,
+    },
   };
 }
 

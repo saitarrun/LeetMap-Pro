@@ -21,9 +21,33 @@ export async function generateMetadata({ params }: PageProps) {
 
   const company: CompanyDetail = JSON.parse(fs.readFileSync(filePath, 'utf8'));
   const sqlCount = company.sqlTotal || 0;
+  const title = `${company.name} LeetCode SQL Questions (${sqlCount} Asked)`;
+  const description = `Practice ${sqlCount} LeetCode SQL and database interview questions asked in ${company.name} data science and software engineering interviews, ranked by frequency and recency.`;
+
   return {
-    title: `${company.name} LeetCode SQL Questions (${sqlCount} Interview Questions)`,
-    description: `Browse ${sqlCount} LeetCode SQL & database interview questions asked at ${company.name}, ranked by frequency and recency.`,
+    title,
+    description,
+    keywords: [
+      `${company.name} SQL interview questions`,
+      `${company.name} leetcode sql`,
+      `${company.name} database questions`,
+      'SQL interview practice',
+      'leetcode sql frequency',
+    ],
+    alternates: {
+      canonical: `/sql/${safeSlug}`,
+    },
+    openGraph: {
+      title,
+      description,
+      url: `/sql/${safeSlug}`,
+      type: 'article',
+    },
+    twitter: {
+      card: 'summary',
+      title,
+      description,
+    },
   };
 }
 

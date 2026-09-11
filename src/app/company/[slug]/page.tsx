@@ -20,9 +20,33 @@ export async function generateMetadata({ params }: PageProps) {
   }
 
   const company: CompanyDetail = JSON.parse(fs.readFileSync(filePath, 'utf8'));
+  const title = `${company.name} LeetCode Questions (${company.total} Most Frequent)`;
+  const description = `Practice ${company.total} interview problems asked in ${company.name} technical interviews, ranked by real frequency: ${company.easy} Easy, ${company.medium} Medium, ${company.hard} Hard. Filter by 30 days, 3 months, 6 months recency.`;
+
   return {
-    title: `${company.name} LeetCode Questions (${company.total} Most Asked)`,
-    description: `Browse ${company.total} company-wise LeetCode questions asked in ${company.name} interviews, ranked by frequency: ${company.easy} easy, ${company.medium} medium, ${company.hard} hard.`,
+    title,
+    description,
+    keywords: [
+      `${company.name} LeetCode questions`,
+      `${company.name} interview questions`,
+      `${company.name} coding interview`,
+      `${company.name} most asked leetcode`,
+      `${company.name} software engineer interview`,
+    ],
+    alternates: {
+      canonical: `/company/${safeSlug}`,
+    },
+    openGraph: {
+      title,
+      description,
+      url: `/company/${safeSlug}`,
+      type: 'article',
+    },
+    twitter: {
+      card: 'summary',
+      title,
+      description,
+    },
   };
 }
 

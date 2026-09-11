@@ -5,8 +5,30 @@ import { PatternSummary, SyncStatus } from '@/types';
 import { StrategyClient } from '@/components/StrategyClient';
 
 export const metadata = {
-  title: 'Interview Strategy & Dependency Roadmap — LeetMap Pro',
-  description: 'Master the 18 core LeetCode coding interview patterns in optimal prerequisite order. Visual roadmap from Arrays & Hashing to Advanced Dynamic Programming.',
+  title: 'Interview Strategy & Dependency Roadmap',
+  description: 'Master the 18 core LeetCode coding interview patterns in optimal prerequisite order. Interactive Apple-designed roadmap from Arrays & Hashing to Advanced Dynamic Programming.',
+  keywords: [
+    'LeetCode Roadmap',
+    'Coding Interview Strategy',
+    'LeetCode Pattern Dependency Graph',
+    'Algorithm Prerequisites',
+    'NeetCode alternative',
+    'Technical Interview Roadmap',
+  ],
+  alternates: {
+    canonical: '/strategy',
+  },
+  openGraph: {
+    title: 'Interview Strategy & Dependency Roadmap — LeetMap Pro',
+    description: 'Master the 18 core LeetCode coding interview patterns in optimal prerequisite order with an interactive visual dependency graph.',
+    url: '/strategy',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Interview Strategy & Dependency Roadmap — LeetMap Pro',
+    description: 'Master the 18 core LeetCode coding interview patterns in optimal prerequisite order.',
+  },
 };
 
 export default async function StrategyPage() {

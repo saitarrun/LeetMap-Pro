@@ -5,8 +5,31 @@ import { PatternSummary, SyncStatus } from '@/types';
 import { PatternsHubClient } from '@/components/PatternsHubClient';
 
 export const metadata = {
-  title: 'Browse by Pattern for LeetCode DSA — LeetMap Pro',
-  description: 'Master the 22 core LeetCode coding interview patterns (Two Pointers, Sliding Window, Monotonic Stack, Fast & Slow Pointers, 1D/2D DP) asked by top tech firms.',
+  title: 'Browse by Pattern for LeetCode DSA',
+  description: 'Master 22 core LeetCode coding interview patterns (Two Pointers, Sliding Window, Monotonic Stack, 1-D/2-D DP, Trees, Graphs) asked by top tech firms.',
+  keywords: [
+    'LeetCode Patterns',
+    'Coding Patterns',
+    'Two Pointers LeetCode',
+    'Sliding Window LeetCode',
+    'Dynamic Programming Patterns',
+    'Graph Traversal',
+    'FAANG Patterns',
+  ],
+  alternates: {
+    canonical: '/patterns',
+  },
+  openGraph: {
+    title: 'Browse by Pattern for LeetCode DSA — LeetMap Pro',
+    description: 'Master 22 core LeetCode coding interview patterns asked by top tech firms.',
+    url: '/patterns',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Browse by Pattern for LeetCode DSA — LeetMap Pro',
+    description: 'Master 22 core LeetCode coding interview patterns asked by top tech firms.',
+  },
 };
 
 export default async function PatternsPage() {

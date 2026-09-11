@@ -5,8 +5,30 @@ import { SqlCatalog, SqlCompanySummary, SyncStatus } from '@/types';
 import { SqlHubClient } from '@/components/SqlHubClient';
 
 export const metadata = {
-  title: 'Company-wise LeetCode SQL Questions — LeetMap Pro',
-  description: 'Browse coding interview SQL questions asked by 73+ tech firms (Amazon, Google, Meta, Bloomberg, Microsoft, etc.), ranked by interview frequency and recency.',
+  title: 'Company-wise LeetCode SQL Questions',
+  description: 'Browse coding interview SQL questions asked by 73+ tech firms (Amazon, Google, Meta, Bloomberg, Microsoft), ranked by interview frequency and recency.',
+  keywords: [
+    'LeetCode SQL Questions',
+    'SQL Interview Questions by Company',
+    'FAANG SQL Questions',
+    'Data Engineer Interview SQL',
+    'Data Analyst LeetCode SQL',
+    'SQL Frequency',
+  ],
+  alternates: {
+    canonical: '/sql',
+  },
+  openGraph: {
+    title: 'Company-wise LeetCode SQL Questions — LeetMap Pro',
+    description: 'Browse coding interview SQL questions asked by 73+ tech firms, ranked by interview frequency and recency.',
+    url: '/sql',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Company-wise LeetCode SQL Questions — LeetMap Pro',
+    description: 'Browse coding interview SQL questions asked by 73+ tech firms, ranked by interview frequency and recency.',
+  },
 };
 
 export default async function SqlPage() {
