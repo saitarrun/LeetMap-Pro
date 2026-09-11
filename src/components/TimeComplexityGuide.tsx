@@ -945,9 +945,14 @@ for value in values:
         {/* ══ 13. Python Essentials ══ */}
         <SectionCard id="python-essentials" icon={<Code2 className="w-4 h-4" />}
           title="13 · Python LeetCode Essentials"
-          subtitle="The built-ins, data structures, and templates used across problem types">
+          subtitle="The built-ins, standard libraries, bit manipulation, and interview templates">
+
+          {/* 1. Core Built-ins Table */}
           <div className="space-y-2 pt-1">
-            <h3 className="text-xs font-semibold uppercase tracking-wider text-[var(--text-muted)]">Python LeetCode Toolkit</h3>
+            <div className="flex items-center justify-between">
+              <h3 className="text-xs font-semibold uppercase tracking-wider text-[var(--text-muted)]">Built-in Toolkit &amp; Data Structures</h3>
+              <span className="text-[10px] text-[var(--text-light)]">Standard Library</span>
+            </div>
             <div className="overflow-x-auto rounded-xl border border-[var(--border)]/50 bg-[var(--bg-card)]">
               <table className="w-full text-xs min-w-[620px]">
                 <thead>
@@ -958,41 +963,36 @@ for value in values:
                     <th className="text-left px-4 py-2.5 font-semibold text-[var(--text-main)]">Cost</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-[var(--border)]">
+                <tbody className="divide-y divide-[var(--border)]/30">
                   {[
-                    ['Dict', 'd[key] / d.get(key, 0)', 'Frequency maps, memoization, complements', 'O(1) avg'],
-                    ['Dict', 'd.setdefault(key, [])', 'Group values without a key-exists branch', 'O(1) avg'],
-                    ['Dict', 'd.items() / d.keys() / d.values()', 'Traverse a map or build a lookup', 'O(n) total'],
-                    ['Dict', 'collections.defaultdict(int)', 'Counters and graph adjacency lists', 'O(1) avg / access'],
-                    ['Dict', 'collections.Counter(values)', 'Counts, most_common(k), anagrams', 'O(n) build'],
-                    ['Set', 'seen.add(x) / x in seen', 'Deduplication and constant-time membership', 'O(1) avg'],
-                    ['Set', 'a | b / a & b / a - b', 'Union, intersection, and difference', 'O(len operands)'],
-                    ['Iteration', 'for i, value in enumerate(values)', 'Index and value together; avoid range(len(...))', 'O(n)'],
-                    ['Iteration', 'for left, right in zip(a, b)', 'Walk arrays together; stops at shorter input', 'O(min(n, m))'],
-                    ['Iteration', 'zip(*matrix)', 'Transpose a matrix or unpack columns', 'O(rows × cols)'],
-                    ['Sorting', 'sorted(values, key=lambda x: x[1])', 'Sort by a field without mutating input', 'O(n log n)'],
-                    ['Sorting', 'values.sort(key=..., reverse=True)', 'In-place sort when mutation is safe', 'O(n log n)'],
-                    ['Sorting', 'min(values, key=...) / max(...)', 'Best item by a score in one pass', 'O(n)'],
-                    ['Logic', 'any(condition(x) for x in values)', 'Existence check with short-circuiting', 'O(n) worst'],
-                    ['Logic', 'all(condition(x) for x in values)', 'Validate every item with short-circuiting', 'O(n) worst'],
-                    ['Stack', 'stack.append(x) / stack.pop()', 'Parentheses, monotonic stack, DFS', 'O(1) amortized'],
-                    ['Queue', 'deque(); q.append(x); q.popleft()', 'BFS and sliding-window queues', 'O(1)'],
-                    ['Heap', 'heappush(h, x) / heappop(h)', 'Top-k, scheduling, Dijkstra', 'O(log k)'],
-                    ['Heap', 'heapify(values)', 'Turn a list into a min-heap', 'O(n)'],
-                    ['Heap', 'heappushpop(h, x)', 'Push then remove smallest efficiently', 'O(log k)'],
-                    ['Search', 'bisect_left(a, x) / bisect_right(a, x)', 'First/last insertion position in sorted data', 'O(log n)'],
-                    ['Search', 'bisect.insort(a, x)', 'Insert while keeping list sorted', 'O(n) shift'],
-                    ['Math', 'math.gcd(a, b) / math.lcm(a, b)', 'Ratios, cycles, divisibility', 'O(log min(a,b))'],
-                    ['Math', 'divmod(a, b)', 'Quotient and remainder together', 'O(1)'],
-                    ['Math', 'float("inf") / -float("inf")', 'Initial min/max distances and DP values', 'O(1)'],
-                    ['Strings', 's.isalnum() / isalpha() / isdigit()', 'Validate characters', 'O(len(s))'],
-                    ['Strings', 's.split() / " ".join(words)', 'Tokenize and rebuild strings', 'O(len(s))'],
-                    ['Strings', 's[::-1] / reversed(s)', 'Reverse a string or sequence', 'O(n)'],
-                    ['Arrays', 'range(start, stop, step)', 'Bounded loops and arithmetic progression', 'O(1) creation'],
-                    ['Arrays', '[f(x) for x in values if ok(x)]', 'Transform/filter in one readable pass', 'O(n)'],
+                    ['DP / Cache', '@cache  (or @lru_cache(None))', 'Zero-boilerplate DP memoization', 'O(1) lookup'],
+                    ['Recursion', 'sys.setrecursionlimit(200_000)', 'Prevent stack overflow on deep trees/DFS', 'O(1)'],
+                    ['Dict', 'collections.defaultdict(list)', 'Graph adjacency list & grouping', 'O(1) avg'],
+                    ['Dict', 'collections.defaultdict(int)', 'Character & number frequency counting', 'O(1) avg'],
+                    ['Dict', 'collections.Counter(values)', 'Frequency maps, anagram checks', 'O(n) build'],
+                    ['Counter', 'counts.most_common(k)', 'Top-k elements via internal heap', 'O(n log k)'],
+                    ['Set', 'seen.add(x) / x in seen', 'Deduplication and constant-time lookup', 'O(1) avg'],
+                    ['Queue', 'collections.deque(); q.popleft()', 'BFS & sliding-window (never list.pop(0)!)', 'O(1)'],
+                    ['Heap', 'heapify(nums)', 'Turn list into min-heap in-place', 'O(n)'],
+                    ['Heap', 'heappush(h, x) / heappop(h)', 'Priority queue, Dijkstra, Top-K', 'O(log k)'],
+                    ['Heap', 'heappushpop(h, x)', 'Push then pop smallest in one step', 'O(log k)'],
+                    ['Search', 'bisect_left(arr, x)', 'First index where element >= x', 'O(log n)'],
+                    ['Search', 'bisect_right(arr, x)', 'First index where element > x', 'O(log n)'],
+                    ['Iteration', 'for i, val in enumerate(arr)', 'Index and value together', 'O(n)'],
+                    ['Iteration', 'for a, b in zip(xs, ys)', 'Parallel walk; stops at shorter array', 'O(min(n, m))'],
+                    ['Matrix', 'zip(*matrix)', 'Transpose matrix (turn columns into rows)', 'O(rows × cols)'],
+                    ['Sorting', 'sorted(arr, key=lambda x: (x[0], -x[1]))', 'Multi-key sort (asc by A, desc by B)', 'O(n log n)'],
+                    ['Logic', 'any(cond(x) for x in arr)', 'Short-circuit check: True on first match', 'O(n) worst'],
+                    ['Logic', 'all(cond(x) for x in arr)', 'Short-circuit check: False on first fail', 'O(n) worst'],
+                    ['Strings', '"".join(char_list)', 'Join strings (never string += char in loop)', 'O(n)'],
+                    ['Strings', 's.isalnum() / isalpha() / isdigit()', 'Validate characters in palindromes', 'O(len(s))'],
+                    ['Strings', 's[::-1] / reversed(s)', 'Reverse string or list', 'O(n)'],
+                    ['Math', 'divmod(a, b)', 'Returns (a // b, a % b) together', 'O(1)'],
+                    ['Math', 'math.gcd(a, b) / math.lcm(a, b)', 'Greatest common divisor & LCM', 'O(log min(a,b))'],
+                    ['Math', 'float("inf") / -float("inf")', 'Initial min/max distance & DP values', 'O(1)'],
                   ].map(([category, pattern, use, cost], i) => (
-                    <tr key={i} className={i % 2 === 0 ? 'bg-[var(--bg-card)]' : 'bg-[var(--bg-subtle)]/30'}>
-                      <td className="px-4 py-2 text-[var(--text-light)]">{category}</td>
+                    <tr key={i} className={i % 2 === 0 ? 'bg-transparent' : 'bg-[var(--bg-subtle)]/20'}>
+                      <td className="px-4 py-2 font-medium text-[var(--text-light)]">{category}</td>
                       <td className="px-4 py-2 font-mono text-[var(--text-main)] whitespace-nowrap">{pattern}</td>
                       <td className="px-4 py-2 text-[var(--text-muted)]">{use}</td>
                       <td className="px-4 py-2 font-mono text-emerald-600 dark:text-emerald-400 font-semibold whitespace-nowrap">{cost}</td>
@@ -1002,102 +1002,167 @@ for value in values:
               </table>
             </div>
           </div>
-          <div className="grid lg:grid-cols-2 gap-3">
-            <CodeBlock label="matrix traversal + directions" code={`rows, cols = len(grid), len(grid[0])
-directions = ((1, 0), (-1, 0), (0, 1), (0, -1))
 
-for row in range(rows):
-    for col in range(cols):
-        for dr, dc in directions:
-            nr, nc = row + dr, col + dc
-            if 0 <= nr < rows and 0 <= nc < cols:
-                visit(grid[nr][nc])
+          {/* 2. Bit Manipulation Cheatsheet */}
+          <div className="space-y-2 pt-2">
+            <h3 className="text-xs font-semibold uppercase tracking-wider text-[var(--text-muted)]">Bit Manipulation Quick Reference</h3>
+            <div className="overflow-x-auto rounded-xl border border-[var(--border)]/50 bg-[var(--bg-card)]">
+              <table className="w-full text-xs min-w-[560px]">
+                <thead>
+                  <tr className="bg-[var(--bg-subtle)]/60 border-b border-[var(--border)]/40">
+                    <th className="text-left px-4 py-2 font-semibold text-[var(--text-main)]">Operation</th>
+                    <th className="text-left px-4 py-2 font-semibold text-[var(--text-main)]">Bitwise formula</th>
+                    <th className="text-left px-4 py-2 font-semibold text-[var(--text-main)]">Interview application</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-[var(--border)]/30">
+                  {[
+                    ['Check odd / even', 'x & 1', 'Returns 1 if odd, 0 if even'],
+                    ['Clear lowest set bit', 'x & (x - 1)', 'Count set bits in O(k) steps (Brian Kernighan)'],
+                    ['Isolate lowest set bit', 'x & -x', 'Isolates the rightmost 1-bit'],
+                    ['Check power of two', 'x > 0 and (x & (x - 1)) == 0', 'Powers of 2 have exactly one 1-bit'],
+                    ['XOR identity', 'x ^ x == 0 and x ^ 0 == x', 'Find the Single Number among pairs in O(n)'],
+                    ['Check k-th bit', '(x >> k) & 1', 'Inspect state in bitmasks / subset problems'],
+                    ['Toggle k-th bit', 'x ^ (1 << k)', 'Flip bit from 0 to 1 or 1 to 0'],
+                    ['Set k-th bit', 'x | (1 << k)', 'Turn on state in bitmask DP'],
+                  ].map(([op, formula, app], i) => (
+                    <tr key={i} className={i % 2 === 0 ? 'bg-transparent' : 'bg-[var(--bg-subtle)]/20'}>
+                      <td className="px-4 py-2 font-medium text-[var(--text-main)]">{op}</td>
+                      <td className="px-4 py-2 font-mono text-emerald-600 dark:text-emerald-400 font-semibold">{formula}</td>
+                      <td className="px-4 py-2 text-[var(--text-muted)]">{app}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
 
-# Full matrix scan: O(rows × cols)
-# Four neighbors per cell: still O(rows × cols)`} />
-            <CodeBlock label="matrix BFS / flood fill" code={`from collections import deque
+          {/* 3. The 5 Critical Python LeetCode Traps */}
+          <div className="space-y-2 pt-2">
+            <h3 className="text-xs font-semibold uppercase tracking-wider text-[var(--text-muted)]">5 Dangerous Python LeetCode Traps</h3>
+            <div className="grid sm:grid-cols-2 gap-2.5">
+              {[
+                {
+                  title: '1. The 2D Array Reference Bug',
+                  bad: 'grid = [[0] * cols] * rows',
+                  good: 'grid = [[0] * cols for _ in range(rows)]',
+                  why: 'The first line copies row references. Modifying grid[0][0] mutates every single row!',
+                },
+                {
+                  title: '2. Negative Integer Division',
+                  bad: '-3 // 2  # Returns -2 (rounds to -inf)',
+                  good: 'int(-3 / 2)  # Returns -1 (truncates to 0)',
+                  why: 'Python // rounds toward negative infinity. LeetCode questions (like Evaluate Reverse Polish) expect truncation toward zero.',
+                },
+                {
+                  title: '3. String Concatenation in Loops',
+                  bad: 'res = ""; for c in s: res += c',
+                  good: 'res = "".join(chars)',
+                  why: 'Strings are immutable. Repeated += copies the string each time, turning an O(n) loop into O(n²).',
+                },
+                {
+                  title: '4. Recursive Slicing Overhead',
+                  bad: 'dfs(nums[:mid]) + dfs(nums[mid:])',
+                  good: 'dfs(left, mid) + dfs(mid + 1, right)',
+                  why: 'Slicing creates a new list in O(k) time and memory. Inside recursion, pass index boundaries instead.',
+                },
+              ].map(({ title, bad, good, why }) => (
+                <div key={title} className="p-3 rounded-xl bg-[var(--bg-subtle)]/40 border border-[var(--border)]/40 space-y-1.5">
+                  <p className="text-xs font-semibold text-[var(--text-main)]">{title}</p>
+                  <div className="space-y-1 font-mono text-[11px]">
+                    <div className="text-rose-600 dark:text-rose-400 bg-rose-500/10 px-2 py-0.5 rounded">❌ {bad}</div>
+                    <div className="text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded">✅ {good}</div>
+                  </div>
+                  <p className="text-[11px] text-[var(--text-muted)] leading-normal">{why}</p>
+                </div>
+              ))}
+            </div>
+          </div>
 
-queue = deque([(start_row, start_col)])
-seen = {(start_row, start_col)}
+          {/* 4. Complete Interview Templates */}
+          <div className="space-y-2 pt-2">
+            <h3 className="text-xs font-semibold uppercase tracking-wider text-[var(--text-muted)]">Battle-Tested Interview Templates</h3>
+            <div className="grid lg:grid-cols-2 gap-3">
+              <CodeBlock label="memoization & recursion template" code={`from functools import cache
+import sys
+
+sys.setrecursionlimit(200_000)
+
+@cache  # Automatically memoizes (i, target)
+def dp(i, target):
+    if target == 0:
+        return 0
+    if i == len(nums) or target < 0:
+        return float('inf')
+
+    take = 1 + dp(i, target - nums[i])
+    skip = dp(i + 1, target)
+    return min(take, skip)`} />
+
+              <CodeBlock label="binary search via bisect" code={`from bisect import bisect_left, bisect_right
+
+arr = [1, 2, 4, 4, 4, 7, 9]
+
+# First index >= 4 -> 2
+idx_left = bisect_left(arr, 4)
+
+# First index > 4 -> 5
+idx_right = bisect_right(arr, 4)
+
+# Check existence in O(log n)
+exists = idx_left < len(arr) and arr[idx_left] == 4`} />
+
+              <CodeBlock label="monotonic stack (next greater element)" code={`# Finds next greater element for every index in O(n)
+stack = []  # Stores indices
+result = [-1] * len(nums)
+
+for i, num in enumerate(nums):
+    while stack and nums[stack[-1]] < num:
+        prev_idx = stack.pop()
+        result[prev_idx] = num
+    stack.append(i)`} />
+
+              <CodeBlock label="union-find (path compression + rank)" code={`class UnionFind:
+    def __init__(self, n):
+        self.parent = list(range(n))
+        self.rank = [1] * n
+
+    def find(self, x):
+        if self.parent[x] != x:
+            self.parent[x] = self.find(self.parent[x])  # Compression
+        return self.parent[x]
+
+    def union(self, x, y):
+        rx, ry = self.find(x), self.find(y)
+        if rx == ry: return False
+        if self.rank[rx] < self.rank[ry]: rx, ry = ry, rx
+        self.parent[ry] = rx
+        self.rank[rx] += self.rank[ry]
+        return True`} />
+
+              <CodeBlock label="matrix BFS / flood fill" code={`from collections import deque
+
+queue = deque([(start_r, start_c)])
+seen = {(start_r, start_c)}
+DIRECTIONS = ((0, 1), (1, 0), (0, -1), (-1, 0))
+
 while queue:
-    row, col = queue.popleft()
-    for dr, dc in directions:
-        nr, nc = row + dr, col + dc
-        if (0 <= nr < rows and 0 <= nc < cols
-                and (nr, nc) not in seen and is_open(nr, nc)):
+    r, c = queue.popleft()
+    for dr, dc in DIRECTIONS:
+        nr, nc = r + dr, c + dc
+        if 0 <= nr < rows and 0 <= nc < cols and (nr, nc) not in seen:
             seen.add((nr, nc))
-            queue.append((nr, nc))
+            queue.append((nr, nc))`} />
 
-# Time: O(rows × cols) · Space: O(rows × cols)`} />
-            <CodeBlock label="adjacency list + graph DFS" code={`graph = [[] for _ in range(nodes)]
-for source, target in edges:
-    graph[source].append(target)
+              <CodeBlock label="topological sort (Kahn's algorithm)" code={`from collections import deque
 
-seen = set()
-def dfs(node):
-    if node in seen:
-        return
-    seen.add(node)
-    for neighbor in graph[node]:
-        dfs(neighbor)
+graph = [[] for _ in range(n)]
+indegree = [0] * n
+for u, v in edges:
+    graph[u].append(v)
+    indegree[v] += 1
 
-# Adjacency list: O(V + E) space
-# DFS: O(V + E) time, O(V) visited + call stack` } />
-            <CodeBlock label="undirected graph / connected components" code={`def count_components(nodes, edges):
-    graph = [[] for _ in range(nodes)]
-    for a, b in edges:
-        graph[a].append(b)
-        graph[b].append(a)
-
-    seen = set()
-    components = 0
-    for node in range(nodes):
-        if node not in seen:
-            components += 1
-            stack = [node]
-            seen.add(node)
-            while stack:
-                current = stack.pop()
-                for neighbor in graph[current]:
-                    if neighbor not in seen:
-                        seen.add(neighbor)
-                        stack.append(neighbor)
-    return components`} />
-            <CodeBlock label="binary tree DFS" code={`def preorder(node):
-    if node is None:
-        return
-    visit(node.val)
-    preorder(node.left)
-    preorder(node.right)
-
-# Inorder: left → node → right (sorted BST order)
-# Postorder: left → right → node (delete / aggregate children)
-# Time: O(n) · Space: O(h), where h is tree height`} />
-            <CodeBlock label="binary tree BFS by level" code={`from collections import deque
-
-levels = []
-queue = deque([root] if root else [])
-while queue:
-    current_level = []
-    for _ in range(len(queue)):
-        node = queue.popleft()
-        current_level.append(node.val)
-        if node.left:
-            queue.append(node.left)
-        if node.right:
-            queue.append(node.right)
-    levels.append(current_level)
-
-# Time: O(n) · Space: O(width)`} />
-            <CodeBlock label="topological sort — prerequisites" code={`from collections import deque
-
-graph = [[] for _ in range(courses)]
-indegree = [0] * courses
-for course, prerequisite in prerequisites:
-    graph[prerequisite].append(course)
-    indegree[course] += 1
-
-queue = deque(i for i, degree in enumerate(indegree) if degree == 0)
+queue = deque([i for i in range(n) if indegree[i] == 0])
 order = []
 while queue:
     node = queue.popleft()
@@ -1105,65 +1170,13 @@ while queue:
     for neighbor in graph[node]:
         indegree[neighbor] -= 1
         if indegree[neighbor] == 0:
-            queue.append(neighbor)
-
-# A cycle exists when len(order) < courses.
-# Time: O(V + E) · Space: O(V + E)`} />
+            queue.append(neighbor)`} />
+            </div>
           </div>
-          <div className="overflow-x-auto rounded-xl border border-[var(--border)]/50 bg-[var(--bg-card)]">
-            <table className="w-full text-xs min-w-[620px]">
-              <thead>
-                <tr className="bg-[var(--bg-subtle)]/60 border-b border-[var(--border)]/40">
-                  <th className="text-left px-4 py-2.5 font-semibold text-[var(--text-main)]">Structure</th>
-                  <th className="text-left px-4 py-2.5 font-semibold text-[var(--text-main)]">Representation</th>
-                  <th className="text-left px-4 py-2.5 font-semibold text-[var(--text-main)]">Typical pattern</th>
-                  <th className="text-left px-4 py-2.5 font-semibold text-[var(--text-main)]">Cost</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-[var(--border)]/30">
-                {[
-                  ['Matrix', 'list[list[int]]', 'Nested loops, directions, flood fill', 'O(R × C)'],
-                  ['Graph', 'list[list[int]]', 'DFS/BFS with visited set', 'O(V + E)'],
-                  ['Weighted graph', 'list[list[tuple]]', 'Dijkstra with heapq', 'O((V + E) log V)'],
-                  ['Tree', 'node.left / node.right', 'Recursive DFS or iterative stack', 'O(n)'],
-                  ['BST', 'left < node < right', 'Inorder traversal gives sorted order', 'O(h) search'],
-                  ['DAG', 'adjacency list + indegree', 'Kahn topological sort', 'O(V + E)'],
-                  ['Union-Find', 'parent[] + rank/size[]', 'Connectivity and cycle detection', '≈ O(1) amortized'],
-                ].map(([structure, representation, pattern, cost], i) => (
-                  <tr key={i} className={i % 2 === 0 ? 'bg-[var(--bg-card)]' : 'bg-[var(--bg-subtle)]/30'}>
-                    <td className="px-4 py-2 font-semibold text-[var(--text-main)]">{structure}</td>
-                    <td className="px-4 py-2 font-mono text-[var(--text-main)]">{representation}</td>
-                    <td className="px-4 py-2 text-[var(--text-muted)]">{pattern}</td>
-                    <td className="px-4 py-2 font-mono text-emerald-600 dark:text-emerald-400 font-semibold whitespace-nowrap">{cost}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-          <div className="grid lg:grid-cols-2 gap-3">
-            <CodeBlock label="frequency map + grouping" code={`from collections import Counter, defaultdict
 
-counts = Counter(nums)
-groups = defaultdict(list)
-for word in words:
-    groups[tuple(sorted(word))].append(word)
-
-# Counter: counts[x], counts.most_common(k)
-# defaultdict: missing keys receive a default value`} />
-            <CodeBlock label="heap + deque patterns" code={`from collections import deque
-import heapq
-
-queue = deque([start])
-heap = []
-heapq.heappush(heap, (distance, node))
-distance, node = heapq.heappop(heap)
-
-# deque.popleft() is O(1); list.pop(0) is O(n).
-# Python's heapq is a min-heap; negate values for max-heap behavior.`} />
-          </div>
           <Callout type="tip">
-            In an interview, always state the assumption behind a cost: dictionary and set lookups
-            are average O(1), Python sorting is O(n log n), and a list insertion at the front is O(n).
+            In Python interviews, always explain your complexity assumptions: dictionary and set lookups
+            are average O(1), `heapq` push/pop are O(log k), and `deque.popleft()` is O(1) compared to `list.pop(0)` which is O(n).
           </Callout>
         </SectionCard>
 
