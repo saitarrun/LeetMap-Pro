@@ -67,62 +67,53 @@ export const Header: React.FC<HeaderProps> = ({ onOpenSync, syncStatus }) => {
             </span>
           </Link>
 
-          {/* Apple Primary Segmented Navigation */}
-          <nav className="flex items-center p-1 rounded-2xl bg-[var(--bg-subtle)] border border-[var(--border)] text-xs font-semibold shadow-2xs">
+          {/* Primary Minimal Navigation */}
+          <nav className="flex items-center gap-0.5 text-xs">
             <Link
               href="/"
-              className={`apple-press flex items-center gap-1.5 px-3 py-1.5 rounded-xl transition-all ${
+              className={`apple-press px-3 py-1.5 rounded-xl transition-colors ${
                 pathname === '/' || pathname.startsWith('/company')
-                  ? 'bg-[var(--bg-card)] text-[var(--text-main)] shadow-xs font-bold'
-                  : 'text-[var(--text-muted)] hover:text-[var(--text-main)]'
+                  ? 'bg-[var(--bg-subtle)] text-[var(--text-main)] font-semibold'
+                  : 'text-[var(--text-muted)] hover:text-[var(--text-main)] font-medium'
               }`}
             >
-              <Building2 className="w-3.5 h-3.5 opacity-80" />
-              <span>Companies</span>
-              <span className="font-mono text-[10px] text-[var(--text-light)]">{syncStatus?.companiesCount ?? '—'}</span>
+              Companies
             </Link>
 
             <Link
               href="/patterns"
-              className={`apple-press flex items-center gap-1.5 px-3 py-1.5 rounded-xl transition-all ${
+              className={`apple-press px-3 py-1.5 rounded-xl transition-colors ${
                 pathname.startsWith('/patterns')
-                  ? 'bg-[var(--bg-card)] text-[var(--text-main)] shadow-xs font-bold'
-                  : 'text-[var(--text-muted)] hover:text-[var(--text-main)]'
+                  ? 'bg-[var(--bg-subtle)] text-[var(--text-main)] font-semibold'
+                  : 'text-[var(--text-muted)] hover:text-[var(--text-main)] font-medium'
               }`}
             >
-              <GitBranch className="w-3.5 h-3.5 opacity-80" />
-              <span>Patterns</span>
-              <span className="font-mono text-[10px] text-[var(--text-light)]">22</span>
+              Patterns
             </Link>
 
             <Link
               href="/sql"
-              className={`apple-press flex items-center gap-1.5 px-3 py-1.5 rounded-xl transition-all ${
+              className={`apple-press px-3 py-1.5 rounded-xl transition-colors ${
                 pathname.startsWith('/sql')
-                  ? 'bg-[var(--bg-card)] text-[var(--text-main)] shadow-xs font-bold'
-                  : 'text-[var(--text-muted)] hover:text-[var(--text-main)]'
+                  ? 'bg-[var(--bg-subtle)] text-[var(--text-main)] font-semibold'
+                  : 'text-[var(--text-muted)] hover:text-[var(--text-main)] font-medium'
               }`}
             >
-              <Database className="w-3.5 h-3.5 opacity-80" />
-              <span>SQL</span>
-              <span className="font-mono text-[10px] text-[var(--text-light)]">73</span>
+              SQL
             </Link>
           </nav>
         </div>
 
         {/* Right Actions */}
-        <div className="flex items-center gap-1.5 sm:gap-2">
+        <div className="flex items-center gap-1 sm:gap-1.5">
           {/* Realtime Sync Badge Button */}
           <button
             onClick={onOpenSync}
-            className="apple-press flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium border border-[var(--border)] bg-[var(--bg-card)]/80 backdrop-blur-sm text-[var(--text-main)] shadow-xs hover:border-[var(--text-muted)]/30 cursor-pointer"
-            title="View Realtime Multi-Source Sync Status"
+            className="apple-press flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-xs text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--bg-subtle)] transition-colors cursor-pointer"
+            title="Multi-source verified dataset"
           >
-            <RefreshCw className="w-3 h-3 text-emerald-500 animate-[spin_12s_linear_infinite]" />
-            <span className="hidden md:inline font-normal text-[var(--text-muted)]">Live:</span>
-            <span className="font-mono text-emerald-600 dark:text-emerald-400 font-semibold text-[11px]">
-              {syncStatus?.companiesCount ? `${syncStatus.companiesCount} cos` : 'Loading'}
-            </span>
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+            <span className="text-[11px] font-medium">Live</span>
           </button>
 
           {/* User Github Profile */}

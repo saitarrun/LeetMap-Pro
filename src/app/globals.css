@@ -1,27 +1,27 @@
 @import "tailwindcss";
 
 :root {
-  --bg-page: #f7f7f5;
-  --bg-card: #fffefd;
-  --bg-card-glass: rgba(255, 254, 253, 0.78);
-  --bg-subtle: #f0f0ed;
-  --bg-hover: #e8e8e4;
-  --border: rgba(0, 0, 0, 0.12);
-  --border-subtle: rgba(0, 0, 0, 0.06);
-  --specular-border: rgba(255, 255, 255, 0.8);
-  --text-main: #1d1d1f;
-  --text-muted: #4f5158;
-  --text-light: #686a72;
+  --bg-page: #fafafa;
+  --bg-card: #ffffff;
+  --bg-card-glass: rgba(255, 255, 255, 0.85);
+  --bg-subtle: #f4f4f5;
+  --bg-hover: #ececee;
+  --border: rgba(0, 0, 0, 0.08);
+  --border-subtle: rgba(0, 0, 0, 0.04);
+  --specular-border: rgba(255, 255, 255, 0.6);
+  --text-main: #18181b;
+  --text-muted: #71717a;
+  --text-light: #a1a1aa;
   
-  --diff-easy-bg: rgba(52, 199, 89, 0.12);
-  --diff-easy-text: #248a3d;
-  --diff-medium-bg: rgba(255, 149, 0, 0.12);
-  --diff-medium-text: #b25000;
-  --diff-hard-bg: rgba(255, 59, 48, 0.12);
-  --diff-hard-text: #d70015;
+  --diff-easy-bg: rgba(22, 163, 74, 0.08);
+  --diff-easy-text: #16a34a;
+  --diff-medium-bg: rgba(217, 119, 6, 0.08);
+  --diff-medium-text: #d97706;
+  --diff-hard-bg: rgba(225, 29, 72, 0.08);
+  --diff-hard-text: #e11d48;
 
-  --accent: #0071e3;
-  --accent-hover: #0077ed;
+  --accent: #18181b;
+  --accent-hover: #27272a;
 
   /* Apple fluid spring bezier & strong ease-out */
   --ease-apple-spring: cubic-bezier(0.16, 1, 0.3, 1);
@@ -29,27 +29,27 @@
 }
 
 [data-theme="dark"] {
-  --bg-page: #0b0b0c;
-  --bg-card: #171719;
-  --bg-card-glass: rgba(23, 23, 25, 0.78);
-  --bg-subtle: #202023;
-  --bg-hover: #2a2a2e;
-  --border: rgba(255, 255, 255, 0.1);
-  --border-subtle: rgba(255, 255, 255, 0.05);
-  --specular-border: rgba(255, 255, 255, 0.12);
-  --text-main: #f5f5f7;
-  --text-muted: #b1b1b6;
-  --text-light: #98989f;
+  --bg-page: #09090b;
+  --bg-card: #111113;
+  --bg-card-glass: rgba(17, 17, 19, 0.85);
+  --bg-subtle: #18181b;
+  --bg-hover: #222225;
+  --border: rgba(255, 255, 255, 0.08);
+  --border-subtle: rgba(255, 255, 255, 0.04);
+  --specular-border: rgba(255, 255, 255, 0.05);
+  --text-main: #fafafa;
+  --text-muted: #a1a1aa;
+  --text-light: #71717a;
 
-  --diff-easy-bg: rgba(48, 209, 88, 0.15);
-  --diff-easy-text: #30d158;
-  --diff-medium-bg: rgba(255, 159, 10, 0.15);
-  --diff-medium-text: #ff9f0a;
-  --diff-hard-bg: rgba(255, 69, 58, 0.15);
-  --diff-hard-text: #ff453a;
+  --diff-easy-bg: rgba(74, 222, 128, 0.1);
+  --diff-easy-text: #4ade80;
+  --diff-medium-bg: rgba(251, 191, 36, 0.1);
+  --diff-medium-text: #fbbf24;
+  --diff-hard-bg: rgba(251, 113, 133, 0.1);
+  --diff-hard-text: #fb7185;
 
-  --accent: #2997ff;
-  --accent-hover: #0071e3;
+  --accent: #fafafa;
+  --accent-hover: #e4e4e7;
 }
 
 body {
@@ -161,20 +161,22 @@ kbd,
 }
 
 .apple-card {
-  transition: transform 200ms var(--ease-apple-spring), box-shadow 200ms var(--ease-apple-spring), border-color 200ms var(--ease-apple-spring);
-  will-change: transform;
-  box-shadow: inset 0 1px 0 0 var(--specular-border);
+  transition: border-color 150ms ease, background-color 150ms ease;
+  will-change: border-color;
+  box-shadow: none;
 }
 
 @media (hover: hover) and (pointer: fine) {
   .apple-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 12px 30px -10px rgba(0, 0, 0, 0.15), inset 0 1px 0 0 var(--specular-border);
+    border-color: rgba(0, 0, 0, 0.2);
+  }
+  [data-theme="dark"] .apple-card:hover {
+    border-color: rgba(255, 255, 255, 0.2);
   }
 }
 
 .apple-card:active {
-  transform: translateY(0px) scale(0.985);
+  transform: scale(0.99);
 }
 
 /* Apple Frosted Glass with Vibrancy */

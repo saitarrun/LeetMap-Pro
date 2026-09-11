@@ -106,18 +106,17 @@ export const UserProfileMenu: React.FC = () => {
     <div className="relative flex h-8 shrink-0 items-center gap-1.5 sm:gap-2" ref={menuRef}>
       <button
         onClick={() => setIsActivityOpen(true)}
-        className="apple-press flex h-8 items-center gap-1.5 rounded-full border border-amber-500/25 bg-amber-500/10 px-2.5 text-xs font-semibold text-amber-600 shadow-2xs dark:text-amber-400 cursor-pointer"
+        className="apple-press flex h-7 items-center gap-1.5 rounded-lg px-2 text-xs font-medium text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--bg-subtle)] transition-colors cursor-pointer"
         title="View LeetCode streak and solve activity"
         aria-label="View LeetCode solve activity"
       >
-        <Flame className="h-3.5 w-3.5" />
-        <span>{activityStats.currentStreak}d</span>
-        <span className="hidden text-[11px] font-normal text-[var(--text-muted)] sm:inline">· {activityStats.totalSolved} solved</span>
+        <Flame className="h-3.5 w-3.5 text-amber-500" />
+        <span className="font-mono text-[11px] font-semibold text-[var(--text-main)]">{activityStats.currentStreak}d</span>
       </button>
 
       <button
         onClick={() => setIsOpen((open) => !open)}
-        className="apple-press relative block h-8 w-8 shrink-0 overflow-hidden rounded-full border border-black/10 transition-transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-[var(--border)] dark:border-white/15 cursor-pointer"
+        className="apple-press relative block h-7 w-7 shrink-0 overflow-hidden rounded-full border border-[var(--border)] transition-opacity hover:opacity-90 focus:outline-none cursor-pointer"
         aria-label="User account menu"
         aria-expanded={isOpen}
       >

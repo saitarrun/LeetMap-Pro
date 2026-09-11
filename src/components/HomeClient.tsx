@@ -101,53 +101,40 @@ export const HomeClient: React.FC<HomeClientProps> = ({
       <Header onOpenSync={() => setIsSyncModalOpen(true)} syncStatus={syncStatus} />
 
       <main className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 py-10 w-full space-y-8">
-        {/* Apple Centered Hero */}
-        <section className="text-center max-w-2xl mx-auto space-y-3.5 pt-2">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-[var(--bg-subtle)] text-[var(--text-muted)] border border-[var(--border)] shadow-2xs">
-            <Code2 className="w-3.5 h-3.5 opacity-80" />
-            <span>DSA & Algorithmic Interview Track</span>
-          </div>
-
+        {/* Minimal Hero */}
+        <section className="text-center max-w-2xl mx-auto space-y-3 pt-2">
           <h1 className="text-3xl sm:text-5xl font-bold tracking-tight text-[var(--text-main)]">
             Company-wise LeetCode DSA
           </h1>
 
-          <p className="text-sm sm:text-base text-[var(--text-muted)] leading-relaxed font-normal">
-            Coding interview problems top tech & finance companies actually ask, ranked by frequency and recency.
+          <p className="text-sm sm:text-base text-[var(--text-muted)] leading-relaxed font-normal max-w-xl mx-auto">
+            Interview problems top tech & quant firms actually ask, ranked by frequency and recency.
           </p>
 
-          {/* Apple Pill Metrics */}
-          <div className="flex flex-wrap items-center justify-center gap-2.5 pt-2">
-            <div className="flex items-center gap-2 text-xs font-medium text-[var(--text-main)] bg-[var(--bg-card)] border border-[var(--border)] px-3.5 py-1.5 rounded-full shadow-xs">
-              <Building2 className="w-3.5 h-3.5 text-[var(--text-muted)]" />
-              <span><strong>{companies.length}</strong> companies</span>
-            </div>
-
-            <div className="flex items-center gap-2 text-xs font-medium text-[var(--text-main)] bg-[var(--bg-card)] border border-[var(--border)] px-3.5 py-1.5 rounded-full shadow-xs">
-              <Database className="w-3.5 h-3.5 text-[var(--text-muted)]" />
-              <span>
-                <strong>{syncStatus?.uniqueProblemsCount?.toLocaleString() || '—'}</strong> problems
-              </span>
-            </div>
-
-            <div className="flex items-center gap-2 text-xs font-medium text-[var(--text-main)] bg-[var(--bg-card)] border border-[var(--border)] px-3.5 py-1.5 rounded-full shadow-xs">
-              <Trophy className="w-3.5 h-3.5 text-amber-500" />
-              <span><strong>{userSolvedCount}</strong> solved</span>
-            </div>
+          <div className="flex items-center justify-center gap-2 pt-1 text-xs text-[var(--text-muted)] font-normal">
+            <span>{companies.length} companies</span>
+            <span className="opacity-30">·</span>
+            <span>{syncStatus?.uniqueProblemsCount?.toLocaleString() || '3,400+'} questions</span>
+            {userSolvedCount > 0 && (
+              <>
+                <span className="opacity-30">·</span>
+                <span className="text-emerald-600 dark:text-emerald-400 font-medium">{userSolvedCount} solved</span>
+              </>
+            )}
           </div>
         </section>
 
-        {/* Apple Spotlight Search & Controls */}
-        <section className="max-w-2xl mx-auto space-y-4">
+        {/* Minimal Search & Controls */}
+        <section className="max-w-2xl mx-auto space-y-3">
           <div className="relative group">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--text-light)] group-focus-within:text-[var(--text-main)] transition-colors" />
+            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--text-light)] group-focus-within:text-[var(--text-main)] transition-colors" />
             <input
               ref={searchInputRef}
               type="search"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder={`Search ${companies.length} companies... (Google, Citadel, Jane Street, Stripe)`}
-              className="w-full pl-11 pr-12 py-3 rounded-2xl text-sm bg-[var(--bg-card)] border border-[var(--border)] text-[var(--text-main)] placeholder:text-[var(--text-light)] shadow-xs focus:outline-none focus:border-[var(--text-muted)]/40 focus:ring-4 focus:ring-[var(--border)]/40 transition-[box-shadow,border-color] duration-150"
+              placeholder={`Search ${companies.length} companies...`}
+              className="w-full pl-10 pr-9 py-2.5 rounded-xl text-sm bg-[var(--bg-subtle)]/60 border border-[var(--border)] text-[var(--text-main)] placeholder:text-[var(--text-light)] focus:bg-[var(--bg-card)] focus:outline-none focus:border-[var(--text-muted)]/40 transition-colors"
             />
             {searchQuery ? (
               <button
@@ -156,23 +143,23 @@ export const HomeClient: React.FC<HomeClientProps> = ({
                   setSearchQuery('');
                   searchInputRef.current?.focus();
                 }}
-                className="apple-press apple-pop-in absolute right-3.5 top-1/2 -translate-y-1/2 p-1 rounded-full text-[var(--text-light)] hover:text-[var(--text-main)] hover:bg-[var(--bg-subtle)] transition-colors cursor-pointer"
+                className="apple-press absolute right-3 top-1/2 -translate-y-1/2 p-1 rounded-full text-[var(--text-light)] hover:text-[var(--text-main)] transition-colors cursor-pointer"
                 title="Clear search (Esc)"
               >
                 <X className="w-3.5 h-3.5" />
               </button>
             ) : (
-              <kbd className="absolute right-3.5 top-1/2 -translate-y-1/2 px-2 py-0.5 rounded-lg text-[10px] font-mono text-[var(--text-light)] border border-[var(--border)] bg-[var(--bg-subtle)]">
+              <kbd className="absolute right-3 top-1/2 -translate-y-1/2 px-1.5 py-0.5 rounded text-[10px] font-mono text-[var(--text-light)] bg-[var(--bg-subtle)]">
                 /
               </kbd>
             )}
           </div>
 
-          {/* Segmented Category Filter Bar */}
-          <div className="flex flex-col gap-3 text-xs">
-            <div className="flex w-full flex-nowrap items-center gap-1 overflow-x-auto p-1 rounded-2xl bg-[var(--bg-subtle)] border border-[var(--border)]">
+          {/* Minimal Category Tabs */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 text-xs pt-1">
+            <div className="flex items-center gap-1 overflow-x-auto pb-1 sm:pb-0 scrollbar-none">
               {[
-                { key: 'ALL', label: 'All Companies' },
+                { key: 'ALL', label: 'All' },
                 {
                   key: 'PINNED',
                   label: `Pinned${pinnedSet.size > 0 ? ` (${pinnedSet.size})` : ''}`,
@@ -185,15 +172,15 @@ export const HomeClient: React.FC<HomeClientProps> = ({
                 <button
                   key={tab.key}
                   onClick={() => setCategoryFilter(tab.key as typeof categoryFilter)}
-                  className={`apple-press shrink-0 whitespace-nowrap px-3 py-1.5 rounded-xl font-medium transition-all cursor-pointer flex items-center gap-1.5 justify-center sm:flex-1 ${
+                  className={`apple-press shrink-0 whitespace-nowrap px-3 py-1.5 rounded-lg font-medium transition-colors cursor-pointer flex items-center gap-1.5 ${
                     categoryFilter === tab.key
-                      ? 'bg-[var(--bg-card)] text-[var(--text-main)] shadow-xs font-semibold'
+                      ? 'bg-[var(--bg-subtle)] text-[var(--text-main)] font-semibold'
                       : 'text-[var(--text-muted)] hover:text-[var(--text-main)]'
                   }`}
                 >
                   {tab.isPinnedTab && (
                     <Pin
-                      className={`w-3 h-3 transition-transform ${
+                      className={`w-3 h-3 ${
                         categoryFilter === 'PINNED' || pinnedSet.size > 0
                           ? 'fill-amber-500 text-amber-500 rotate-45'
                           : 'text-current'
@@ -205,33 +192,33 @@ export const HomeClient: React.FC<HomeClientProps> = ({
               ))}
             </div>
 
-            <div className="flex items-center gap-2 self-end">
-              <span className="text-[var(--text-muted)] text-[11px]">Sort by:</span>
+            <div className="flex items-center gap-1.5 self-end sm:self-auto shrink-0 text-xs">
+              <span className="text-[var(--text-muted)] text-[11px]">Sort:</span>
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value as typeof sortBy)}
-                className="apple-press bg-[var(--bg-card)] border border-[var(--border)] text-[var(--text-main)] px-3 py-1.5 rounded-xl text-xs focus:outline-none cursor-pointer shadow-2xs"
+                className="bg-transparent text-[var(--text-main)] text-xs focus:outline-none cursor-pointer font-medium"
               >
                 <option value="total">Most Questions</option>
                 <option value="name">Name (A-Z)</option>
-                <option value="hard">Most Hard Questions</option>
+                <option value="hard">Most Hard</option>
               </select>
             </div>
           </div>
         </section>
 
         {/* Results Counter */}
-        <div className="flex items-center justify-between text-xs text-[var(--text-muted)] px-1">
-          <span>Showing <strong>{filteredCompanies.length}</strong> companies</span>
+        <div className="flex items-center justify-between text-xs text-[var(--text-muted)] px-0.5">
+          <span>{filteredCompanies.length} companies</span>
           {(searchQuery || categoryFilter !== 'ALL') && (
             <button
               onClick={() => {
                 setSearchQuery('');
                 setCategoryFilter('ALL');
               }}
-              className="text-[var(--text-main)] underline hover:text-[var(--text-muted)] cursor-pointer transition-colors"
+              className="text-[var(--text-muted)] hover:text-[var(--text-main)] underline cursor-pointer transition-colors"
             >
-              Reset filters
+              Reset
             </button>
           )}
         </div>
