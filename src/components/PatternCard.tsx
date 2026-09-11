@@ -59,16 +59,28 @@ const ICON_MAP: Record<string, LucideIcon> = {
 interface PatternCardProps {
   pattern: PatternSummary;
   solvedCount?: number;
+  isHighlighted?: boolean;
+  id?: string;
 }
 
-export const PatternCard: React.FC<PatternCardProps> = ({ pattern, solvedCount = 0 }) => {
+export const PatternCard: React.FC<PatternCardProps> = ({
+  pattern,
+  solvedCount = 0,
+  isHighlighted = false,
+  id,
+}) => {
   const IconComponent = ICON_MAP[pattern.icon] || GitBranch;
   const percentSolved = pattern.total > 0 ? Math.min(100, Math.round((solvedCount / pattern.total) * 100)) : 0;
 
   return (
     <Link
+      id={id}
       href={`/patterns/${pattern.slug}`}
-      className="apple-card group relative flex flex-col justify-between p-4 sm:p-5 rounded-2xl border border-[var(--border)] bg-[var(--bg-card)] hover:border-[var(--text-muted)]/30 select-none transition-all shadow-xs"
+      className={`apple-card group relative flex flex-col justify-between p-4 sm:p-5 rounded-2xl border bg-[var(--bg-card)] select-none transition-all duration-300 ${
+        isHighlighted
+          ? 'border-emerald-500 ring-2 ring-emerald-500/70 shadow-[0_0_24px_rgba(16,185,129,0.22)] scale-[1.015]'
+          : 'border-[var(--border)] hover:border-[var(--text-muted)]/30 shadow-xs'
+      }`}
     >
       <div className="space-y-3">
         {/* Header row: Icon + Category Badge */}

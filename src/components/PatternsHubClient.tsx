@@ -69,6 +69,7 @@ export const PatternsHubClient: React.FC<PatternsHubClientProps> = ({
   const router = useRouter();
   const searchParams = useSearchParams();
   const categoryParam = searchParams?.get('category') || searchParams?.get('group') || searchParams?.get('filter');
+  const patternParam = searchParams?.get('pattern') || null;
 
   const [searchQuery, setSearchQuery] = useState('');
   const [internalCategory, setInternalCategory] = useState<CategoryFilterType>('ALL');
@@ -80,6 +81,19 @@ export const PatternsHubClient: React.FC<PatternsHubClientProps> = ({
     ? normalizeCategory(categoryParam)
     : internalCategory;
 
+  // Auto-scroll to target pattern card when navigating directly from roadmap
+  useEffect(() => {
+    if (patternParam) {
+      const el = document.getElementById(`pattern-${patternParam}`);
+      if (el) {
+        const timer = setTimeout(() => {
+          el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }, 150);
+        return () => clearTimeout(timer);
+      }
+    }
+  }, [patternParam, categoryFilter]);
+
   const handleCategoryChange = (newCat: CategoryFilterType) => {
     setInternalCategory(newCat);
     const params = new URLSearchParams(searchParams?.toString() || '');
@@ -90,6 +104,8 @@ export const PatternsHubClient: React.FC<PatternsHubClientProps> = ({
     } else {
       params.set('category', newCat);
     }
+    // Clear pattern target when manually switching categories
+    params.delete('pattern');
     const query = params.toString();
     router.replace(`/patterns${query ? `?${query}` : ''}`, { scroll: false });
   };
@@ -131,11 +147,16 @@ export const PatternsHubClient: React.FC<PatternsHubClientProps> = ({
         return true;
       })
       .sort((a, b) => {
+        // Elevate targeted pattern to the very top for direct roadmap clarity
+        if (patternParam) {
+          if (a.slug === patternParam) return -1;
+          if (b.slug === patternParam) return 1;
+        }
         if (sortBy === 'name') return a.name.localeCompare(b.name);
         if (sortBy === 'hard') return b.hard - a.hard;
         return b.total - a.total;
       });
-  }, [patterns, searchQuery, categoryFilter, sortBy]);
+  }, [patterns, searchQuery, categoryFilter, sortBy, patternParam]);
 
   const totalPatterns = patterns.length;
   const totalQuestionsMapped = useMemo(() => {
@@ -318,7 +339,15 @@ export const PatternsHubClient: React.FC<PatternsHubClientProps> = ({
             filteredPatterns.map((pattern) => {
               const slugs = patternProblems[pattern.slug];
               const count = slugs && solvedSet.size > 0 ? slugs.filter((id) => solvedSet.has(id)).length : 0;
-              return <PatternCard key={pattern.slug} pattern={pattern} solvedCount={count} />;
+              return (
+                <PatternCard
+                  key={pattern.slug}
+                  id={`pattern-${pattern.slug}`}
+                  pattern={pattern}
+                  solvedCount={count}
+                  isHighlighted={pattern.slug === patternParam}
+                />
+              );
             })
           )}
         </section>

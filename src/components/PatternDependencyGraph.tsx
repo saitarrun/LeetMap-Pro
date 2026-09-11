@@ -425,14 +425,18 @@ export function PatternDependencyGraph({
                   const isLongTitle = node.title.length > 18;
                   const fontSize = isLongTitle ? 11.5 : 12.5;
 
+                    const targetUrl = node.id === 'arrays-hashing'
+                      ? `/patterns?category=${encodeURIComponent(node.category)}`
+                      : `/patterns?category=${encodeURIComponent(node.category)}&pattern=${node.slug}`;
+
                     return (
                     <a
                       key={node.id}
-                      href={`/patterns?category=${encodeURIComponent(node.category)}`}
+                      href={targetUrl}
                       onClick={(e) => {
                         if (!e.metaKey && !e.ctrlKey && e.button === 0) {
                           e.preventDefault();
-                          router.push(`/patterns?category=${encodeURIComponent(node.category)}`);
+                          router.push(targetUrl);
                         }
                       }}
                       className="cursor-pointer group select-none outline-none"
@@ -537,10 +541,14 @@ export function PatternDependencyGraph({
                 </span>
               )}
               <Link
-                href={`/patterns?category=${encodeURIComponent(hoveredNode.category)}`}
+                href={
+                  hoveredNode.id === 'arrays-hashing'
+                    ? `/patterns?category=${encodeURIComponent(hoveredNode.category)}`
+                    : `/patterns?category=${encodeURIComponent(hoveredNode.category)}&pattern=${hoveredNode.slug}`
+                }
                 className="apple-press inline-flex items-center gap-1 font-semibold text-emerald-600 dark:text-emerald-400 hover:underline cursor-pointer ml-1 text-xs"
               >
-                <span>View {hoveredNode.title} in Patterns ({hoveredNode.category})</span>
+                <span>Go to {hoveredNode.title} in Patterns Hub</span>
                 <ChevronRight className="w-3.5 h-3.5" />
               </Link>
             </div>
