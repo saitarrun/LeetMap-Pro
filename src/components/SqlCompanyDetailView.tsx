@@ -213,9 +213,9 @@ export const SqlCompanyDetailView: React.FC<SqlCompanyDetailViewProps> = ({ comp
         <span className="text-[var(--text-main)] font-medium">{company.name} SQL</span>
       </nav>
 
-      {/* Header Info Card */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-5 sm:p-6 rounded-3xl border border-[var(--border)] bg-[var(--bg-card)] shadow-xs">
-        <div className="flex items-center gap-3.5">
+      {/* Minimal Hero Header (Unboxed, matching Homepage) */}
+      <section className="text-center max-w-2xl mx-auto space-y-3 pt-1">
+        <div className="flex items-center justify-center gap-3">
           <div className="w-12 h-12 rounded-2xl bg-[var(--bg-subtle)] border border-[var(--border)] flex items-center justify-center shrink-0 overflow-hidden">
             {faviconUrl ? (
               <Image src={faviconUrl} alt="" width={26} height={26} className="w-6.5 h-6.5 object-contain" />
@@ -223,46 +223,34 @@ export const SqlCompanyDetailView: React.FC<SqlCompanyDetailViewProps> = ({ comp
               <span className="text-xs font-semibold text-[var(--text-muted)]">{initials}</span>
             )}
           </div>
-          <div>
-            <div className="flex flex-wrap items-center gap-2">
-              <h1 className="text-xl sm:text-2xl font-semibold text-[var(--text-main)] tracking-tight">
-                {company.name} SQL
-              </h1>
-              <span className="inline-flex items-center gap-1 text-[11px] text-[var(--text-muted)] font-normal">
-                <ShieldCheck className="w-3 h-3 text-emerald-500" />
-                <span>Verified</span>
-              </span>
-            </div>
-            <div className="flex flex-wrap items-center gap-1.5 mt-1 text-xs text-[var(--text-muted)]">
-              <span>{totalSqlCount} SQL queries</span>
-              <span className="opacity-30">·</span>
-              <span className="text-emerald-600 dark:text-emerald-400 font-medium">{sqlEasy} Easy</span>
-              <span className="opacity-30">·</span>
-              <span className="text-amber-600 dark:text-amber-400 font-medium">{sqlMed} Medium</span>
-              <span className="opacity-30">·</span>
-              <span className="text-rose-600 dark:text-rose-400 font-medium">{sqlHard} Hard</span>
-            </div>
-
-            {/* Track Switcher Pill */}
-            <div className="flex items-center p-0.5 rounded-xl bg-[var(--bg-subtle)] text-xs mt-2.5 self-start w-fit">
-              <Link
-                href={`/company/${company.slug}`}
-                className="apple-press px-2.5 py-1 rounded-lg text-[var(--text-muted)] hover:text-[var(--text-main)] transition-colors flex items-center gap-1.5 font-normal"
-              >
-                <Code2 className="w-3 h-3 opacity-70" />
-                <span>DSA ({company.total - totalSqlCount})</span>
-              </Link>
-              <span className="px-2.5 py-1 rounded-lg bg-[var(--bg-card)] text-[var(--text-main)] shadow-xs font-medium flex items-center gap-1.5">
-                <Database className="w-3 h-3 opacity-70" />
-                <span>SQL ({totalSqlCount})</span>
-              </span>
-            </div>
-          </div>
+          <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-[var(--text-main)]">
+            {company.name} SQL
+          </h1>
+          <span className="inline-flex items-center gap-1 text-[11px] text-[var(--text-muted)] font-normal">
+            <ShieldCheck className="w-3.5 h-3.5 text-emerald-500" />
+            <span>Verified</span>
+          </span>
         </div>
 
-        {/* Actions & Progress */}
-        <div className="flex flex-wrap items-center gap-2 self-start md:self-auto">
-          {/* Pin Button */}
+        {/* Breakdown Stats */}
+        <div className="flex items-center justify-center gap-2 pt-1 text-xs text-[var(--text-muted)] font-normal flex-wrap">
+          <span>{totalSqlCount} SQL queries</span>
+          <span className="opacity-30">·</span>
+          <span className="text-emerald-600 dark:text-emerald-400 font-medium">{sqlEasy} Easy</span>
+          <span className="opacity-30">·</span>
+          <span className="text-amber-600 dark:text-amber-400 font-medium">{sqlMed} Medium</span>
+          <span className="opacity-30">·</span>
+          <span className="text-rose-600 dark:text-rose-400 font-medium">{sqlHard} Hard</span>
+          {companySqlSolvedCount > 0 && (
+            <>
+              <span className="opacity-30">·</span>
+              <span className="text-emerald-600 dark:text-emerald-400 font-medium">{companySqlSolvedCount} solved</span>
+            </>
+          )}
+        </div>
+
+        {/* Discreet Actions (Pin & DSA Track Switcher) */}
+        <div className="flex items-center justify-center gap-2 pt-1">
           <button
             type="button"
             onClick={() => {
@@ -275,75 +263,53 @@ export const SqlCompanyDetailView: React.FC<SqlCompanyDetailViewProps> = ({ comp
                 toast.info(`Unpinned ${company.name}`);
               }
             }}
-            className={`apple-press flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-xs font-medium transition-colors cursor-pointer ${
+            className={`apple-press inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium transition-colors cursor-pointer ${
               isPinned
-                ? 'bg-amber-500/10 border-amber-500/20 text-amber-600 dark:text-amber-400'
-                : 'bg-[var(--bg-subtle)] border-transparent text-[var(--text-muted)] hover:text-[var(--text-main)]'
+                ? 'bg-amber-500/10 text-amber-600 dark:text-amber-400'
+                : 'text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--bg-subtle)]'
             }`}
-            title={isPinned ? `Unpin ${company.name}` : `Pin ${company.name} for quick access`}
+            title={isPinned ? `Unpin ${company.name}` : `Pin ${company.name}`}
           >
-            <Pin className={`w-3.5 h-3.5 ${isPinned ? 'fill-amber-500 rotate-45' : ''}`} />
+            <Pin className={`w-3 h-3 ${isPinned ? 'fill-amber-500 text-amber-500 rotate-45' : ''}`} />
             <span>{isPinned ? 'Pinned' : 'Pin'}</span>
           </button>
 
-          {/* Progress Card */}
-          <div className="flex items-center gap-2 bg-[var(--bg-subtle)] px-3 py-1.5 rounded-xl text-xs text-[var(--text-muted)]">
-            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
-            <span>
-              <span className="font-semibold text-[var(--text-main)]">{companySqlSolvedCount}</span>
-              <span className="opacity-50"> / </span>
-              <span>{totalSqlCount} solved</span>
-            </span>
-          </div>
+          <Link
+            href={`/company/${company.slug}`}
+            className="apple-press inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--bg-subtle)] transition-colors"
+          >
+            <Code2 className="w-3 h-3 opacity-70" />
+            <span>DSA ({company.total - totalSqlCount})</span>
+          </Link>
         </div>
-      </div>
+      </section>
 
-      {/* Recency Tabs: Minimal Segmented Control */}
-      <div className="flex items-center overflow-x-auto pb-1 scrollbar-none">
-        <div className="inline-flex p-0.5 rounded-xl bg-[var(--bg-subtle)] gap-0.5">
-          {sqlWindows.map((win, idx) => (
-            <button
-              key={win.key}
-              onClick={() => setActiveTab(idx)}
-              className={`apple-press flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap transition-colors cursor-pointer ${
-                activeTab === idx
-                  ? 'bg-[var(--bg-card)] text-[var(--text-main)] shadow-xs font-semibold'
-                  : 'text-[var(--text-muted)] hover:text-[var(--text-main)]'
-              }`}
-            >
-              <span>{win.name}</span>
-              <span className="text-[10px] font-mono text-[var(--text-light)]">
-                {win.count}
-              </span>
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {/* Controls Bar */}
-      <div className="flex flex-col lg:flex-row gap-3 items-stretch lg:items-center justify-between">
-        {/* Apple Spotlight Search Bar */}
-        <div className="relative flex-1 max-w-md group flex items-center h-10 rounded-full bg-[var(--bg-card)] border border-[var(--border)] hover:border-[var(--text-muted)]/30 focus-within:border-[var(--text-main)]/35 shadow-[0_1px_4px_rgba(0,0,0,0.02)] focus-within:shadow-[0_4px_16px_rgba(0,0,0,0.06)] dark:focus-within:shadow-[0_4px_16px_rgba(0,0,0,0.3)] transition-all duration-200">
-          <Search className="absolute left-3.5 w-3.5 h-3.5 text-[var(--text-light)] group-focus-within:text-[var(--text-main)] transition-colors pointer-events-none" />
+      {/* Apple Spotlight Search & Controls (Centered, identical to Homepage) */}
+      <section className="max-w-2xl mx-auto space-y-3">
+        <div className="relative group flex items-center h-12 rounded-full bg-[var(--bg-card)] border border-[var(--border)] hover:border-[var(--text-muted)]/30 focus-within:border-[var(--text-main)]/35 shadow-[0_2px_8px_rgba(0,0,0,0.03)] focus-within:shadow-[0_8px_24px_rgba(0,0,0,0.06)] dark:focus-within:shadow-[0_8px_24px_rgba(0,0,0,0.3)] transition-all duration-200">
+          <Search className="absolute left-4.5 w-4 h-4 text-[var(--text-light)] group-focus-within:text-[var(--text-main)] transition-colors pointer-events-none" />
           <input
             ref={searchInputRef}
             type="search"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder={`Filter ${company.name} SQL questions (#176, Second Highest...)`}
-            className="w-full h-full pl-9 pr-12 text-xs bg-transparent text-[var(--text-main)] placeholder:text-[var(--text-light)] focus:outline-none"
+            placeholder={`Filter ${company.name} SQL questions (#176, Second Highest...)...`}
+            className="w-full h-full pl-12 pr-14 text-sm bg-transparent text-[var(--text-main)] placeholder:text-[var(--text-light)] focus:outline-none"
           />
           {searchQuery ? (
             <button
               type="button"
-              onClick={() => setSearchQuery('')}
-              className="apple-press apple-pop-in absolute right-3 p-0.5 rounded-full text-[var(--text-light)] hover:text-[var(--text-main)] transition-colors cursor-pointer"
-              title="Clear search"
+              onClick={() => {
+                setSearchQuery('');
+                searchInputRef.current?.focus();
+              }}
+              className="apple-press absolute right-3.5 p-1 rounded-full text-[var(--text-light)] hover:text-[var(--text-main)] hover:bg-[var(--bg-subtle)] transition-colors cursor-pointer"
+              title="Clear search (Esc)"
             >
               <X className="w-3.5 h-3.5" />
             </button>
           ) : (
-            <div className="absolute right-3 flex items-center pointer-events-none">
+            <div className="absolute right-3.5 flex items-center pointer-events-none">
               <kbd className="hidden sm:inline-flex items-center px-1.5 py-0.5 rounded-full text-[10px] font-mono text-[var(--text-light)] bg-[var(--bg-subtle)] border border-[var(--border)] group-focus-within:opacity-40 transition-opacity">
                 ⌘K
               </kbd>
@@ -351,16 +317,70 @@ export const SqlCompanyDetailView: React.FC<SqlCompanyDetailViewProps> = ({ comp
           )}
         </div>
 
-        <div className="flex flex-wrap items-center gap-2">
-          {/* Difficulty Filter */}
-          <div className="inline-flex items-center p-0.5 rounded-xl bg-[var(--bg-subtle)] text-xs font-medium">
+        {/* Primary Filter Row: Recency & Inline Quick Actions */}
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 pt-1">
+          {/* Recency Tabs: Flat, borderless segmented control */}
+          <div className="flex items-center gap-1 overflow-x-auto scrollbar-none max-w-full">
+            {sqlWindows.map((win, idx) => (
+              <button
+                key={win.key}
+                onClick={() => setActiveTab(idx)}
+                className={`apple-press flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap transition-colors cursor-pointer ${
+                  activeTab === idx
+                    ? 'bg-[var(--bg-subtle)] text-[var(--text-main)] font-semibold'
+                    : 'text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--bg-subtle)]/50'
+                }`}
+              >
+                <span>{win.name}</span>
+                <span className={`text-[10px] font-mono ${activeTab === idx ? 'opacity-80' : 'text-[var(--text-light)]'}`}>
+                  {win.count}
+                </span>
+              </button>
+            ))}
+          </div>
+
+          {/* Quick Action Tools */}
+          <div className="flex items-center gap-1 self-end sm:self-auto shrink-0 text-xs">
+            <button
+              onClick={handleRandomProblem}
+              className="apple-press px-2 py-1 rounded-md text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--bg-subtle)] transition-colors flex items-center gap-1 cursor-pointer"
+              title="Open random SQL problem"
+            >
+              <Shuffle className="w-3.5 h-3.5" />
+              <span>Random</span>
+            </button>
+            <button
+              onClick={() => setHideSolved(!hideSolved)}
+              className={`apple-press px-2 py-1 rounded-md transition-colors flex items-center gap-1 cursor-pointer ${
+                hideSolved
+                  ? 'bg-[var(--bg-subtle)] text-[var(--text-main)] font-medium'
+                  : 'text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--bg-subtle)]'
+              }`}
+              title="Toggle solved problems"
+            >
+              <CheckCircle2 className="w-3.5 h-3.5" />
+              <span>Solved</span>
+            </button>
+            <button
+              onClick={handleExportCSV}
+              className="apple-press p-1.5 rounded-md text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--bg-subtle)] transition-colors cursor-pointer"
+              title="Export to CSV"
+            >
+              <Download className="w-3.5 h-3.5" />
+            </button>
+          </div>
+        </div>
+
+        {/* Secondary Filter Row: Difficulty */}
+        <div className="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-[var(--border)] text-xs">
+          <div className="flex items-center gap-1">
             {(['ALL', 'EASY', 'MEDIUM', 'HARD'] as const).map((diff) => (
               <button
                 key={diff}
                 onClick={() => setDifficultyFilter(diff)}
                 className={`apple-press px-2.5 py-1 rounded-lg transition-colors cursor-pointer ${
                   difficultyFilter === diff
-                    ? 'bg-[var(--bg-card)] text-[var(--text-main)] shadow-xs font-medium'
+                    ? 'bg-[var(--text-main)] text-[var(--bg-page)] font-medium shadow-xs'
                     : 'text-[var(--text-muted)] hover:text-[var(--text-main)]'
                 }`}
               >
@@ -368,42 +388,8 @@ export const SqlCompanyDetailView: React.FC<SqlCompanyDetailViewProps> = ({ comp
               </button>
             ))}
           </div>
-
-          {/* Random SQL */}
-          <button
-            onClick={handleRandomProblem}
-            className="apple-press flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-[var(--border)] bg-[var(--bg-card)] hover:bg-[var(--bg-subtle)] text-xs font-medium text-[var(--text-muted)] hover:text-[var(--text-main)] transition-colors cursor-pointer"
-            title="Open a random SQL problem in LeetCode"
-          >
-            <Shuffle className="w-3.5 h-3.5" />
-            <span>Random SQL</span>
-          </button>
-
-          {/* Hide Solved */}
-          <button
-            onClick={() => setHideSolved(!hideSolved)}
-            className={`apple-press flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-xs font-medium transition-colors cursor-pointer ${
-              hideSolved
-                ? 'border-[var(--border)] bg-[var(--bg-subtle)] text-[var(--text-main)] font-semibold shadow-xs'
-                : 'border-[var(--border)] bg-[var(--bg-card)] hover:bg-[var(--bg-subtle)] text-[var(--text-muted)]'
-            }`}
-            title="Hide problems you already solved"
-          >
-            <CheckCircle2 className="w-3.5 h-3.5" />
-            <span>Hide solved</span>
-          </button>
-
-          {/* Export CSV */}
-          <button
-            onClick={handleExportCSV}
-            className="apple-press p-2 rounded-xl border border-[var(--border)] bg-[var(--bg-card)] hover:bg-[var(--bg-subtle)] text-[var(--text-muted)] hover:text-[var(--text-main)] transition-colors cursor-pointer"
-            title="Export SQL list to CSV"
-            aria-label="Export to CSV"
-          >
-            <Download className="w-3.5 h-3.5" />
-          </button>
         </div>
-      </div>
+      </section>
 
       {/* SQL Table */}
       <div className="apple-enter border border-[var(--border)] rounded-3xl bg-[var(--bg-card)] overflow-hidden shadow-xs">
