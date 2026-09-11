@@ -233,37 +233,38 @@ export function PatternDependencyGraph({ patterns, solvedSet = new Set() }: Patt
         </div>
       </div>
 
-      {/* Main Graph Canvas Container */}
-      <div className="relative rounded-2xl border border-[var(--border)] bg-[#0d111a] dark:bg-[#0d111a] overflow-hidden shadow-sm">
-        <div className="overflow-x-auto [scrollbar-width:thin] py-8 px-4">
+      {/* Main Graph Canvas Container - Pure Dark Black Background */}
+      <div className="relative rounded-2xl border border-white/10 bg-[#000000] dark:bg-[#000000] overflow-hidden shadow-2xl">
+        <div className="overflow-x-auto [scrollbar-width:thin] py-8 px-4 bg-[#000000]">
           <div
-            className="min-w-[840px] sm:min-w-[980px] flex justify-center transition-transform duration-200 origin-top"
+            className="min-w-[840px] sm:min-w-[980px] flex justify-center transition-transform duration-200 origin-top bg-[#000000]"
             style={{ transform: `scale(${zoomLevel})`, transformOrigin: 'top center' }}
           >
             <svg
               viewBox="0 0 1120 900"
-              className="w-full h-auto max-w-[1080px] select-none"
+              className="w-full h-auto max-w-[1080px] select-none bg-[#000000]"
               aria-label="Interactive pattern dependency tree"
             >
               <defs>
-                {/* Clearly visible canvas dot grid */}
+                {/* Subtle dot grid on pure dark black */}
                 <pattern id="clear-dot-grid" x="0" y="0" width="28" height="28" patternUnits="userSpaceOnUse">
-                  <circle cx="2" cy="2" r="1.1" fill="#475569" opacity="0.35" />
+                  <circle cx="2" cy="2" r="0.9" fill="#334155" opacity="0.3" />
                 </pattern>
 
                 {/* Soft diffuse ambient card shadow */}
                 <filter id="soft-card-shadow" x="-15%" y="-15%" width="130%" height="130%">
-                  <feDropShadow dx="0" dy="3" stdDeviation="4" floodColor="#000000" floodOpacity="0.4" />
+                  <feDropShadow dx="0" dy="3" stdDeviation="4" floodColor="#000000" floodOpacity="0.6" />
                 </filter>
                 <filter id="glow-card-shadow" x="-25%" y="-25%" width="150%" height="150%">
-                  <feDropShadow dx="0" dy="0" stdDeviation="8" floodColor="#10b981" floodOpacity="0.4" />
+                  <feDropShadow dx="0" dy="0" stdDeviation="8" floodColor="#10b981" floodOpacity="0.5" />
                 </filter>
               </defs>
 
-              {/* Dot Grid Background */}
+              {/* Pure Dark Black Canvas Background */}
+              <rect width="100%" height="100%" fill="#000000" />
               <rect width="100%" height="100%" fill="url(#clear-dot-grid)" />
 
-              {/* Connecting Bezier Edges - High visibility */}
+              {/* Connecting Bezier Edges - High visibility over dark black */}
               <g className="edges">
                 {EDGES.map((edge) => {
                   const source = nodeMap.get(edge.from);
@@ -296,10 +297,10 @@ export function PatternDependencyGraph({ patterns, solvedSet = new Set() }: Patt
                           ? '#10b981' // Green for prerequisites
                           : isOutgoing
                           ? '#38bdf8' // Blue for unlocks
-                          : '#64748b' // Clearly visible slate
+                          : '#475569' // Clearly visible slate over dark black
                       }
                       strokeWidth={isHighlighted ? 3 : 2}
-                      strokeOpacity={isHighlighted ? 1 : isAnyHovered ? 0.12 : 0.45}
+                      strokeOpacity={isHighlighted ? 1 : isAnyHovered ? 0.12 : 0.6}
                       strokeLinecap="round"
                       className="transition-all duration-200"
                     />
@@ -307,7 +308,7 @@ export function PatternDependencyGraph({ patterns, solvedSet = new Set() }: Patt
                 })}
               </g>
 
-              {/* Nodes - High Contrast NeetCode Cards */}
+              {/* Nodes - High Contrast Slate Cards on Dark Black */}
               <g className="nodes">
                 {NODES.map((node) => {
                   const { pct } = getNodeProgress(node);
@@ -337,7 +338,7 @@ export function PatternDependencyGraph({ patterns, solvedSet = new Set() }: Patt
                         width={NODE_WIDTH}
                         height={NODE_HEIGHT}
                         rx={10}
-                        fill={isHovered ? '#262f48' : '#1e2438'}
+                        fill={isHovered ? '#242c42' : '#181e2e'}
                         stroke={
                           isHovered
                             ? '#10b981'
@@ -345,9 +346,9 @@ export function PatternDependencyGraph({ patterns, solvedSet = new Set() }: Patt
                             ? '#10b981'
                             : isChild
                             ? '#38bdf8'
-                            : '#3e4768'
+                            : '#2f3952'
                         }
-                        strokeWidth={isFocused ? 2 : 1.5}
+                        strokeWidth={isFocused ? 2 : 1.4}
                         filter={isHovered ? 'url(#glow-card-shadow)' : 'url(#soft-card-shadow)'}
                         className="transition-all duration-150"
                       />
@@ -372,7 +373,7 @@ export function PatternDependencyGraph({ patterns, solvedSet = new Set() }: Patt
                         width={PROGRESS_BAR_WIDTH}
                         height={4}
                         rx={2}
-                        fill="rgba(255, 255, 255, 0.25)"
+                        fill="rgba(255, 255, 255, 0.28)"
                       />
 
                       {/* Emerald Progress Fill */}
@@ -395,7 +396,7 @@ export function PatternDependencyGraph({ patterns, solvedSet = new Set() }: Patt
         </div>
 
         {/* Dynamic Context Footer on Node Hover */}
-        <div className="px-5 py-3 bg-[#131826] border-t border-[#262e45] flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 text-xs">
+        <div className="px-5 py-3 bg-[#0a0d14] border-t border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 text-xs">
           {hoveredNode && hoveredProgress ? (
             <div className="flex items-center gap-2 min-w-0 flex-wrap text-[#e2e8f0]">
               <span className="font-semibold text-white">{hoveredNode.title}</span>
