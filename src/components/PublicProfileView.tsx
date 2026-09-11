@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useMemo, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import Link from 'next/link';
 import {
   Flame,
@@ -197,6 +198,11 @@ export const PublicProfileView: React.FC<PublicProfileViewProps> = ({ initialDat
   const [selectedYear, setSelectedYear] = useState<number>(currentYear);
   const [activeHoverDay, setActiveHoverDay] = useState<{ date: string; count: number } | null>(null);
   const [showLevelModal, setShowLevelModal] = useState<boolean>(false);
+  const [mounted, setMounted] = useState<boolean>(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   // Close level modal on Escape
   useEffect(() => {
@@ -206,6 +212,18 @@ export const PublicProfileView: React.FC<PublicProfileViewProps> = ({ initialDat
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [showLevelModal]);
+
+  // Lock body scroll when modal is active
+  useEffect(() => {
+    if (showLevelModal) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
   }, [showLevelModal]);
 
   const profileUrl = typeof window !== 'undefined'
@@ -768,16 +786,16 @@ export const PublicProfileView: React.FC<PublicProfileViewProps> = ({ initialDat
       )}
 
       {/* Level Progression Explainer Modal */}
-      {showLevelModal && (
+      {mounted && showLevelModal && createPortal(
         <div
           role="dialog"
           aria-modal="true"
           onClick={() => setShowLevelModal(false)}
-          className="fixed inset-0 z-[100] bg-black/80 backdrop-blur-md flex items-center justify-center p-3 sm:p-6 overflow-y-auto animate-in fade-in duration-200"
+          className="fixed inset-0 z-[200] bg-black/75 backdrop-blur-md flex items-center justify-center p-4 sm:p-6 overflow-y-auto animate-in fade-in duration-200"
         >
           <div
             onClick={(e) => e.stopPropagation()}
-            className="relative w-full max-w-2xl bg-[var(--bg-card)] border border-[var(--border)] rounded-3xl shadow-2xl overflow-hidden my-auto max-h-[88vh] flex flex-col"
+            className="relative w-full max-w-2xl bg-[var(--bg-card)] border border-[var(--border)] rounded-3xl shadow-2xl overflow-hidden my-auto max-h-[85vh] flex flex-col"
           >
             {/* Modal Header (Pinned) */}
             <div className="p-6 sm:p-7 pb-4 border-b border-[var(--border)]/60 bg-[var(--bg-card)] shrink-0 flex items-start justify-between gap-4">
@@ -929,7 +947,8 @@ export const PublicProfileView: React.FC<PublicProfileViewProps> = ({ initialDat
               </button>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </div>
   );

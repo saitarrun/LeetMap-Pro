@@ -75,7 +75,7 @@ export function CommandPalette() {
   return (
     <>
       {open && (
-        <div className="apple-modal-backdrop fixed inset-0 z-[100] flex items-start justify-center overflow-y-auto bg-black/30 px-4 py-4 backdrop-blur-sm sm:pt-[10vh]" onMouseDown={() => setOpen(false)}>
+        <div className="apple-modal-backdrop fixed inset-0 z-[200] flex items-start justify-center overflow-y-auto bg-black/50 px-4 py-4 backdrop-blur-sm sm:pt-[10vh]" onMouseDown={() => setOpen(false)}>
           <div role="dialog" aria-modal="true" aria-label="Command menu" className="apple-modal-surface flex max-h-[calc(100vh-2rem)] w-full max-w-xl flex-col overflow-hidden rounded-2xl border border-[var(--border)] bg-[var(--bg-card)] shadow-2xl" onMouseDown={(event) => event.stopPropagation()}>
             <div className="flex items-center gap-3 border-b border-[var(--border)] px-4">
               <Search className="size-4 shrink-0 text-[var(--text-muted)]" />
