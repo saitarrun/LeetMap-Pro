@@ -364,30 +364,32 @@ export const PatternDetailView: React.FC<PatternDetailViewProps> = ({ pattern })
 
       {/* Controls Bar */}
       <div className="flex flex-col lg:flex-row gap-3 items-stretch lg:items-center justify-between">
-        {/* Spotlight Search */}
-        <div className="relative flex-1 max-w-md group">
-          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--text-light)] group-focus-within:text-[var(--text-main)] transition-colors pointer-events-none" />
+        {/* Apple Spotlight Search */}
+        <div className="relative flex-1 max-w-md group flex items-center h-10 rounded-full bg-[var(--bg-card)] border border-[var(--border)] hover:border-[var(--text-muted)]/30 focus-within:border-[var(--text-main)]/35 shadow-[0_1px_4px_rgba(0,0,0,0.02)] focus-within:shadow-[0_4px_16px_rgba(0,0,0,0.06)] dark:focus-within:shadow-[0_4px_16px_rgba(0,0,0,0.3)] transition-all duration-200">
+          <Search className="absolute left-3.5 w-3.5 h-3.5 text-[var(--text-light)] group-focus-within:text-[var(--text-main)] transition-colors pointer-events-none" />
           <input
             ref={searchInputRef}
             type="search"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder={`Filter ${pattern.name} problems (#15, 3Sum, Two Pointers...)`}
-            className="w-full h-10 pl-10 pr-9 rounded-2xl text-xs bg-[var(--bg-card)] border border-[var(--border)] text-[var(--text-main)] placeholder:text-[var(--text-light)] shadow-xs focus:outline-none focus:border-[var(--text-muted)]/40 focus:ring-4 focus:ring-[var(--border)]/30 transition-all duration-150"
+            placeholder={`Filter ${pattern.name} problems (#15, 3Sum, DP...)`}
+            className="w-full h-full pl-9 pr-12 text-xs bg-transparent text-[var(--text-main)] placeholder:text-[var(--text-light)] focus:outline-none"
           />
           {searchQuery ? (
             <button
               type="button"
               onClick={() => setSearchQuery('')}
-              className="apple-press apple-pop-in absolute right-3 top-1/2 -translate-y-1/2 p-0.5 rounded-full text-[var(--text-light)] hover:text-[var(--text-main)] transition-colors cursor-pointer"
+              className="apple-press apple-pop-in absolute right-3 p-0.5 rounded-full text-[var(--text-light)] hover:text-[var(--text-main)] transition-colors cursor-pointer"
               title="Clear search"
             >
               <X className="w-3.5 h-3.5" />
             </button>
           ) : (
-            <kbd className="absolute right-3 top-1/2 -translate-y-1/2 px-1.5 py-0.5 rounded text-[10px] font-mono text-[var(--text-light)] border border-[var(--border)] bg-[var(--bg-subtle)]">
-              /
-            </kbd>
+            <div className="absolute right-3 flex items-center pointer-events-none">
+              <kbd className="hidden sm:inline-flex items-center px-1.5 py-0.5 rounded-full text-[10px] font-mono text-[var(--text-light)] bg-[var(--bg-subtle)] border border-[var(--border)] group-focus-within:opacity-40 transition-opacity">
+                ⌘K
+              </kbd>
+            </div>
           )}
         </div>
 

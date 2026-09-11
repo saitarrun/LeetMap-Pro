@@ -111,17 +111,17 @@ export const PatternsHubClient: React.FC<PatternsHubClientProps> = ({
           </div>
         </section>
 
-        {/* Minimalist Spotlight Search & Controls */}
+        {/* Apple Spotlight Search & Controls */}
         <section className="max-w-2xl mx-auto space-y-3">
-          <div className="relative group flex items-center h-12 rounded-2xl bg-[var(--bg-card)] border border-[var(--border)] hover:border-[var(--text-muted)]/30 focus-within:border-[var(--text-main)]/30 shadow-[0_1px_3px_rgba(0,0,0,0.02)] focus-within:shadow-[0_4px_16px_rgba(0,0,0,0.04)] dark:focus-within:shadow-[0_4px_16px_rgba(0,0,0,0.2)] transition-[border-color,box-shadow] duration-150">
-            <Search className="absolute left-4 w-4 h-4 text-[var(--text-light)] group-focus-within:text-[var(--text-main)] transition-colors pointer-events-none" />
+          <div className="relative group flex items-center h-12 rounded-full bg-[var(--bg-card)] border border-[var(--border)] hover:border-[var(--text-muted)]/30 focus-within:border-[var(--text-main)]/35 shadow-[0_2px_8px_rgba(0,0,0,0.03)] focus-within:shadow-[0_8px_24px_rgba(0,0,0,0.06)] dark:focus-within:shadow-[0_8px_24px_rgba(0,0,0,0.3)] transition-all duration-200">
+            <Search className="absolute left-4.5 w-4 h-4 text-[var(--text-light)] group-focus-within:text-[var(--text-main)] transition-colors pointer-events-none" />
             <input
               ref={searchInputRef}
               type="search"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search patterns... (Two Pointers, Sliding Window, DP)"
-              className="w-full h-full pl-11 pr-16 text-sm bg-transparent text-[var(--text-main)] placeholder:text-[var(--text-light)] focus:outline-none"
+              className="w-full h-full pl-12 pr-14 text-sm bg-transparent text-[var(--text-main)] placeholder:text-[var(--text-light)] focus:outline-none"
             />
             {searchQuery ? (
               <button
@@ -136,12 +136,9 @@ export const PatternsHubClient: React.FC<PatternsHubClientProps> = ({
                 <X className="w-3.5 h-3.5" />
               </button>
             ) : (
-              <div className="absolute right-3.5 flex items-center gap-1 pointer-events-none">
-                <kbd className="hidden sm:inline-flex items-center px-1.5 py-0.5 rounded-md text-[10px] font-mono text-[var(--text-light)] bg-[var(--bg-subtle)] border border-[var(--border)]">
+              <div className="absolute right-3.5 flex items-center pointer-events-none">
+                <kbd className="hidden sm:inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-mono text-[var(--text-light)] bg-[var(--bg-subtle)] border border-[var(--border)] group-focus-within:opacity-40 transition-opacity">
                   ⌘K
-                </kbd>
-                <kbd className="hidden sm:inline-flex items-center px-1.5 py-0.5 rounded-md text-[10px] font-mono text-[var(--text-light)] bg-[var(--bg-subtle)] border border-[var(--border)]">
-                  /
                 </kbd>
               </div>
             )}
