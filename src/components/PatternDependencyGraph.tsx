@@ -20,7 +20,7 @@ interface GraphEdge {
   to: string;
 }
 
-// 8 Strictly Ordered Horizontal Tiers (All nodes in each tier share the EXACT same Y)
+// 8 Strictly Ordered Horizontal Tiers with generous spacing
 // Tier 0: Y = 60
 // Tier 1: Y = 165
 // Tier 2: Y = 275
@@ -31,38 +31,38 @@ interface GraphEdge {
 // Tier 7: Y = 835
 const NODES: GraphNode[] = [
   // Tier 0 (Root)
-  { id: 'arrays-hashing', title: 'Arrays & Hashing', slug: 'prefix-sum', x: 540, y: 60, total: 220, category: 'Fundamentals' },
+  { id: 'arrays-hashing', title: 'Arrays & Hashing', slug: 'prefix-sum', x: 560, y: 60, total: 220, category: 'Fundamentals' },
 
   // Tier 1
-  { id: 'two-pointers', title: 'Two Pointers', slug: 'two-pointers', x: 410, y: 165, total: 215, category: 'Fundamentals' },
-  { id: 'stack', title: 'Stack', slug: 'monotonic-stack', x: 670, y: 165, total: 85, category: 'Data Structures' },
+  { id: 'two-pointers', title: 'Two Pointers', slug: 'two-pointers', x: 420, y: 165, total: 215, category: 'Fundamentals' },
+  { id: 'stack', title: 'Stack', slug: 'monotonic-stack', x: 700, y: 165, total: 85, category: 'Data Structures' },
 
   // Tier 2
   { id: 'binary-search', title: 'Binary Search', slug: 'binary-search', x: 270, y: 275, total: 315, category: 'Fundamentals' },
-  { id: 'sliding-window', title: 'Sliding Window', slug: 'sliding-window', x: 540, y: 275, total: 145, category: 'Fundamentals' },
-  { id: 'linked-list', title: 'Linked List', slug: 'linked-list-manipulation', x: 810, y: 275, total: 70, category: 'Fundamentals' },
+  { id: 'sliding-window', title: 'Sliding Window', slug: 'sliding-window', x: 560, y: 275, total: 145, category: 'Fundamentals' },
+  { id: 'linked-list', title: 'Linked List', slug: 'linked-list-manipulation', x: 850, y: 275, total: 70, category: 'Fundamentals' },
 
   // Tier 3
-  { id: 'trees', title: 'Trees', slug: 'tree-dfs', x: 540, y: 385, total: 357, category: 'Trees & Graphs' },
+  { id: 'trees', title: 'Trees', slug: 'tree-dfs', x: 560, y: 385, total: 357, category: 'Trees & Graphs' },
 
   // Tier 4
   { id: 'tries', title: 'Tries', slug: 'trie', x: 270, y: 495, total: 53, category: 'Data Structures' },
-  { id: 'heap', title: 'Heap / Priority Queue', slug: 'heaps-top-k', x: 540, y: 495, total: 190, category: 'Data Structures' },
-  { id: 'backtracking', title: 'Backtracking', slug: 'backtracking', x: 810, y: 495, total: 114, category: 'Advanced & DP' },
+  { id: 'heap', title: 'Heap / Priority Queue', slug: 'heaps-top-k', x: 560, y: 495, total: 190, category: 'Data Structures' },
+  { id: 'backtracking', title: 'Backtracking', slug: 'backtracking', x: 850, y: 495, total: 114, category: 'Advanced & DP' },
 
   // Tier 5
-  { id: 'intervals', title: 'Intervals', slug: 'intervals', x: 140, y: 615, total: 41, category: 'Data Structures' },
-  { id: 'greedy', title: 'Greedy', slug: 'greedy', x: 340, y: 615, total: 414, category: 'Advanced & DP' },
-  { id: 'graphs', title: 'Graphs', slug: 'graph-traversal', x: 640, y: 615, total: 167, category: 'Trees & Graphs' },
-  { id: 'dp-1d', title: '1-D Dynamic Programming', slug: 'dynamic-programming-1d', x: 910, y: 615, total: 560, category: 'Advanced & DP' },
+  { id: 'intervals', title: 'Intervals', slug: 'intervals', x: 135, y: 615, total: 41, category: 'Data Structures' },
+  { id: 'greedy', title: 'Greedy', slug: 'greedy', x: 370, y: 615, total: 414, category: 'Advanced & DP' },
+  { id: 'graphs', title: 'Graphs', slug: 'graph-traversal', x: 670, y: 615, total: 167, category: 'Trees & Graphs' },
+  { id: 'dp-1d', title: '1-D Dynamic Programming', slug: 'dynamic-programming-1d', x: 955, y: 615, total: 560, category: 'Advanced & DP' },
 
   // Tier 6
-  { id: 'advanced-graphs', title: 'Advanced Graphs', slug: 'topological-sort', x: 490, y: 725, total: 39, category: 'Trees & Graphs' },
-  { id: 'dp-2d', title: '2-D Dynamic Programming', slug: 'dynamic-programming-2d', x: 740, y: 725, total: 557, category: 'Advanced & DP' },
-  { id: 'bit-manipulation', title: 'Bit Manipulation', slug: 'bit-manipulation', x: 940, y: 725, total: 234, category: 'Advanced & DP' },
+  { id: 'advanced-graphs', title: 'Advanced Graphs', slug: 'topological-sort', x: 515, y: 725, total: 39, category: 'Trees & Graphs' },
+  { id: 'dp-2d', title: '2-D Dynamic Programming', slug: 'dynamic-programming-2d', x: 750, y: 725, total: 557, category: 'Advanced & DP' },
+  { id: 'bit-manipulation', title: 'Bit Manipulation', slug: 'bit-manipulation', x: 955, y: 725, total: 234, category: 'Advanced & DP' },
 
   // Tier 7
-  { id: 'math-geometry', title: 'Math & Geometry', slug: 'matrix-traversal', x: 840, y: 835, total: 243, category: 'Trees & Graphs' },
+  { id: 'math-geometry', title: 'Math & Geometry', slug: 'matrix-traversal', x: 852, y: 835, total: 243, category: 'Trees & Graphs' },
 ];
 
 const EDGES: GraphEdge[] = [
@@ -103,9 +103,9 @@ const EDGES: GraphEdge[] = [
   { from: 'bit-manipulation', to: 'math-geometry' },
 ];
 
-const NODE_WIDTH = 162;
-const NODE_HEIGHT = 52;
-const PROGRESS_BAR_WIDTH = 138;
+const NODE_WIDTH = 180;
+const NODE_HEIGHT = 56;
+const PROGRESS_BAR_WIDTH = 152;
 
 // Calming, eye-friendly pastel category color tokens
 const CATEGORY_THEME: Record<GraphNode['category'], { dot: string; label: string; accent: string }> = {
@@ -265,8 +265,8 @@ export function PatternDependencyGraph({ patterns, solvedSet = new Set() }: Patt
             style={{ transform: `scale(${zoomLevel})`, transformOrigin: 'top center' }}
           >
             <svg
-              viewBox="0 0 1080 890"
-              className="w-full h-auto max-w-[1040px] select-none"
+              viewBox="0 0 1120 900"
+              className="w-full h-auto max-w-[1080px] select-none"
               aria-label="Interactive pattern dependency tree"
             >
               <defs>
@@ -407,7 +407,7 @@ export function PatternDependencyGraph({ patterns, solvedSet = new Set() }: Patt
 
                       {/* Question Count Pill on Top Right */}
                       <text
-                        x={NODE_WIDTH - 12}
+                        x={NODE_WIDTH - 14}
                         y={18}
                         textAnchor="end"
                         fontSize={8.5}
@@ -419,11 +419,12 @@ export function PatternDependencyGraph({ patterns, solvedSet = new Set() }: Patt
                         {total} Qs
                       </text>
 
-                      {/* Main Node Title */}
+                      {/* Main Node Title - Centered with safe margins */}
                       <text
-                        x={14}
-                        y={33}
-                        fontSize={11.5}
+                        x={NODE_WIDTH / 2}
+                        y={34}
+                        textAnchor="middle"
+                        fontSize={10.8}
                         fontWeight="600"
                         fill="var(--text-main)"
                         className="font-sans select-none tracking-tight"
@@ -433,8 +434,8 @@ export function PatternDependencyGraph({ patterns, solvedSet = new Set() }: Patt
 
                       {/* Progress Bar Background Track */}
                       <rect
-                        x={12}
-                        y={41}
+                        x={(NODE_WIDTH - PROGRESS_BAR_WIDTH) / 2}
+                        y={43}
                         width={PROGRESS_BAR_WIDTH}
                         height={3}
                         rx={1.5}
@@ -447,8 +448,8 @@ export function PatternDependencyGraph({ patterns, solvedSet = new Set() }: Patt
                       {/* Emerald Progress Fill */}
                       {pct > 0 && (
                         <rect
-                          x={12}
-                          y={41}
+                          x={(NODE_WIDTH - PROGRESS_BAR_WIDTH) / 2}
+                          y={43}
                           width={Math.max(4, (PROGRESS_BAR_WIDTH * pct) / 100)}
                           height={3}
                           rx={1.5}
