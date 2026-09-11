@@ -86,31 +86,27 @@ interface PatternCardProps {
 
 export const PatternCard: React.FC<PatternCardProps> = ({ pattern, solvedCount = 0 }) => {
   const IconComponent = ICON_MAP[pattern.icon] || GitBranch;
-  const categoryStyle = CATEGORY_COLORS[pattern.category] || CATEGORY_COLORS.Fundamentals;
-
   const percentSolved = pattern.total > 0 ? Math.min(100, Math.round((solvedCount / pattern.total) * 100)) : 0;
 
   return (
     <Link
       href={`/patterns/${pattern.slug}`}
-      className="apple-card group relative flex flex-col justify-between p-5 rounded-3xl border border-[var(--border)] bg-[var(--bg-card)] hover:border-[var(--text-muted)]/30 select-none shadow-xs"
+      className="apple-card group relative flex flex-col justify-between p-4 sm:p-5 rounded-2xl border border-[var(--border)] bg-[var(--bg-card)] hover:border-[var(--text-muted)]/30 select-none transition-all shadow-xs"
     >
-      <div className="space-y-3.5">
+      <div className="space-y-3">
         {/* Header row: Icon + Category Badge */}
         <div className="flex items-center justify-between gap-3">
-          <div className="w-12 h-12 rounded-2xl bg-[var(--bg-subtle)] border border-[var(--border)] flex items-center justify-center shrink-0 text-[var(--text-main)] shadow-xs group-hover:scale-105 transition-transform">
-            <IconComponent className="w-6 h-6 opacity-80" />
+          <div className="w-9 h-9 rounded-xl bg-[var(--bg-subtle)] flex items-center justify-center shrink-0 text-[var(--text-main)]">
+            <IconComponent className="w-4.5 h-4.5 opacity-80" />
           </div>
 
           <div className="flex items-center gap-1.5">
-            <span
-              className={`px-2.5 py-0.5 rounded-full text-[10px] font-semibold border ${categoryStyle.bg} ${categoryStyle.text} ${categoryStyle.border}`}
-            >
+            <span className="px-2 py-0.5 rounded-md text-[10px] font-medium bg-[var(--bg-subtle)] text-[var(--text-muted)]">
               {pattern.category}
             </span>
             {solvedCount > 0 && (
-              <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-[var(--diff-easy-text)] bg-[var(--diff-easy-bg)] px-2 py-0.5 rounded-full">
-                <CheckCircle2 className="w-3 h-3" />
+              <span className="inline-flex items-center gap-0.5 text-[10px] font-medium text-emerald-600 dark:text-emerald-400">
+                <CheckCircle2 className="w-2.5 h-2.5" />
                 {solvedCount}
               </span>
             )}
@@ -119,7 +115,7 @@ export const PatternCard: React.FC<PatternCardProps> = ({ pattern, solvedCount =
 
         {/* Title & Tagline */}
         <div>
-          <h3 className="text-base font-bold text-[var(--text-main)] transition-colors">
+          <h3 className="text-sm font-semibold text-[var(--text-main)] transition-colors">
             {pattern.name}
           </h3>
           <p className="text-xs text-[var(--text-muted)] mt-1 line-clamp-2 leading-relaxed font-normal">
@@ -128,48 +124,37 @@ export const PatternCard: React.FC<PatternCardProps> = ({ pattern, solvedCount =
         </div>
 
         {/* Difficulty breakdown */}
-        <div className="flex items-center gap-2 pt-1 text-xs text-[var(--text-muted)]">
-          <span className="font-semibold text-[var(--text-main)]">{pattern.total}</span>
-          <span className="text-[11px]">questions</span>
-          <span className="text-[var(--border)]">•</span>
-          <span className="font-semibold text-[var(--diff-easy-text)]">{pattern.easy}E</span>
-          <span className="font-semibold text-[var(--diff-medium-text)]">{pattern.medium}M</span>
-          <span className="font-semibold text-[var(--diff-hard-text)]">{pattern.hard}H</span>
+        <div className="flex items-center gap-1.5 text-xs text-[var(--text-muted)] font-normal">
+          <span>{pattern.total} questions</span>
+          <span className="opacity-30">·</span>
+          <span className="text-[11px] font-mono text-[var(--text-light)]">
+            <span className="text-emerald-600/90 dark:text-emerald-400/90">{pattern.easy}</span>E{' '}
+            <span className="text-amber-600/90 dark:text-amber-400/90">{pattern.medium}</span>M{' '}
+            <span className="text-rose-600/90 dark:text-rose-400/90">{pattern.hard}</span>H
+          </span>
         </div>
-
-        {/* Top Companies preview */}
-        {pattern.topCompanies && pattern.topCompanies.length > 0 && (
-          <div className="flex flex-wrap items-center gap-1.5 pt-1">
-            <span className="text-[10px] text-[var(--text-light)]">Top asked:</span>
-            {pattern.topCompanies.slice(0, 4).map((c) => (
-              <span
-                key={c}
-                className="text-[10px] px-1.5 py-0.2 rounded-md bg-[var(--bg-subtle)] text-[var(--text-muted)] border border-[var(--border)]"
-              >
-                {c}
-              </span>
-            ))}
-          </div>
-        )}
       </div>
 
-      {/* Footer: Solved progress bar + Arrow */}
-      <div className="pt-4 mt-3 border-t border-[var(--border)] flex items-center justify-between gap-3">
-        <div className="flex-1">
-          <div className="flex items-center justify-between text-[10px] text-[var(--text-muted)] mb-1">
-            <span>Progress</span>
-            <span>{percentSolved}%</span>
+      {/* Footer: Top Companies & Subtle Chevron */}
+      <div className="pt-3 mt-3 border-t border-[var(--border)] flex items-center justify-between gap-2 text-xs">
+        {pattern.topCompanies && pattern.topCompanies.length > 0 ? (
+          <div className="flex items-center gap-1 text-[11px] text-[var(--text-light)] truncate min-w-0">
+            <span className="opacity-50">Top:</span>
+            <span className="text-[var(--text-muted)] truncate">
+              {pattern.topCompanies.slice(0, 4).join(', ')}
+            </span>
           </div>
-          <div className="w-full h-1 bg-[var(--bg-subtle)] rounded-full overflow-hidden">
-            <div
-              className="h-full bg-emerald-500 rounded-full transition-all duration-300"
-              style={{ width: `${percentSolved}%` }}
-            />
-          </div>
-        </div>
+        ) : (
+          <div />
+        )}
 
-        <div className="w-7 h-7 rounded-full bg-[var(--bg-subtle)] flex items-center justify-center shrink-0 group-hover:bg-[var(--text-main)] group-hover:text-[var(--bg-page)] transition-colors text-[var(--text-light)]">
-          <ChevronRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
+        <div className="flex items-center gap-1.5 shrink-0 ml-2">
+          {percentSolved > 0 && (
+            <span className="text-[10px] font-mono text-emerald-600 dark:text-emerald-400 font-medium">
+              {percentSolved}%
+            </span>
+          )}
+          <ChevronRight className="w-3.5 h-3.5 text-[var(--text-light)] opacity-40 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all" />
         </div>
       </div>
     </Link>

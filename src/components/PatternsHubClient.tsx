@@ -111,8 +111,8 @@ export const PatternsHubClient: React.FC<PatternsHubClientProps> = ({
           </div>
         </section>
 
-        {/* Apple Spotlight Search & Controls */}
-        <section className="max-w-2xl mx-auto space-y-3">
+        {/* Apple Spotlight Search Bar (Centered) */}
+        <div className="max-w-2xl mx-auto">
           <div className="relative group flex items-center h-12 rounded-full bg-[var(--bg-card)] border border-[var(--border)] hover:border-[var(--text-muted)]/30 focus-within:border-[var(--text-main)]/35 shadow-[0_2px_8px_rgba(0,0,0,0.03)] focus-within:shadow-[0_8px_24px_rgba(0,0,0,0.06)] dark:focus-within:shadow-[0_8px_24px_rgba(0,0,0,0.3)] transition-all duration-200">
             <Search className="absolute left-4.5 w-4 h-4 text-[var(--text-light)] group-focus-within:text-[var(--text-main)] transition-colors pointer-events-none" />
             <input
@@ -143,83 +143,84 @@ export const PatternsHubClient: React.FC<PatternsHubClientProps> = ({
               </div>
             )}
           </div>
+        </div>
 
-          {/* Minimal Category Tabs */}
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 text-xs pt-1">
-            <div className="flex items-center gap-1 overflow-x-auto pb-1 sm:pb-0 scrollbar-none">
-              {[
-                { key: 'ALL', label: 'All' },
-                { key: 'Fundamentals', label: 'Fundamentals' },
-                { key: 'Data Structures', label: 'Data Structures' },
-                { key: 'Trees & Graphs', label: 'Trees & Graphs' },
-                { key: 'Advanced & DP', label: 'Advanced & DP' },
-              ].map((tab) => (
-                <button
-                  key={tab.key}
-                  onClick={() => setCategoryFilter(tab.key as typeof categoryFilter)}
-                  className={`apple-press shrink-0 whitespace-nowrap px-3 py-1.5 rounded-lg font-medium transition-colors cursor-pointer ${
-                    categoryFilter === tab.key
-                      ? 'bg-[var(--bg-subtle)] text-[var(--text-main)] font-semibold'
-                      : 'text-[var(--text-muted)] hover:text-[var(--text-main)]'
-                  }`}
-                >
-                  <span>{tab.label}</span>
-                </button>
-              ))}
-            </div>
-
-            <div className="flex items-center gap-1.5 self-end sm:self-auto shrink-0 text-xs">
-              <span className="text-[var(--text-muted)] text-[11px]">Sort:</span>
-              <select
-                value={sortBy}
-                onChange={(e) => setSortBy(e.target.value as typeof sortBy)}
-                className="bg-transparent text-[var(--text-main)] text-xs focus:outline-none cursor-pointer font-medium"
+        {/* Minimal Category Tabs & Sort */}
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-2.5 text-xs max-w-4xl mx-auto w-full pt-1">
+          <div className="flex flex-wrap items-center justify-center gap-1">
+            {[
+              { key: 'ALL', label: 'All' },
+              { key: 'Fundamentals', label: 'Fundamentals' },
+              { key: 'Data Structures', label: 'Data Structures' },
+              { key: 'Trees & Graphs', label: 'Trees & Graphs' },
+              { key: 'Advanced & DP', label: 'Advanced & DP' },
+            ].map((tab) => (
+              <button
+                key={tab.key}
+                onClick={() => setCategoryFilter(tab.key as typeof categoryFilter)}
+                className={`apple-press shrink-0 whitespace-nowrap px-3 py-1.5 rounded-lg font-medium transition-colors cursor-pointer ${
+                  categoryFilter === tab.key
+                    ? 'bg-[var(--bg-subtle)] text-[var(--text-main)] font-semibold'
+                    : 'text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--bg-subtle)]/50'
+                }`}
               >
-                <option value="total">Most Questions</option>
-                <option value="name">Name (A-Z)</option>
-                <option value="hard">Most Hard</option>
-              </select>
-            </div>
+                <span>{tab.label}</span>
+              </button>
+            ))}
           </div>
-        </section>
 
-        {/* Interview Resources */}
-        <section className="grid gap-3 md:grid-cols-2">
+          <div className="flex items-center gap-1.5 self-center sm:self-auto shrink-0 text-xs text-[var(--text-muted)]">
+            <span className="text-[11px] opacity-60">Sort:</span>
+            <select
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value as typeof sortBy)}
+              className="bg-transparent text-[var(--text-main)] text-xs focus:outline-none cursor-pointer font-medium"
+            >
+              <option value="total">Most Questions</option>
+              <option value="name">Name (A-Z)</option>
+              <option value="hard">Most Hard</option>
+            </select>
+          </div>
+        </div>
+
+        {/* Interview Resources (Quiet, minimalist Apple card) */}
+        <section className="grid gap-3 sm:grid-cols-2">
           <Link
             href="/patterns/time-complexity#time-complexity"
-            className="apple-card group flex items-center justify-between gap-4 p-4 sm:p-5 rounded-2xl border border-[var(--border)] bg-[var(--bg-card)] hover:border-amber-500/40 hover:bg-amber-500/5 transition-all shadow-xs cursor-pointer"
+            className="apple-card group flex items-center justify-between gap-3.5 p-3.5 rounded-2xl border border-[var(--border)] bg-[var(--bg-card)] hover:border-[var(--text-muted)]/30 transition-all select-none shadow-xs cursor-pointer"
           >
-            <div className="flex items-center gap-4 min-w-0">
-              <div className="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/25 flex items-center justify-center shrink-0">
-                <Clock className="w-5 h-5 text-amber-600 dark:text-amber-400" />
+            <div className="flex items-center gap-3 min-w-0">
+              <div className="w-9 h-9 rounded-xl bg-[var(--bg-subtle)] flex items-center justify-center shrink-0 text-[var(--text-main)]">
+                <Clock className="w-4.5 h-4.5 opacity-80" />
               </div>
               <div className="min-w-0">
-                <div className="flex flex-wrap items-center gap-2 mb-0.5">
-                  <span className="text-sm font-semibold text-[var(--text-main)]">Time Complexity</span>
-                  <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/25 uppercase tracking-wide">Big O</span>
+                <div className="flex items-center gap-1.5">
+                  <span className="text-xs font-semibold text-[var(--text-main)]">Time Complexity</span>
+                  <span className="text-[10px] font-mono text-[var(--text-light)]">Big O</span>
                 </div>
-                <p className="text-xs text-[var(--text-muted)] leading-snug">Analyze loops, recursion, space, and hard patterns</p>
+                <p className="text-[11px] text-[var(--text-muted)] truncate">Loops, recursion, space & complexity trade-offs</p>
               </div>
             </div>
-            <ChevronRight className="w-4 h-4 text-[var(--text-muted)] group-hover:text-amber-500 transition-colors shrink-0" />
+            <ChevronRight className="w-3.5 h-3.5 text-[var(--text-light)] opacity-40 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all shrink-0" />
           </Link>
+
           <Link
             href="/patterns/time-complexity#python-essentials"
-            className="apple-card group flex items-center justify-between gap-4 p-4 sm:p-5 rounded-2xl border border-[var(--border)] bg-[var(--bg-card)] hover:border-emerald-500/40 hover:bg-emerald-500/5 transition-all shadow-xs cursor-pointer"
+            className="apple-card group flex items-center justify-between gap-3.5 p-3.5 rounded-2xl border border-[var(--border)] bg-[var(--bg-card)] hover:border-[var(--text-muted)]/30 transition-all select-none shadow-xs cursor-pointer"
           >
-            <div className="flex items-center gap-4 min-w-0">
-              <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/25 flex items-center justify-center shrink-0">
-                <Code2 className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
+            <div className="flex items-center gap-3 min-w-0">
+              <div className="w-9 h-9 rounded-xl bg-[var(--bg-subtle)] flex items-center justify-center shrink-0 text-[var(--text-main)]">
+                <Code2 className="w-4.5 h-4.5 opacity-80" />
               </div>
               <div className="min-w-0">
-                <div className="flex flex-wrap items-center gap-2 mb-0.5">
-                  <span className="text-sm font-semibold text-[var(--text-main)]">Python Essentials</span>
-                  <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/25 uppercase tracking-wide">LeetCode</span>
+                <div className="flex items-center gap-1.5">
+                  <span className="text-xs font-semibold text-[var(--text-main)]">Python Essentials</span>
+                  <span className="text-[10px] font-mono text-[var(--text-light)]">Cheatsheet</span>
                 </div>
-                <p className="text-xs text-[var(--text-muted)] leading-snug">Dicts, sets, heaps, matrices, graphs, trees, and templates</p>
+                <p className="text-[11px] text-[var(--text-muted)] truncate">Dicts, heaps, matrices, binary search & templates</p>
               </div>
             </div>
-            <ChevronRight className="w-4 h-4 text-[var(--text-muted)] group-hover:text-emerald-500 transition-colors shrink-0" />
+            <ChevronRight className="w-3.5 h-3.5 text-[var(--text-light)] opacity-40 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all shrink-0" />
           </Link>
         </section>
 
