@@ -109,7 +109,7 @@ export const PatternDetailView: React.FC<PatternDetailViewProps> = ({ pattern })
   }, []);
 
   const handleToggleSolved = (prob: PatternProblem) => {
-    const solved = toggleProblemSolved(prob.slug, { title: prob.title, difficulty: prob.difficulty });
+    const solved = toggleProblemSolved(prob.slug, { id: prob.id, title: prob.title, difficulty: prob.difficulty });
 
     if (solved) {
       toast.success(`Solved: ${prob.title}`, {

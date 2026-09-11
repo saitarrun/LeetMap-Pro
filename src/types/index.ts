@@ -180,6 +180,7 @@ export interface UserProfile {
 }
 
 export interface SolvedProblemRecord {
+  id?: string;
   slug: string;
   solvedAt: string;
   date: string; // "YYYY-MM-DD"

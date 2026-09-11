@@ -452,6 +452,15 @@ def main():
     patterns_dir = os.path.join(public_data_dir, "patterns")
     os.makedirs(patterns_dir, exist_ok=True)
 
+    ids_path = os.path.join(public_data_dir, "leetcode-problem-ids.json")
+    official_ids = {}
+    if os.path.exists(ids_path):
+        try:
+            with open(ids_path, "r", encoding="utf-8") as f:
+                official_ids = json.load(f)
+        except Exception:
+            pass
+
     print("🧩 Compiling LeetCode DSA Patterns Catalog...")
 
     # 1. Collect all unique DSA problems across the company catalog
@@ -468,9 +477,10 @@ def main():
             if p.get("isSql") or "database" in [t.lower() for t in p.get("topics", [])]:
                 continue
             slug = p["slug"]
+            p_id = official_ids.get(slug) or p.get("id", "")
             if slug not in unique_probs:
                 unique_probs[slug] = {
-                    "id": p.get("id", ""),
+                    "id": p_id,
                     "title": p["title"],
                     "slug": slug,
                     "difficulty": p["difficulty"],
@@ -481,6 +491,8 @@ def main():
                     "companiesCount": 0,
                     "companies": []
                 }
+            elif not unique_probs[slug].get("id") and p_id:
+                unique_probs[slug]["id"] = p_id
             unique_probs[slug]["companies"].append({
                 "name": comp_name,
                 "slug": comp_slug,

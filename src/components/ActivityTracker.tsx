@@ -281,7 +281,7 @@ export const ActivityTracker: React.FC<ActivityTrackerProps> = ({ stats, display
                     }`}>
                       {isSqlProblemSlug(record.slug) ? 'SQL' : 'DSA'}
                     </span>
-                    <span className="truncate font-medium">{record.title || record.slug.replace(/-/g, ' ')}</span>
+                    <span className="truncate font-medium">{record.id ? `#${record.id} ` : ''}{record.title || record.slug.replace(/-/g, ' ')}</span>
                   </div>
                   <span className="shrink-0 font-mono text-[10px] text-[var(--text-muted)]">{record.date}</span>
                 </a>

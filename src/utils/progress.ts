@@ -114,13 +114,13 @@ function getSolvedRecords(username?: string): SolvedProblemRecord[] {
 
 export function toggleProblemSolved(
   slug: string,
-  usernameOrMeta?: string | { title?: string; difficulty?: 'EASY' | 'MEDIUM' | 'HARD' },
-  maybeMeta?: { title?: string; difficulty?: 'EASY' | 'MEDIUM' | 'HARD' }
+  usernameOrMeta?: string | { id?: string; title?: string; difficulty?: 'EASY' | 'MEDIUM' | 'HARD' },
+  maybeMeta?: { id?: string; title?: string; difficulty?: 'EASY' | 'MEDIUM' | 'HARD' }
 ): boolean {
   if (typeof window === 'undefined') return false;
 
   let username: string | undefined;
-  let meta: { title?: string; difficulty?: 'EASY' | 'MEDIUM' | 'HARD' } | undefined;
+  let meta: { id?: string; title?: string; difficulty?: 'EASY' | 'MEDIUM' | 'HARD' } | undefined;
 
   if (typeof usernameOrMeta === 'object' && usernameOrMeta !== null) {
     meta = usernameOrMeta;
@@ -151,6 +151,7 @@ export function toggleProblemSolved(
     solved = true;
     // Add to records
     const newRecord: SolvedProblemRecord = {
+      id: meta?.id,
       slug,
       solvedAt: now.toISOString(),
       date: dateStr,

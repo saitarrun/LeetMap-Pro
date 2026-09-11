@@ -35,7 +35,7 @@ export const SqlExplorerView: React.FC<SqlExplorerViewProps> = ({ catalog }) => 
   const [sortDir, setSortDir] = useState<'asc' | 'desc'>('desc');
 
   const handleToggleSolved = (prob: SqlProblem) => {
-    const solved = toggleProblemSolved(prob.slug, { title: prob.title, difficulty: prob.difficulty });
+    const solved = toggleProblemSolved(prob.slug, { id: prob.id, title: prob.title, difficulty: prob.difficulty });
 
     if (solved) {
       toast.success(`Solved: ${prob.title}`, {

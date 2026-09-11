@@ -18,6 +18,7 @@ SOURCE_LIQUIDSLR = "liquidslr/leetcode-company-wise-problems"
 SOURCE_SNEHASISHROY = "snehasishroy/leetcode-companywise-interview-questions"
 SOURCE_SAMIULLAH = "samiullah88/leetcode-company-wise-problems"
 LEETCODE_GRAPHQL = "https://leetcode.com/graphql"
+LEETCODE_ALL_PROBLEMS_API = "https://leetcode.com/api/problems/all/"
 MAX_API_RESPONSE_BYTES = 2 * 1024 * 1024
 MAX_ARCHIVE_BYTES = 100 * 1024 * 1024
 MAX_CSV_BYTES = 10 * 1024 * 1024
@@ -163,6 +164,44 @@ def fetch_leetcode_daily_challenge() -> Optional[Dict[str, Any]]:
     except Exception as e:
         print(f"Notice: LeetCode Daily Challenge GraphQL ({e})")
     return None
+
+def fetch_leetcode_official_problem_ids(cache_path: Optional[str] = None) -> Dict[str, str]:
+    """
+    Fetches official LeetCode frontend problem numbers (questionFrontendId) for all problems.
+    Guarantees every problem in LeetMap has the official problem number matching LeetCode.
+    """
+    mapping: Dict[str, str] = {}
+    
+    if cache_path and os.path.exists(cache_path):
+        try:
+            with open(cache_path, "r", encoding="utf-8") as f:
+                mapping = json.load(f)
+                if len(mapping) > 3000:
+                    print(f"📖 Loaded {len(mapping)} official LeetCode problem numbers from cache.")
+        except Exception:
+            pass
+
+    try:
+        req = urllib.request.Request(
+            LEETCODE_ALL_PROBLEMS_API,
+            headers={"User-Agent": "Mozilla/5.0"}
+        )
+        with urllib.request.urlopen(req, timeout=15) as resp:
+            data = json.loads(read_limited_response(resp, 10 * 1024 * 1024).decode())
+            for item in data.get("stat_status_pairs", []):
+                stat = item.get("stat", {})
+                slug = stat.get("question__title_slug")
+                frontend_id = str(stat.get("frontend_question_id") or "")
+                if slug and frontend_id:
+                    mapping[slug] = frontend_id
+            print(f"🌐 Fetched {len(mapping)} official problem numbers directly from LeetCode API.")
+            if cache_path:
+                with open(cache_path, "w", encoding="utf-8") as f:
+                    json.dump(mapping, f, separators=(',', ':'))
+    except Exception as e:
+        print(f"Notice: LeetCode all problems API ({e}), using cached mapping ({len(mapping)} entries).")
+        
+    return mapping
 
 def fetch_curated_domains() -> Dict[str, str]:
     domains = {}
@@ -330,7 +369,8 @@ def merge_company_datasets(
     snehasishroy_data: Dict[str, Any],
     samiullah_data: Dict[str, Any],
     domain_map: Dict[str, str],
-    leetcode_tags: Dict[str, Any]
+    leetcode_tags: Dict[str, Any],
+    official_problem_ids: Optional[Dict[str, str]] = None
 ) -> List[Dict[str, Any]]:
     all_slugs = set(liquidslr_data.keys()).union(set(snehasishroy_data.keys())).union(set(samiullah_data.keys()))
     merged_companies = []
@@ -358,7 +398,7 @@ def merge_company_datasets(
             for p in l_probs:
                 is_sql = p.get("isSql") or is_sql_problem(p.get("topics", []), p["title"])
                 prob_map[p["slug"]] = {
-                    "id": "",
+                    "id": (official_problem_ids and official_problem_ids.get(p["slug"])) or p.get("id", ""),
                     "title": p["title"],
                     "slug": p["slug"],
                     "difficulty": p["difficulty"],
@@ -382,7 +422,7 @@ def merge_company_datasets(
                 else:
                     is_sql = p.get("isSql") or is_sql_problem(p.get("topics", []), p["title"])
                     prob_map[p["slug"]] = {
-                        "id": "",
+                        "id": (official_problem_ids and official_problem_ids.get(p["slug"])) or p.get("id", ""),
                         "title": p["title"],
                         "slug": p["slug"],
                         "difficulty": p["difficulty"],
@@ -397,7 +437,7 @@ def merge_company_datasets(
             for p in s_probs:
                 if p["slug"] in prob_map:
                     entry = prob_map[p["slug"]]
-                    entry["id"] = p.get("id") or entry.get("id", "")
+                    entry["id"] = (official_problem_ids and official_problem_ids.get(p["slug"])) or p.get("id") or entry.get("id", "")
                     if p.get("acceptance", 0) > 0:
                         entry["acceptance"] = p["acceptance"]
                     if p.get("frequency", 0) > entry["frequency"]:
@@ -407,7 +447,7 @@ def merge_company_datasets(
                 else:
                     is_sql = is_sql_problem([], p["title"])
                     prob_map[p["slug"]] = {
-                        "id": p.get("id", ""),
+                        "id": (official_problem_ids and official_problem_ids.get(p["slug"])) or p.get("id", ""),
                         "title": p["title"],
                         "slug": p["slug"],
                         "difficulty": p["difficulty"],
@@ -418,6 +458,12 @@ def merge_company_datasets(
                         "isSql": is_sql,
                         "verifiedSources": ["snehasishroy"]
                     }
+
+            if official_problem_ids:
+                for p in prob_map.values():
+                    official_id = official_problem_ids.get(p["slug"])
+                    if official_id:
+                        p["id"] = official_id
 
             sorted_probs = sorted(prob_map.values(), key=lambda x: x["frequency"], reverse=True)
             win_sql_count = sum(1 for p in sorted_probs if p.get("isSql", False) or "database" in [t.lower() for t in p.get("topics", [])])
@@ -486,7 +532,10 @@ def merge_company_datasets(
     merged_companies.sort(key=lambda c: c["total"], reverse=True)
     return merged_companies
 
-def build_global_sql_dataset(merged_companies: List[Dict[str, Any]]) -> Dict[str, Any]:
+def build_global_sql_dataset(
+    merged_companies: List[Dict[str, Any]],
+    official_problem_ids: Optional[Dict[str, str]] = None
+) -> Dict[str, Any]:
     """Aggregate all SQL questions across all companies into a unified SQL catalog."""
     sql_catalog: Dict[str, Dict[str, Any]] = {}
 
@@ -496,9 +545,10 @@ def build_global_sql_dataset(merged_companies: List[Dict[str, Any]]) -> Dict[str
         for p in c["windows"][4]["problems"]:
             if p.get("isSql") or "database" in [t.lower() for t in p.get("topics", [])]:
                 pslug = p["slug"]
+                p_id = (official_problem_ids and official_problem_ids.get(pslug)) or p.get("id", "")
                 if pslug not in sql_catalog:
                     sql_catalog[pslug] = {
-                        "id": p.get("id", ""),
+                        "id": p_id,
                         "title": p["title"],
                         "slug": pslug,
                         "difficulty": p["difficulty"],
@@ -510,6 +560,9 @@ def build_global_sql_dataset(merged_companies: List[Dict[str, Any]]) -> Dict[str
                         "companiesCount": 0,
                         "companies": []
                     }
+                elif not sql_catalog[pslug].get("id") and p_id:
+                    sql_catalog[pslug]["id"] = p_id
+
                 sql_catalog[pslug]["companies"].append({
                     "name": c_name,
                     "slug": c_slug,
@@ -536,7 +589,10 @@ def build_global_sql_dataset(merged_companies: List[Dict[str, Any]]) -> Dict[str
         "problems": sorted_sql_problems
     }
 
-def build_neetcode_company(merged_companies: List[Dict[str, Any]]) -> Optional[Dict[str, Any]]:
+def build_neetcode_company(
+    merged_companies: List[Dict[str, Any]],
+    official_problem_ids: Optional[Dict[str, str]] = None
+) -> Optional[Dict[str, Any]]:
     nc_path = os.path.join(os.path.dirname(__file__), "neetcode150.json")
     if not os.path.exists(nc_path):
         return None
@@ -570,8 +626,9 @@ def build_neetcode_company(merged_companies: List[Dict[str, Any]]) -> Optional[D
             if cat not in topics:
                 topics.insert(0, cat)
 
+            p_id = (official_problem_ids and official_problem_ids.get(slug)) or meta.get("id") or ""
             prob = {
-                "id": meta.get("id") or "",
+                "id": p_id,
                 "title": meta.get("title") or title,
                 "slug": slug,
                 "difficulty": info.get("difficulty", "").upper(),
@@ -680,13 +737,19 @@ def main():
     sam_bytes = fetch_tarball(SOURCE_SAMIULLAH, "main")
     samiullah_data = parse_liquidslr_tar(sam_bytes, "samiullah88") if sam_bytes else {}
 
+    base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    public_data_dir = os.path.join(base_dir, "public", "data")
+    cache_path = os.path.join(public_data_dir, "leetcode-problem-ids.json")
+    print("🔢 Syncing official LeetCode problem numbers (questionFrontendId)...")
+    official_problem_ids = fetch_leetcode_official_problem_ids(cache_path)
+
     print("🔄 Merging multi-source datasets and calculating DSA + SQL distributions...")
     merged_companies = merge_company_datasets(
-        liquidslr_data, snehasishroy_data, samiullah_data, domain_map, leetcode_tags
+        liquidslr_data, snehasishroy_data, samiullah_data, domain_map, leetcode_tags, official_problem_ids
     )
 
     # Append NeetCode 150 to companies
-    nc_company = build_neetcode_company(merged_companies)
+    nc_company = build_neetcode_company(merged_companies, official_problem_ids)
     if nc_company:
         merged_companies.append(nc_company)
         merged_companies.sort(key=lambda c: c["total"], reverse=True)
@@ -694,7 +757,7 @@ def main():
 
     # Build dedicated SQL dataset
     print("🗄️  Extracting and compiling dedicated SQL / Database questions catalog...")
-    sql_dataset = build_global_sql_dataset(merged_companies)
+    sql_dataset = build_global_sql_dataset(merged_companies, official_problem_ids)
     print(f"   Found {sql_dataset['totalSqlProblems']} distinct SQL interview questions.")
 
     total_unique_slugs = set()
