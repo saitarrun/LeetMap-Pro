@@ -184,12 +184,7 @@ export const UserProfileMenu: React.FC = () => {
             className="apple-press flex w-full items-center gap-2.5 px-3.5 py-2 text-left text-xs text-[var(--text-main)] hover:bg-[var(--bg-subtle)] transition-colors cursor-pointer"
           >
             <User className="h-3.5 w-3.5 shrink-0 text-emerald-500" />
-            <div className="flex-1 flex items-center justify-between">
-              <span>Public profile</span>
-              <span className="text-[10px] font-mono text-[var(--text-muted)] bg-[var(--bg-subtle)] px-1.5 py-0.5 rounded border border-[var(--border)]">
-                /u/{user.username}
-              </span>
-            </div>
+            <span>Public profile</span>
           </Link>
           <button
             onClick={() => {
