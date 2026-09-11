@@ -74,11 +74,6 @@ export function CommandPalette() {
 
   return (
     <>
-      <button type="button" onClick={() => { setQuery(''); setOpen(true); }} className="apple-press hidden sm:inline-flex h-8 items-center gap-2 rounded-full border border-[var(--border)] bg-[var(--bg-card)]/80 px-3 text-xs text-[var(--text-muted)] shadow-xs hover:bg-[var(--bg-hover)] hover:text-[var(--text-main)]" aria-label="Open command menu">
-        <Search className="size-3.5" />
-        <span>Search</span>
-        <kbd className="rounded-md border border-[var(--border)] bg-[var(--bg-subtle)] px-1.5 py-0.5 font-mono text-[10px]">⌘K</kbd>
-      </button>
       {open && (
         <div className="apple-modal-backdrop fixed inset-0 z-[100] flex items-start justify-center overflow-y-auto bg-black/30 px-4 py-4 backdrop-blur-sm sm:pt-[10vh]" onMouseDown={() => setOpen(false)}>
           <div role="dialog" aria-modal="true" aria-label="Command menu" className="apple-modal-surface flex max-h-[calc(100vh-2rem)] w-full max-w-xl flex-col overflow-hidden rounded-2xl border border-[var(--border)] bg-[var(--bg-card)] shadow-2xl" onMouseDown={(event) => event.stopPropagation()}>
