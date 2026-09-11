@@ -6,6 +6,7 @@ import { Header } from '@/components/Header';
 import {
   Clock, Zap, TrendingUp, AlertTriangle, CheckCircle2,
   ChevronDown, ChevronRight, BookOpen, Code2, Layers, Info, BarChart3, GitMerge, ArrowLeft,
+  Copy, Check,
 } from 'lucide-react';
 
 /* ══════════════════════════════════════════════════════════
@@ -51,14 +52,46 @@ function SectionCard({
 }
 
 function CodeBlock({ code, label }: { code: string; label?: string }) {
+  const [copied, setCopied] = useState(false);
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(code);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1500);
+    } catch {
+      // fallback
+    }
+  };
+
   return (
-    <div className="rounded-xl overflow-hidden border border-[var(--border)]/60 bg-[var(--bg-card)]">
+    <div className="group flex flex-col h-full rounded-xl overflow-hidden border border-[var(--border)]/50 bg-[var(--bg-card)] transition-colors hover:border-[var(--border)]">
       {label && (
-        <div className="px-3.5 py-1 bg-[var(--bg-subtle)]/40 border-b border-[var(--border)]/40 text-[10px] font-mono text-[var(--text-light)] tracking-wider uppercase">
-          {label}
+        <div className="flex items-center justify-between px-3.5 py-1.5 bg-[var(--bg-subtle)]/40 border-b border-[var(--border)]/40">
+          <span className="text-[10px] font-mono font-medium text-[var(--text-muted)] tracking-wider uppercase truncate">
+            {label}
+          </span>
+          <button
+            type="button"
+            onClick={handleCopy}
+            className="apple-press inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-mono text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--bg-subtle)] transition-colors shrink-0"
+            title="Copy code"
+            aria-label={`Copy ${label || 'code'}`}
+          >
+            {copied ? (
+              <>
+                <Check className="w-3 h-3 text-emerald-500" />
+                <span className="text-emerald-500">Copied</span>
+              </>
+            ) : (
+              <>
+                <Copy className="w-3 h-3 opacity-70" />
+                <span>Copy</span>
+              </>
+            )}
+          </button>
         </div>
       )}
-      <pre className="p-3.5 text-xs leading-relaxed text-[var(--text-main)] bg-transparent overflow-x-auto font-mono whitespace-pre">
+      <pre className="flex-1 p-3.5 text-xs leading-relaxed text-[var(--text-main)] bg-transparent overflow-x-auto font-mono whitespace-pre [scrollbar-width:thin]">
         {code}
       </pre>
     </div>
@@ -1082,13 +1115,13 @@ for value in values:
           {/* 4. Complete Interview Templates */}
           <div className="space-y-2 pt-2">
             <h3 className="text-xs font-semibold uppercase tracking-wider text-[var(--text-muted)]">Battle-Tested Interview Templates</h3>
-            <div className="grid lg:grid-cols-2 gap-3">
+            <div className="grid lg:grid-cols-2 gap-3 items-stretch">
               <CodeBlock label="memoization & recursion template" code={`from functools import cache
 import sys
 
 sys.setrecursionlimit(200_000)
 
-@cache  # Automatically memoizes (i, target)
+@cache  # Automatically memoizes state
 def dp(i, target):
     if target == 0:
         return 0
@@ -1103,74 +1136,82 @@ def dp(i, target):
 
 arr = [1, 2, 4, 4, 4, 7, 9]
 
-# First index >= 4 -> 2
-idx_left = bisect_left(arr, 4)
+# First index >= target (left insertion)
+idx_l = bisect_left(arr, 4)    # -> 2
 
-# First index > 4 -> 5
-idx_right = bisect_right(arr, 4)
+# First index > target (right insertion)
+idx_r = bisect_right(arr, 4)   # -> 5
 
-# Check existence in O(log n)
-exists = idx_left < len(arr) and arr[idx_left] == 4`} />
+# Frequency count in O(log n)
+freq = idx_r - idx_l           # -> 3
 
-              <CodeBlock label="monotonic stack (next greater element)" code={`# Finds next greater element for every index in O(n)
-stack = []  # Stores indices
-result = [-1] * len(nums)
+# Check target existence in O(log n)
+exists = idx_l < len(arr) and arr[idx_l] == 4`} />
 
-for i, num in enumerate(nums):
-    while stack and nums[stack[-1]] < num:
-        prev_idx = stack.pop()
-        result[prev_idx] = num
-    stack.append(i)`} />
+              <CodeBlock label="monotonic stack (next greater element)" code={`# Next Greater Element in O(n) time & space
+def next_greater(nums):
+    stack = []  # Monotonic decreasing indices
+    res = [-1] * len(nums)
 
-              <CodeBlock label="union-find (path compression + rank)" code={`class UnionFind:
+    for i, num in enumerate(nums):
+        # Resolve elements smaller than current
+        while stack and nums[stack[-1]] < num:
+            prev = stack.pop()
+            res[prev] = num
+        stack.append(i)
+
+    return res
+
+# Usage: next_greater([2, 1, 2, 4, 3])`} />
+
+              <CodeBlock label="union-find (path compression & rank)" code={`class UnionFind:
     def __init__(self, n):
-        self.parent = list(range(n))
-        self.rank = [1] * n
+        self.p = list(range(n))
+        self.count = n  # Component count
 
     def find(self, x):
-        if self.parent[x] != x:
-            self.parent[x] = self.find(self.parent[x])  # Compression
-        return self.parent[x]
+        # Path compression: O(alpha(n))
+        if self.p[x] != x:
+            self.p[x] = self.find(self.p[x])
+        return self.p[x]
 
     def union(self, x, y):
         rx, ry = self.find(x), self.find(y)
         if rx == ry: return False
-        if self.rank[rx] < self.rank[ry]: rx, ry = ry, rx
-        self.parent[ry] = rx
-        self.rank[rx] += self.rank[ry]
-        return True`} />
+        self.p[ry] = rx
+        self.count -= 1; return True`} />
 
               <CodeBlock label="matrix BFS / flood fill" code={`from collections import deque
 
 queue = deque([(start_r, start_c)])
 seen = {(start_r, start_c)}
-DIRECTIONS = ((0, 1), (1, 0), (0, -1), (-1, 0))
+DIRS = ((0, 1), (1, 0), (0, -1), (-1, 0))
 
 while queue:
     r, c = queue.popleft()
-    for dr, dc in DIRECTIONS:
+    for dr, dc in DIRS:
         nr, nc = r + dr, c + dc
-        if 0 <= nr < rows and 0 <= nc < cols and (nr, nc) not in seen:
-            seen.add((nr, nc))
-            queue.append((nr, nc))`} />
+        # Check matrix bounds & unvisited
+        if 0 <= nr < R and 0 <= nc < C:
+            if (nr, nc) not in seen:
+                seen.add((nr, nc))
+                queue.append((nr, nc))`} />
 
               <CodeBlock label="topological sort (Kahn's algorithm)" code={`from collections import deque
 
-graph = [[] for _ in range(n)]
-indegree = [0] * n
+adj = [[] for _ in range(n)]
+deg = [0] * n
 for u, v in edges:
-    graph[u].append(v)
-    indegree[v] += 1
+    adj[u].append(v); deg[v] += 1
 
-queue = deque([i for i in range(n) if indegree[i] == 0])
+q = deque(i for i in range(n) if deg[i] == 0)
 order = []
-while queue:
-    node = queue.popleft()
+while q:
+    node = q.popleft()
     order.append(node)
-    for neighbor in graph[node]:
-        indegree[neighbor] -= 1
-        if indegree[neighbor] == 0:
-            queue.append(neighbor)`} />
+    for nxt in adj[node]:
+        deg[nxt] -= 1
+        if deg[nxt] == 0: q.append(nxt)`} />
             </div>
           </div>
 
