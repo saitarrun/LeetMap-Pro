@@ -465,15 +465,6 @@ export function PatternDependencyGraph({
                           className="transition-all duration-150"
                         />
 
-                        {/* Sub-patterns count badge if node represents multiple patterns */}
-                        {node.subPatterns && node.subPatterns.length > 1 && (
-                          <g transform={`translate(${NODE_WIDTH - 26}, 6)`} className="pointer-events-none opacity-80 group-hover:opacity-100 transition-opacity">
-                            <rect width={18} height={13} rx={4} fill="var(--graph-canvas-bg)" stroke="var(--graph-node-border)" strokeWidth={0.8} />
-                            <text x={9} y={9.5} textAnchor="middle" fontSize={8.5} fontWeight="700" fill="var(--graph-node-text)">
-                              {node.subPatterns.length}
-                            </text>
-                          </g>
-                        )}
 
                         {/* Main Node Title - Centered, dynamic text color */}
                         <text
