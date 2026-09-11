@@ -3,7 +3,7 @@
 import React, { useState, useSyncExternalStore } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Sun, Moon, Search } from 'lucide-react';
+import { Sun, Moon } from 'lucide-react';
 import { SignInButton, SignUpButton, Show } from '@clerk/nextjs';
 import { toast } from 'sonner';
 import { SyncStatus } from '@/types';
@@ -145,18 +145,6 @@ export const Header: React.FC<HeaderProps> = () => {
 
         {/* Right Actions */}
         <div className="flex items-center gap-1 sm:gap-1.5">
-          {/* Quick Search Button (Cmd+K) */}
-          <button
-            onClick={() => window.dispatchEvent(new Event('leetmap-open-command-palette'))}
-            className="apple-press inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-xs text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--bg-subtle)] border border-[var(--border)] transition-colors cursor-pointer"
-            title="Search companies, patterns, and questions (⌘K)"
-            aria-label="Open Command Palette"
-          >
-            <Search className="w-3.5 h-3.5 text-[var(--text-muted)]" />
-            <span className="text-[11px] font-medium hidden sm:inline">Search</span>
-            <kbd className="hidden sm:inline-block px-1.5 py-0.2 rounded bg-[var(--bg-card)] border border-[var(--border)] text-[10px] font-mono font-medium">⌘K</kbd>
-          </button>
-
           {/* Realtime Live Refresh Button */}
           <button
             onClick={handleLiveRefresh}
