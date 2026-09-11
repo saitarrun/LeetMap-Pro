@@ -3,16 +3,42 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { ChevronRight, CheckCircle2 } from 'lucide-react';
+import { ChevronRight, CheckCircle2, Pin } from 'lucide-react';
 import { CompanySummary } from '@/types';
+import { usePinnedCompanies } from '@/utils/usePinnedCompanies';
+import { toast } from 'sonner';
 
 interface CompanyCardProps {
   company: CompanySummary;
   solvedCount?: number;
+  isPinned?: boolean;
+  onTogglePin?: (slug: string) => void;
 }
 
-export const CompanyCard: React.FC<CompanyCardProps> = ({ company, solvedCount = 0 }) => {
+export const CompanyCard: React.FC<CompanyCardProps> = ({
+  company,
+  solvedCount = 0,
+  isPinned: explicitPinned,
+  onTogglePin,
+}) => {
   const [imgFailed, setImgFailed] = useState(false);
+  const { isPinned: checkPinned, togglePin } = usePinnedCompanies();
+  const pinned = explicitPinned !== undefined ? explicitPinned : checkPinned(company.slug);
+
+  const handlePin = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (onTogglePin) {
+      onTogglePin(company.slug);
+    } else {
+      const nowPinned = togglePin(company.slug);
+      if (nowPinned) {
+        toast.success(`Pinned ${company.name} for quick access`);
+      } else {
+        toast.info(`Unpinned ${company.name}`);
+      }
+    }
+  };
 
   const initials = company.name
     .split(' ')
@@ -84,7 +110,22 @@ export const CompanyCard: React.FC<CompanyCardProps> = ({ company, solvedCount =
         </div>
       </div>
 
-      <ChevronRight className="w-4 h-4 text-[var(--text-light)] group-hover:text-[var(--text-main)] group-hover:translate-x-0.5 transition-all shrink-0 ml-2" />
+      <div className="flex items-center gap-1 shrink-0 ml-2">
+        <button
+          type="button"
+          onClick={handlePin}
+          className={`apple-press p-1.5 rounded-lg transition-all cursor-pointer ${
+            pinned
+              ? 'text-amber-500 hover:text-amber-600 bg-amber-500/10 hover:bg-amber-500/15'
+              : 'text-[var(--text-light)] opacity-0 group-hover:opacity-100 hover:text-[var(--text-main)] hover:bg-[var(--bg-hover)]'
+          }`}
+          title={pinned ? `Unpin ${company.name}` : `Pin ${company.name} for quick access`}
+          aria-label={pinned ? `Unpin ${company.name}` : `Pin ${company.name}`}
+        >
+          <Pin className={`w-3.5 h-3.5 transition-transform ${pinned ? 'fill-amber-500 rotate-45' : ''}`} />
+        </button>
+        <ChevronRight className="w-4 h-4 text-[var(--text-light)] group-hover:text-[var(--text-main)] group-hover:translate-x-0.5 transition-all" />
+      </div>
     </Link>
   );
 };

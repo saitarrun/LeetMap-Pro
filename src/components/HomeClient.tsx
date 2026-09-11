@@ -1,12 +1,13 @@
 'use client';
 
 import React, { useState, useMemo, useEffect, useRef } from 'react';
-import { Search, Trophy, Database, Building2, Code2, X } from 'lucide-react';
+import { Search, Trophy, Database, Building2, Code2, X, Pin } from 'lucide-react';
 import { CompanySummary, SyncStatus } from '@/types';
 import { Header } from '@/components/Header';
 import { SyncModal } from '@/components/SyncModal';
 import { CompanyCard } from '@/components/CompanyCard';
 import { useSolvedProblems } from '@/utils/useSolvedProblems';
+import { usePinnedCompanies } from '@/utils/usePinnedCompanies';
 
 interface HomeClientProps {
   initialCompanies: CompanySummary[];
@@ -30,9 +31,10 @@ export const HomeClient: React.FC<HomeClientProps> = ({
   const [syncStatus, setSyncStatus] = useState<SyncStatus | null>(initialSyncStatus);
   const [isSyncModalOpen, setIsSyncModalOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-  const [categoryFilter, setCategoryFilter] = useState<'ALL' | 'FAANG' | 'FINTECH' | 'POPULAR' | 'SQL'>('ALL');
+  const [categoryFilter, setCategoryFilter] = useState<'ALL' | 'PINNED' | 'FAANG' | 'FINTECH' | 'POPULAR' | 'SQL'>('ALL');
   const [sortBy, setSortBy] = useState<'total' | 'name' | 'hard'>('total');
   const userSolvedCount = useSolvedProblems().size;
+  const { pinnedSet } = usePinnedCompanies();
 
   const searchInputRef = useRef<HTMLInputElement>(null);
 
@@ -54,6 +56,11 @@ export const HomeClient: React.FC<HomeClientProps> = ({
     };
   }, [searchQuery]);
 
+  const pinnedCompanies = useMemo(() => {
+    if (pinnedSet.size === 0) return [];
+    return companies.filter((c) => pinnedSet.has(c.slug));
+  }, [companies, pinnedSet]);
+
   const filteredCompanies = useMemo(() => {
     return companies
       .filter((c) => {
@@ -65,6 +72,7 @@ export const HomeClient: React.FC<HomeClientProps> = ({
           if (!matchName && !matchSlug && !matchDomain) return false;
         }
 
+        if (categoryFilter === 'PINNED') return pinnedSet.has(c.slug);
         if (categoryFilter === 'FAANG') return FAANG_SLUGS.has(c.slug);
         if (categoryFilter === 'FINTECH') return FINTECH_SLUGS.has(c.slug);
         if (categoryFilter === 'POPULAR') return c.total >= 100;
@@ -76,7 +84,7 @@ export const HomeClient: React.FC<HomeClientProps> = ({
         if (sortBy === 'hard') return b.hard - a.hard;
         return b.total - a.total;
       });
-  }, [companies, searchQuery, categoryFilter, sortBy]);
+  }, [companies, searchQuery, categoryFilter, sortBy, pinnedSet]);
 
   const handleSyncComplete = (newStatus: SyncStatus) => {
     setSyncStatus(newStatus);
@@ -165,6 +173,11 @@ export const HomeClient: React.FC<HomeClientProps> = ({
             <div className="flex w-full flex-nowrap items-center gap-1 overflow-x-auto p-1 rounded-2xl bg-[var(--bg-subtle)] border border-[var(--border)]">
               {[
                 { key: 'ALL', label: 'All Companies' },
+                {
+                  key: 'PINNED',
+                  label: `Pinned${pinnedSet.size > 0 ? ` (${pinnedSet.size})` : ''}`,
+                  isPinnedTab: true,
+                },
                 { key: 'FAANG', label: 'FAANG & Big Tech' },
                 { key: 'FINTECH', label: 'FinTech & Quant' },
                 { key: 'POPULAR', label: '100+ Questions' },
@@ -172,13 +185,22 @@ export const HomeClient: React.FC<HomeClientProps> = ({
                 <button
                   key={tab.key}
                   onClick={() => setCategoryFilter(tab.key as typeof categoryFilter)}
-                  className={`apple-press shrink-0 whitespace-nowrap px-3 py-1.5 rounded-xl font-medium transition-all cursor-pointer sm:flex sm:items-center sm:flex-1 sm:justify-center ${
+                  className={`apple-press shrink-0 whitespace-nowrap px-3 py-1.5 rounded-xl font-medium transition-all cursor-pointer flex items-center gap-1.5 justify-center sm:flex-1 ${
                     categoryFilter === tab.key
                       ? 'bg-[var(--bg-card)] text-[var(--text-main)] shadow-xs font-semibold'
                       : 'text-[var(--text-muted)] hover:text-[var(--text-main)]'
                   }`}
                 >
-                  {tab.label}
+                  {tab.isPinnedTab && (
+                    <Pin
+                      className={`w-3 h-3 transition-transform ${
+                        categoryFilter === 'PINNED' || pinnedSet.size > 0
+                          ? 'fill-amber-500 text-amber-500 rotate-45'
+                          : 'text-current'
+                      }`}
+                    />
+                  )}
+                  <span>{tab.label}</span>
                 </button>
               ))}
             </div>
@@ -214,16 +236,52 @@ export const HomeClient: React.FC<HomeClientProps> = ({
           )}
         </div>
 
+        {/* Pinned Companies Quick Access Shelf */}
+        {pinnedCompanies.length > 0 && categoryFilter === 'ALL' && !searchQuery.trim() && (
+          <section className="space-y-3">
+            <div className="flex items-center justify-between px-1">
+              <div className="flex items-center gap-2 text-xs font-semibold text-[var(--text-main)]">
+                <Pin className="w-3.5 h-3.5 fill-amber-500 text-amber-500 rotate-45" />
+                <span>Pinned Companies</span>
+                <span className="px-2 py-0.5 rounded-full text-[10px] bg-amber-500/10 text-amber-600 dark:text-amber-400 font-mono font-medium">
+                  {pinnedCompanies.length}
+                </span>
+              </div>
+              <button
+                type="button"
+                onClick={() => setCategoryFilter('PINNED')}
+                className="text-xs text-[var(--text-muted)] hover:text-[var(--text-main)] transition-colors cursor-pointer"
+              >
+                View pinned only →
+              </button>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+              {pinnedCompanies.map((company) => (
+                <CompanyCard key={`pinned-${company.slug}`} company={company} isPinned={true} />
+              ))}
+            </div>
+            <div className="pt-2 border-b border-[var(--border)]" />
+          </section>
+        )}
+
         {/* Companies Grid */}
         {filteredCompanies.length === 0 ? (
           <div className="py-20 text-center rounded-3xl border border-[var(--border)] bg-[var(--bg-card)] p-8 max-w-md mx-auto space-y-4 shadow-xs">
             <div className="w-12 h-12 rounded-2xl bg-[var(--bg-subtle)] border border-[var(--border)] flex items-center justify-center mx-auto text-[var(--text-muted)]">
-              <Search className="w-5 h-5 opacity-70" />
+              {categoryFilter === 'PINNED' ? (
+                <Pin className="w-5 h-5 text-amber-500 rotate-45" />
+              ) : (
+                <Search className="w-5 h-5 opacity-70" />
+              )}
             </div>
             <div className="space-y-1">
-              <h3 className="text-base font-semibold text-[var(--text-main)]">No companies found</h3>
+              <h3 className="text-base font-semibold text-[var(--text-main)]">
+                {categoryFilter === 'PINNED' ? 'No pinned companies yet' : 'No companies found'}
+              </h3>
               <p className="text-xs text-[var(--text-muted)] leading-relaxed">
-                {searchQuery
+                {categoryFilter === 'PINNED'
+                  ? 'Click the pin icon on any company card (e.g. Google, Meta, or NeetCode 150) to pin your target interview lists.'
+                  : searchQuery
                   ? `No company matching "${searchQuery}" in this category.`
                   : 'No companies match the selected category filter.'}
               </p>
@@ -235,7 +293,7 @@ export const HomeClient: React.FC<HomeClientProps> = ({
               }}
               className="apple-press inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-semibold bg-[var(--bg-subtle)] hover:bg-[var(--bg-hover)] text-[var(--text-main)] border border-[var(--border)] transition-colors cursor-pointer"
             >
-              <span>Reset all filters</span>
+              <span>Browse all companies</span>
             </button>
           </div>
         ) : (

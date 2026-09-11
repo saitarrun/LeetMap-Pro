@@ -14,11 +14,13 @@ import {
   Database,
   Code2,
   X,
+  Pin,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { CompanyDetail, Problem } from '@/types';
 import { toggleProblemSolved } from '@/utils/progress';
 import { useSolvedProblems } from '@/utils/useSolvedProblems';
+import { usePinnedCompanies } from '@/utils/usePinnedCompanies';
 import { getLeetCodeProblemUrl } from '@/utils/urls';
 import { downloadCsv } from '@/utils/csv';
 
@@ -32,6 +34,8 @@ export const SqlCompanyDetailView: React.FC<SqlCompanyDetailViewProps> = ({ comp
   const [difficultyFilter, setDifficultyFilter] = useState<'ALL' | 'EASY' | 'MEDIUM' | 'HARD'>('ALL');
   const [hideSolved, setHideSolved] = useState(false);
   const solvedSet = useSolvedProblems();
+  const { isPinned: checkPinned, togglePin } = usePinnedCompanies();
+  const isPinned = checkPinned(company.slug);
 
   const [sortBy, setSortBy] = useState<'frequency' | 'difficulty' | 'title' | 'acceptance' | 'id'>('frequency');
   const [sortDir, setSortDir] = useState<'asc' | 'desc'>('desc');
@@ -258,20 +262,47 @@ export const SqlCompanyDetailView: React.FC<SqlCompanyDetailViewProps> = ({ comp
           </div>
         </div>
 
-        {/* Progress Card */}
-        <div className="flex items-center gap-3 bg-[var(--bg-subtle)] border border-[var(--border)] px-4 py-2.5 rounded-2xl self-start md:self-auto">
-          <CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0" />
-          <div>
-            <div className="text-xs font-semibold text-[var(--text-main)]">
-              {companySqlSolvedCount} / {totalSqlCount} solved
-            </div>
-            <div className="w-28 h-1.5 bg-[var(--border)] rounded-full mt-1.5 overflow-hidden">
-              <div
-                className="h-full bg-emerald-500 rounded-full transition-[width] duration-300 ease-out"
-                style={{
-                  width: `${totalSqlCount ? Math.min(100, (companySqlSolvedCount / totalSqlCount) * 100) : 0}%`,
-                }}
-              />
+        {/* Actions & Progress */}
+        <div className="flex flex-wrap items-center gap-2.5 self-start md:self-auto">
+          {/* Pin Button */}
+          <button
+            type="button"
+            onClick={() => {
+              const nowPinned = togglePin(company.slug);
+              if (nowPinned) {
+                toast.success(`Pinned ${company.name}`, {
+                  description: 'Added to your pinned companies for quick access',
+                });
+              } else {
+                toast.info(`Unpinned ${company.name}`);
+              }
+            }}
+            className={`apple-press flex items-center gap-1.5 px-3.5 py-2 rounded-2xl border text-xs font-semibold transition-all cursor-pointer shadow-2xs ${
+              isPinned
+                ? 'bg-amber-500/10 border-amber-500/30 text-amber-600 dark:text-amber-400'
+                : 'bg-[var(--bg-subtle)] border-[var(--border)] text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--bg-card)]'
+            }`}
+            title={isPinned ? `Unpin ${company.name}` : `Pin ${company.name} for quick access`}
+          >
+            <Pin className={`w-3.5 h-3.5 transition-transform ${isPinned ? 'fill-amber-500 text-amber-500 rotate-45' : ''}`} />
+            <span>{isPinned ? 'Pinned' : 'Pin Company'}</span>
+          </button>
+
+          {/* Progress Card */}
+          <div className="flex items-center gap-3 bg-[var(--bg-subtle)] border border-[var(--border)] px-4 py-2 rounded-2xl">
+            <CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0" />
+            <div>
+              <div className="text-xs font-semibold text-[var(--text-main)]">
+                {companySqlSolvedCount} / {totalSqlCount} solved
+              </div>
+              <div className="w-28 h-1.5 bg-[var(--border)] rounded-full mt-1.5 overflow-hidden">
+                <div
+                  className="h-full bg-emerald-500 rounded-full transition-[width] duration-300 ease-out"
+                  style={{
+                    width: `${totalSqlCount ? Math.min(100, (companySqlSolvedCount / totalSqlCount) * 100) : 0}%`,
+                  }}
+                />
+              </div>
             </div>
           </div>
         </div>

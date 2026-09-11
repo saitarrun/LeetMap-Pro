@@ -10,12 +10,14 @@ import {
   LayoutGrid,
   ListFilter,
   X,
+  Pin,
 } from 'lucide-react';
 import { SqlCompanySummary, SqlCatalog, SyncStatus } from '@/types';
 import { Header } from '@/components/Header';
 import { SqlCompanyCard } from '@/components/SqlCompanyCard';
 import { SqlExplorerView } from '@/components/SqlExplorerView';
 import { useSolvedProblems } from '@/utils/useSolvedProblems';
+import { usePinnedCompanies } from '@/utils/usePinnedCompanies';
 
 interface SqlHubClientProps {
   companies: SqlCompanySummary[];
@@ -39,9 +41,10 @@ export const SqlHubClient: React.FC<SqlHubClientProps> = ({
 }) => {
   const [activeView, setActiveView] = useState<'companies' | 'problems'>('companies');
   const [searchQuery, setSearchQuery] = useState('');
-  const [categoryFilter, setCategoryFilter] = useState<'ALL' | 'FAANG' | 'FINTECH' | 'POPULAR_20' | 'POPULAR_50'>('ALL');
+  const [categoryFilter, setCategoryFilter] = useState<'ALL' | 'PINNED' | 'FAANG' | 'FINTECH' | 'POPULAR_20' | 'POPULAR_50'>('ALL');
   const [sortBy, setSortBy] = useState<'sqlTotal' | 'name' | 'sqlHard'>('sqlTotal');
   const solvedSet = useSolvedProblems();
+  const { pinnedSet } = usePinnedCompanies();
 
   const searchInputRef = useRef<HTMLInputElement>(null);
 
@@ -75,6 +78,7 @@ export const SqlHubClient: React.FC<SqlHubClientProps> = ({
           if (!matchName && !matchSlug && !matchDomain) return false;
         }
 
+        if (categoryFilter === 'PINNED') return pinnedSet.has(c.slug);
         if (categoryFilter === 'FAANG') return FAANG_SLUGS.has(c.slug);
         if (categoryFilter === 'FINTECH') return FINTECH_SLUGS.has(c.slug);
         if (categoryFilter === 'POPULAR_20') return c.sqlTotal >= 20;
@@ -86,7 +90,7 @@ export const SqlHubClient: React.FC<SqlHubClientProps> = ({
         if (sortBy === 'sqlHard') return b.sqlHard - a.sqlHard;
         return b.sqlTotal - a.sqlTotal;
       });
-  }, [companies, searchQuery, categoryFilter, sortBy]);
+  }, [companies, searchQuery, categoryFilter, sortBy, pinnedSet]);
 
   const solvedSqlCount = useMemo(() => {
     let count = 0;
@@ -203,6 +207,11 @@ export const SqlHubClient: React.FC<SqlHubClientProps> = ({
                 <div className="flex flex-wrap items-center p-1 rounded-2xl bg-[var(--bg-subtle)] border border-[var(--border)] gap-1">
                   {[
                     { key: 'ALL', label: `All (${companies.length})` },
+                    {
+                      key: 'PINNED',
+                      label: `Pinned${pinnedSet.size > 0 ? ` (${pinnedSet.size})` : ''}`,
+                      isPinnedTab: true,
+                    },
                     { key: 'FAANG', label: 'FAANG & Big Tech' },
                     { key: 'FINTECH', label: 'FinTech & Quant' },
                     { key: 'POPULAR_20', label: '20+ SQL' },
@@ -211,13 +220,22 @@ export const SqlHubClient: React.FC<SqlHubClientProps> = ({
                     <button
                       key={tab.key}
                       onClick={() => setCategoryFilter(tab.key as typeof categoryFilter)}
-                      className={`apple-press px-3 py-1.5 rounded-xl font-medium transition-all cursor-pointer ${
+                      className={`apple-press px-3 py-1.5 rounded-xl font-medium transition-all cursor-pointer flex items-center gap-1.5 ${
                         categoryFilter === tab.key
                           ? 'bg-[var(--bg-card)] text-[var(--text-main)] shadow-xs font-semibold'
                           : 'text-[var(--text-muted)] hover:text-[var(--text-main)]'
                       }`}
                     >
-                      {tab.label}
+                      {tab.isPinnedTab && (
+                        <Pin
+                          className={`w-3 h-3 transition-transform ${
+                            categoryFilter === 'PINNED' || pinnedSet.size > 0
+                              ? 'fill-amber-500 text-amber-500 rotate-45'
+                              : 'text-current'
+                          }`}
+                        />
+                      )}
+                      <span>{tab.label}</span>
                     </button>
                   ))}
                 </div>
