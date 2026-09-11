@@ -17,7 +17,6 @@ import {
 import { PatternSummary, SyncStatus } from '@/types';
 import { Header } from '@/components/Header';
 import { PatternCard } from '@/components/PatternCard';
-import { PatternDependencyGraph } from '@/components/PatternDependencyGraph';
 import { useSolvedProblems } from '@/utils/useSolvedProblems';
 
 interface PatternsHubClientProps {
@@ -30,7 +29,7 @@ export const PatternsHubClient: React.FC<PatternsHubClientProps> = ({
   syncStatus,
 }) => {
   const [searchQuery, setSearchQuery] = useState('');
-  const [categoryFilter, setCategoryFilter] = useState<'ALL' | 'Fundamentals' | 'Data Structures' | 'Trees & Graphs' | 'Advanced & DP' | 'GRAPH'>('ALL');
+  const [categoryFilter, setCategoryFilter] = useState<'ALL' | 'Fundamentals' | 'Data Structures' | 'Trees & Graphs' | 'Advanced & DP'>('ALL');
   const [sortBy, setSortBy] = useState<'total' | 'name' | 'hard'>('total');
   const solvedSet = useSolvedProblems();
 
@@ -155,7 +154,6 @@ export const PatternsHubClient: React.FC<PatternsHubClientProps> = ({
               { key: 'Data Structures', label: 'Data Structures' },
               { key: 'Trees & Graphs', label: 'Trees & Graphs' },
               { key: 'Advanced & DP', label: 'Advanced & DP' },
-              { key: 'GRAPH', label: 'Dependency Graph' },
             ].map((tab) => (
               <button
                 key={tab.key}
@@ -171,20 +169,18 @@ export const PatternsHubClient: React.FC<PatternsHubClientProps> = ({
             ))}
           </div>
 
-          {categoryFilter !== 'GRAPH' && (
-            <div className="flex items-center gap-1.5 self-center sm:self-auto shrink-0 text-xs text-[var(--text-muted)]">
-              <span className="text-[11px] opacity-60">Sort:</span>
-              <select
-                value={sortBy}
-                onChange={(e) => setSortBy(e.target.value as typeof sortBy)}
-                className="bg-transparent text-[var(--text-main)] text-xs focus:outline-none cursor-pointer font-medium"
-              >
-                <option value="total">Most Questions</option>
-                <option value="name">Name (A-Z)</option>
-                <option value="hard">Most Hard</option>
-              </select>
-            </div>
-          )}
+          <div className="flex items-center gap-1.5 self-center sm:self-auto shrink-0 text-xs text-[var(--text-muted)]">
+            <span className="text-[11px] opacity-60">Sort:</span>
+            <select
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value as typeof sortBy)}
+              className="bg-transparent text-[var(--text-main)] text-xs focus:outline-none cursor-pointer font-medium"
+            >
+              <option value="total">Most Questions</option>
+              <option value="name">Name (A-Z)</option>
+              <option value="hard">Most Hard</option>
+            </select>
+          </div>
         </div>
 
         {/* Interview Resources (Quiet, minimalist Apple card) */}
@@ -228,43 +224,37 @@ export const PatternsHubClient: React.FC<PatternsHubClientProps> = ({
           </Link>
         </section>
 
-        {/* Pattern Cards Grid OR Dependency Graph View */}
-        {categoryFilter === 'GRAPH' ? (
-          <section className="apple-enter">
-            <PatternDependencyGraph patterns={patterns} solvedSet={solvedSet} />
-          </section>
-        ) : (
-          <section className="apple-enter grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {filteredPatterns.length === 0 ? (
-              <div className="col-span-full py-20 text-center rounded-3xl border border-[var(--border)] bg-[var(--bg-card)] p-8 max-w-md mx-auto space-y-4 shadow-xs">
-                <div className="w-12 h-12 rounded-2xl bg-[var(--bg-subtle)] border border-[var(--border)] flex items-center justify-center mx-auto text-[var(--text-muted)]">
-                  <Search className="w-5 h-5 opacity-70" />
-                </div>
-                <div className="space-y-1">
-                  <h3 className="text-base font-semibold text-[var(--text-main)]">No patterns found</h3>
-                  <p className="text-xs text-[var(--text-muted)] leading-relaxed">
-                    {searchQuery
-                      ? `No pattern matching "${searchQuery}" in this category.`
-                      : 'No patterns match the selected category filter.'}
-                  </p>
-                </div>
-                <button
-                  onClick={() => {
-                    setSearchQuery('');
-                    setCategoryFilter('ALL');
-                  }}
-                  className="apple-press inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-semibold bg-[var(--bg-subtle)] hover:bg-[var(--bg-hover)] text-[var(--text-main)] border border-[var(--border)] transition-colors cursor-pointer"
-                >
-                  <span>Reset all filters</span>
-                </button>
+        {/* Pattern Cards Grid */}
+        <section className="apple-enter grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {filteredPatterns.length === 0 ? (
+            <div className="col-span-full py-20 text-center rounded-3xl border border-[var(--border)] bg-[var(--bg-card)] p-8 max-w-md mx-auto space-y-4 shadow-xs">
+              <div className="w-12 h-12 rounded-2xl bg-[var(--bg-subtle)] border border-[var(--border)] flex items-center justify-center mx-auto text-[var(--text-muted)]">
+                <Search className="w-5 h-5 opacity-70" />
               </div>
-            ) : (
-              filteredPatterns.map((pattern) => (
-                <PatternCard key={pattern.slug} pattern={pattern} />
-              ))
-            )}
-          </section>
-        )}
+              <div className="space-y-1">
+                <h3 className="text-base font-semibold text-[var(--text-main)]">No patterns found</h3>
+                <p className="text-xs text-[var(--text-muted)] leading-relaxed">
+                  {searchQuery
+                    ? `No pattern matching "${searchQuery}" in this category.`
+                    : 'No patterns match the selected category filter.'}
+                </p>
+              </div>
+              <button
+                onClick={() => {
+                  setSearchQuery('');
+                  setCategoryFilter('ALL');
+                }}
+                className="apple-press inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-semibold bg-[var(--bg-subtle)] hover:bg-[var(--bg-hover)] text-[var(--text-main)] border border-[var(--border)] transition-colors cursor-pointer"
+              >
+                <span>Reset all filters</span>
+              </button>
+            </div>
+          ) : (
+            filteredPatterns.map((pattern) => (
+              <PatternCard key={pattern.slug} pattern={pattern} />
+            ))
+          )}
+        </section>
       </main>
     </div>
   );

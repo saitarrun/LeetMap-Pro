@@ -92,6 +92,17 @@ export const Header: React.FC<HeaderProps> = ({ onOpenSync, syncStatus }) => {
             </Link>
 
             <Link
+              href="/strategy"
+              className={`apple-press px-3 py-1.5 rounded-xl transition-colors ${
+                pathname.startsWith('/strategy')
+                  ? 'bg-[var(--bg-subtle)] text-[var(--text-main)] font-semibold'
+                  : 'text-[var(--text-muted)] hover:text-[var(--text-main)] font-medium'
+              }`}
+            >
+              Strategy
+            </Link>
+
+            <Link
               href="/sql"
               className={`apple-press px-3 py-1.5 rounded-xl transition-colors ${
                 pathname.startsWith('/sql')
