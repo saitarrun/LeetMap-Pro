@@ -294,8 +294,8 @@ export const CompanyDetailView: React.FC<CompanyDetailViewProps> = ({ company })
         </div>
       </section>
 
-      {/* Apple Spotlight Search & Controls (Centered, identical to Homepage) */}
-      <section className="max-w-2xl mx-auto space-y-3">
+      {/* Apple Spotlight Search Bar (Centered) */}
+      <div className="max-w-2xl mx-auto">
         <div className="relative group flex items-center h-12 rounded-full bg-[var(--bg-card)] border border-[var(--border)] hover:border-[var(--text-muted)]/30 focus-within:border-[var(--text-main)]/35 shadow-[0_2px_8px_rgba(0,0,0,0.03)] focus-within:shadow-[0_8px_24px_rgba(0,0,0,0.06)] dark:focus-within:shadow-[0_8px_24px_rgba(0,0,0,0.3)] transition-all duration-200">
           <Search className="absolute left-4.5 w-4 h-4 text-[var(--text-light)] group-focus-within:text-[var(--text-main)] transition-colors pointer-events-none" />
           <input
@@ -326,11 +326,14 @@ export const CompanyDetailView: React.FC<CompanyDetailViewProps> = ({ company })
             </div>
           )}
         </div>
+      </div>
 
-        {/* Flat Recency Tabs & Actions Row */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 text-xs pt-1">
-          {/* Recency Tabs */}
-          <div className="flex items-center gap-1 overflow-x-auto pb-1 sm:pb-0 scrollbar-none">
+      {/* Filter Controls Bar (Full width, matching the table) */}
+      <div className="space-y-2.5 pt-1">
+        {/* Primary Filter Row: Recency & Inline Quick Actions */}
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-2.5 text-xs">
+          {/* Recency Tabs (All 5 visible with clean wrapping if needed) */}
+          <div className="flex flex-wrap items-center gap-1">
             {company.windows.map((win, idx) => (
               <button
                 key={win.key}
@@ -341,20 +344,22 @@ export const CompanyDetailView: React.FC<CompanyDetailViewProps> = ({ company })
                 className={`apple-press shrink-0 whitespace-nowrap px-3 py-1.5 rounded-lg font-medium transition-colors cursor-pointer flex items-center gap-1.5 ${
                   activeTab === idx
                     ? 'bg-[var(--bg-subtle)] text-[var(--text-main)] font-semibold'
-                    : 'text-[var(--text-muted)] hover:text-[var(--text-main)]'
+                    : 'text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--bg-subtle)]/50'
                 }`}
               >
                 <span>{win.name}</span>
-                <span className="text-[10px] font-mono opacity-50">{win.count}</span>
+                <span className={`text-[10px] font-mono ${activeTab === idx ? 'opacity-80' : 'text-[var(--text-light)]'}`}>
+                  {win.count}
+                </span>
               </button>
             ))}
           </div>
 
           {/* Quick Action Tools */}
-          <div className="flex items-center gap-1 self-end sm:self-auto shrink-0 text-xs">
+          <div className="flex items-center gap-1 self-start md:self-auto shrink-0 text-xs">
             <button
               onClick={handleRandomProblem}
-              className="apple-press px-2 py-1 rounded-md text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--bg-subtle)] transition-colors flex items-center gap-1 cursor-pointer"
+              className="apple-press px-2.5 py-1.5 rounded-md text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--bg-subtle)] transition-colors flex items-center gap-1 cursor-pointer"
               title="Open random problem"
             >
               <Shuffle className="w-3.5 h-3.5" />
@@ -362,7 +367,7 @@ export const CompanyDetailView: React.FC<CompanyDetailViewProps> = ({ company })
             </button>
             <button
               onClick={() => setHideTopics(!hideTopics)}
-              className={`apple-press px-2 py-1 rounded-md transition-colors flex items-center gap-1 cursor-pointer ${
+              className={`apple-press px-2.5 py-1.5 rounded-md transition-colors flex items-center gap-1 cursor-pointer ${
                 hideTopics
                   ? 'bg-[var(--bg-subtle)] text-[var(--text-main)] font-medium'
                   : 'text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--bg-subtle)]'
@@ -374,7 +379,7 @@ export const CompanyDetailView: React.FC<CompanyDetailViewProps> = ({ company })
             </button>
             <button
               onClick={() => setHideSolved(!hideSolved)}
-              className={`apple-press px-2 py-1 rounded-md transition-colors flex items-center gap-1 cursor-pointer ${
+              className={`apple-press px-2.5 py-1.5 rounded-md transition-colors flex items-center gap-1 cursor-pointer ${
                 hideSolved
                   ? 'bg-[var(--bg-subtle)] text-[var(--text-main)] font-medium'
                   : 'text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--bg-subtle)]'
@@ -395,7 +400,7 @@ export const CompanyDetailView: React.FC<CompanyDetailViewProps> = ({ company })
         </div>
 
         {/* Secondary Filter Row: Difficulty & Topic Chiclets */}
-        <div className="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-[var(--border)] text-xs">
+        <div className="flex flex-wrap items-center justify-between gap-2.5 pt-2 border-t border-[var(--border)] text-xs">
           {/* Difficulty Segment */}
           <div className="flex items-center gap-1">
             {(['ALL', 'EASY', 'MEDIUM', 'HARD'] as const).map((diff) => (
@@ -415,7 +420,7 @@ export const CompanyDetailView: React.FC<CompanyDetailViewProps> = ({ company })
 
           {/* Topic Chiclets (quiet, minimal text) */}
           {topicCounts.length > 0 && !hideTopics && (
-            <div className="flex items-center gap-1 overflow-x-auto scrollbar-none max-w-xl">
+            <div className="flex flex-wrap items-center gap-1">
               {selectedTopic && (
                 <button
                   onClick={() => setSelectedTopic(null)}
@@ -424,7 +429,7 @@ export const CompanyDetailView: React.FC<CompanyDetailViewProps> = ({ company })
                   Clear topic
                 </button>
               )}
-              {topicCounts.slice(0, 8).map(([topic, count]) => {
+              {topicCounts.slice(0, 10).map(([topic, count]) => {
                 const isSelected = selectedTopic === topic;
                 const displayCount = count >= 1000 ? `${(count / 1000).toFixed(1)}k` : count;
                 return (
@@ -445,7 +450,7 @@ export const CompanyDetailView: React.FC<CompanyDetailViewProps> = ({ company })
             </div>
           )}
         </div>
-      </section>
+      </div>
 
       {/* Apple Squircle Table */}
       <div className="apple-enter border border-[var(--border)] rounded-3xl bg-[var(--bg-card)] overflow-hidden shadow-xs">
