@@ -54,6 +54,9 @@ export const metadata: Metadata = {
     title: 'LeetMap Pro — Company Wise LeetCode & SQL Questions',
     description: 'Browse coding interview problems actually asked by 680+ tech companies, ranked by frequency and recency.',
   },
+  verification: {
+    google: 'zQTd5IdhklFb7tgLr2_5ixhggoG5rfAD-NnMdoJ4Ijk',
+  },
   icons: {
     icon: [
       { url: '/icon.svg', type: 'image/svg+xml' },
@@ -91,6 +94,7 @@ export default async function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
+        <meta name="google-site-verification" content="zQTd5IdhklFb7tgLr2_5ixhggoG5rfAD-NnMdoJ4Ijk" />
         <Script src="/theme-init.js" strategy="beforeInteractive" nonce={nonce} />
         <script
           type="application/ld+json"
