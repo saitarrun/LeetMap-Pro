@@ -131,7 +131,7 @@ export const HomeClient: React.FC<HomeClientProps> = ({
           </h1>
 
           <p className="text-sm sm:text-base text-[var(--text-muted)] leading-relaxed font-normal max-w-xl mx-auto">
-            Interview problems top tech & quant firms actually ask, ranked by frequency and recency.
+            Interview problems top firms actually ask, ranked by frequency and recency.
           </p>
 
           <div className="flex items-center justify-center gap-2 pt-1 text-xs text-[var(--text-muted)] font-normal">
