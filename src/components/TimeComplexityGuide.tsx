@@ -1,10 +1,11 @@
 'use client';
 
 import React, { useState } from 'react';
+import Link from 'next/link';
 import { Header } from '@/components/Header';
 import {
   Clock, Zap, TrendingUp, AlertTriangle, CheckCircle2,
-  ChevronDown, ChevronRight, BookOpen, Code2, Layers, Info, BarChart3, GitMerge,
+  ChevronDown, ChevronRight, BookOpen, Code2, Layers, Info, BarChart3, GitMerge, ArrowLeft,
 } from 'lucide-react';
 
 /* ══════════════════════════════════════════════════════════
@@ -20,28 +21,28 @@ function SectionCard({
 }) {
   const [open, setOpen] = useState(defaultOpen);
   return (
-    <div id={id} className="apple-card scroll-mt-20 rounded-3xl border border-[var(--border)] bg-[var(--bg-card)] overflow-hidden shadow-xs">
+    <div id={id} className="apple-card scroll-mt-20 rounded-2xl border border-[var(--border)]/50 bg-[var(--bg-card)] overflow-hidden transition-all shadow-xs">
       <button
         onClick={() => setOpen(!open)}
-        className="apple-press w-full flex items-center justify-between gap-4 p-5 text-left hover:bg-[var(--bg-subtle)]/50 transition-colors cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-[var(--accent)]"
+        className="apple-press w-full flex items-center justify-between gap-4 p-4 sm:p-4.5 text-left hover:bg-[var(--bg-subtle)]/30 transition-colors cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-[var(--accent)]"
         aria-expanded={open}
         aria-controls={id ? `${id}-content` : undefined}
       >
         <div className="flex items-center gap-3 min-w-0">
-          <div className="w-9 h-9 rounded-xl bg-[var(--bg-subtle)] border border-[var(--border)] flex items-center justify-center shrink-0 text-[var(--text-muted)]">
+          <div className="w-7 h-7 rounded-lg bg-[var(--bg-subtle)] flex items-center justify-center shrink-0 text-[var(--text-muted)]">
             {icon}
           </div>
           <div className="min-w-0">
-            <h2 id={id ? `${id}-title` : undefined} className="text-sm font-semibold text-[var(--text-main)] leading-tight">{title}</h2>
-            <p className="text-xs text-[var(--text-muted)] mt-0.5 truncate">{subtitle}</p>
+            <h2 id={id ? `${id}-title` : undefined} className="text-sm font-semibold text-[var(--text-main)] leading-snug">{title}</h2>
+            <p className="text-xs text-[var(--text-muted)] mt-0.5 truncate font-normal">{subtitle}</p>
           </div>
         </div>
         {open
-          ? <ChevronDown className="w-4 h-4 text-[var(--text-muted)] shrink-0" />
-          : <ChevronRight className="w-4 h-4 text-[var(--text-muted)] shrink-0" />}
+          ? <ChevronDown className="w-3.5 h-3.5 text-[var(--text-muted)] shrink-0 opacity-60" />
+          : <ChevronRight className="w-3.5 h-3.5 text-[var(--text-muted)] shrink-0 opacity-60" />}
       </button>
       {open && (
-        <div id={id ? `${id}-content` : undefined} aria-labelledby={id ? `${id}-title` : undefined} className="min-w-0 px-5 pb-5 border-t border-[var(--border)]">
+        <div id={id ? `${id}-content` : undefined} aria-labelledby={id ? `${id}-title` : undefined} className="min-w-0 px-4 sm:px-5 pb-5 border-t border-[var(--border)]/40">
           <div className="pt-4 space-y-4">{children}</div>
         </div>
       )}
@@ -51,13 +52,13 @@ function SectionCard({
 
 function CodeBlock({ code, label }: { code: string; label?: string }) {
   return (
-    <div className="rounded-xl overflow-hidden border border-[var(--border)]">
+    <div className="rounded-xl overflow-hidden border border-[var(--border)]/60 bg-[var(--bg-card)]">
       {label && (
-        <div className="px-4 py-1.5 bg-[var(--bg-subtle)] border-b border-[var(--border)] text-[10px] font-mono text-[var(--text-muted)] tracking-wide uppercase">
+        <div className="px-3.5 py-1 bg-[var(--bg-subtle)]/40 border-b border-[var(--border)]/40 text-[10px] font-mono text-[var(--text-light)] tracking-wider uppercase">
           {label}
         </div>
       )}
-      <pre className="p-4 text-xs leading-relaxed text-[var(--text-main)] bg-[var(--bg-card)] overflow-x-auto font-mono whitespace-pre">
+      <pre className="p-3.5 text-xs leading-relaxed text-[var(--text-main)] bg-transparent overflow-x-auto font-mono whitespace-pre">
         {code}
       </pre>
     </div>
@@ -66,14 +67,14 @@ function CodeBlock({ code, label }: { code: string; label?: string }) {
 
 function Callout({ type, children }: { type: 'tip' | 'warning' | 'info'; children: React.ReactNode }) {
   const map = {
-    tip:     { cls: 'bg-emerald-500/8 border-emerald-500/25 text-emerald-700 dark:text-emerald-300', Icon: CheckCircle2 },
-    warning: { cls: 'bg-amber-500/8 border-amber-500/25 text-amber-700 dark:text-amber-300',     Icon: AlertTriangle },
-    info:    { cls: 'bg-blue-500/8 border-blue-500/25 text-blue-700 dark:text-blue-300',          Icon: Info },
+    tip:     { cls: 'bg-emerald-500/5 text-emerald-800 dark:text-emerald-300', Icon: CheckCircle2 },
+    warning: { cls: 'bg-amber-500/5 text-amber-800 dark:text-amber-300',     Icon: AlertTriangle },
+    info:    { cls: 'bg-blue-500/5 text-blue-800 dark:text-blue-300',          Icon: Info },
   };
   const { cls, Icon } = map[type];
   return (
-    <div className={`flex gap-2.5 p-3.5 rounded-xl border text-xs leading-relaxed ${cls}`}>
-      <Icon className="w-4 h-4 shrink-0 mt-0.5" />
+    <div className={`flex gap-2.5 p-3 rounded-xl border border-[var(--border)]/60 text-xs leading-relaxed ${cls}`}>
+      <Icon className="w-4 h-4 shrink-0 mt-0.5 opacity-80" />
       <div>{children}</div>
     </div>
   );
@@ -278,17 +279,17 @@ function GrowthRateTable() {
   };
 
   return (
-    <div className="overflow-x-auto rounded-xl border border-[var(--border)]">
+    <div className="overflow-x-auto rounded-xl border border-[var(--border)]/50 bg-[var(--bg-card)]">
       <table className="w-full text-xs min-w-[480px]">
         <thead>
-          <tr className="bg-[var(--bg-subtle)] border-b border-[var(--border)]">
+          <tr className="bg-[var(--bg-subtle)]/60 border-b border-[var(--border)]/40">
             <th className="text-left px-3 py-2.5 font-semibold text-[var(--text-main)]">n</th>
             {comps.map(c => (
               <th key={c.label} className="text-center px-3 py-2.5 font-mono font-semibold text-[var(--text-main)]">{c.label}</th>
             ))}
           </tr>
         </thead>
-        <tbody className="divide-y divide-[var(--border)]">
+        <tbody className="divide-y divide-[var(--border)]/30">
           {ns.map(n => (
             <tr key={n}>
               <td className="px-3 py-2 font-mono font-bold text-[var(--text-main)]">{n.toLocaleString()}</td>
@@ -328,7 +329,7 @@ function ComplexityBar({
 }: { label: string; note: string; pct: number; color: string; rating: string }) {
   const colorMap: Record<string, string> = {
     green:  'bg-emerald-500',
-    lime:   'bg-green-400',
+    lime:   'bg-emerald-400',
     yellow: 'bg-amber-400',
     orange: 'bg-orange-500',
     red:    'bg-rose-500',
@@ -336,7 +337,7 @@ function ComplexityBar({
   };
   const textMap: Record<string, string> = {
     green:  'text-emerald-600 dark:text-emerald-400',
-    lime:   'text-green-600 dark:text-green-400',
+    lime:   'text-emerald-600 dark:text-emerald-400',
     yellow: 'text-amber-600 dark:text-amber-400',
     orange: 'text-orange-600 dark:text-orange-400',
     red:    'text-rose-600 dark:text-rose-400',
@@ -347,16 +348,16 @@ function ComplexityBar({
     <div className="space-y-1.5">
       <div className="flex items-center justify-between gap-2">
         <div className="flex items-center gap-2 min-w-0">
-          <code className={`shrink-0 text-xs font-mono font-bold px-2 py-0.5 rounded-md bg-[var(--bg-subtle)] border border-[var(--border)] ${textMap[color]}`}>
+          <code className={`shrink-0 text-xs font-mono font-semibold px-2 py-0.5 rounded-md bg-[var(--bg-subtle)] ${textMap[color]}`}>
             {label}
           </code>
-          <span className="text-xs text-[var(--text-muted)] truncate">{note}</span>
+          <span className="text-xs text-[var(--text-muted)] truncate font-normal">{note}</span>
         </div>
-        <span className={`text-[10px] font-semibold shrink-0 ${textMap[color]}`}>{rating}</span>
+        <span className={`text-[10px] font-medium shrink-0 opacity-80 ${textMap[color]}`}>{rating}</span>
       </div>
-      <div className="h-2 w-full rounded-full bg-[var(--bg-subtle)] overflow-hidden">
+      <div className="h-1.5 w-full rounded-full bg-[var(--bg-subtle)] overflow-hidden">
         <div
-          className={`h-full rounded-full transition-all ${colorMap[color]}`}
+          className={`h-full rounded-full transition-all duration-300 ${colorMap[color]}`}
           style={{ width: `${pct}%` }}
         />
       </div>
@@ -371,24 +372,24 @@ function PatternRow({
   name, time, space, why, timeColor,
 }: { name: string; time: string; space: string; why: string; timeColor: 'green' | 'yellow' | 'orange' | 'red' }) {
   const timeCls = {
-    green:  'bg-emerald-500/10 border-emerald-500/20 text-emerald-600 dark:text-emerald-400',
-    yellow: 'bg-amber-500/10 border-amber-500/20 text-amber-600 dark:text-amber-400',
-    orange: 'bg-orange-500/10 border-orange-500/20 text-orange-600 dark:text-orange-400',
-    red:    'bg-rose-500/10 border-rose-500/20 text-rose-600 dark:text-rose-400',
+    green:  'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400',
+    yellow: 'bg-amber-500/10 text-amber-600 dark:text-amber-400',
+    orange: 'bg-orange-500/10 text-orange-600 dark:text-orange-400',
+    red:    'bg-rose-500/10 text-rose-600 dark:text-rose-400',
   };
 
   return (
-    <div className="p-4 rounded-xl border border-[var(--border)] bg-[var(--bg-subtle)] space-y-2">
+    <div className="p-3 rounded-xl bg-[var(--bg-subtle)]/50 hover:bg-[var(--bg-subtle)] transition-colors space-y-1">
       <div className="flex flex-wrap items-center gap-2">
         <span className="text-xs font-semibold text-[var(--text-main)]">{name}</span>
-        <code className={`px-2 py-0.5 rounded-md border text-[11px] font-mono font-semibold ${timeCls[timeColor]}`}>
+        <code className={`px-2 py-0.5 rounded-md text-[11px] font-mono font-medium ${timeCls[timeColor]}`}>
           {time}
         </code>
-        <code className="px-2 py-0.5 rounded-md border border-blue-500/20 bg-blue-500/8 text-blue-600 dark:text-blue-400 text-[11px] font-mono">
+        <code className="px-2 py-0.5 rounded-md bg-[var(--bg-card)] text-[var(--text-muted)] text-[11px] font-mono">
           {space}
         </code>
       </div>
-      <p className="text-xs text-[var(--text-muted)] leading-relaxed">{why}</p>
+      <p className="text-xs text-[var(--text-muted)] leading-relaxed font-normal">{why}</p>
     </div>
   );
 }
@@ -401,31 +402,38 @@ export function TimeComplexityGuide() {
     <div className="min-h-screen flex flex-col">
       <Header />
 
-      <main className="guide-reading flex-1 max-w-4xl mx-auto px-4 sm:px-6 py-8 w-full space-y-5">
+      <main className="guide-reading flex-1 max-w-4xl mx-auto px-4 sm:px-6 py-6 sm:py-8 w-full space-y-6">
 
-        {/* ── Hero ── */}
-        <section className="text-center max-w-2xl mx-auto space-y-3 pt-2">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-[var(--bg-subtle)] text-[var(--text-muted)] border border-[var(--border)]">
-            <Clock className="w-3.5 h-3.5 opacity-70" />
-            <span>Master Notes · From Scratch</span>
-          </div>
-          <h1 className="text-3xl sm:text-4xl font-semibold tracking-tight text-[var(--text-main)]">
+        {/* Breadcrumb */}
+        <nav className="flex items-center gap-2 text-xs text-[var(--text-muted)] font-normal flex-wrap">
+          <Link href="/patterns" className="apple-press hover:text-[var(--text-main)] flex items-center gap-1.5 transition-colors">
+            <ArrowLeft className="w-3.5 h-3.5" />
+            <span>Patterns Hub</span>
+          </Link>
+          <span className="opacity-40">/</span>
+          <span className="text-[var(--text-main)] font-medium">Time &amp; Space Complexity</span>
+        </nav>
+
+        {/* Minimal Hero */}
+        <section className="text-center max-w-2xl mx-auto space-y-2.5 pt-1">
+          <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-[var(--text-main)]">
             Time &amp; Space Complexity
           </h1>
-          <p className="text-sm text-[var(--text-muted)] leading-relaxed">
-            The complete visual guide to analyzing algorithm efficiency — from what Big O means,
-            to calculating complexity of any code, with charts, diagrams, and examples.
+          <p className="text-sm text-[var(--text-muted)] font-normal leading-relaxed">
+            The visual guide to analyzing algorithm efficiency — Big O notation,
+            recursion trees, and complexity for every interview pattern.
           </p>
         </section>
 
-        <nav aria-label="Guide sections" className="flex flex-wrap items-center justify-center gap-2 pt-1">
-          <a href="#time-complexity" className="apple-press rounded-xl border border-[var(--border)] bg-[var(--bg-card)] px-3 py-1.5 text-xs font-medium text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--bg-subtle)] transition-colors">
+        {/* Flat Nav Jump Pills */}
+        <div className="flex flex-wrap items-center justify-center gap-1.5 text-xs">
+          <a href="#time-complexity" className="apple-press px-3 py-1 rounded-full bg-[var(--bg-subtle)] text-[var(--text-muted)] hover:text-[var(--text-main)] transition-colors font-medium">
             Big O reference
           </a>
-          <a href="#python-essentials" className="apple-press rounded-xl border border-[var(--border)] bg-[var(--bg-card)] px-3 py-1.5 text-xs font-medium text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--bg-subtle)] transition-colors">
+          <a href="#python-essentials" className="apple-press px-3 py-1 rounded-full bg-[var(--bg-subtle)] text-[var(--text-muted)] hover:text-[var(--text-main)] transition-colors font-medium">
             Python essentials
           </a>
-        </nav>
+        </div>
 
         {/* ══ 1. What Is Complexity? ══ */}
         <SectionCard icon={<BookOpen className="w-4 h-4" />}
@@ -443,25 +451,25 @@ export function TimeComplexityGuide() {
             Big O describes the <em>mathematical relationship</em> between input size and operations
             — valid on any machine.
           </Callout>
-          <div className="grid sm:grid-cols-3 gap-3">
+          <div className="grid sm:grid-cols-3 gap-2.5">
             {[
               { term: 'n', def: 'The input size — array length, node count, string length, etc.' },
               { term: 'T(n)', def: 'The exact number of operations as a function of n' },
               { term: 'O(f(n))', def: 'Upper bound — T(n) grows no faster than f(n) times a constant' },
             ].map(({ term, def }) => (
-              <div key={term} className="p-3 rounded-xl bg-[var(--bg-subtle)] border border-[var(--border)] space-y-1">
+              <div key={term} className="p-3 rounded-xl bg-[var(--bg-subtle)]/60 space-y-1">
                 <code className="text-sm font-mono font-bold text-[var(--text-main)]">{term}</code>
                 <p className="text-xs text-[var(--text-muted)] leading-snug">{def}</p>
               </div>
             ))}
           </div>
-          <div className="grid sm:grid-cols-3 gap-3">
+          <div className="grid sm:grid-cols-3 gap-2.5">
             {[
               { term: 'Best case Ω', def: 'Lower bound on runtime — the algorithm is at least this fast' },
               { term: 'Average Θ', def: 'Tight bound — the algorithm runs in exactly this class on average' },
               { term: 'Worst case O', def: 'Upper bound — interviews always ask for this one' },
             ].map(({ term, def }) => (
-              <div key={term} className="p-3 rounded-xl bg-[var(--bg-subtle)] border border-[var(--border)] space-y-1">
+              <div key={term} className="p-3 rounded-xl bg-[var(--bg-subtle)]/60 space-y-1">
                 <code className="text-sm font-mono font-bold text-[var(--text-main)]">{term}</code>
                 <p className="text-xs text-[var(--text-muted)] leading-snug">{def}</p>
               </div>
@@ -473,7 +481,7 @@ export function TimeComplexityGuide() {
         <SectionCard icon={<BarChart3 className="w-4 h-4" />}
           title="2 · Growth Curves Visualized"
           subtitle="How every Big O class actually looks as n increases">
-          <div className="rounded-xl border border-[var(--border)] bg-[var(--bg-subtle)] p-4">
+          <div className="rounded-xl bg-[var(--bg-subtle)]/40 border border-[var(--border)]/40 p-4">
             <img src="/assets/complexity/growth_curves.jpg" alt="Big O growth curves chart" className="w-full h-auto" />
           </div>
           <Callout type="tip">
@@ -629,16 +637,16 @@ def fib(n):
             Merge sort splits the array in half each time (producing <strong>log n levels</strong>),
             then merges each level back together — doing <strong>O(n) total work per level</strong>.
           </p>
-          <div className="rounded-xl border border-[var(--border)] bg-[var(--bg-subtle)] p-4">
+          <div className="rounded-xl bg-[var(--bg-subtle)]/50 p-4">
             <img src="/assets/complexity/merge_sort_tree_minimal.png" alt="Minimal merge sort recursion tree diagram" className="w-full h-auto" />
           </div>
-          <div className="grid sm:grid-cols-3 gap-3">
+          <div className="grid sm:grid-cols-3 gap-2.5">
             {[
               { label: 'Levels in tree', val: 'log₂n = log₂8 = 3', color: 'text-emerald-600 dark:text-emerald-400' },
               { label: 'Work per level', val: 'O(n) merge ops', color: 'text-amber-600 dark:text-amber-400' },
               { label: 'Total', val: 'O(n) × log n = O(n log n)', color: 'text-[var(--text-main)]' },
             ].map(({ label, val, color }) => (
-              <div key={label} className="p-3 rounded-xl bg-[var(--bg-subtle)] border border-[var(--border)] space-y-1 text-center">
+              <div key={label} className="p-3 rounded-xl bg-[var(--bg-subtle)]/60 space-y-1 text-center">
                 <p className="text-[10px] text-[var(--text-muted)] uppercase tracking-wide">{label}</p>
                 <p className={`text-xs font-mono font-semibold ${color}`}>{val}</p>
               </div>
@@ -654,9 +662,8 @@ def fib(n):
         {/* ══ 6. Pattern-by-Pattern ══ */}
         <SectionCard icon={<Code2 className="w-4 h-4" />}
           title="6 · Pattern-by-Pattern Complexity"
-          subtitle="Why each DSA pattern has its characteristic Big O — with color-coded time bounds"
-          defaultOpen={false}>
-          <div className="space-y-2.5">
+          subtitle="Why each DSA pattern has its characteristic Big O — with color-coded time bounds">
+          <div className="space-y-2">
             <PatternRow name="Two Pointers"     timeColor="green"  time="O(n)"        space="O(1)"       why="Each pointer moves at most n steps. Even with both moving, combined steps ≤ 2n. Drop the constant → O(n)." />
             <PatternRow name="Sliding Window"   timeColor="green"  time="O(n)"        space="O(k)"       why="right advances n times, left advances at most n times total. Each element enters and leaves the window once." />
             <PatternRow name="Binary Search"    timeColor="green"  time="O(log n)"    space="O(1)"       why="Each comparison halves the remaining space. Starting at n, after k steps we have n/2^k elements. k = log₂n when that reaches 1." />
@@ -678,20 +685,19 @@ def fib(n):
         {/* ══ 7. Space Complexity ══ */}
         <SectionCard icon={<Layers className="w-4 h-4" />}
           title="7 · Space Complexity"
-          subtitle="Memory usage — call stack, auxiliary data structures, and the difference"
-          defaultOpen={false}>
+          subtitle="Memory usage — call stack, auxiliary data structures, and the difference">
           <p className="text-sm text-[var(--text-muted)] leading-relaxed">
             Space complexity counts all memory <em>your algorithm allocates</em>, excluding
             the read-only input (unless explicitly storing it).
           </p>
-          <div className="grid sm:grid-cols-2 gap-3">
+          <div className="grid sm:grid-cols-2 gap-2.5">
             {[
               { label: 'Variables & Primitives', note: 'Each int, bool, pointer = O(1)' },
               { label: 'Call Stack', note: 'Each recursive frame counts. Depth h → O(h) space' },
               { label: 'Data Structures', note: 'Arrays, sets, maps, queues you create — count their size' },
               { label: 'Output Space', note: 'Often excluded from auxiliary analysis — ask your interviewer' },
             ].map(({ label, note }) => (
-              <div key={label} className="p-3 rounded-xl border border-[var(--border)] bg-[var(--bg-card)] space-y-0.5">
+              <div key={label} className="p-3.5 rounded-xl bg-[var(--bg-subtle)]/60 space-y-0.5">
                 <p className="text-xs font-semibold text-[var(--text-main)]">{label}</p>
                 <p className="text-xs text-[var(--text-muted)]">{note}</p>
               </div>
@@ -728,8 +734,7 @@ def dfs(node):
         {/* ══ 8. Step-by-Step Analysis Method ══ */}
         <SectionCard icon={<CheckCircle2 className="w-4 h-4" />}
           title="8 · Step-by-Step: How to Analyze Any Code"
-          subtitle="A systematic 6-step method you can apply in any interview"
-          defaultOpen={false}>
+          subtitle="A systematic 6-step method you can apply in any interview">
           <ol className="space-y-3">
             {[
               { step: '1', title: 'Identify input variables', body: 'Name them: n = array length, m = string length, V = vertices, E = edges. Keep separate variables for separate inputs.' },
@@ -740,7 +745,7 @@ def dfs(node):
               { step: '6', title: 'Count space separately', body: 'List every data structure and call stack depth. Sum them. Drop lower-order space terms too.' },
             ].map(({ step, title, body }) => (
               <li key={step} className="flex gap-3">
-                <div className="w-6 h-6 rounded-full bg-[var(--bg-subtle)] border border-[var(--border)] flex items-center justify-center text-[10px] font-bold text-[var(--text-muted)] shrink-0 mt-0.5">
+                <div className="w-5 h-5 rounded-full bg-[var(--bg-subtle)] flex items-center justify-center text-[10px] font-semibold text-[var(--text-muted)] shrink-0 mt-0.5">
                   {step}
                 </div>
                 <div>
@@ -768,8 +773,7 @@ def dfs(node):
         {/* ══ 9. Hard Loop Patterns ══ */}
         <SectionCard icon={<TrendingUp className="w-4 h-4" />}
           title="9 · Hard Loop Patterns"
-          subtitle="The non-obvious loops that separate O(n) from O(n log n), O(n²), and O(√n)"
-          defaultOpen={false}>
+          subtitle="The non-obvious loops that separate O(n) from O(n log n), O(n²), and O(√n)">
           <p className="text-xs text-[var(--text-muted)] leading-relaxed">
             Never classify a loop by its syntax alone. Track how the control variable changes and
             count the values it can take. A variable that doubles is logarithmic; a variable that
@@ -819,20 +823,21 @@ for right in range(n):
         {/* ══ 10. Recurrences & Amortized Analysis ══ */}
         <SectionCard icon={<GitMerge className="w-4 h-4" />}
           title="10 · Recurrences, Amortized Cost & Hidden Work"
-          subtitle="How to analyze divide-and-conquer, dynamic resizing, and library calls"
-          defaultOpen={false}>
-          <div className="grid sm:grid-cols-2 gap-3">
+          subtitle="How to analyze divide-and-conquer, dynamic resizing, and library calls">
+          <div className="grid sm:grid-cols-2 gap-2.5">
             {[
               { name: 'Binary divide + linear combine', rule: 'T(n) = 2T(n/2) + O(n)', result: 'O(n log n)', note: 'Merge sort' },
               { name: 'One smaller recursive call', rule: 'T(n) = T(n/2) + O(1)', result: 'O(log n)', note: 'Binary search' },
               { name: 'Two calls shrinking by one', rule: 'T(n) = 2T(n − 1) + O(1)', result: 'O(2ⁿ)', note: 'Naive Fibonacci' },
               { name: 'Linear work at every level', rule: 'T(n) = T(n − 1) + O(n)', result: 'O(n²)', note: 'Repeated prefix work' },
             ].map(({ name, rule, result, note }) => (
-              <div key={name} className="p-3 rounded-xl border border-[var(--border)] bg-[var(--bg-subtle)] space-y-1.5">
-                <p className="text-xs font-semibold text-[var(--text-main)]">{name}</p>
-                <code className="block text-[11px] font-mono text-[var(--text-muted)]">{rule}</code>
+              <div key={name} className="p-3.5 rounded-xl bg-[var(--bg-subtle)]/50 hover:bg-[var(--bg-subtle)] transition-colors space-y-1.5">
                 <div className="flex items-center justify-between gap-2">
-                  <span className="text-xs font-mono font-bold text-emerald-600 dark:text-emerald-400">{result}</span>
+                  <p className="text-xs font-semibold text-[var(--text-main)]">{name}</p>
+                  <span className="text-xs font-mono font-semibold text-emerald-600 dark:text-emerald-400">{result}</span>
+                </div>
+                <div className="flex items-center justify-between gap-2 text-xs">
+                  <code className="text-[11px] font-mono text-[var(--text-muted)]">{rule}</code>
                   <span className="text-[10px] text-[var(--text-light)]">{note}</span>
                 </div>
               </div>
@@ -871,9 +876,8 @@ for value in values:
         {/* ══ 11. Common Mistakes ══ */}
         <SectionCard icon={<AlertTriangle className="w-4 h-4" />}
           title="11 · Common Mistakes & Traps"
-          subtitle="Things that trip up even experienced engineers"
-          defaultOpen={false}>
-          <div className="space-y-3">
+          subtitle="Things that trip up even experienced engineers">
+          <div className="space-y-2.5">
             {[
               { trap: 'String concatenation inside a loop', detail: '"result += char" in a loop can be O(n²) — each concat may copy the whole string. Use a list with append() and join() at the end → O(n).' },
               { trap: 'Calling sort() inside a loop',       detail: 'values.sort() inside an n-iteration loop = O(n² log n) total. Pull sorting out of loops.' },
@@ -883,12 +887,12 @@ for value in values:
               { trap: 'Forgetting call stack space',        detail: 'A recursion of depth n uses O(n) call-stack space even if each frame is O(1). Stack overflow is possible for n > ~10,000.' },
               { trap: 'Misidentifying amortized complexity',detail: 'Array push is O(1) amortized, not always O(1). Resizing is O(n) but spread over n pushes gives O(1) average. Don\'t count the resize cost per push.' },
             ].map(({ trap, detail }) => (
-              <div key={trap} className="p-4 rounded-xl border border-rose-500/20 bg-rose-500/5 space-y-1.5">
+              <div key={trap} className="p-3.5 rounded-xl border border-rose-500/15 bg-rose-500/5 space-y-1">
                 <p className="text-xs font-semibold text-rose-600 dark:text-rose-400 flex items-center gap-1.5">
                   <AlertTriangle className="w-3.5 h-3.5 shrink-0" />
                   {trap}
                 </p>
-                <p className="text-xs text-[var(--text-main)] leading-relaxed">{detail}</p>
+                <p className="text-xs text-[var(--text-main)] leading-relaxed pl-5">{detail}</p>
               </div>
             ))}
           </div>
@@ -897,18 +901,17 @@ for value in values:
         {/* ══ 12. Cheat Sheet Table ══ */}
         <SectionCard id="time-complexity" icon={<Zap className="w-4 h-4" />}
           title="12 · Time Complexity Reference"
-          subtitle="Quick-reference Big O costs for common operations and data structures"
-          defaultOpen={false}>
-          <div className="overflow-x-auto rounded-xl border border-[var(--border)]">
+          subtitle="Quick-reference Big O costs for common operations and data structures">
+          <div className="overflow-x-auto rounded-xl border border-[var(--border)]/50 bg-[var(--bg-card)]">
             <table className="w-full text-xs min-w-[420px]">
               <thead>
-                <tr className="bg-[var(--bg-subtle)] border-b border-[var(--border)]">
+                <tr className="bg-[var(--bg-subtle)]/60 border-b border-[var(--border)]/40">
                   <th className="text-left px-4 py-2.5 font-semibold text-[var(--text-main)]">Operation</th>
                   <th className="text-left px-4 py-2.5 font-semibold text-[var(--text-main)]">Time</th>
                   <th className="text-left px-4 py-2.5 font-semibold text-[var(--text-main)] hidden sm:table-cell">Notes</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[var(--border)]">
+              <tbody className="divide-y divide-[var(--border)]/30">
                 {[
                   ['List index [i]',             'O(1)',           'Read or write by index'],
                   ['list.append() / pop()',      'O(1) amortized','May resize occasionally'],
@@ -928,7 +931,7 @@ for value in values:
                   ['BFS / DFS on graph',         'O(V + E)',       'Visits each vertex + edge once'],
                   ['Recursive DFS on tree',      'O(n) time · O(h) space', 'h = tree height'],
                 ].map(([op, time, note], i) => (
-                  <tr key={i} className={i % 2 === 0 ? 'bg-[var(--bg-card)]' : 'bg-[var(--bg-subtle)]/30'}>
+                  <tr key={i} className={i % 2 === 0 ? 'bg-transparent' : 'bg-[var(--bg-subtle)]/20'}>
                     <td className="px-4 py-2 font-mono text-[var(--text-main)]">{op}</td>
                     <td className="px-4 py-2 font-mono text-emerald-600 dark:text-emerald-400 font-semibold whitespace-nowrap">{time}</td>
                     <td className="px-4 py-2 text-[var(--text-muted)] hidden sm:table-cell">{note}</td>
@@ -942,14 +945,13 @@ for value in values:
         {/* ══ 13. Python Essentials ══ */}
         <SectionCard id="python-essentials" icon={<Code2 className="w-4 h-4" />}
           title="13 · Python LeetCode Essentials"
-          subtitle="The built-ins, data structures, and templates used across problem types"
-          defaultOpen={false}>
-          <div className="space-y-2 pt-2">
-            <h3 className="text-xs font-semibold uppercase tracking-wide text-[var(--text-main)]">Python LeetCode Toolkit</h3>
-            <div className="overflow-x-auto rounded-xl border border-[var(--border)]">
+          subtitle="The built-ins, data structures, and templates used across problem types">
+          <div className="space-y-2 pt-1">
+            <h3 className="text-xs font-semibold uppercase tracking-wider text-[var(--text-muted)]">Python LeetCode Toolkit</h3>
+            <div className="overflow-x-auto rounded-xl border border-[var(--border)]/50 bg-[var(--bg-card)]">
               <table className="w-full text-xs min-w-[620px]">
                 <thead>
-                  <tr className="bg-[var(--bg-subtle)] border-b border-[var(--border)]">
+                  <tr className="bg-[var(--bg-subtle)]/60 border-b border-[var(--border)]/40">
                     <th className="text-left px-4 py-2.5 font-semibold text-[var(--text-main)]">Category</th>
                     <th className="text-left px-4 py-2.5 font-semibold text-[var(--text-main)]">Python pattern</th>
                     <th className="text-left px-4 py-2.5 font-semibold text-[var(--text-main)]">Use it for</th>
@@ -1108,17 +1110,17 @@ while queue:
 # A cycle exists when len(order) < courses.
 # Time: O(V + E) · Space: O(V + E)`} />
           </div>
-          <div className="overflow-x-auto rounded-xl border border-[var(--border)]">
+          <div className="overflow-x-auto rounded-xl border border-[var(--border)]/50 bg-[var(--bg-card)]">
             <table className="w-full text-xs min-w-[620px]">
               <thead>
-                <tr className="bg-[var(--bg-subtle)] border-b border-[var(--border)]">
+                <tr className="bg-[var(--bg-subtle)]/60 border-b border-[var(--border)]/40">
                   <th className="text-left px-4 py-2.5 font-semibold text-[var(--text-main)]">Structure</th>
                   <th className="text-left px-4 py-2.5 font-semibold text-[var(--text-main)]">Representation</th>
                   <th className="text-left px-4 py-2.5 font-semibold text-[var(--text-main)]">Typical pattern</th>
                   <th className="text-left px-4 py-2.5 font-semibold text-[var(--text-main)]">Cost</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[var(--border)]">
+              <tbody className="divide-y divide-[var(--border)]/30">
                 {[
                   ['Matrix', 'list[list[int]]', 'Nested loops, directions, flood fill', 'O(R × C)'],
                   ['Graph', 'list[list[int]]', 'DFS/BFS with visited set', 'O(V + E)'],
