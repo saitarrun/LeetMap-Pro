@@ -12,6 +12,7 @@ import {
   X,
   Clock,
   ChevronRight,
+  Code2,
 } from 'lucide-react';
 import { PatternSummary, SyncStatus } from '@/types';
 import { Header } from '@/components/Header';
@@ -151,8 +152,8 @@ export const PatternsHubClient: React.FC<PatternsHubClientProps> = ({
           </div>
 
           {/* Category Tabs */}
-          <div className="flex flex-wrap items-center justify-between gap-3 text-xs">
-            <div className="flex flex-wrap items-center p-1 rounded-2xl bg-[var(--bg-subtle)] border border-[var(--border)] gap-1">
+          <div className="flex flex-col gap-3 text-xs">
+            <div className="flex w-full flex-nowrap items-center gap-1 overflow-x-auto p-1 rounded-2xl bg-[var(--bg-subtle)] border border-[var(--border)]">
               {[
                 { key: 'ALL', label: `All Patterns (${patterns.length})` },
                 { key: 'Fundamentals', label: 'Fundamentals' },
@@ -163,7 +164,7 @@ export const PatternsHubClient: React.FC<PatternsHubClientProps> = ({
                 <button
                   key={tab.key}
                   onClick={() => setCategoryFilter(tab.key as typeof categoryFilter)}
-                  className={`apple-press flex items-center gap-1.5 px-3 py-1.5 rounded-xl font-medium transition-all cursor-pointer ${
+                  className={`apple-press flex shrink-0 items-center gap-1.5 whitespace-nowrap px-3 py-1.5 rounded-xl font-medium transition-all cursor-pointer sm:flex-1 sm:justify-center ${
                     categoryFilter === tab.key
                       ? 'bg-[var(--bg-card)] text-[var(--text-main)] shadow-xs font-semibold'
                       : 'text-[var(--text-muted)] hover:text-[var(--text-main)]'
@@ -176,7 +177,7 @@ export const PatternsHubClient: React.FC<PatternsHubClientProps> = ({
             </div>
 
             {/* Sort Dropdown */}
-            <div className="flex items-center gap-2 ml-auto">
+            <div className="flex items-center gap-2 self-end">
               <div className="flex items-center gap-1.5 bg-[var(--bg-card)] border border-[var(--border)] px-3 py-1.5 rounded-xl text-xs shadow-2xs">
                 <ArrowUpDown className="w-3.5 h-3.5 text-[var(--text-muted)]" />
                 <span className="text-[var(--text-muted)] font-normal">Sort:</span>
@@ -194,11 +195,11 @@ export const PatternsHubClient: React.FC<PatternsHubClientProps> = ({
           </div>
         </section>
 
-        {/* Time Complexity Master Notes Banner */}
-        <section>
+        {/* Interview Resources */}
+        <section className="grid gap-3 md:grid-cols-2">
           <Link
-            href="/patterns/time-complexity"
-            className="group flex items-center justify-between gap-4 p-4 sm:p-5 rounded-2xl border border-[var(--border)] bg-[var(--bg-card)] hover:border-amber-500/40 hover:bg-amber-500/5 transition-all shadow-xs cursor-pointer"
+            href="/patterns/time-complexity#time-complexity"
+            className="apple-card group flex items-center justify-between gap-4 p-4 sm:p-5 rounded-2xl border border-[var(--border)] bg-[var(--bg-card)] hover:border-amber-500/40 hover:bg-amber-500/5 transition-all shadow-xs cursor-pointer"
           >
             <div className="flex items-center gap-4 min-w-0">
               <div className="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/25 flex items-center justify-center shrink-0">
@@ -206,19 +207,31 @@ export const PatternsHubClient: React.FC<PatternsHubClientProps> = ({
               </div>
               <div className="min-w-0">
                 <div className="flex flex-wrap items-center gap-2 mb-0.5">
-                  <span className="text-sm font-semibold text-[var(--text-main)]">
-                    Time &amp; Space Complexity — Master Notes
-                  </span>
-                  <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/25 uppercase tracking-wide">
-                    From Scratch
-                  </span>
+                  <span className="text-sm font-semibold text-[var(--text-main)]">Time Complexity</span>
+                  <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/25 uppercase tracking-wide">Big O</span>
                 </div>
-                <p className="text-xs text-[var(--text-muted)] leading-snug truncate">
-                  Big O notation · Complexity ladder · 4 calculation rules · Every pattern explained · Space analysis · Interview cheat sheet
-                </p>
+                <p className="text-xs text-[var(--text-muted)] leading-snug">Analyze loops, recursion, space, and hard patterns</p>
               </div>
             </div>
             <ChevronRight className="w-4 h-4 text-[var(--text-muted)] group-hover:text-amber-500 transition-colors shrink-0" />
+          </Link>
+          <Link
+            href="/patterns/time-complexity#python-essentials"
+            className="apple-card group flex items-center justify-between gap-4 p-4 sm:p-5 rounded-2xl border border-[var(--border)] bg-[var(--bg-card)] hover:border-emerald-500/40 hover:bg-emerald-500/5 transition-all shadow-xs cursor-pointer"
+          >
+            <div className="flex items-center gap-4 min-w-0">
+              <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/25 flex items-center justify-center shrink-0">
+                <Code2 className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
+              </div>
+              <div className="min-w-0">
+                <div className="flex flex-wrap items-center gap-2 mb-0.5">
+                  <span className="text-sm font-semibold text-[var(--text-main)]">Python Essentials</span>
+                  <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/25 uppercase tracking-wide">LeetCode</span>
+                </div>
+                <p className="text-xs text-[var(--text-muted)] leading-snug">Dicts, sets, heaps, matrices, graphs, trees, and templates</p>
+              </div>
+            </div>
+            <ChevronRight className="w-4 h-4 text-[var(--text-muted)] group-hover:text-emerald-500 transition-colors shrink-0" />
           </Link>
         </section>
 

@@ -1,17 +1,17 @@
 @import "tailwindcss";
 
 :root {
-  --bg-page: #fbfbfa;
-  --bg-card: #ffffff;
-  --bg-card-glass: rgba(255, 255, 255, 0.75);
-  --bg-subtle: #f4f4f2;
-  --bg-hover: #ecece9;
-  --border: rgba(0, 0, 0, 0.08);
-  --border-subtle: rgba(0, 0, 0, 0.04);
+  --bg-page: #f7f7f5;
+  --bg-card: #fffefd;
+  --bg-card-glass: rgba(255, 254, 253, 0.78);
+  --bg-subtle: #f0f0ed;
+  --bg-hover: #e8e8e4;
+  --border: rgba(0, 0, 0, 0.12);
+  --border-subtle: rgba(0, 0, 0, 0.06);
   --specular-border: rgba(255, 255, 255, 0.8);
   --text-main: #1d1d1f;
-  --text-muted: #86868b;
-  --text-light: #a1a1a6;
+  --text-muted: #4f5158;
+  --text-light: #686a72;
   
   --diff-easy-bg: rgba(52, 199, 89, 0.12);
   --diff-easy-text: #248a3d;
@@ -29,17 +29,17 @@
 }
 
 [data-theme="dark"] {
-  --bg-page: #000000;
-  --bg-card: #161618;
-  --bg-card-glass: rgba(22, 22, 24, 0.72);
-  --bg-subtle: #1c1c1e;
-  --bg-hover: #2c2c2e;
+  --bg-page: #0b0b0c;
+  --bg-card: #171719;
+  --bg-card-glass: rgba(23, 23, 25, 0.78);
+  --bg-subtle: #202023;
+  --bg-hover: #2a2a2e;
   --border: rgba(255, 255, 255, 0.1);
   --border-subtle: rgba(255, 255, 255, 0.05);
   --specular-border: rgba(255, 255, 255, 0.12);
   --text-main: #f5f5f7;
-  --text-muted: #86868b;
-  --text-light: #636366;
+  --text-muted: #b1b1b6;
+  --text-light: #98989f;
 
   --diff-easy-bg: rgba(48, 209, 88, 0.15);
   --diff-easy-text: #30d158;
@@ -60,7 +60,60 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
+  line-height: 1.5;
   min-height: 100vh;
+}
+
+/* Calm long-form reading rhythm for guide content. */
+.guide-reading {
+  line-height: 1.55;
+}
+
+.guide-reading p {
+  line-height: 1.65;
+  overflow-wrap: anywhere;
+}
+
+.guide-reading .text-xs {
+  font-size: 0.8125rem;
+}
+
+.guide-reading table {
+  text-align: left;
+}
+
+.guide-reading code,
+.guide-reading pre {
+  font-variant-ligatures: none;
+}
+
+button,
+a,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+button,
+a {
+  -webkit-tap-highlight-color: transparent;
+}
+
+:where(button, a, input, select, textarea):focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+:where(input, select, textarea)::selection {
+  background-color: rgba(0, 113, 227, 0.25);
+}
+
+/* Text fields inside the palette use the palette's own focus language. */
+.command-palette-input:focus,
+.command-palette-input:focus-visible {
+  outline: none !important;
+  box-shadow: none;
 }
 
 /* Apple Optical Sizing & Tracking */
@@ -131,6 +184,38 @@ kbd,
   -webkit-backdrop-filter: blur(20px) saturate(180%);
   border: 1px solid var(--border);
   box-shadow: inset 0 1px 0 0 var(--specular-border);
+}
+
+/* Keep scroll chrome quiet until the user reaches for it. */
+.apple-modal-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: transparent transparent;
+}
+
+.apple-modal-scroll:hover,
+.apple-modal-scroll:focus-within {
+  scrollbar-color: var(--text-light) transparent;
+}
+
+.apple-modal-scroll::-webkit-scrollbar {
+  width: 8px;
+}
+
+.apple-modal-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.apple-modal-scroll::-webkit-scrollbar-thumb {
+  border: 2px solid transparent;
+  border-radius: 999px;
+  background: transparent;
+  background-clip: padding-box;
+}
+
+.apple-modal-scroll:hover::-webkit-scrollbar-thumb,
+.apple-modal-scroll:focus-within::-webkit-scrollbar-thumb {
+  background: var(--text-light);
+  background-clip: padding-box;
 }
 
 /* GPU Hardware-Accelerated Animations (Zero Lag / Zero JS Overhead) */

@@ -90,34 +90,33 @@ export const ActivityTracker: React.FC<ActivityTrackerProps> = ({ stats, display
     <div className="space-y-4">
       <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
         {statCards.map(({ label, value, suffix, icon: Icon, color }) => (
-          <div key={label} className="rounded-2xl border border-[var(--border)] bg-[var(--bg-subtle)] p-3">
-            <div className="flex items-center gap-1.5 text-[11px] font-medium text-[var(--text-muted)]">
+          <div key={label} className="apple-card rounded-2xl border border-[var(--border)] bg-[var(--bg-card)] p-3.5">
+            <div className="flex items-center gap-1.5 text-xs font-medium text-[var(--text-muted)]">
               <Icon className={`h-3.5 w-3.5 ${color}`} />
               <span>{label}</span>
             </div>
             <div className="mt-1 flex items-baseline gap-1">
-              <span className="font-mono text-xl font-bold text-[var(--text-main)]">{value}</span>
-              <span className="text-[10px] text-[var(--text-muted)]">{suffix}</span>
+              <span className="font-mono text-2xl font-bold tracking-tight text-[var(--text-main)]">{value}</span>
+              <span className="text-xs text-[var(--text-muted)]">{suffix}</span>
             </div>
           </div>
         ))}
       </div>
 
-      <section className="rounded-2xl border border-[var(--border)] bg-[var(--bg-card)] p-4 shadow-2xs">
+      <section className="rounded-2xl border border-[var(--border)] bg-[var(--bg-card)] p-4 shadow-xs sm:p-5">
         <div className="mb-4 flex items-center justify-between gap-3">
           <div className="flex items-center gap-2">
             <CalendarDays className="h-4 w-4 text-emerald-500" />
             <div>
-              <h3 className="text-xs font-semibold text-[var(--text-main)]">LeetCode solve activity</h3>
-              <p className="mt-0.5 text-[10px] text-[var(--text-muted)]">Past 26 weeks</p>
+            <h3 className="text-sm font-semibold text-[var(--text-main)]">LeetCode solve activity</h3>
+              <p className="mt-0.5 text-xs text-[var(--text-muted)]">Past 26 weeks · each square is one day</p>
             </div>
           </div>
-          <span className="hidden text-[10px] text-[var(--text-muted)] sm:block">Each square is one day</span>
         </div>
 
         <div className="overflow-x-auto pb-1">
-          <div className="w-max min-w-full">
-            <div className="ml-8 grid grid-cols-[repeat(26,14px)] gap-1.5">
+          <div className="min-w-[760px]">
+            <div className="ml-8 grid w-[calc(100%_-_2rem)] grid-cols-[repeat(26,minmax(0,1fr))] gap-1.5">
               {calendar.monthLabels.map((label, index) => (
                 <span key={`${label}-${index}`} className="h-4 text-[9px] text-[var(--text-muted)]">
                   {label}
@@ -135,13 +134,13 @@ export const ActivityTracker: React.FC<ActivityTrackerProps> = ({ stats, display
                 <span>Fri</span>
                 <span />
               </div>
-              <div className="grid grid-cols-[repeat(26,14px)] gap-1.5">
+              <div className="grid min-w-0 flex-1 grid-cols-[repeat(26,minmax(0,1fr))] gap-1.5">
                 {calendar.weeks.map((week, weekIndex) => (
-                  <div key={weekIndex} className="grid grid-rows-7 gap-1.5">
+                  <div key={weekIndex} className="grid min-w-0 grid-rows-7 gap-1.5">
                     {week.map((day) => (
                       <div
                         key={day.date}
-                        className={`h-3.5 w-3.5 rounded-[3px] border transition-transform ${getCellClass(day.count, day.isFuture)} ${day.isFuture ? '' : 'hover:scale-125'}`}
+                        className={`aspect-square w-full rounded-[3px] border transition-transform ${getCellClass(day.count, day.isFuture)} ${day.isFuture ? '' : 'hover:scale-125'}`}
                         title={day.isFuture ? undefined : `${day.count} ${day.count === 1 ? 'problem' : 'problems'} solved on ${day.date}`}
                         aria-label={day.isFuture ? undefined : `${day.count} problems solved on ${day.date}`}
                       />
@@ -166,8 +165,8 @@ export const ActivityTracker: React.FC<ActivityTrackerProps> = ({ stats, display
       </section>
 
       {stats.recentSolved.length > 0 && (
-        <section className="rounded-2xl border border-[var(--border)] bg-[var(--bg-subtle)] p-3.5">
-          <h3 className="text-xs font-semibold text-[var(--text-main)]">Recently solved by {displayName}</h3>
+        <section className="rounded-2xl border border-[var(--border)] bg-[var(--bg-subtle)] p-4">
+          <h3 className="text-sm font-semibold text-[var(--text-main)]">Recently solved by {displayName}</h3>
           <div className="mt-2 divide-y divide-[var(--border)]">
             {stats.recentSolved.slice(0, 5).map((record) => (
               <a

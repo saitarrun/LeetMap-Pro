@@ -7,7 +7,7 @@ import { auth } from '@clerk/nextjs/server';
 import { isTrustedMutationRequest } from '@/utils/request-security';
 
 const execFileAsync = promisify(execFile);
-const SYNC_COOLDOWN_MS = 60_000;
+const SYNC_COOLDOWN_MS = 10_000;
 const lastSyncByUser = new Map<string, number>();
 let syncInProgress = false;
 
@@ -21,16 +21,25 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
   }
 
+  const isDev = process.env.NODE_ENV === 'development';
   const allowedUserIds = (process.env.SYNC_ADMIN_USER_IDS || '')
     .split(',')
     .map((value) => value.trim())
     .filter(Boolean);
-  if (allowedUserIds.length === 0) {
-    console.error('SYNC_ADMIN_USER_IDS is not configured');
-    return NextResponse.json({ error: 'Sync is not configured' }, { status: 503 });
-  }
-  if (!allowedUserIds.includes(userId)) {
-    return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+
+  // In development, allow any authenticated user by default.
+  // In production, check allowlist (or allow if '*' is specified).
+  const isAllowed =
+    isDev ||
+    allowedUserIds.includes('*') ||
+    allowedUserIds.includes(userId);
+
+  if (!isAllowed) {
+    if (allowedUserIds.length === 0) {
+      console.error('SYNC_ADMIN_USER_IDS is not configured');
+      return NextResponse.json({ error: 'Sync is not configured. Set SYNC_ADMIN_USER_IDS in environment.' }, { status: 503 });
+    }
+    return NextResponse.json({ error: 'Forbidden: Admin privileges required to trigger sync' }, { status: 403 });
   }
 
   const now = Date.now();
@@ -38,7 +47,7 @@ export async function POST(request: Request) {
   if (syncInProgress || now - lastSync < SYNC_COOLDOWN_MS) {
     return NextResponse.json(
       { error: syncInProgress ? 'A sync is already running' : 'Please wait before syncing again' },
-      { status: 429, headers: { 'Retry-After': '60' } }
+      { status: 429, headers: { 'Retry-After': '10' } }
     );
   }
 
@@ -46,10 +55,10 @@ export async function POST(request: Request) {
   lastSyncByUser.set(userId, now);
   try {
     const scriptPath = path.join(process.cwd(), 'scripts', 'sync-data.py');
-    await execFileAsync('python3', [scriptPath], {
+    const { stdout, stderr } = await execFileAsync('python3', [scriptPath], {
       cwd: process.cwd(),
       timeout: 120000,
-      maxBuffer: 1024 * 1024,
+      maxBuffer: 2 * 1024 * 1024,
     });
 
     const statusPath = path.join(process.cwd(), 'public', 'data', 'sync-status.json');
@@ -61,13 +70,15 @@ export async function POST(request: Request) {
     return NextResponse.json({
       success: true,
       status: statusData,
+      stdout,
+      stderr,
     }, { headers: { 'Cache-Control': 'no-store' } });
-  } catch (error) {
+  } catch (error: any) {
     console.error('Sync failed:', error);
     return NextResponse.json(
       {
         success: false,
-        error: 'Sync failed',
+        error: error?.message || 'Sync failed',
       },
       { status: 500 }
     );

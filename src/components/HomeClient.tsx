@@ -161,8 +161,8 @@ export const HomeClient: React.FC<HomeClientProps> = ({
           </div>
 
           {/* Segmented Category Filter Bar */}
-          <div className="flex flex-wrap items-center justify-between gap-3 text-xs">
-            <div className="flex flex-wrap items-center p-1 rounded-2xl bg-[var(--bg-subtle)] border border-[var(--border)] gap-1">
+          <div className="flex flex-col gap-3 text-xs">
+            <div className="flex w-full flex-nowrap items-center gap-1 overflow-x-auto p-1 rounded-2xl bg-[var(--bg-subtle)] border border-[var(--border)]">
               {[
                 { key: 'ALL', label: 'All Companies' },
                 { key: 'FAANG', label: 'FAANG & Big Tech' },
@@ -172,7 +172,7 @@ export const HomeClient: React.FC<HomeClientProps> = ({
                 <button
                   key={tab.key}
                   onClick={() => setCategoryFilter(tab.key as typeof categoryFilter)}
-                  className={`apple-press px-3 py-1.5 rounded-xl font-medium transition-all cursor-pointer ${
+                  className={`apple-press shrink-0 whitespace-nowrap px-3 py-1.5 rounded-xl font-medium transition-all cursor-pointer sm:flex sm:items-center sm:flex-1 sm:justify-center ${
                     categoryFilter === tab.key
                       ? 'bg-[var(--bg-card)] text-[var(--text-main)] shadow-xs font-semibold'
                       : 'text-[var(--text-muted)] hover:text-[var(--text-main)]'
@@ -183,7 +183,7 @@ export const HomeClient: React.FC<HomeClientProps> = ({
               ))}
             </div>
 
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 self-end">
               <span className="text-[var(--text-muted)] text-[11px]">Sort by:</span>
               <select
                 value={sortBy}
