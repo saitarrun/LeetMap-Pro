@@ -4,11 +4,6 @@ import React, { useState, useMemo, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import {
   Search,
-  Sparkles,
-  GitBranch,
-  Trophy,
-  ArrowUpDown,
-  BookOpen,
   X,
   Clock,
   ChevronRight,
@@ -21,15 +16,17 @@ import { useSolvedProblems } from '@/utils/useSolvedProblems';
 
 interface PatternsHubClientProps {
   patterns: PatternSummary[];
+  patternProblems?: Record<string, string[]>;
   syncStatus: SyncStatus | null;
 }
 
 export const PatternsHubClient: React.FC<PatternsHubClientProps> = ({
   patterns,
+  patternProblems = {},
   syncStatus,
 }) => {
   const [searchQuery, setSearchQuery] = useState('');
-  const [categoryFilter, setCategoryFilter] = useState<'ALL' | 'Fundamentals' | 'Data Structures' | 'Trees & Graphs' | 'Advanced & DP'>('ALL');
+  const [categoryFilter, setCategoryFilter] = useState<'ALL' | 'Arrays & Strings' | 'Linked Lists' | 'Trees & Tries' | 'Graphs' | 'Dynamic Programming' | 'Stacks & Queues' | 'Heaps & Intervals' | 'Advanced & Greedy'>('ALL');
   const [sortBy, setSortBy] = useState<'total' | 'name' | 'hard'>('total');
   const solvedSet = useSolvedProblems();
 
@@ -150,10 +147,14 @@ export const PatternsHubClient: React.FC<PatternsHubClientProps> = ({
           <div className="flex flex-wrap items-center justify-center gap-1">
             {[
               { key: 'ALL', label: 'All' },
-              { key: 'Fundamentals', label: 'Fundamentals' },
-              { key: 'Data Structures', label: 'Data Structures' },
-              { key: 'Trees & Graphs', label: 'Trees & Graphs' },
-              { key: 'Advanced & DP', label: 'Advanced & DP' },
+              { key: 'Arrays & Strings', label: 'Arrays & Strings' },
+              { key: 'Linked Lists', label: 'Linked Lists' },
+              { key: 'Trees & Tries', label: 'Trees & Tries' },
+              { key: 'Graphs', label: 'Graphs' },
+              { key: 'Dynamic Programming', label: 'Dynamic Programming' },
+              { key: 'Stacks & Queues', label: 'Stacks & Queues' },
+              { key: 'Heaps & Intervals', label: 'Heaps & Intervals' },
+              { key: 'Advanced & Greedy', label: 'Advanced & Greedy' },
             ].map((tab) => (
               <button
                 key={tab.key}
@@ -250,9 +251,11 @@ export const PatternsHubClient: React.FC<PatternsHubClientProps> = ({
               </button>
             </div>
           ) : (
-            filteredPatterns.map((pattern) => (
-              <PatternCard key={pattern.slug} pattern={pattern} />
-            ))
+            filteredPatterns.map((pattern) => {
+              const slugs = patternProblems[pattern.slug];
+              const count = slugs && solvedSet.size > 0 ? slugs.filter((id) => solvedSet.has(id)).length : 0;
+              return <PatternCard key={pattern.slug} pattern={pattern} solvedCount={count} />;
+            })
           )}
         </section>
       </main>

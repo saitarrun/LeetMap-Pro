@@ -23,6 +23,12 @@ MAX_API_RESPONSE_BYTES = 2 * 1024 * 1024
 MAX_ARCHIVE_BYTES = 100 * 1024 * 1024
 MAX_CSV_BYTES = 10 * 1024 * 1024
 MAX_TOTAL_CSV_BYTES = 150 * 1024 * 1024
+MAX_CSV_MEMBERS = 5000
+MAX_COMPANIES = 2000
+MAX_COMPANY_NAME_LENGTH = 120
+MAX_PROBLEMS_PER_WINDOW = 10000
+MAX_UNIQUE_PROBLEMS = 100000
+MAX_GENERATED_RECORDS = 1000000
 
 WINDOW_DEFINITIONS = [
     {"index": 0, "name": "Last 30 Days", "key": "30_days", "l_file": "1. Thirty Days.csv", "s_file": "thirty-days.csv"},
@@ -49,9 +55,13 @@ def read_limited_response(response: Any, max_bytes: int) -> bytes:
 
 def iter_safe_csv_members(tar: tarfile.TarFile):
     total_size = 0
+    member_count = 0
     for member in tar.getmembers():
         if not member.isfile() or not member.name.endswith(".csv"):
             continue
+        member_count += 1
+        if member_count > MAX_CSV_MEMBERS:
+            raise ValueError("Archive contains too many CSV files")
         if member.size > MAX_CSV_BYTES:
             continue
         total_size += member.size
@@ -168,7 +178,7 @@ def fetch_leetcode_daily_challenge() -> Optional[Dict[str, Any]]:
 def fetch_leetcode_official_problem_ids(cache_path: Optional[str] = None) -> Dict[str, str]:
     """
     Fetches official LeetCode frontend problem numbers (questionFrontendId) for all problems.
-    Guarantees every problem in LeetMap has the official problem number matching LeetCode.
+    Guarantees every problem in leetmap Pro has the official problem number matching LeetCode.
     """
     mapping: Dict[str, str] = {}
     
@@ -257,7 +267,9 @@ def parse_liquidslr_tar(tar_bytes: bytes, source_label: str = "liquidslr") -> Di
             parts = member.name.split("/")
             if len(parts) < 3:
                 continue
-            company_name = parts[1].strip()
+            company_name = parts[1].strip()[:MAX_COMPANY_NAME_LENGTH]
+            if not company_name:
+                continue
             filename = parts[-1].strip()
             
             window_idx = -1
@@ -276,6 +288,8 @@ def parse_liquidslr_tar(tar_bytes: bytes, source_label: str = "liquidslr") -> Di
             reader = csv.DictReader(io.StringIO(text))
             problems = []
             for row in reader:
+                if len(problems) >= MAX_PROBLEMS_PER_WINDOW:
+                    raise ValueError(f"{company_name} contains too many problems in one window")
                 title = (row.get("Title") or "").strip()[:300]
                 if not title:
                     continue
@@ -302,6 +316,8 @@ def parse_liquidslr_tar(tar_bytes: bytes, source_label: str = "liquidslr") -> Di
                 })
                 
             comp_slug = slugify(company_name)
+            if not comp_slug:
+                continue
             if comp_slug not in data:
                 data[comp_slug] = {"name": company_name, "windows": {}}
             data[comp_slug]["windows"][window_idx] = problems
@@ -314,7 +330,9 @@ def parse_snehasishroy_tar(tar_bytes: bytes) -> Dict[str, Dict[int, List[Dict[st
             parts = member.name.split("/")
             if len(parts) < 3:
                 continue
-            company_folder = parts[1].strip()
+            company_folder = parts[1].strip()[:MAX_COMPANY_NAME_LENGTH]
+            if not company_folder:
+                continue
             filename = parts[-1].strip()
             
             window_idx = -1
@@ -333,6 +351,8 @@ def parse_snehasishroy_tar(tar_bytes: bytes) -> Dict[str, Dict[int, List[Dict[st
             reader = csv.DictReader(io.StringIO(text))
             problems = []
             for row in reader:
+                if len(problems) >= MAX_PROBLEMS_PER_WINDOW:
+                    raise ValueError(f"{company_folder} contains too many problems in one window")
                 title = (row.get("Title") or "").strip()[:300]
                 if not title:
                     continue
@@ -358,6 +378,8 @@ def parse_snehasishroy_tar(tar_bytes: bytes) -> Dict[str, Dict[int, List[Dict[st
                 })
                 
             comp_slug = slugify(company_folder)
+            if not comp_slug:
+                continue
             comp_name = company_folder.replace('-', ' ').title()
             if comp_slug not in data:
                 data[comp_slug] = {"name": comp_name, "windows": {}}
@@ -373,6 +395,8 @@ def merge_company_datasets(
     official_problem_ids: Optional[Dict[str, str]] = None
 ) -> List[Dict[str, Any]]:
     all_slugs = set(liquidslr_data.keys()).union(set(snehasishroy_data.keys())).union(set(samiullah_data.keys()))
+    if len(all_slugs) > MAX_COMPANIES:
+        raise ValueError(f"Refusing to generate {len(all_slugs)} companies; limit is {MAX_COMPANIES}")
     merged_companies = []
 
     for slug in sorted(all_slugs):
@@ -383,6 +407,9 @@ def merge_company_datasets(
         name = (l_comp and l_comp.get("name")) or (sam_comp and sam_comp.get("name")) or (s_comp and s_comp.get("name")) or slug.replace('-', ' ').title()
         if slug in leetcode_tags:
             name = leetcode_tags[slug].get("name", name)
+        name = str(name).strip()[:MAX_COMPANY_NAME_LENGTH]
+        if not name:
+            continue
             
         domain = domain_map.get(slug) or domain_map.get(name.lower()) or f"{slug}.com"
         
@@ -761,10 +788,21 @@ def main():
     print(f"   Found {sql_dataset['totalSqlProblems']} distinct SQL interview questions.")
 
     total_unique_slugs = set()
+    total_generated_records = 0
     for c in merged_companies:
         for w in c["windows"]:
             for p in w["problems"]:
                 total_unique_slugs.add(p["slug"])
+                total_generated_records += 1
+
+    if len(total_unique_slugs) > MAX_UNIQUE_PROBLEMS:
+        raise ValueError(
+            f"Refusing to generate {len(total_unique_slugs)} unique problems; limit is {MAX_UNIQUE_PROBLEMS}"
+        )
+    if total_generated_records > MAX_GENERATED_RECORDS:
+        raise ValueError(
+            f"Refusing to generate {total_generated_records} problem records; limit is {MAX_GENERATED_RECORDS}"
+        )
 
     base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     public_data_dir = os.path.join(base_dir, "public", "data")

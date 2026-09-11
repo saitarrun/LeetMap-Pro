@@ -14,7 +14,6 @@ import {
   Download,
   ShieldCheck,
   Database,
-  Code2,
   X,
   Pin,
 } from 'lucide-react';
@@ -34,7 +33,7 @@ export const CompanyDetailView: React.FC<CompanyDetailViewProps> = ({ company })
   const [activeTab, setActiveTab] = useState<number>(4);
   const [searchQuery, setSearchQuery] = useState('');
   const [difficultyFilter, setDifficultyFilter] = useState<'ALL' | 'EASY' | 'MEDIUM' | 'HARD'>('ALL');
-  const [typeFilter, setTypeFilter] = useState<'ALL' | 'ALGO' | 'SQL'>('ALL');
+  const [typeFilter] = useState<'ALL' | 'ALGO' | 'SQL'>('ALL');
   const [selectedTopic, setSelectedTopic] = useState<string | null>(null);
   const [hideTopics, setHideTopics] = useState(false);
   const [hideSolved, setHideSolved] = useState(false);

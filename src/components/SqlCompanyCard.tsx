@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { ChevronRight, CheckCircle2, Database, Clock, Pin } from 'lucide-react';
+import { ChevronRight, CheckCircle2, Pin } from 'lucide-react';
 import { SqlCompanySummary } from '@/types';
 import { usePinnedCompanies } from '@/utils/usePinnedCompanies';
 import { toast } from 'sonner';

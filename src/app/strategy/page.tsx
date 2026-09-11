@@ -5,13 +5,14 @@ import { PatternSummary, SyncStatus } from '@/types';
 import { StrategyClient } from '@/components/StrategyClient';
 
 export const metadata = {
-  title: 'Interview Strategy & Dependency Roadmap — LeetMap',
+  title: 'Interview Strategy & Dependency Roadmap — LeetMap Pro',
   description: 'Master the 18 core LeetCode coding interview patterns in optimal prerequisite order. Visual roadmap from Arrays & Hashing to Advanced Dynamic Programming.',
 };
 
 export default async function StrategyPage() {
   const patternsPath = path.join(process.cwd(), 'public', 'data', 'patterns.json');
   const statusPath = path.join(process.cwd(), 'public', 'data', 'sync-status.json');
+  const patternProblemsPath = path.join(process.cwd(), 'public', 'data', 'pattern-problem-slugs.json');
 
   let patterns: PatternSummary[] = [];
   if (fs.existsSync(patternsPath)) {
@@ -19,6 +20,15 @@ export default async function StrategyPage() {
       patterns = JSON.parse(fs.readFileSync(patternsPath, 'utf8'));
     } catch (err) {
       console.error('Failed to parse patterns.json', err);
+    }
+  }
+
+  let patternProblems: Record<string, string[]> = {};
+  if (fs.existsSync(patternProblemsPath)) {
+    try {
+      patternProblems = JSON.parse(fs.readFileSync(patternProblemsPath, 'utf8'));
+    } catch (err) {
+      console.error('Failed to parse pattern-problem-slugs.json', err);
     }
   }
 
@@ -31,5 +41,5 @@ export default async function StrategyPage() {
     }
   }
 
-  return <StrategyClient patterns={patterns} syncStatus={syncStatus} />;
+  return <StrategyClient patterns={patterns} patternProblems={patternProblems} syncStatus={syncStatus} />;
 }

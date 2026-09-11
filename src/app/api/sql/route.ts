@@ -40,11 +40,14 @@ export async function GET(request: Request) {
       problems = problems.filter((problem) => problem.difficulty === difficulty);
     }
 
-    return NextResponse.json({
-      totalSqlProblems: problems.length,
-      lastUpdated: catalog.lastUpdated,
-      problems,
-    });
+    return NextResponse.json(
+      {
+        totalSqlProblems: problems.length,
+        lastUpdated: catalog.lastUpdated,
+        problems,
+      },
+      { headers: { 'Cache-Control': 'public, s-maxage=300, stale-while-revalidate=3600' } }
+    );
   } catch (error) {
     console.error('Failed to retrieve SQL problems:', error);
     return NextResponse.json(

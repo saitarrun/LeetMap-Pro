@@ -3,12 +3,6 @@
 import React, { useState, useMemo, useEffect, useRef } from 'react';
 import {
   Search,
-  Database,
-  Building2,
-  Trophy,
-  ArrowUpDown,
-  LayoutGrid,
-  ListFilter,
   X,
   Pin,
 } from 'lucide-react';
@@ -114,7 +108,7 @@ export const SqlHubClient: React.FC<SqlHubClientProps> = ({
           </h1>
 
           <p className="text-sm sm:text-base text-[var(--text-muted)] leading-relaxed font-normal max-w-xl mx-auto">
-            Database questions asked in interviews across top tech companies, ranked by frequency and recency.
+            Interview problems top firms actually ask, ranked by frequency and recency.
           </p>
 
           <div className="flex items-center justify-center gap-2 pt-1 text-xs text-[var(--text-muted)] font-normal">

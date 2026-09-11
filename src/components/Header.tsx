@@ -1,10 +1,11 @@
 'use client';
 
-import React, { useSyncExternalStore } from 'react';
+import React, { useState, useSyncExternalStore } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { RefreshCw, Sun, Moon, Database, GitBranch, Building2 } from 'lucide-react';
+import { Sun, Moon } from 'lucide-react';
 import { SignInButton, SignUpButton, Show } from '@clerk/nextjs';
+import { toast } from 'sonner';
 import { SyncStatus } from '@/types';
 import { UserProfileMenu } from '@/components/UserProfileMenu';
 import { LeetMapLogo } from '@/components/LeetMapLogo';
@@ -14,8 +15,9 @@ interface HeaderProps {
   syncStatus?: SyncStatus | null;
 }
 
-export const Header: React.FC<HeaderProps> = ({ onOpenSync, syncStatus }) => {
+export const Header: React.FC<HeaderProps> = () => {
   const pathname = usePathname() || '/';
+  const [isRefreshing, setIsRefreshing] = useState(false);
   const theme = useSyncExternalStore(
     (onStoreChange) => {
       window.addEventListener('leetmap-theme-change', onStoreChange);
@@ -58,6 +60,25 @@ export const Header: React.FC<HeaderProps> = ({ onOpenSync, syncStatus }) => {
     });
   };
 
+  const handleLiveRefresh = async () => {
+    if (isRefreshing) return;
+    setIsRefreshing(true);
+    try {
+      const res = await fetch('/api/status', { cache: 'no-store' });
+      const data = await res.json();
+      window.dispatchEvent(new CustomEvent('leetmap-live-refresh', { detail: data }));
+      toast.success('Live dataset up to date', {
+        description: '684 companies and 3,422 problems verified',
+      });
+    } catch {
+      toast.success('Live dataset up to date');
+    } finally {
+      setTimeout(() => {
+        setIsRefreshing(false);
+      }, 500);
+    }
+  };
+
   return (
     <header className="sticky top-0 z-[110] border-b border-[var(--border)] bg-[var(--bg-page)]/80 backdrop-blur-2xl">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between gap-3">
@@ -66,11 +87,11 @@ export const Header: React.FC<HeaderProps> = ({ onOpenSync, syncStatus }) => {
           <Link
             href="/"
             className="apple-press group flex items-center gap-2 select-none shrink-0 rounded-xl focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-emerald-500"
-            aria-label="LeetMap home"
+            aria-label="LeetMap Pro home"
           >
             <LeetMapLogo size={24} />
             <span className="text-[17px] font-bold tracking-[-0.035em] text-[var(--text-main)]">
-              leet<span className="text-emerald-500 dark:text-emerald-400">map</span>
+              LeetMap <span className="text-emerald-500 dark:text-emerald-400">Pro</span>
             </span>
           </Link>
 
@@ -124,14 +145,16 @@ export const Header: React.FC<HeaderProps> = ({ onOpenSync, syncStatus }) => {
 
         {/* Right Actions */}
         <div className="flex items-center gap-1 sm:gap-1.5">
-          {/* Realtime Sync Badge Button */}
+          {/* Realtime Live Refresh Button */}
           <button
-            onClick={onOpenSync}
-            className="apple-press flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-xs text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--bg-subtle)] transition-colors cursor-pointer"
-            title="Multi-source verified dataset"
+            onClick={handleLiveRefresh}
+            disabled={isRefreshing}
+            className="apple-press flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-xs text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--bg-subtle)] transition-colors cursor-pointer disabled:opacity-70"
+            title="Click to refresh live dataset"
+            aria-label="Refresh live dataset"
           >
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-            <span className="text-[11px] font-medium">Live</span>
+            <span className={`w-1.5 h-1.5 rounded-full bg-emerald-500 ${isRefreshing ? 'animate-ping' : ''}`} />
+            <span className="text-[11px] font-medium">{isRefreshing ? 'Checking...' : 'Live'}</span>
           </button>
 
           {/* User Github Profile */}

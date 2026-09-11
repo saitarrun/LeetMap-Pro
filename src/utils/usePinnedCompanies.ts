@@ -3,6 +3,7 @@
 import { useMemo, useSyncExternalStore } from 'react';
 
 const PINNED_STORAGE_KEY = 'leetmap_pinned_companies';
+const LEGACY_PINNED_STORAGE_KEY = 'leetcraft_pinned_companies';
 const EMPTY_PINNED = '[]';
 const PINNED_EVENT = 'leetmap-pinned-updated';
 
@@ -17,7 +18,7 @@ function subscribe(onStoreChange: () => void): () => void {
 
 function getSnapshot(): string {
   if (typeof window === 'undefined') return EMPTY_PINNED;
-  return localStorage.getItem(PINNED_STORAGE_KEY) || EMPTY_PINNED;
+  return localStorage.getItem(PINNED_STORAGE_KEY) || localStorage.getItem(LEGACY_PINNED_STORAGE_KEY) || EMPTY_PINNED;
 }
 
 function getServerSnapshot(): string {
@@ -27,7 +28,7 @@ function getServerSnapshot(): string {
 export function getPinnedCompanies(): Set<string> {
   if (typeof window === 'undefined') return new Set();
   try {
-    const raw = localStorage.getItem(PINNED_STORAGE_KEY);
+    const raw = localStorage.getItem(PINNED_STORAGE_KEY) || localStorage.getItem(LEGACY_PINNED_STORAGE_KEY);
     const parsed = raw ? JSON.parse(raw) : [];
     return new Set(Array.isArray(parsed) ? parsed.filter((s): s is string => typeof s === 'string') : []);
   } catch {

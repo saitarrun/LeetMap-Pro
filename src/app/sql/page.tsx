@@ -5,7 +5,7 @@ import { SqlCatalog, SqlCompanySummary, SyncStatus } from '@/types';
 import { SqlHubClient } from '@/components/SqlHubClient';
 
 export const metadata = {
-  title: 'Company-wise LeetCode SQL Questions — LeetMap',
+  title: 'Company-wise LeetCode SQL Questions — LeetMap Pro',
   description: 'Browse coding interview SQL questions asked by 73+ tech firms (Amazon, Google, Meta, Bloomberg, Microsoft, etc.), ranked by interview frequency and recency.',
 };
 

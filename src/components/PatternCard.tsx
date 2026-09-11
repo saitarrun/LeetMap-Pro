@@ -56,29 +56,6 @@ const ICON_MAP: Record<string, LucideIcon> = {
   Cpu,
 };
 
-const CATEGORY_COLORS: Record<string, { bg: string; text: string; border: string }> = {
-  Fundamentals: {
-    bg: 'bg-[var(--bg-subtle)]',
-    text: 'text-[var(--text-main)]',
-    border: 'border-[var(--border)]',
-  },
-  'Data Structures': {
-    bg: 'bg-[var(--bg-subtle)]',
-    text: 'text-[var(--text-main)]',
-    border: 'border-[var(--border)]',
-  },
-  'Trees & Graphs': {
-    bg: 'bg-[var(--bg-subtle)]',
-    text: 'text-[var(--text-main)]',
-    border: 'border-[var(--border)]',
-  },
-  'Advanced & DP': {
-    bg: 'bg-[var(--bg-subtle)]',
-    text: 'text-[var(--text-main)]',
-    border: 'border-[var(--border)]',
-  },
-};
-
 interface PatternCardProps {
   pattern: PatternSummary;
   solvedCount?: number;

@@ -19,18 +19,40 @@ export const UserProfileMenu: React.FC = () => {
 
   const activityStats = getUserActivityStats(user?.id);
 
-  const statsSummary = (s: { totalSolved: number; dsaSolved: number; sqlSolved: number }) => {
-    return `${s.totalSolved} solved (${s.dsaSolved} DSA · ${s.sqlSolved} SQL)`;
-  };
-
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (menuRef.current && !menuRef.current.contains(event.target as Node)) setIsOpen(false);
     }
 
-    if (isOpen) document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, [isOpen]);
+    function handleKeyDown(event: KeyboardEvent) {
+      if (event.key === 'Escape') {
+        setIsOpen(false);
+        setIsActivityOpen(false);
+      }
+    }
+
+    if (isOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+    if (isOpen || isActivityOpen) {
+      document.addEventListener('keydown', handleKeyDown);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [isOpen, isActivityOpen]);
+
+  useEffect(() => {
+    if (isActivityOpen) {
+      const originalStyle = window.getComputedStyle(document.body).overflow;
+      document.body.style.overflow = 'hidden';
+      return () => {
+        document.body.style.overflow = originalStyle;
+      };
+    }
+  }, [isActivityOpen]);
 
   if (!user) return null;
 
@@ -38,12 +60,12 @@ export const UserProfileMenu: React.FC = () => {
   const activityModal = isActivityOpen
     ? createPortal(
         <div
-          className="apple-modal-backdrop fixed inset-0 z-[100] flex items-start justify-center overflow-y-auto bg-black/50 px-4 py-6 backdrop-blur-md sm:items-center"
+          className="apple-modal-backdrop fixed inset-0 z-[100] flex items-center justify-center overflow-y-auto bg-black/50 p-4 backdrop-blur-md sm:p-6"
           onClick={() => setIsActivityOpen(false)}
           role="presentation"
         >
           <div
-            className="apple-modal-scroll apple-modal-surface relative my-auto max-h-[calc(100dvh-3rem)] w-full max-w-xl overflow-y-auto rounded-2xl border border-[var(--border)]/60 bg-[var(--bg-card)] p-4 shadow-2xl sm:p-5"
+            className="apple-modal-surface relative my-auto flex max-h-[min(720px,calc(100dvh-3rem))] w-full max-w-[890px] flex-col overflow-hidden rounded-3xl border border-[var(--border)] bg-[var(--bg-card)] shadow-2xl"
             onClick={(event) => event.stopPropagation()}
             role="dialog"
             aria-modal="true"
@@ -51,54 +73,58 @@ export const UserProfileMenu: React.FC = () => {
           >
             <button
               onClick={() => setIsActivityOpen(false)}
-              className="apple-press absolute right-4 top-4 h-7 w-7 rounded-full bg-[var(--bg-subtle)]/60 text-[var(--text-muted)] hover:bg-[var(--bg-subtle)] hover:text-[var(--text-main)] flex items-center justify-center cursor-pointer transition-colors focus-visible:outline-2 focus-visible:outline-[var(--accent)]"
+              className="apple-press absolute right-4 top-4 z-10 flex h-7.5 w-7.5 items-center justify-center rounded-full bg-[var(--bg-subtle)] text-[var(--text-muted)] transition-colors hover:bg-[var(--bg-hover)] hover:text-[var(--text-main)] focus-visible:outline-2 focus-visible:outline-[var(--accent)] cursor-pointer"
               aria-label="Close activity tracker"
             >
               <X className="h-3.5 w-3.5" />
             </button>
 
-            <div className="flex items-center gap-3 pr-8">
-              <div className="h-11 w-11 shrink-0 overflow-hidden rounded-full border border-[var(--border)]/60 bg-[var(--bg-subtle)]">
+            {/* Centered Apple-style Identity Header */}
+            <header className="flex flex-col items-center border-b border-[var(--border)] px-6 pt-6 pb-4 text-center">
+              <div className="relative h-13 w-13 overflow-hidden rounded-full border border-[var(--border)] bg-[var(--bg-subtle)] shadow-sm ring-2 ring-[var(--border)]/30">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={user.avatarUrl} alt={user.name} className="h-full w-full object-cover" />
               </div>
-              <div className="min-w-0">
-                <p className="text-[10px] font-semibold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">Your progress</p>
-                <h2 className="truncate text-base font-semibold tracking-tight text-[var(--text-main)]">{user.name}</h2>
-                <p className="truncate text-xs text-[var(--text-muted)] font-normal">{user.email || user.username}</p>
+              <h2 className="mt-2.5 text-base font-semibold tracking-tight text-[var(--text-main)]">{user.name}</h2>
+              <p className="text-xs text-[var(--text-muted)]">{user.email || user.username}</p>
+              
+              <div className="mt-2.5 inline-flex items-center gap-1.5 rounded-full border border-[var(--border)] bg-[var(--bg-subtle)] px-3 py-1 text-[11px] font-medium text-[var(--text-muted)]">
+                <Flame className="h-3.5 w-3.5 text-amber-500" />
+                <span className="font-semibold text-[var(--text-main)] tabular-nums">{activityStats.currentStreak}d streak</span>
+                <span className="text-[var(--text-light)]">·</span>
+                <span className="tabular-nums">{activityStats.totalSolved} solved</span>
               </div>
+            </header>
+
+            <div className="apple-modal-scroll min-h-0 flex-1 overflow-y-auto p-4.5 sm:p-5.5">
+              <ActivityTracker stats={activityStats} />
             </div>
 
-            <div className="mt-4">
-              <ActivityTracker stats={activityStats} displayName={user.name} />
-            </div>
-
-            <div className="mt-3.5 flex items-center gap-1.5 text-[11px] text-[var(--text-muted)] px-0.5">
-              <ShieldCheck className="h-3 w-3 text-emerald-500 shrink-0" />
-              <span>
-                <strong className="font-medium text-[var(--text-main)]">Private profile</strong> · Solves and streak are tied to your account.
-              </span>
-            </div>
-
-            <div className="mt-4 grid grid-cols-2 gap-2">
-              <button
-                onClick={openAccountSettings}
-                className="apple-press flex h-9 w-full items-center justify-center gap-1.5 rounded-xl border border-[var(--border)]/60 bg-[var(--bg-subtle)]/60 hover:bg-[var(--bg-subtle)] text-xs font-medium text-[var(--text-main)] transition-colors cursor-pointer"
-              >
-                <UserCheck className="h-3.5 w-3.5 text-[var(--text-muted)]" />
-                <span>Manage account</span>
-              </button>
-              <button
-                onClick={() => {
-                  setIsActivityOpen(false);
-                  void logout();
-                }}
-                className="apple-press flex h-9 w-full items-center justify-center gap-1.5 rounded-xl border border-rose-500/20 bg-rose-500/5 hover:bg-rose-500/10 text-xs font-medium text-rose-600 dark:text-rose-400 transition-colors cursor-pointer"
-              >
-                <LogOut className="h-3.5 w-3.5" />
-                <span>Sign out</span>
-              </button>
-            </div>
+            <footer className="border-t border-[var(--border)] bg-[var(--bg-card)] px-6 py-3.5 sm:px-7">
+              <div className="mb-2.5 flex items-center justify-center gap-1.5 text-center text-xs text-[var(--text-muted)]">
+                <ShieldCheck className="h-3.5 w-3.5 shrink-0 text-emerald-500" />
+                <span><strong className="font-medium text-[var(--text-main)]">Private profile.</strong> Solves and streak are tied to your account.</span>
+              </div>
+              <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
+                <button
+                  onClick={openAccountSettings}
+                  className="apple-press flex h-9.5 w-full items-center justify-center gap-2 rounded-xl border border-[var(--border)] bg-[var(--bg-subtle)] text-xs font-medium text-[var(--text-main)] transition-colors hover:bg-[var(--bg-hover)] cursor-pointer"
+                >
+                  <UserCheck className="h-3.5 w-3.5 text-[var(--text-muted)]" />
+                  <span>Manage account</span>
+                </button>
+                <button
+                  onClick={() => {
+                    setIsActivityOpen(false);
+                    void logout();
+                  }}
+                  className="apple-press flex h-9.5 w-full items-center justify-center gap-2 rounded-xl border border-rose-500/20 bg-rose-500/5 text-xs font-medium text-rose-600 transition-colors hover:bg-rose-500/10 dark:text-rose-400 cursor-pointer"
+                >
+                  <LogOut className="h-3.5 w-3.5" />
+                  <span>Sign out</span>
+                </button>
+              </div>
+            </footer>
           </div>
         </div>,
         document.body
@@ -137,9 +163,6 @@ export const UserProfileMenu: React.FC = () => {
             <div className="min-w-0 flex-1">
               <h3 className="truncate text-xs font-semibold text-[var(--text-main)]">{user.name}</h3>
               <p className="truncate text-[11px] text-[var(--text-muted)] font-normal">{user.email || user.username}</p>
-              <p className="mt-0.5 text-[10px] text-[var(--text-muted)] font-mono">
-                {activityStats.currentStreak}d streak · {statsSummary(activityStats)}
-              </p>
             </div>
           </div>
 

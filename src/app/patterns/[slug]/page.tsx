@@ -10,18 +10,42 @@ interface PageProps {
   params: Promise<{ slug: string }>;
 }
 
+const SLUG_ALIASES: Record<string, string> = {
+  'arrays-hashing': 'prefix-sum',
+  'array-hashing': 'prefix-sum',
+  'stack': 'monotonic-stack',
+  'linked-list': 'linked-list-manipulation',
+  'trees': 'tree-dfs',
+  'tree': 'tree-dfs',
+  'heap': 'heaps-top-k',
+  'heaps': 'heaps-top-k',
+  'priority-queue': 'heaps-top-k',
+  'tries': 'trie',
+  'graphs': 'graph-traversal',
+  'graph': 'graph-traversal',
+  'advanced-graphs': 'topological-sort',
+  'dp-1d': 'dynamic-programming-1d',
+  '1d-dp': 'dynamic-programming-1d',
+  '1-d-dynamic-programming': 'dynamic-programming-1d',
+  'dp-2d': 'dynamic-programming-2d',
+  '2d-dp': 'dynamic-programming-2d',
+  '2-d-dynamic-programming': 'dynamic-programming-2d',
+  'math-geometry': 'matrix-traversal',
+};
+
 export async function generateMetadata({ params }: PageProps) {
   const { slug } = await params;
   const safeSlug = slug.toLowerCase().replace(/[^a-z0-9\-]/g, '');
-  const filePath = path.join(process.cwd(), 'public', 'data', 'patterns', `${safeSlug}.json`);
+  const resolvedSlug = SLUG_ALIASES[safeSlug] || safeSlug;
+  const filePath = path.join(process.cwd(), 'public', 'data', 'patterns', `${resolvedSlug}.json`);
 
   if (!fs.existsSync(filePath)) {
-    return { title: 'Pattern Not Found — LeetMap' };
+    return { title: 'Pattern Not Found — LeetMap Pro' };
   }
 
   const pattern: PatternDetail = JSON.parse(fs.readFileSync(filePath, 'utf8'));
   return {
-    title: `${pattern.name} Pattern (${pattern.total} Interview Questions) — LeetMap`,
+    title: `${pattern.name} Pattern (${pattern.total} Interview Questions) — LeetMap Pro`,
     description: `${pattern.tagline}. Master ${pattern.total} LeetCode problems in the ${pattern.name} pattern asked by top tech firms.`,
   };
 }
@@ -29,7 +53,8 @@ export async function generateMetadata({ params }: PageProps) {
 export default async function PatternDetailPage({ params }: PageProps) {
   const { slug } = await params;
   const safeSlug = slug.toLowerCase().replace(/[^a-z0-9\-]/g, '');
-  const filePath = path.join(process.cwd(), 'public', 'data', 'patterns', `${safeSlug}.json`);
+  const resolvedSlug = SLUG_ALIASES[safeSlug] || safeSlug;
+  const filePath = path.join(process.cwd(), 'public', 'data', 'patterns', `${resolvedSlug}.json`);
   const statusPath = path.join(process.cwd(), 'public', 'data', 'sync-status.json');
 
   if (!fs.existsSync(filePath)) {

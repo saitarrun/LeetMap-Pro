@@ -2,9 +2,10 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { Header } from '@/components/Header';
 import {
-  Clock, Zap, TrendingUp, AlertTriangle, CheckCircle2,
+  Zap, TrendingUp, AlertTriangle, CheckCircle2,
   ChevronDown, ChevronRight, BookOpen, Code2, Layers, Info, BarChart3, GitMerge, ArrowLeft,
   Copy, Check,
 } from 'lucide-react';
@@ -116,7 +117,7 @@ function Callout({ type, children }: { type: 'tip' | 'warning' | 'info'; childre
 /* ══════════════════════════════════════════════════════════
    SVG: BIG O GROWTH CURVES CHART
 ══════════════════════════════════════════════════════════ */
-function ComplexityChart() {
+export function ComplexityChart() {
   const W = 540, H = 280;
   const pad = { l: 46, t: 18, r: 18, b: 38 };
   const cW = W - pad.l - pad.r;   // 476
@@ -204,7 +205,7 @@ function ComplexityChart() {
 /* ══════════════════════════════════════════════════════════
    SVG: MERGE SORT RECURSION TREE (n=8)
 ══════════════════════════════════════════════════════════ */
-function RecursionTreeDiagram() {
+export function RecursionTreeDiagram() {
   const W = 560, H = 230;
   // node: 38×20, half: 19×10
   const nHW = 19, nHH = 10;
@@ -515,7 +516,7 @@ export function TimeComplexityGuide() {
           title="2 · Growth Curves Visualized"
           subtitle="How every Big O class actually looks as n increases">
           <div className="rounded-xl bg-[var(--bg-subtle)]/40 border border-[var(--border)]/40 p-4">
-            <img src="/assets/complexity/growth_curves.jpg" alt="Big O growth curves chart" className="w-full h-auto" />
+            <Image src="/assets/complexity/growth_curves.jpg" alt="Big O growth curves chart" width={1200} height={700} className="h-auto w-full" />
           </div>
           <Callout type="tip">
             Notice how <strong>O(2ⁿ)</strong> shoots off the chart before n=7, while{' '}
@@ -671,7 +672,7 @@ def fib(n):
             then merges each level back together — doing <strong>O(n) total work per level</strong>.
           </p>
           <div className="rounded-xl bg-[var(--bg-subtle)]/50 p-4">
-            <img src="/assets/complexity/merge_sort_tree_minimal.png" alt="Minimal merge sort recursion tree diagram" className="w-full h-auto" />
+            <Image src="/assets/complexity/merge_sort_tree_minimal.png" alt="Minimal merge sort recursion tree diagram" width={1200} height={700} className="h-auto w-full" />
           </div>
           <div className="grid sm:grid-cols-3 gap-2.5">
             {[

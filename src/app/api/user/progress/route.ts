@@ -1,6 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import { randomUUID } from 'crypto';
+import { get, put } from '@vercel/blob';
 import { auth } from '@clerk/nextjs/server';
 import { NextResponse } from 'next/server';
 import { SolvedProblemRecord } from '@/types';
@@ -32,6 +33,11 @@ function getSafeFilePath(userId: string): string {
   return path.join(getUserDir(), `${safeUserId}.json`);
 }
 
+function getBlobPath(userId: string): string {
+  const safeUserId = userId.toLowerCase().replace(/[^a-z0-9_-]/g, '_');
+  return `user-progress/${safeUserId}.json`;
+}
+
 function emptyUserData(userId: string): UserStorageData {
   return {
     userId,
@@ -57,31 +63,54 @@ function isSolvedProblemRecord(value: unknown): value is SolvedProblemRecord {
   );
 }
 
-function readUserData(userId: string): UserStorageData {
+function parseUserData(userId: string, parsed: unknown): UserStorageData {
+  if (!parsed || typeof parsed !== 'object') return emptyUserData(userId);
+
+  const stored = parsed as Partial<UserStorageData>;
+  return {
+    userId,
+    solvedSlugs: Array.isArray(stored.solvedSlugs)
+      ? stored.solvedSlugs.filter((slug): slug is string => typeof slug === 'string')
+      : [],
+    activityRecords: Array.isArray(stored.activityRecords)
+      ? stored.activityRecords.filter(isSolvedProblemRecord)
+      : [],
+    updatedAt: typeof stored.updatedAt === 'string' ? stored.updatedAt : new Date(0).toISOString(),
+  };
+}
+
+async function readUserData(userId: string): Promise<UserStorageData> {
+  if (process.env.BLOB_READ_WRITE_TOKEN) {
+    try {
+      const blob = await get(getBlobPath(userId), { access: 'private', useCache: false });
+      if (!blob || blob.statusCode !== 200) return emptyUserData(userId);
+      return parseUserData(userId, JSON.parse(await new Response(blob.stream).text()));
+    } catch {
+      return emptyUserData(userId);
+    }
+  }
+
   const filePath = getSafeFilePath(userId);
   if (!fs.existsSync(filePath)) return emptyUserData(userId);
 
   try {
-    const parsed: unknown = JSON.parse(fs.readFileSync(filePath, 'utf8'));
-    if (!parsed || typeof parsed !== 'object') return emptyUserData(userId);
-
-    const stored = parsed as Partial<UserStorageData>;
-    return {
-      userId,
-      solvedSlugs: Array.isArray(stored.solvedSlugs)
-        ? stored.solvedSlugs.filter((slug): slug is string => typeof slug === 'string')
-        : [],
-      activityRecords: Array.isArray(stored.activityRecords)
-        ? stored.activityRecords.filter(isSolvedProblemRecord)
-        : [],
-      updatedAt: typeof stored.updatedAt === 'string' ? stored.updatedAt : new Date(0).toISOString(),
-    };
+    return parseUserData(userId, JSON.parse(fs.readFileSync(filePath, 'utf8')));
   } catch {
     return emptyUserData(userId);
   }
 }
 
-function writeUserData(userId: string, data: UserStorageData): void {
+async function writeUserData(userId: string, data: UserStorageData): Promise<void> {
+  if (process.env.BLOB_READ_WRITE_TOKEN) {
+    await put(getBlobPath(userId), JSON.stringify(data), {
+      access: 'private',
+      addRandomSuffix: false,
+      allowOverwrite: true,
+      contentType: 'application/json',
+    });
+    return;
+  }
+
   const filePath = getSafeFilePath(userId);
   const temporaryPath = `${filePath}.${randomUUID()}.tmp`;
   fs.writeFileSync(temporaryPath, JSON.stringify(data, null, 2), {
@@ -109,7 +138,7 @@ export async function GET() {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
-  return NextResponse.json(readUserData(userId), { headers: { 'Cache-Control': 'no-store' } });
+  return NextResponse.json(await readUserData(userId), { headers: { 'Cache-Control': 'no-store' } });
 }
 
 export async function POST(request: Request) {
@@ -152,7 +181,7 @@ export async function POST(request: Request) {
       activityRecords,
       updatedAt: new Date().toISOString(),
     };
-    writeUserData(userId, updatedData);
+    await writeUserData(userId, updatedData);
 
     return NextResponse.json(
       { success: true, ...updatedData },

@@ -8,12 +8,15 @@ interface ActiveUserReference {
 const GUEST_KEY = 'leetmap_solved_guest';
 const GUEST_ACTIVITY_KEY = 'leetmap_activity_guest';
 const ACTIVE_USER_KEY = 'leetmap_active_user';
+const LEGACY_GUEST_KEY = 'leetcraft_solved_guest';
+const LEGACY_GUEST_ACTIVITY_KEY = 'leetcraft_activity_guest';
+const LEGACY_ACTIVE_USER_KEY = 'leetcraft_active_user';
 const initializedServerUsers = new Set<string>();
 
 function getActiveUser(): ActiveUserReference | null {
   if (typeof window === 'undefined') return null;
   try {
-    const raw = localStorage.getItem(ACTIVE_USER_KEY);
+    const raw = localStorage.getItem(ACTIVE_USER_KEY) || localStorage.getItem(LEGACY_ACTIVE_USER_KEY);
     if (!raw) return null;
     const parsed: unknown = JSON.parse(raw);
     if (!parsed || typeof parsed !== 'object' || typeof (parsed as ActiveUserReference).id !== 'string') {
@@ -74,7 +77,8 @@ function getSolvedProblems(username?: string): Set<string> {
   if (typeof window === 'undefined') return new Set();
   const key = getStorageKey(username);
   try {
-    const raw = localStorage.getItem(key);
+    const legacyKey = username ? `leetcraft_solved_${username.toLowerCase()}` : getActiveUser()?.id ? `leetcraft_solved_${getActiveUser()!.id.toLowerCase()}` : LEGACY_GUEST_KEY;
+    const raw = localStorage.getItem(key) || localStorage.getItem(legacyKey);
 
     if (!raw) return new Set();
     const parsed = JSON.parse(raw);
@@ -89,7 +93,8 @@ function getSolvedRecords(username?: string): SolvedProblemRecord[] {
   if (typeof window === 'undefined') return [];
   const key = getActivityKey(username);
   try {
-    const raw = localStorage.getItem(key);
+    const legacyKey = username ? `leetcraft_activity_${username.toLowerCase()}` : getActiveUser()?.id ? `leetcraft_activity_${getActiveUser()!.id.toLowerCase()}` : LEGACY_GUEST_ACTIVITY_KEY;
+    const raw = localStorage.getItem(key) || localStorage.getItem(legacyKey);
     if (!raw) {
       // If records don't exist yet but solved problems do, generate backfilled records
       const solvedSlugs = getSolvedProblems(username);

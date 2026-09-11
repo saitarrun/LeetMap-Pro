@@ -152,10 +152,24 @@ export interface PatternProblem {
   }>;
 }
 
+export type PatternCategory =
+  | 'Arrays & Strings'
+  | 'Linked Lists'
+  | 'Trees & Tries'
+  | 'Graphs'
+  | 'Dynamic Programming'
+  | 'Stacks & Queues'
+  | 'Heaps & Intervals'
+  | 'Advanced & Greedy'
+  | 'Fundamentals'
+  | 'Data Structures'
+  | 'Trees & Graphs'
+  | 'Advanced & DP';
+
 export interface PatternSummary {
   slug: string;
   name: string;
-  category: 'Fundamentals' | 'Data Structures' | 'Trees & Graphs' | 'Advanced & DP';
+  category: PatternCategory;
   icon: string;
   tagline: string;
   total: number;

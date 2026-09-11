@@ -10,11 +10,13 @@ import { useSolvedProblems } from '@/utils/useSolvedProblems';
 
 interface StrategyClientProps {
   patterns: PatternSummary[];
+  patternProblems?: Record<string, string[]>;
   syncStatus: SyncStatus | null;
 }
 
 export const StrategyClient: React.FC<StrategyClientProps> = ({
   patterns,
+  patternProblems = {},
   syncStatus,
 }) => {
   const solvedSet = useSolvedProblems();
@@ -40,7 +42,7 @@ export const StrategyClient: React.FC<StrategyClientProps> = ({
           </p>
 
           <div className="flex items-center justify-center gap-2 pt-1 text-xs text-[var(--text-muted)] font-normal">
-            <span>18 Core Topics</span>
+            <span>17 Core Topics</span>
             <span className="opacity-30">·</span>
             <span>22 Study Blueprints</span>
             {solvedSet.size > 0 && (
@@ -54,7 +56,7 @@ export const StrategyClient: React.FC<StrategyClientProps> = ({
 
         {/* Strategy Roadmap Visualization */}
         <section className="apple-enter">
-          <PatternDependencyGraph patterns={patterns} solvedSet={solvedSet} />
+          <PatternDependencyGraph patterns={patterns} patternProblems={patternProblems} solvedSet={solvedSet} />
         </section>
 
         {/* Interview Preparation Guides */}

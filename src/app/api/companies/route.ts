@@ -30,7 +30,9 @@ export async function GET(request: Request) {
       companies = companies.slice(0, limit);
     }
 
-    return NextResponse.json(companies);
+    return NextResponse.json(companies, {
+      headers: { 'Cache-Control': 'public, s-maxage=300, stale-while-revalidate=3600' },
+    });
   } catch (error) {
     console.error('Failed to retrieve companies:', error);
     return NextResponse.json(

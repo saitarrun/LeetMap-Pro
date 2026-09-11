@@ -1,24 +1,19 @@
 'use client';
 
-import React, { useMemo, useState } from 'react';
-import { CalendarDays, CheckCircle2, Flame, Trophy, Zap, Code2, Database } from 'lucide-react';
+import React, { useMemo, useState, useRef, useEffect } from 'react';
 import { UserActivityStats } from '@/types';
-import { getLeetCodeProblemUrl } from '@/utils/urls';
-import { isSqlProblemSlug } from '@/utils/sqlCatalog';
 
 interface ActivityTrackerProps {
   stats: UserActivityStats;
-  displayName: string;
 }
 
 interface CalendarDay {
   date: string;
   count: number;
+  isToday: boolean;
   isFuture: boolean;
+  isCurrentYear: boolean;
 }
-
-const WEEK_COUNT = 26;
-const DAYS_PER_WEEK = 7;
 
 function toLocalDateString(date: Date): string {
   const year = date.getFullYear();
@@ -27,269 +22,230 @@ function toLocalDateString(date: Date): string {
   return `${year}-${month}-${day}`;
 }
 
-function getCellClass(count: number, isFuture: boolean): string {
-  if (isFuture) return 'bg-transparent';
-  if (count === 0) return 'bg-[var(--bg-subtle)]/70 hover:bg-[var(--bg-subtle)]';
-  if (count === 1) return 'bg-emerald-500/30';
-  if (count <= 3) return 'bg-emerald-500/65';
-  return 'bg-emerald-500';
+function formatDayLabel(dateStr: string): string {
+  const d = new Date(dateStr + 'T12:00:00');
+  return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
 }
 
-export const ActivityTracker: React.FC<ActivityTrackerProps> = ({ stats, displayName }) => {
-  const calendar = useMemo(() => {
-    const today = new Date();
-    today.setHours(12, 0, 0, 0);
+function getGitHubCellColor(count: number, isFuture: boolean, isCurrentYear: boolean): string {
+  if (!isCurrentYear) return 'bg-transparent border border-transparent opacity-0 pointer-events-none';
+  if (isFuture) {
+    return 'bg-[#161b22] dark:bg-[#161b22] bg-[#ebedf0] border border-black/[0.04] dark:border-white/[0.05] opacity-50 cursor-default';
+  }
+  if (count === 0) {
+    return 'bg-[#ebedf0] dark:bg-[#161b22] border border-black/[0.04] dark:border-white/[0.05] hover:opacity-80';
+  }
+  if (count === 1) {
+    return 'bg-[#9be9a8] dark:bg-[#0e4429] border border-black/[0.04] dark:border-white/[0.05] hover:opacity-80';
+  }
+  if (count <= 3) {
+    return 'bg-[#40c463] dark:bg-[#006d32] border border-black/[0.04] dark:border-white/[0.05] hover:opacity-80';
+  }
+  if (count <= 6) {
+    return 'bg-[#30a14e] dark:bg-[#26a641] border border-black/[0.04] dark:border-white/[0.05] hover:opacity-80';
+  }
+  return 'bg-[#216e39] dark:bg-[#39d353] border border-black/[0.04] dark:border-white/[0.05] hover:opacity-80';
+}
 
-    const start = new Date(today);
-    start.setDate(start.getDate() - start.getDay() - (WEEK_COUNT - 1) * DAYS_PER_WEEK);
+const DISPLAY_YEARS = [2026, 2025, 2024, 2023, 2022];
+
+export const ActivityTracker: React.FC<ActivityTrackerProps> = ({ stats }) => {
+  const currentYear = useMemo(() => new Date().getFullYear(), []);
+  const [selectedYear, setSelectedYear] = useState<number>(currentYear);
+  const todayStr = useMemo(() => toLocalDateString(new Date()), []);
+  const [activeDay, setActiveDay] = useState<{ date: string; count: number } | null>(null);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+
+  const yearSolvedCount = useMemo(() => {
+    let total = 0;
+    Object.entries(stats.dailyHistory).forEach(([dateStr, count]) => {
+      if (dateStr.startsWith(`${selectedYear}-`)) {
+        total += count;
+      }
+    });
+    return total;
+  }, [stats.dailyHistory, selectedYear]);
+
+  const calendar = useMemo(() => {
+    const jan1 = new Date(selectedYear, 0, 1, 12, 0, 0);
+    const dec31 = new Date(selectedYear, 11, 31, 12, 0, 0);
+    const actualToday = new Date();
+    actualToday.setHours(12, 0, 0, 0);
+
+    const startDate = new Date(jan1);
+    startDate.setDate(startDate.getDate() - startDate.getDay());
+
+    const endDate = new Date(dec31);
+    endDate.setDate(endDate.getDate() + (6 - endDate.getDay()));
 
     const weeks: CalendarDay[][] = [];
+    const monthMarkers: { name: string; colIndex: number }[] = [];
 
-    for (let weekIndex = 0; weekIndex < WEEK_COUNT; weekIndex++) {
+    const current = new Date(startDate);
+    let weekIndex = 0;
+    let lastMonth = -1;
+
+    while (current <= endDate) {
       const week: CalendarDay[] = [];
-      const weekStart = new Date(start);
-      weekStart.setDate(start.getDate() + weekIndex * DAYS_PER_WEEK);
+      for (let d = 0; d < 7; d++) {
+        const dateString = toLocalDateString(current);
+        const isCurrentYear = current.getFullYear() === selectedYear;
+        const isFuture = current > actualToday;
+        const count = isCurrentYear ? (stats.dailyHistory[dateString] || 0) : 0;
 
-      for (let dayIndex = 0; dayIndex < DAYS_PER_WEEK; dayIndex++) {
-        const date = new Date(weekStart);
-        date.setDate(weekStart.getDate() + dayIndex);
-        const dateString = toLocalDateString(date);
+        if (isCurrentYear && current.getMonth() !== lastMonth && (d <= 3 || lastMonth === -1)) {
+          monthMarkers.push({
+            name: current.toLocaleString('en-US', { month: 'short' }),
+            colIndex: lastMonth === -1 ? 0 : weekIndex,
+          });
+          lastMonth = current.getMonth();
+        }
+
         week.push({
           date: dateString,
-          count: stats.dailyHistory[dateString] || 0,
-          isFuture: date > today,
+          count,
+          isToday: dateString === todayStr,
+          isFuture,
+          isCurrentYear,
         });
-      }
 
+        current.setDate(current.getDate() + 1);
+      }
       weeks.push(week);
+      weekIndex++;
     }
 
-    return { weeks };
-  }, [stats.dailyHistory]);
+    return { weeks, monthMarkers };
+  }, [selectedYear, stats.dailyHistory, todayStr]);
 
-  const monthMarkers = useMemo(() => {
-    const markers: { name: string; colIndex: number }[] = [];
-    let lastMonth = '';
-    calendar.weeks.forEach((week, i) => {
-      const d = new Date(week[0].date + 'T12:00:00');
-      const m = d.toLocaleString('default', { month: 'short' });
-      if (m !== lastMonth && i <= 22) {
-        markers.push({ name: m, colIndex: i });
-        lastMonth = m;
-      }
-    });
-    return markers;
-  }, [calendar.weeks]);
-
-  const [recentFilter, setRecentFilter] = useState<'ALL' | 'DSA' | 'SQL'>('ALL');
-
-  const filteredRecent = useMemo(() => {
-    return stats.recentSolved.filter((rec) => {
-      const isSql = isSqlProblemSlug(rec.slug);
-      if (recentFilter === 'DSA') return !isSql;
-      if (recentFilter === 'SQL') return isSql;
-      return true;
-    });
-  }, [stats.recentSolved, recentFilter]);
-
-  const statCards = [
-    { label: 'Current streak', value: stats.currentStreak, suffix: 'days', icon: Flame, color: 'text-amber-500' },
-    { label: 'Best streak', value: stats.maxStreak, suffix: 'days', icon: Zap, color: 'text-blue-500' },
-    { label: 'Solved today', value: stats.todaySolved, suffix: 'solved', icon: CheckCircle2, color: 'text-emerald-500' },
-    { label: 'Total solved', value: stats.totalSolved, suffix: 'total', icon: Trophy, color: 'text-amber-500' },
-  ];
+  // Ensure scroll is visible on smaller screens
+  useEffect(() => {
+    if (selectedYear === currentYear && scrollContainerRef.current) {
+      const container = scrollContainerRef.current;
+      const targetScroll = Math.max(0, container.scrollWidth * 0.4 - container.clientWidth / 2);
+      container.scrollTo({ left: targetScroll, behavior: 'smooth' });
+    }
+  }, [selectedYear, currentYear]);
 
   return (
-    <div className="space-y-3">
-      {/* Stat Badges - Compact Apple Grouping */}
-      <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
-        {statCards.map(({ label, value, suffix, icon: Icon, color }) => (
-          <div key={label} className="rounded-xl bg-[var(--bg-subtle)]/50 hover:bg-[var(--bg-subtle)]/80 transition-colors p-2.5">
-            <div className="flex items-center gap-1 text-[11px] font-medium text-[var(--text-muted)]">
-              <Icon className={`h-3 w-3 shrink-0 ${color}`} />
-              <span className="truncate">{label}</span>
-            </div>
-            <div className="mt-1 flex items-baseline gap-1">
-              <span className="font-mono text-xl font-bold tracking-tight text-[var(--text-main)]">{value}</span>
-              <span className="text-[10px] text-[var(--text-muted)]">{suffix}</span>
-            </div>
-          </div>
-        ))}
+    <div className="w-full">
+      {/* Top Header Line */}
+      <div className="mb-3">
+        <h2 className="text-sm font-semibold tracking-tight text-[var(--text-main)]">
+          {yearSolvedCount.toLocaleString()} contributions in {selectedYear}
+        </h2>
       </div>
 
-      {/* DSA vs SQL Solved Breakdown Cards */}
-      <div className="grid grid-cols-2 gap-2">
-        <div className="rounded-xl border border-sky-500/20 bg-sky-500/5 p-2.5 flex items-center justify-between">
-          <div className="flex items-center gap-2 min-w-0">
-            <div className="w-7 h-7 rounded-lg bg-sky-500/15 text-sky-600 dark:text-sky-400 flex items-center justify-center shrink-0">
-              <Code2 className="w-4 h-4" />
-            </div>
-            <div className="min-w-0">
-              <p className="text-[10px] font-semibold text-sky-600 dark:text-sky-400 uppercase tracking-wider">DSA Solved</p>
-              <div className="flex items-baseline gap-1 mt-0.5">
-                <span className="font-mono text-base sm:text-lg font-bold text-[var(--text-main)]">{stats.dsaSolved}</span>
-                <span className="text-[10px] text-[var(--text-muted)]">problems</span>
+      {/* Main Section: Card + Vertical Year Selector */}
+      <div className="flex flex-col lg:flex-row items-start gap-4">
+        {/* Boxed Contribution Card */}
+        <div className="flex-1 min-w-0 w-full rounded-2xl border border-[var(--border)] bg-white dark:bg-[#0d1117] p-4 sm:p-5 shadow-xs">
+          <div ref={scrollContainerRef} className="w-full overflow-x-auto pb-1 [scrollbar-width:thin]">
+            <div className="w-[722px] select-none">
+              {/* Month Labels mathematically aligned to 53 week columns */}
+              <div className="flex items-center gap-2 mb-2">
+                <div className="w-7 shrink-0" />
+                <div className="relative w-[686px] h-3.5 text-[11px] text-[#7d8590] dark:text-[#8b949e] font-normal leading-none">
+                  {calendar.monthMarkers.map(({ name, colIndex }) => (
+                    <span
+                      key={name}
+                      className="absolute leading-none font-normal"
+                      style={{ left: `${colIndex * 13}px` }}
+                    >
+                      {name}
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              {/* Day Labels + Heatmap Grid */}
+              <div className="flex items-start gap-2">
+                {/* Day Labels Mon, Wed, Fri strictly matched to rows 2, 4, 6 */}
+                <div className="grid grid-rows-7 gap-[3px] h-[88px] w-7 shrink-0 text-[10px] text-[#7d8590] dark:text-[#8b949e] font-normal leading-none">
+                  <span className="row-start-2 flex items-center">Mon</span>
+                  <span className="row-start-4 flex items-center">Wed</span>
+                  <span className="row-start-6 flex items-center">Fri</span>
+                </div>
+
+                {/* 53 Columns x 7 Rows Grid */}
+                <div className="grid grid-flow-col grid-rows-7 gap-[3px] h-[88px] w-[686px]">
+                  {calendar.weeks.map((week, wIndex) =>
+                    week.map((day, dIndex) => {
+                      const tooltipText = day.count > 0
+                        ? `${day.count} ${day.count === 1 ? 'contribution' : 'contributions'} on ${formatDayLabel(day.date)}`
+                        : `No contributions on ${formatDayLabel(day.date)}`;
+
+                      return (
+                        <button
+                          key={`${wIndex}-${dIndex}`}
+                          type="button"
+                          disabled={!day.isCurrentYear || day.isFuture}
+                          onMouseEnter={() => day.isCurrentYear && !day.isFuture && setActiveDay({ date: day.date, count: day.count })}
+                          onMouseLeave={() => setActiveDay(null)}
+                          onClick={() => day.isCurrentYear && !day.isFuture && setActiveDay({ date: day.date, count: day.count })}
+                          className={`w-[10px] h-[10px] rounded-[2.5px] transition-transform ${
+                            !day.isCurrentYear || day.isFuture ? '' : 'cursor-pointer hover:scale-125 hover:z-20'
+                          } ${
+                            day.isToday ? 'ring-2 ring-blue-500 ring-offset-1 dark:ring-offset-[#0d1117] z-10' : ''
+                          } ${getGitHubCellColor(day.count, day.isFuture, day.isCurrentYear)}`}
+                          title={!day.isCurrentYear ? undefined : day.isFuture ? `${formatDayLabel(day.date)} (Upcoming)` : tooltipText}
+                        />
+                      );
+                    })
+                  )}
+                </div>
               </div>
             </div>
           </div>
-          {stats.totalSolved > 0 && (
-            <span className="text-[10px] font-mono text-[var(--text-muted)] shrink-0">
-              {Math.round((stats.dsaSolved / stats.totalSolved) * 100)}%
-            </span>
-          )}
-        </div>
 
-        <div className="rounded-xl border border-emerald-500/20 bg-emerald-500/5 p-2.5 flex items-center justify-between">
-          <div className="flex items-center gap-2 min-w-0">
-            <div className="w-7 h-7 rounded-lg bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0">
-              <Database className="w-4 h-4" />
-            </div>
-            <div className="min-w-0">
-              <p className="text-[10px] font-semibold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider">SQL Solved</p>
-              <div className="flex items-baseline gap-1 mt-0.5">
-                <span className="font-mono text-base sm:text-lg font-bold text-[var(--text-main)]">{stats.sqlSolved}</span>
-                <span className="text-[10px] text-[var(--text-muted)]">queries</span>
-              </div>
-            </div>
-          </div>
-          {stats.totalSolved > 0 && (
-            <span className="text-[10px] font-mono text-[var(--text-muted)] shrink-0">
-              {Math.round((stats.sqlSolved / stats.totalSolved) * 100)}%
-            </span>
-          )}
-        </div>
-      </div>
-
-      {/* Heatmap Activity Section */}
-      <section className="rounded-2xl border border-[var(--border)]/50 bg-[var(--bg-subtle)]/30 p-3.5 sm:p-4">
-        <div className="mb-3 flex items-center justify-between gap-3">
-          <div className="flex items-center gap-2">
-            <div className="w-6 h-6 rounded-md bg-[var(--bg-subtle)] flex items-center justify-center text-emerald-500 shrink-0">
-              <CalendarDays className="h-3 w-3" />
-            </div>
-            <div>
-              <h3 className="text-xs font-semibold text-[var(--text-main)] leading-tight">Solve activity</h3>
-              <p className="text-[10px] text-[var(--text-muted)] font-normal">Past 26 weeks · each square is one day</p>
-            </div>
-          </div>
-        </div>
-
-        <div className="w-full">
-          {/* Absolutely positioned, pixel-perfect month labels */}
-          <div className="flex items-center gap-2 mb-1">
-            <div className="w-5 shrink-0" />
-            <div className="relative min-w-0 flex-1 h-3 text-[9px] font-medium text-[var(--text-muted)]">
-              {monthMarkers.map(({ name, colIndex }) => (
-                <span
-                  key={name}
-                  className="absolute leading-none"
-                  style={{ left: `${(colIndex / WEEK_COUNT) * 100}%` }}
-                >
-                  {name}
+          {/* Footer Bar inside Card */}
+          <div className="mt-3 flex items-center justify-between text-xs text-[#7d8590] dark:text-[#8b949e] pt-2">
+            <div className="text-[11px]">
+              {activeDay ? (
+                <span className="text-[var(--text-main)] font-medium">
+                  {activeDay.count} {activeDay.count === 1 ? 'contribution' : 'contributions'} on {formatDayLabel(activeDay.date)}
                 </span>
-              ))}
-            </div>
-          </div>
-
-          <div className="flex items-center gap-2">
-            {/* Day of Week Labels */}
-            <div className="flex flex-col justify-between h-[86px] text-[9px] font-medium text-[var(--text-muted)] select-none shrink-0 w-5">
-              <span>Mon</span>
-              <span>Wed</span>
-              <span>Fri</span>
-            </div>
-
-            {/* Grid */}
-            <div className="grid grid-flow-col grid-rows-7 gap-[3px] flex-1">
-              {calendar.weeks.map((week, wIndex) =>
-                week.map((day, dIndex) => (
-                  <div
-                    key={`${wIndex}-${dIndex}`}
-                    className={`h-[10px] w-full rounded-[2px] transition-colors ${getCellClass(day.count, day.isFuture)}`}
-                    title={day.isFuture ? undefined : `${day.date}: ${day.count} solved`}
-                  />
-                ))
+              ) : (
+                <span className="hover:text-blue-500 cursor-pointer transition-colors">
+                  Learn how we count contributions
+                </span>
               )}
             </div>
+
+            {/* Less / More Legend */}
+            <div className="flex items-center gap-1.5 text-[11px] select-none">
+              <span>Less</span>
+              <span className="w-[10px] h-[10px] rounded-[2.5px] bg-[#ebedf0] dark:bg-[#161b22] border border-black/[0.04] dark:border-white/[0.05]" />
+              <span className="w-[10px] h-[10px] rounded-[2.5px] bg-[#9be9a8] dark:bg-[#0e4429]" />
+              <span className="w-[10px] h-[10px] rounded-[2.5px] bg-[#40c463] dark:bg-[#006d32]" />
+              <span className="w-[10px] h-[10px] rounded-[2.5px] bg-[#30a14e] dark:bg-[#26a641]" />
+              <span className="w-[10px] h-[10px] rounded-[2.5px] bg-[#216e39] dark:bg-[#39d353]" />
+              <span>More</span>
+            </div>
           </div>
         </div>
 
-        <div className="mt-3 flex items-center justify-between text-[11px] text-[var(--text-muted)] font-normal border-t border-[var(--border)]/30 pt-2.5">
-          <span>
-            {stats.todaySolved > 0
-              ? `Great work — today is active.`
-              : `Solve a problem today to keep your streak.`}
-          </span>
-          <div className="flex items-center gap-1.5 text-[10px]">
-            <span>Less</span>
-            {[0, 1, 2, 4].map((count) => (
-              <span key={count} className={`h-2.5 w-2.5 rounded-[2px] ${getCellClass(count, false)}`} />
-            ))}
-            <span>More</span>
-          </div>
+        {/* Right Column: Apple-styled Vertical Years List */}
+        <div className="flex lg:flex-col items-center lg:items-stretch gap-1.5 w-full lg:w-20 shrink-0 overflow-x-auto lg:overflow-visible py-0.5">
+          {DISPLAY_YEARS.map((yr) => {
+            const isSelected = selectedYear === yr;
+            return (
+              <button
+                key={yr}
+                type="button"
+                onClick={() => setSelectedYear(yr)}
+                className={`apple-press px-3 py-1.5 rounded-xl text-xs font-medium text-center transition-all cursor-pointer ${
+                  isSelected
+                    ? 'bg-[#0969da] dark:bg-[#1f6feb] text-white font-semibold shadow-xs'
+                    : 'text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--bg-subtle)]'
+                }`}
+              >
+                {yr}
+              </button>
+            );
+          })}
         </div>
-      </section>
-
-      {stats.recentSolved.length > 0 && (
-        <section className="rounded-xl border border-[var(--border)]/40 bg-[var(--bg-subtle)]/20 p-3">
-          <div className="flex items-center justify-between gap-2 mb-2">
-            <h3 className="text-xs font-semibold text-[var(--text-main)]">Recently solved</h3>
-            <div className="flex items-center gap-1 bg-[var(--bg-subtle)]/80 p-0.5 rounded-lg border border-[var(--border)]/40">
-              {(['ALL', 'DSA', 'SQL'] as const).map((filter) => {
-                const count = filter === 'ALL'
-                  ? stats.totalSolved
-                  : filter === 'DSA'
-                  ? stats.dsaSolved
-                  : stats.sqlSolved;
-                return (
-                  <button
-                    key={filter}
-                    onClick={() => setRecentFilter(filter)}
-                    className={`apple-press px-2 py-0.5 rounded-md text-[10px] font-medium transition-colors cursor-pointer flex items-center gap-1 ${
-                      recentFilter === filter
-                        ? 'bg-[var(--bg-card)] text-[var(--text-main)] shadow-sm font-semibold'
-                        : 'text-[var(--text-muted)] hover:text-[var(--text-main)]'
-                    }`}
-                  >
-                    <span>{filter}</span>
-                    <span className="font-mono text-[9px] opacity-70">({count})</span>
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-
-          {filteredRecent.length === 0 ? (
-            <div className="py-3 text-center text-[11px] text-[var(--text-muted)]">
-              No {recentFilter} problems solved yet.
-            </div>
-          ) : (
-            <div className="divide-y divide-[var(--border)]/30 max-h-48 overflow-y-auto pr-0.5">
-              {filteredRecent.slice(0, 6).map((record) => (
-                <a
-                  key={record.slug}
-                  href={getLeetCodeProblemUrl(record.slug)}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center justify-between gap-3 py-1.5 text-xs hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors group"
-                >
-                  <div className="flex items-center gap-1.5 min-w-0">
-                    <span className={`px-1.5 py-0.5 rounded text-[9px] font-mono font-semibold shrink-0 ${
-                      isSqlProblemSlug(record.slug)
-                        ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20'
-                        : 'bg-sky-500/10 text-sky-600 dark:text-sky-400 border border-sky-500/20'
-                    }`}>
-                      {isSqlProblemSlug(record.slug) ? 'SQL' : 'DSA'}
-                    </span>
-                    <span className="truncate font-medium">{record.id ? `#${record.id} ` : ''}{record.title || record.slug.replace(/-/g, ' ')}</span>
-                  </div>
-                  <span className="shrink-0 font-mono text-[10px] text-[var(--text-muted)]">{record.date}</span>
-                </a>
-              ))}
-            </div>
-          )}
-        </section>
-      )}
+      </div>
     </div>
   );
 };

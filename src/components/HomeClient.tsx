@@ -1,18 +1,16 @@
 'use client';
 
 import React, { useState, useMemo, useEffect, useRef } from 'react';
-import { Search, Trophy, Database, Building2, Code2, X, Pin, Sparkles, ExternalLink, CheckCircle2 } from 'lucide-react';
+import { Search, X, Pin, Sparkles, ExternalLink, CheckCircle2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { CompanySummary, SyncStatus, DailyChallenge } from '@/types';
 import { Header } from '@/components/Header';
-import { SyncModal } from '@/components/SyncModal';
 import { CompanyCard } from '@/components/CompanyCard';
 import { useSolvedProblems } from '@/utils/useSolvedProblems';
 import { usePinnedCompanies } from '@/utils/usePinnedCompanies';
 import { toggleProblemSolved } from '@/utils/progress';
 
 interface HomeClientProps {
-  initialCompanies: CompanySummary[];
   initialSyncStatus: SyncStatus | null;
   initialDailyChallenge?: DailyChallenge | null;
 }
@@ -26,15 +24,27 @@ const FINTECH_SLUGS = new Set([
   'stripe', 'squarepoint-capital', 'hudson-river-trading', 'paypal', 'coinbase', 'visa', 'mastercard'
 ]);
 
+function getLocalDateKey(date: Date = new Date()): string {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
+function getMillisecondsUntilLocalMidnight(now: Date = new Date()): number {
+  const nextMidnight = new Date(now);
+  nextMidnight.setHours(24, 0, 0, 0);
+  return Math.max(1_000, nextMidnight.getTime() - now.getTime() + 250);
+}
+
 export const HomeClient: React.FC<HomeClientProps> = ({
-  initialCompanies,
   initialSyncStatus,
   initialDailyChallenge = null,
 }) => {
-  const [companies, setCompanies] = useState<CompanySummary[]>(initialCompanies);
+  const [companies, setCompanies] = useState<CompanySummary[]>([]);
+  const [isLoadingCompanies, setIsLoadingCompanies] = useState(true);
   const [syncStatus, setSyncStatus] = useState<SyncStatus | null>(initialSyncStatus);
-  const [dailyChallenge] = useState<DailyChallenge | null>(initialDailyChallenge);
-  const [isSyncModalOpen, setIsSyncModalOpen] = useState(false);
+  const [dailyChallenge, setDailyChallenge] = useState<DailyChallenge | null>(initialDailyChallenge);
   const [searchQuery, setSearchQuery] = useState('');
   const [categoryFilter, setCategoryFilter] = useState<'ALL' | 'PINNED' | 'FAANG' | 'FINTECH' | 'POPULAR' | 'SQL'>('ALL');
   const [sortBy, setSortBy] = useState<'total' | 'name' | 'hard'>('total');
@@ -42,6 +52,111 @@ export const HomeClient: React.FC<HomeClientProps> = ({
   const userSolvedCount = solvedSet.size;
   const { pinnedSet } = usePinnedCompanies();
   const isDailySolved = dailyChallenge ? solvedSet.has(dailyChallenge.slug) : false;
+
+  useEffect(() => {
+    const controller = new AbortController();
+
+    const loadCompanies = () => {
+      fetch('/api/companies', { signal: controller.signal })
+        .then((response) => {
+          if (!response.ok) throw new Error('Failed to load companies');
+          return response.json();
+        })
+        .then((data) => {
+          if (Array.isArray(data)) setCompanies(data);
+        })
+        .catch((error: unknown) => {
+          if (error instanceof Error && error.name !== 'AbortError') {
+            toast.error('Unable to load companies. Please refresh and try again.');
+          }
+        })
+        .finally(() => setIsLoadingCompanies(false));
+    };
+
+    loadCompanies();
+
+    const handleLiveRefreshEvent = (e: Event) => {
+      const customEvent = e as CustomEvent<SyncStatus>;
+      if (customEvent.detail) {
+        setSyncStatus(customEvent.detail);
+      }
+      loadCompanies();
+    };
+
+    window.addEventListener('leetmap-live-refresh', handleLiveRefreshEvent);
+
+    return () => {
+      controller.abort();
+      window.removeEventListener('leetmap-live-refresh', handleLiveRefreshEvent);
+    };
+  }, []);
+
+  useEffect(() => {
+    let disposed = false;
+    let midnightTimer: ReturnType<typeof setTimeout> | undefined;
+    let refreshController: AbortController | undefined;
+    let currentLocalDate = getLocalDateKey();
+
+    const refreshDailyChallenge = async () => {
+      refreshController?.abort();
+      refreshController = new AbortController();
+      const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC';
+
+      try {
+        const response = await fetch(
+          `/api/daily-challenge?timeZone=${encodeURIComponent(timeZone)}`,
+          {
+            cache: 'no-store',
+            signal: refreshController.signal,
+          }
+        );
+        if (!response.ok) return;
+
+        const challenge = (await response.json()) as DailyChallenge;
+        if (!disposed && challenge?.slug && challenge?.date) {
+          setDailyChallenge(challenge);
+        }
+      } catch (error) {
+        if (error instanceof Error && error.name !== 'AbortError') {
+          console.error('Failed to refresh daily challenge:', error);
+        }
+      }
+    };
+
+    const scheduleMidnightRefresh = () => {
+      if (midnightTimer) clearTimeout(midnightTimer);
+      midnightTimer = setTimeout(() => {
+        currentLocalDate = getLocalDateKey();
+        void refreshDailyChallenge().finally(scheduleMidnightRefresh);
+      }, getMillisecondsUntilLocalMidnight());
+    };
+
+    const refreshAfterDateChange = () => {
+      const nextLocalDate = getLocalDateKey();
+      if (nextLocalDate !== currentLocalDate) {
+        currentLocalDate = nextLocalDate;
+        void refreshDailyChallenge();
+      }
+      scheduleMidnightRefresh();
+    };
+
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible') refreshAfterDateChange();
+    };
+
+    void refreshDailyChallenge();
+    scheduleMidnightRefresh();
+    window.addEventListener('focus', refreshAfterDateChange);
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    return () => {
+      disposed = true;
+      refreshController?.abort();
+      if (midnightTimer) clearTimeout(midnightTimer);
+      window.removeEventListener('focus', refreshAfterDateChange);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
+  }, []);
 
   const handleToggleSolvedDaily = (prob: DailyChallenge) => {
     const solved = toggleProblemSolved(prob.slug, { title: prob.title, difficulty: prob.difficulty });
@@ -109,19 +224,9 @@ export const HomeClient: React.FC<HomeClientProps> = ({
       });
   }, [companies, searchQuery, categoryFilter, sortBy, pinnedSet]);
 
-  const handleSyncComplete = (newStatus: SyncStatus) => {
-    setSyncStatus(newStatus);
-    fetch('/api/companies')
-      .then((r) => r.json())
-      .then((data) => {
-        if (Array.isArray(data)) setCompanies(data);
-      })
-      .catch(console.error);
-  };
-
   return (
     <div className="min-h-screen flex flex-col">
-      <Header onOpenSync={() => setIsSyncModalOpen(true)} syncStatus={syncStatus} />
+      <Header syncStatus={syncStatus} />
 
       <main className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 py-10 w-full space-y-8">
         {/* Minimal Hero */}
@@ -346,7 +451,16 @@ export const HomeClient: React.FC<HomeClientProps> = ({
         )}
 
         {/* Companies Grid */}
-        {filteredCompanies.length === 0 ? (
+        {isLoadingCompanies ? (
+          <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3" aria-label="Loading companies">
+            {Array.from({ length: 6 }, (_, index) => (
+              <div
+                key={index}
+                className="h-20 animate-pulse rounded-xl border border-[var(--border)] bg-[var(--bg-card)]"
+              />
+            ))}
+          </section>
+        ) : filteredCompanies.length === 0 ? (
           <div className="py-20 text-center rounded-3xl border border-[var(--border)] bg-[var(--bg-card)] p-8 max-w-md mx-auto space-y-4 shadow-xs">
             <div className="w-12 h-12 rounded-2xl bg-[var(--bg-subtle)] border border-[var(--border)] flex items-center justify-center mx-auto text-[var(--text-muted)]">
               {categoryFilter === 'PINNED' ? (
@@ -385,14 +499,6 @@ export const HomeClient: React.FC<HomeClientProps> = ({
           </section>
         )}
       </main>
-
-      {/* Sync Status / Pipeline Modal */}
-      <SyncModal
-        isOpen={isSyncModalOpen}
-        onClose={() => setIsSyncModalOpen(false)}
-        syncStatus={syncStatus}
-        onSyncComplete={handleSyncComplete}
-      />
     </div>
   );
 };

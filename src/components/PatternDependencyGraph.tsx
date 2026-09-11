@@ -1,9 +1,17 @@
 'use client';
 
 import React, { useState, useMemo } from 'react';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { PatternSummary } from '@/types';
-import { ZoomIn, ZoomOut, RotateCcw, Compass, CheckCircle2 } from 'lucide-react';
+import { ZoomIn, ZoomOut, RotateCcw, Compass, X, ChevronRight } from 'lucide-react';
+
+export interface SubPattern {
+  slug: string;
+  name: string;
+  total: number;
+  tagline: string;
+}
 
 interface GraphNode {
   id: string;
@@ -12,7 +20,8 @@ interface GraphNode {
   x: number;
   y: number;
   total: number;
-  category: 'Fundamentals' | 'Data Structures' | 'Trees & Graphs' | 'Advanced & DP';
+  category: string;
+  subPatterns?: SubPattern[];
 }
 
 interface GraphEdge {
@@ -20,41 +29,115 @@ interface GraphEdge {
   to: string;
 }
 
-// 8 Strictly Ordered Horizontal Tiers with generous spacing
+// 7 Strictly Ordered Horizontal Tiers matching the roadmap
 const NODES: GraphNode[] = [
   // Tier 0 (Root)
-  { id: 'arrays-hashing', title: 'Arrays & Hashing', slug: 'prefix-sum', x: 560, y: 60, total: 220, category: 'Fundamentals' },
+  {
+    id: 'arrays-hashing',
+    title: 'Arrays & Hashing',
+    slug: 'prefix-sum',
+    x: 530,
+    y: 60,
+    total: 220,
+    category: 'Arrays & Strings',
+    subPatterns: [
+      { slug: 'two-pointers', name: 'Two Pointers', total: 215, tagline: 'Opposite or parallel pointers traversing sequences in linear time O(N)' },
+      { slug: 'sliding-window', name: 'Sliding Window', total: 145, tagline: 'Dynamic and fixed-size windows over contiguous subarrays or substrings' },
+      { slug: 'fast-slow-pointers', name: 'Fast & Slow Pointers', total: 7, tagline: "Cycle detection and midpoint traversal using Floyd's Tortoise and Hare algorithm" },
+      { slug: 'prefix-sum', name: 'Arrays & Hashing (Prefix Sum)', total: 220, tagline: 'O(1) range queries and subarray sum lookups using cumulative totals' },
+      { slug: 'binary-search', name: 'Binary Search & Modified BS', total: 315, tagline: 'Logarithmic O(log N) search on sorted spaces and monotonic ranges' },
+    ],
+  },
 
   // Tier 1
-  { id: 'two-pointers', title: 'Two Pointers', slug: 'two-pointers', x: 420, y: 165, total: 215, category: 'Fundamentals' },
-  { id: 'stack', title: 'Stack', slug: 'monotonic-stack', x: 700, y: 165, total: 85, category: 'Data Structures' },
+  {
+    id: 'two-pointers',
+    title: 'Two Pointers',
+    slug: 'two-pointers',
+    x: 380,
+    y: 165,
+    total: 215,
+    category: 'Arrays & Strings',
+    subPatterns: [
+      { slug: 'two-pointers', name: 'Two Pointers', total: 215, tagline: 'Opposite or parallel pointers traversing sequences in linear time O(N)' },
+      { slug: 'fast-slow-pointers', name: 'Fast & Slow Pointers', total: 7, tagline: "Cycle detection and midpoint traversal using Floyd's Tortoise and Hare algorithm" },
+    ],
+  },
+  { id: 'stack', title: 'Stack', slug: 'monotonic-stack', x: 680, y: 165, total: 85, category: 'Stacks & Queues' },
 
   // Tier 2
-  { id: 'binary-search', title: 'Binary Search', slug: 'binary-search', x: 270, y: 275, total: 315, category: 'Fundamentals' },
-  { id: 'sliding-window', title: 'Sliding Window', slug: 'sliding-window', x: 560, y: 275, total: 145, category: 'Fundamentals' },
-  { id: 'linked-list', title: 'Linked List', slug: 'linked-list-manipulation', x: 850, y: 275, total: 70, category: 'Fundamentals' },
+  { id: 'binary-search', title: 'Binary Search', slug: 'binary-search', x: 230, y: 275, total: 315, category: 'Arrays & Strings' },
+  { id: 'sliding-window', title: 'Sliding Window', slug: 'sliding-window', x: 530, y: 275, total: 145, category: 'Arrays & Strings' },
+  {
+    id: 'linked-list',
+    title: 'Linked List',
+    slug: 'linked-list-manipulation',
+    x: 830,
+    y: 275,
+    total: 70,
+    category: 'Linked Lists',
+    subPatterns: [
+      { slug: 'linked-list-manipulation', name: 'Linked List Manipulation', total: 70, tagline: 'Reversing, reordering, and partitioning pointer chains with O(1) space' },
+      { slug: 'fast-slow-pointers', name: 'Fast & Slow Pointers', total: 7, tagline: "Cycle detection and midpoint traversal using Floyd's Tortoise and Hare algorithm" },
+    ],
+  },
 
-  // Tier 3
-  { id: 'trees', title: 'Trees', slug: 'tree-dfs', x: 560, y: 385, total: 357, category: 'Trees & Graphs' },
+  // Tier 3 (Convergence to Trees)
+  {
+    id: 'trees',
+    title: 'Trees',
+    slug: 'tree-dfs',
+    x: 530,
+    y: 385,
+    total: 357,
+    category: 'Trees & Tries',
+    subPatterns: [
+      { slug: 'tree-dfs', name: 'Tree Depth-First Search (DFS)', total: 357, tagline: 'Recursive top-down and bottom-up traversals on hierarchical structures' },
+      { slug: 'tree-bfs', name: 'Tree Breadth-First Search (BFS)', total: 390, tagline: 'Level-order traversal and horizontal tier exploration using queues' },
+      { slug: 'binary-search-tree', name: 'Binary Search Tree (BST)', total: 37, tagline: 'Ordered hierarchical storage with monotonic inorder traversal' },
+      { slug: 'trie', name: 'Tries (Prefix Tree)', total: 53, tagline: 'Efficient prefix matching, autocomplete, and dictionary lookups' },
+    ],
+  },
 
   // Tier 4
-  { id: 'tries', title: 'Tries', slug: 'trie', x: 270, y: 495, total: 53, category: 'Data Structures' },
-  { id: 'heap', title: 'Heap / Priority Queue', slug: 'heaps-top-k', x: 560, y: 495, total: 190, category: 'Data Structures' },
-  { id: 'backtracking', title: 'Backtracking', slug: 'backtracking', x: 850, y: 495, total: 114, category: 'Advanced & DP' },
+  { id: 'tries', title: 'Tries', slug: 'trie', x: 230, y: 495, total: 53, category: 'Trees & Tries' },
+  { id: 'heap', title: 'Heap / Priority Queue', slug: 'heaps-top-k', x: 530, y: 495, total: 190, category: 'Heaps & Intervals' },
+  { id: 'backtracking', title: 'Backtracking', slug: 'backtracking', x: 830, y: 495, total: 114, category: 'Advanced & Greedy' },
 
   // Tier 5
-  { id: 'intervals', title: 'Intervals', slug: 'intervals', x: 135, y: 615, total: 41, category: 'Data Structures' },
-  { id: 'greedy', title: 'Greedy', slug: 'greedy', x: 370, y: 615, total: 414, category: 'Advanced & DP' },
-  { id: 'graphs', title: 'Graphs', slug: 'graph-traversal', x: 670, y: 615, total: 167, category: 'Trees & Graphs' },
-  { id: 'dp-1d', title: '1-D Dynamic Programming', slug: 'dynamic-programming-1d', x: 955, y: 615, total: 560, category: 'Advanced & DP' },
+  { id: 'intervals', title: 'Intervals', slug: 'intervals', x: 130, y: 615, total: 41, category: 'Heaps & Intervals' },
+  { id: 'greedy', title: 'Greedy', slug: 'greedy', x: 370, y: 615, total: 414, category: 'Advanced & Greedy' },
+  {
+    id: 'graphs',
+    title: 'Graphs',
+    slug: 'graph-traversal',
+    x: 670,
+    y: 615,
+    total: 167,
+    category: 'Graphs',
+    subPatterns: [
+      { slug: 'graph-traversal', name: 'Graphs (BFS & DFS)', total: 167, tagline: 'Shortest paths, flood fills, and connected components in arbitrary networks' },
+      { slug: 'matrix-traversal', name: 'Matrix & Grid Traversal', total: 243, tagline: 'Coordinate navigation, spiral unwrapping, and 2D flood fills' },
+    ],
+  },
+  { id: 'dp-1d', title: '1-D Dynamic Programming', slug: 'dynamic-programming-1d', x: 930, y: 615, total: 560, category: 'Dynamic Programming' },
 
-  // Tier 6
-  { id: 'advanced-graphs', title: 'Advanced Graphs', slug: 'topological-sort', x: 515, y: 725, total: 39, category: 'Trees & Graphs' },
-  { id: 'dp-2d', title: '2-D Dynamic Programming', slug: 'dynamic-programming-2d', x: 750, y: 725, total: 557, category: 'Advanced & DP' },
-  { id: 'bit-manipulation', title: 'Bit Manipulation', slug: 'bit-manipulation', x: 955, y: 725, total: 234, category: 'Advanced & DP' },
-
-  // Tier 7
-  { id: 'math-geometry', title: 'Math & Geometry', slug: 'matrix-traversal', x: 852, y: 835, total: 243, category: 'Trees & Graphs' },
+  // Tier 6 (Final Convergence)
+  {
+    id: 'advanced-graphs',
+    title: 'Advanced Graphs',
+    slug: 'topological-sort',
+    x: 490,
+    y: 735,
+    total: 39,
+    category: 'Graphs',
+    subPatterns: [
+      { slug: 'topological-sort', name: 'Advanced Graphs (Topological Sort)', total: 39, tagline: 'Linear dependency ordering and cycle detection in DAGs' },
+      { slug: 'union-find', name: 'Union-Find (Disjoint Set)', total: 86, tagline: 'Connectivity, cycle detection, and clustering in undirected networks' },
+    ],
+  },
+  { id: 'dp-2d', title: '2-D Dynamic Programming', slug: 'dynamic-programming-2d', x: 730, y: 735, total: 557, category: 'Dynamic Programming' },
+  { id: 'bit-manipulation', title: 'Bit Manipulation', slug: 'bit-manipulation', x: 930, y: 735, total: 234, category: 'Advanced & Greedy' },
 ];
 
 const EDGES: GraphEdge[] = [
@@ -89,10 +172,6 @@ const EDGES: GraphEdge[] = [
   { from: 'graphs', to: 'dp-2d' },
   { from: 'dp-1d', to: 'dp-2d' },
   { from: 'dp-1d', to: 'bit-manipulation' },
-
-  // Tier 6 -> Tier 7 (Convergence to Math & Geometry)
-  { from: 'dp-2d', to: 'math-geometry' },
-  { from: 'bit-manipulation', to: 'math-geometry' },
 ];
 
 const NODE_WIDTH = 176;
@@ -101,13 +180,31 @@ const PROGRESS_BAR_WIDTH = 144;
 
 interface PatternDependencyGraphProps {
   patterns: PatternSummary[];
+  patternProblems?: Record<string, string[]>;
   solvedSet?: Set<string>;
 }
 
-export function PatternDependencyGraph({ patterns, solvedSet = new Set() }: PatternDependencyGraphProps) {
+export function PatternDependencyGraph({
+  patterns,
+  patternProblems = {},
+  solvedSet = new Set(),
+}: PatternDependencyGraphProps) {
   const router = useRouter();
   const [hoveredNodeId, setHoveredNodeId] = useState<string | null>(null);
+  const [selectedGroupNode, setSelectedGroupNode] = useState<GraphNode | null>(null);
   const [zoomLevel, setZoomLevel] = useState<number>(1);
+
+  // Close modal on Escape key
+  React.useEffect(() => {
+    if (!selectedGroupNode) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setSelectedGroupNode(null);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [selectedGroupNode]);
 
   // Pattern map for instant lookup
   const patternMap = useMemo(() => {
@@ -119,14 +216,43 @@ export function PatternDependencyGraph({ patterns, solvedSet = new Set() }: Patt
     return new Map(NODES.map((n) => [n.id, n]));
   }, []);
 
-  // Compute progress for a node
+  // Compute progress for a node (aggregates across subpatterns if grouped)
   const getNodeProgress = (node: GraphNode) => {
+    if (node.subPatterns && node.subPatterns.length > 1) {
+      let groupTotal = 0;
+      let groupSolved = 0;
+      for (const sub of node.subPatterns) {
+        const p = patternMap.get(sub.slug);
+        const tot = p?.total || sub.total;
+        groupTotal += tot;
+        const slugs = patternProblems[sub.slug];
+        if (slugs && solvedSet.size > 0) {
+          groupSolved += slugs.filter((id) => solvedSet.has(id)).length;
+        }
+      }
+      const pct = groupTotal > 0 ? Math.min(100, Math.round((groupSolved / groupTotal) * 100)) : 0;
+      return { total: groupTotal, solved: groupSolved, pct, p: patternMap.get(node.slug) };
+    }
+
     const p = patternMap.get(node.slug);
     const total = p?.total || node.total;
-    const solved = solvedSet.size > 0 && p
-      ? Math.min(total, Array.from(solvedSet).filter(id => id.startsWith(node.slug)).length)
+    const slugs = patternProblems[node.slug];
+    const solved = slugs && solvedSet.size > 0
+      ? slugs.filter((id) => solvedSet.has(id)).length
       : 0;
-    const pct = total > 0 ? Math.round((solved / total) * 100) : 0;
+    const pct = total > 0 ? Math.min(100, Math.round((solved / total) * 100)) : 0;
+    return { total, solved, pct, p };
+  };
+
+  // Compute progress for a single subpattern
+  const getSubPatternProgress = (sub: SubPattern) => {
+    const p = patternMap.get(sub.slug);
+    const total = p?.total || sub.total;
+    const slugs = patternProblems[sub.slug];
+    const solved = slugs && solvedSet.size > 0
+      ? slugs.filter((id) => solvedSet.has(id)).length
+      : 0;
+    const pct = total > 0 ? Math.min(100, Math.round((solved / total) * 100)) : 0;
     return { total, solved, pct, p };
   };
 
@@ -175,7 +301,7 @@ export function PatternDependencyGraph({ patterns, solvedSet = new Set() }: Patt
           <div className="flex items-center gap-2">
             <h2 className="text-sm font-semibold text-[var(--text-main)]">Learning Roadmap &amp; Dependencies</h2>
             <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-medium border border-emerald-500/20">
-              18 Topics
+              17 Topics
             </span>
           </div>
           <p className="text-xs text-[var(--text-muted)]">
@@ -241,7 +367,7 @@ export function PatternDependencyGraph({ patterns, solvedSet = new Set() }: Patt
             style={{ transform: `scale(${zoomLevel})`, transformOrigin: 'top center' }}
           >
             <svg
-              viewBox="0 0 1120 900"
+              viewBox="0 0 1060 810"
               className="w-full h-auto max-w-[1080px] select-none bg-[var(--graph-canvas-bg)]"
               aria-label="Interactive pattern dependency tree"
             >
@@ -324,70 +450,96 @@ export function PatternDependencyGraph({ patterns, solvedSet = new Set() }: Patt
                   const isLongTitle = node.title.length > 18;
                   const fontSize = isLongTitle ? 11.5 : 12.5;
 
-                  return (
-                    <g
+                    return (
+                    <a
                       key={node.id}
-                      transform={`translate(${left}, ${top})`}
-                      className="cursor-pointer group"
-                      onMouseEnter={() => setHoveredNodeId(node.id)}
-                      onMouseLeave={() => setHoveredNodeId(null)}
-                      onClick={() => router.push(`/patterns/${node.slug}`)}
-                    >
-                      {/* Node Card Outer Rectangle */}
-                      <rect
-                        width={NODE_WIDTH}
-                        height={NODE_HEIGHT}
-                        rx={10}
-                        fill={isHovered ? 'var(--graph-node-hover-bg)' : 'var(--graph-node-bg)'}
-                        stroke={
-                          isHovered
-                            ? '#10b981'
-                            : isParent
-                            ? '#10b981'
-                            : isChild
-                            ? '#38bdf8'
-                            : 'var(--graph-node-border)'
+                      href={`/patterns/${node.slug}`}
+                      onClick={(e) => {
+                        if (!e.metaKey && !e.ctrlKey && e.button === 0) {
+                          e.preventDefault();
+                          if (node.subPatterns && node.subPatterns.length > 1) {
+                            setSelectedGroupNode(node);
+                          } else {
+                            router.push(`/patterns/${node.slug}`);
+                          }
                         }
-                        strokeWidth={isFocused ? 2 : 1.4}
-                        filter={isHovered ? 'url(#glow-card-shadow)' : 'url(#soft-card-shadow)'}
-                        className="transition-all duration-150"
-                      />
-
-                      {/* Main Node Title - Centered, dynamic text color */}
-                      <text
-                        x={NODE_WIDTH / 2}
-                        y={27}
-                        textAnchor="middle"
-                        fontSize={fontSize}
-                        fontWeight="600"
-                        fill="var(--graph-node-text)"
-                        className="font-sans select-none tracking-tight"
+                      }}
+                      className="cursor-pointer group select-none outline-none"
+                      aria-label={`View ${node.title} study guide and problems`}
+                    >
+                      <g
+                        transform={`translate(${left}, ${top})`}
+                        onMouseEnter={() => setHoveredNodeId(node.id)}
+                        onMouseLeave={() => setHoveredNodeId(null)}
                       >
-                        {node.title}
-                      </text>
+                        {/* Node Card Outer Rectangle */}
+                        <rect
+                          width={NODE_WIDTH}
+                          height={NODE_HEIGHT}
+                          rx={10}
+                          fill={isHovered ? 'var(--graph-node-hover-bg)' : 'var(--graph-node-bg)'}
+                          stroke={
+                            isHovered
+                              ? '#10b981'
+                              : isParent
+                              ? '#10b981'
+                              : isChild
+                              ? '#38bdf8'
+                              : 'var(--graph-node-border)'
+                          }
+                          strokeWidth={isFocused ? 2 : 1.4}
+                          filter={isHovered ? 'url(#glow-card-shadow)' : 'url(#soft-card-shadow)'}
+                          className="transition-all duration-150"
+                        />
 
-                      {/* Progress Bar Background Track */}
-                      <rect
-                        x={(NODE_WIDTH - PROGRESS_BAR_WIDTH) / 2}
-                        y={37}
-                        width={PROGRESS_BAR_WIDTH}
-                        height={4}
-                        rx={2}
-                        fill="var(--graph-progress-track)"
-                      />
+                        {/* Sub-patterns indicator pill if node has a group of patterns */}
+                        {node.subPatterns && node.subPatterns.length > 1 && (
+                          <g transform={`translate(${NODE_WIDTH - 26}, 6)`} className="pointer-events-none opacity-80 group-hover:opacity-100 transition-opacity">
+                            <rect width={18} height={13} rx={4} fill="var(--graph-canvas-bg)" stroke="var(--graph-node-border)" strokeWidth={0.8} />
+                            <text x={9} y={9.5} textAnchor="middle" fontSize={8.5} fontWeight="700" fill="var(--graph-node-text)">
+                              {node.subPatterns.length}
+                            </text>
+                          </g>
+                        )}
 
-                      {/* Emerald Progress Fill */}
-                      {pct > 0 && (
+                        {/* Main Node Title - Centered, dynamic text color */}
+                        <text
+                          x={NODE_WIDTH / 2}
+                          y={27}
+                          textAnchor="middle"
+                          fontSize={fontSize}
+                          fontWeight="600"
+                          fill="var(--graph-node-text)"
+                          className="font-sans select-none tracking-tight pointer-events-none"
+                        >
+                          {node.title}
+                        </text>
+
+                        {/* Progress Bar Background Track */}
                         <rect
                           x={(NODE_WIDTH - PROGRESS_BAR_WIDTH) / 2}
                           y={37}
-                          width={Math.max(6, (PROGRESS_BAR_WIDTH * pct) / 100)}
+                          width={PROGRESS_BAR_WIDTH}
                           height={4}
                           rx={2}
-                          fill="#10b981"
+                          fill="var(--graph-progress-track)"
+                          className="pointer-events-none"
                         />
-                      )}
-                    </g>
+
+                        {/* Emerald Progress Fill */}
+                        {pct > 0 && (
+                          <rect
+                            x={(NODE_WIDTH - PROGRESS_BAR_WIDTH) / 2}
+                            y={37}
+                            width={Math.max(6, (PROGRESS_BAR_WIDTH * pct) / 100)}
+                            height={4}
+                            rx={2}
+                            fill="#10b981"
+                            className="pointer-events-none"
+                          />
+                        )}
+                      </g>
+                    </a>
                   );
                 })}
               </g>
@@ -401,7 +553,7 @@ export function PatternDependencyGraph({ patterns, solvedSet = new Set() }: Patt
             <div className="flex items-center gap-2 min-w-0 flex-wrap">
               <span className="font-semibold">{hoveredNode.title}</span>
               <span className="text-[var(--graph-footer-muted)]">
-                · {hoveredProgress.total} curated problems ({hoveredProgress.solved} solved)
+                · {hoveredProgress.total} curated problems {hoveredProgress.solved > 0 ? `(${hoveredProgress.solved} solved)` : ''}
               </span>
               {parentIds.size > 0 && (
                 <span className="text-emerald-600 dark:text-emerald-400 font-medium">
@@ -413,9 +565,24 @@ export function PatternDependencyGraph({ patterns, solvedSet = new Set() }: Patt
                   · Unlocks: {Array.from(childIds).map(id => nodeMap.get(id)?.title).join(', ')}
                 </span>
               )}
-              <span className="text-[var(--graph-footer-muted)]">
-                · Click to practice →
-              </span>
+              {hoveredNode.subPatterns && hoveredNode.subPatterns.length > 1 ? (
+                <button
+                  type="button"
+                  onClick={() => setSelectedGroupNode(hoveredNode)}
+                  className="apple-press inline-flex items-center gap-1 font-semibold text-emerald-600 dark:text-emerald-400 hover:underline cursor-pointer ml-1 text-xs"
+                >
+                  <span>Explore {hoveredNode.title} ({hoveredNode.subPatterns.length} Patterns)</span>
+                  <ChevronRight className="w-3.5 h-3.5" />
+                </button>
+              ) : (
+                <Link
+                  href={`/patterns/${hoveredNode.slug}`}
+                  className="apple-press inline-flex items-center gap-1 font-semibold text-emerald-600 dark:text-emerald-400 hover:underline cursor-pointer ml-1"
+                >
+                  <span>Practice {hoveredNode.title}</span>
+                  <span>→</span>
+                </Link>
+              )}
             </div>
           ) : (
             <div className="flex items-center gap-2 text-xs text-[var(--graph-footer-muted)]">
@@ -434,6 +601,105 @@ export function PatternDependencyGraph({ patterns, solvedSet = new Set() }: Patt
           </div>
         </div>
       </div>
+
+      {/* Apple-Style Pattern Selection Modal Sheet */}
+      {selectedGroupNode && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200"
+          onClick={() => setSelectedGroupNode(null)}
+        >
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="group-pattern-title"
+            className="relative w-full max-w-xl max-h-[85vh] flex flex-col rounded-2xl bg-[var(--bg-card)] border border-[var(--border)] shadow-2xl overflow-hidden scale-in-95 duration-200"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Modal Header */}
+            <div className="flex items-start justify-between p-5 pb-4 border-b border-[var(--border)]">
+              <div className="space-y-1">
+                <div className="flex items-center gap-2.5 flex-wrap">
+                  <h3 id="group-pattern-title" className="text-base sm:text-lg font-bold text-[var(--text-main)] tracking-tight">
+                    {selectedGroupNode.title}
+                  </h3>
+                  <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+                    {selectedGroupNode.subPatterns?.length || 0} Patterns
+                  </span>
+                  <span className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-[var(--bg-subtle)] text-[var(--text-muted)] border border-[var(--border)]">
+                    {selectedGroupNode.category}
+                  </span>
+                </div>
+                <p className="text-xs text-[var(--text-muted)] leading-relaxed">
+                  Select an algorithmic pattern in this group to practice curated problems, code templates, and interview strategies.
+                </p>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => setSelectedGroupNode(null)}
+                className="apple-press p-1.5 rounded-lg text-[var(--text-light)] hover:text-[var(--text-main)] hover:bg-[var(--bg-subtle)] transition-colors cursor-pointer shrink-0 ml-2"
+                aria-label="Close pattern selection modal"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            {/* Modal Sub-Patterns List */}
+            <div className="p-4 space-y-2.5 overflow-y-auto overscroll-contain max-h-[55vh] [scrollbar-width:thin]">
+              {selectedGroupNode.subPatterns?.map((sub) => {
+                const { total, solved, pct } = getSubPatternProgress(sub);
+                return (
+                  <Link
+                    key={sub.slug}
+                    href={`/patterns/${sub.slug}`}
+                    onClick={() => setSelectedGroupNode(null)}
+                    className="apple-press group flex flex-col gap-2 p-3.5 rounded-xl border border-[var(--border)] bg-[var(--bg-subtle)]/40 hover:bg-[var(--bg-subtle)] hover:border-emerald-500/40 transition-all cursor-pointer"
+                  >
+                    <div className="flex items-center justify-between gap-3">
+                      <span className="text-sm font-semibold text-[var(--text-main)] group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">
+                        {sub.name}
+                      </span>
+                      <div className="flex items-center gap-2 shrink-0">
+                        <span className="text-xs font-mono text-[var(--text-muted)]">
+                          {solved > 0 ? `${solved} / ${total} solved (${pct}%)` : `${total} problems`}
+                        </span>
+                        <ChevronRight className="w-4 h-4 text-[var(--text-light)] group-hover:text-emerald-500 group-hover:translate-x-0.5 transition-all" />
+                      </div>
+                    </div>
+
+                    {sub.tagline && (
+                      <p className="text-xs text-[var(--text-muted)] leading-relaxed font-normal">
+                        {sub.tagline}
+                      </p>
+                    )}
+
+                    {/* Progress Bar */}
+                    <div className="w-full h-1.5 rounded-full bg-[var(--border)] overflow-hidden">
+                      <div
+                        className="h-full rounded-full bg-emerald-500 transition-all duration-300"
+                        style={{ width: `${pct}%` }}
+                      />
+                    </div>
+                  </Link>
+                );
+              })}
+            </div>
+
+            {/* Modal Footer */}
+            <div className="flex items-center justify-between p-4 pt-3 border-t border-[var(--border)] bg-[var(--bg-subtle)]/30 text-xs text-[var(--text-muted)]">
+              <span>Want the primary study guide?</span>
+              <Link
+                href={`/patterns/${selectedGroupNode.slug}`}
+                onClick={() => setSelectedGroupNode(null)}
+                className="apple-press inline-flex items-center gap-1 font-semibold text-emerald-600 dark:text-emerald-400 hover:underline cursor-pointer"
+              >
+                <span>Open {selectedGroupNode.title} Overview</span>
+                <span>→</span>
+              </Link>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

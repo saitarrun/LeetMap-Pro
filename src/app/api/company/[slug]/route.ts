@@ -20,7 +20,9 @@ export async function GET(
 
     const raw = fs.readFileSync(filePath, 'utf8');
     const companyData = JSON.parse(raw);
-    return NextResponse.json(companyData);
+    return NextResponse.json(companyData, {
+      headers: { 'Cache-Control': 'public, s-maxage=300, stale-while-revalidate=3600' },
+    });
   } catch (error) {
     console.error('Failed to retrieve company data:', error);
     return NextResponse.json(

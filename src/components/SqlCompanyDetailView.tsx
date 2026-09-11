@@ -11,7 +11,6 @@ import {
   ExternalLink,
   Download,
   ShieldCheck,
-  Database,
   Code2,
   X,
   Pin,

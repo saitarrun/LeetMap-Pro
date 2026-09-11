@@ -4,22 +4,74 @@ import { promisify } from 'util';
 import path from 'path';
 import fs from 'fs';
 import { auth } from '@clerk/nextjs/server';
+import { BlobPreconditionFailedError, del, get, put } from '@vercel/blob';
 import { isTrustedMutationRequest } from '@/utils/request-security';
 
 const execFileAsync = promisify(execFile);
 const SYNC_COOLDOWN_MS = 10_000;
+const SYNC_LOCK_MAX_AGE_MS = 3 * 60_000;
+const SYNC_LOCK_PATH = 'system/sync.lock.json';
+const SYNC_LAST_ATTEMPT_PATH = 'system/sync-last-attempt.json';
 const lastSyncByUser = new Map<string, number>();
 let syncInProgress = false;
 
-export async function GET(request: Request) {
-  return POST(request);
+interface SyncTimestamp {
+  timestamp: number;
+}
+
+async function readBlobTimestamp(pathname: string): Promise<number> {
+  const blob = await get(pathname, { access: 'private', useCache: false });
+  if (!blob || blob.statusCode !== 200) return 0;
+
+  try {
+    const parsed = JSON.parse(await new Response(blob.stream).text()) as Partial<SyncTimestamp>;
+    return typeof parsed.timestamp === 'number' && Number.isFinite(parsed.timestamp) ? parsed.timestamp : 0;
+  } catch {
+    return 0;
+  }
+}
+
+async function acquireDistributedSyncLock(now: number): Promise<'acquired' | 'busy' | 'cooldown'> {
+  if (!process.env.BLOB_READ_WRITE_TOKEN) return 'acquired';
+
+  const lastAttempt = await readBlobTimestamp(SYNC_LAST_ATTEMPT_PATH);
+  if (now - lastAttempt < SYNC_COOLDOWN_MS) return 'cooldown';
+
+  const existingLock = await readBlobTimestamp(SYNC_LOCK_PATH);
+  if (existingLock && now - existingLock >= SYNC_LOCK_MAX_AGE_MS) {
+    await del(SYNC_LOCK_PATH);
+  }
+
+  try {
+    await put(SYNC_LOCK_PATH, JSON.stringify({ timestamp: now }), {
+      access: 'private',
+      addRandomSuffix: false,
+      allowOverwrite: false,
+      contentType: 'application/json',
+      cacheControlMaxAge: 60,
+    });
+  } catch (error) {
+    if (error instanceof BlobPreconditionFailedError) return 'busy';
+    throw error;
+  }
+
+  await put(SYNC_LAST_ATTEMPT_PATH, JSON.stringify({ timestamp: now }), {
+    access: 'private',
+    addRandomSuffix: false,
+    allowOverwrite: true,
+    contentType: 'application/json',
+    cacheControlMaxAge: 60,
+  });
+  return 'acquired';
+}
+
+async function releaseDistributedSyncLock(): Promise<void> {
+  if (process.env.BLOB_READ_WRITE_TOKEN) await del(SYNC_LOCK_PATH);
 }
 
 export async function POST(request: Request) {
   const authHeader = request.headers.get('authorization');
-  const isCron =
-    (Boolean(process.env.CRON_SECRET) && authHeader === `Bearer ${process.env.CRON_SECRET}`) ||
-    request.headers.get('x-vercel-cron') === '1';
+  const isCron = Boolean(process.env.CRON_SECRET) && authHeader === `Bearer ${process.env.CRON_SECRET}`;
 
   let userId: string | null = null;
 
@@ -67,6 +119,21 @@ export async function POST(request: Request) {
     );
   }
 
+  let distributedLockAcquired = false;
+  try {
+    const lockState = await acquireDistributedSyncLock(now);
+    if (lockState !== 'acquired') {
+      return NextResponse.json(
+        { error: lockState === 'busy' ? 'A sync is already running' : 'Please wait before syncing again' },
+        { status: 429, headers: { 'Retry-After': lockState === 'busy' ? '180' : '10' } }
+      );
+    }
+    distributedLockAcquired = true;
+  } catch (error) {
+    console.error('Failed to acquire distributed sync lock:', error);
+    return NextResponse.json({ error: 'Sync coordination is temporarily unavailable' }, { status: 503 });
+  }
+
   syncInProgress = true;
   lastSyncByUser.set(userId, now);
   try {
@@ -89,16 +156,23 @@ export async function POST(request: Request) {
       stdout,
       stderr,
     }, { headers: { 'Cache-Control': 'no-store' } });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Sync failed:', error);
     return NextResponse.json(
       {
         success: false,
-        error: error?.message || 'Sync failed',
+        error: error instanceof Error ? error.message : 'Sync failed',
       },
       { status: 500 }
     );
   } finally {
     syncInProgress = false;
+    if (distributedLockAcquired) {
+      try {
+        await releaseDistributedSyncLock();
+      } catch (error) {
+        console.error('Failed to release distributed sync lock:', error);
+      }
+    }
   }
 }

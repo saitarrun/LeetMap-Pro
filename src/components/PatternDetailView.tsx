@@ -13,7 +13,6 @@ import {
   Download,
   Building2,
   X,
-  Lightbulb,
   Sparkles,
   BookOpen,
   ArrowLeftRight,
