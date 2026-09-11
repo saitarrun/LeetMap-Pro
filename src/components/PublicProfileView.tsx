@@ -428,21 +428,21 @@ export const PublicProfileView: React.FC<PublicProfileViewProps> = ({ initialDat
           </div>
 
           {/* Social Action Buttons */}
-          <div className="flex items-center gap-2 w-full md:w-auto">
+          <div className="flex items-center gap-2 flex-wrap sm:flex-nowrap">
             <button
               onClick={handleCopyLink}
-              className="apple-press flex-1 md:flex-initial inline-flex items-center justify-center gap-2 h-9 px-4 rounded-full text-xs font-semibold bg-[var(--text-main)] text-[var(--bg-page)] hover:opacity-90 shadow-xs transition-opacity cursor-pointer"
+              className="apple-press inline-flex items-center justify-center gap-1.5 h-7.5 px-3 rounded-full text-[11px] font-medium bg-[var(--text-main)] text-[var(--bg-page)] hover:opacity-90 shadow-xs transition-opacity cursor-pointer"
             >
-              <Share2 className="w-3.5 h-3.5" />
+              <Share2 className="w-3 h-3" />
               <span>Share Profile</span>
             </button>
 
             <button
               onClick={handleCopyBadge}
-              className="apple-press flex-1 md:flex-initial inline-flex items-center justify-center gap-2 h-9 px-4 rounded-full text-xs font-medium border border-[var(--border)] bg-[var(--bg-subtle)] text-[var(--text-main)] hover:bg-[var(--bg-hover)] transition-colors cursor-pointer"
+              className="apple-press inline-flex items-center justify-center gap-1.5 h-7.5 px-3 rounded-full text-[11px] font-medium border border-[var(--border)] bg-[var(--bg-subtle)] text-[var(--text-main)] hover:bg-[var(--bg-hover)] transition-colors cursor-pointer"
               title="Copy Markdown badge for GitHub profile README"
             >
-              <Code2 className="w-3.5 h-3.5 text-[var(--text-muted)]" />
+              <Code2 className="w-3 h-3 text-[var(--text-muted)]" />
               <span>README Badge</span>
             </button>
           </div>
