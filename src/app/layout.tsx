@@ -5,6 +5,8 @@ import { connection } from "next/server";
 import type { Metadata } from "next";
 import { Toaster } from "sonner";
 import { AuthProvider } from "@/context/AuthContext";
+import { Footer } from "@/components/Footer";
+import { CommandPalette } from "@/components/CommandPalette";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -112,7 +114,13 @@ export default async function RootLayout({
           }}
         >
           <AuthProvider>
-            {children}
+            <div className="flex min-h-screen flex-col">
+              <div className="flex-1">
+                {children}
+              </div>
+              <Footer />
+            </div>
+            <CommandPalette />
           </AuthProvider>
           <Toaster position="bottom-right" richColors closeButton />
         </ClerkProvider>

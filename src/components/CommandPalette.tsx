@@ -52,8 +52,13 @@ export function CommandPalette() {
       }
       if (event.key === 'Escape') setOpen(false);
     };
+    const handleOpen = () => setOpen(true);
     window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
+    window.addEventListener('leetmap-open-command-palette', handleOpen);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener('leetmap-open-command-palette', handleOpen);
+    };
   }, []);
 
   useEffect(() => {
