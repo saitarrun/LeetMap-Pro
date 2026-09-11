@@ -7,6 +7,7 @@ import { RefreshCw, Sun, Moon, Database, GitBranch, Building2 } from 'lucide-rea
 import { SignInButton, SignUpButton, Show } from '@clerk/nextjs';
 import { SyncStatus } from '@/types';
 import { UserProfileMenu } from '@/components/UserProfileMenu';
+import { LeetMapLogo } from '@/components/LeetMapLogo';
 
 interface HeaderProps {
   onOpenSync?: () => void;
@@ -64,9 +65,10 @@ export const Header: React.FC<HeaderProps> = ({ onOpenSync, syncStatus }) => {
         <div className="flex items-center gap-2.5 sm:gap-5">
           <Link
             href="/"
-            className="apple-press flex items-center select-none shrink-0 rounded-xl focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-emerald-500"
+            className="apple-press group flex items-center gap-2 select-none shrink-0 rounded-xl focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-emerald-500"
             aria-label="LeetMap home"
           >
+            <LeetMapLogo size={24} />
             <span className="text-[17px] font-bold tracking-[-0.035em] text-[var(--text-main)]">
               leet<span className="text-emerald-500 dark:text-emerald-400">map</span>
             </span>

@@ -7,6 +7,15 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: "LeetMap — Company Wise LeetCode & SQL Questions",
   description: "Browse coding interview problems actually asked by 680+ tech companies, ranked by frequency and recency. Free, realtime multi-source sync.",
+  icons: {
+    icon: [
+      { url: '/icon.svg', type: 'image/svg+xml' },
+      { url: '/favicon.ico', sizes: 'any' },
+    ],
+    apple: [
+      { url: '/apple-touch-icon.png', sizes: '180x180', type: 'image/png' },
+    ],
+  },
 };
 
 export default function RootLayout({
