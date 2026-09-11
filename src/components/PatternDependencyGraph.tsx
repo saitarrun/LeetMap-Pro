@@ -4,7 +4,61 @@ import React, { useState, useMemo } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { PatternSummary } from '@/types';
-import { ZoomIn, ZoomOut, RotateCcw, Compass, X, ChevronRight } from 'lucide-react';
+import {
+  ZoomIn,
+  ZoomOut,
+  RotateCcw,
+  Compass,
+  X,
+  ChevronRight,
+  ArrowLeftRight,
+  SlidersHorizontal,
+  Binary,
+  Sigma,
+  IterationCcw,
+  Link2,
+  Layers,
+  Crown,
+  FolderTree,
+  Network,
+  CalendarRange,
+  GitBranch,
+  Rows3,
+  Split,
+  Share2,
+  ArrowDownUp,
+  Grid,
+  TrendingUp,
+  Boxes,
+  Flame,
+  Cpu,
+  LucideIcon,
+} from 'lucide-react';
+
+const ICON_MAP: Record<string, LucideIcon> = {
+  'two-pointers': ArrowLeftRight,
+  'sliding-window': SlidersHorizontal,
+  'binary-search': Binary,
+  'prefix-sum': Sigma,
+  'fast-slow-pointers': IterationCcw,
+  'linked-list-manipulation': Link2,
+  'monotonic-stack': Layers,
+  'heaps-top-k': Crown,
+  'trie': FolderTree,
+  'union-find': Network,
+  'intervals': CalendarRange,
+  'tree-dfs': GitBranch,
+  'tree-bfs': Rows3,
+  'binary-search-tree': Split,
+  'graph-traversal': Share2,
+  'topological-sort': ArrowDownUp,
+  'matrix-traversal': Grid,
+  'backtracking': RotateCcw,
+  'dynamic-programming-1d': TrendingUp,
+  'dynamic-programming-2d': Boxes,
+  'greedy': Flame,
+  'bit-manipulation': Cpu,
+};
 
 export interface SubPattern {
   slug: string;
@@ -605,96 +659,108 @@ export function PatternDependencyGraph({
       {/* Apple-Style Pattern Selection Modal Sheet */}
       {selectedGroupNode && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200"
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/40 dark:bg-black/65 backdrop-blur-md animate-in fade-in duration-200"
           onClick={() => setSelectedGroupNode(null)}
         >
           <div
             role="dialog"
             aria-modal="true"
             aria-labelledby="group-pattern-title"
-            className="relative w-full max-w-xl max-h-[85vh] flex flex-col rounded-2xl bg-[var(--bg-card)] border border-[var(--border)] shadow-2xl overflow-hidden scale-in-95 duration-200"
+            className="relative w-full max-w-lg max-h-[85vh] flex flex-col rounded-[28px] bg-white/90 dark:bg-[#1c1c1e]/90 backdrop-blur-2xl border border-black/[0.08] dark:border-white/[0.12] shadow-[0_32px_80px_rgba(0,0,0,0.18)] dark:shadow-[0_32px_80px_rgba(0,0,0,0.65)] overflow-hidden scale-in-95 duration-200"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Modal Header */}
-            <div className="flex items-start justify-between p-5 pb-4 border-b border-[var(--border)]">
-              <div className="space-y-1">
-                <div className="flex items-center gap-2.5 flex-wrap">
-                  <h3 id="group-pattern-title" className="text-base sm:text-lg font-bold text-[var(--text-main)] tracking-tight">
+            <div className="px-6 pt-6 pb-3 flex items-start justify-between">
+              <div className="space-y-1 min-w-0 flex-1">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <h3 id="group-pattern-title" className="text-[20px] font-semibold text-[var(--text-main)] tracking-tight">
                     {selectedGroupNode.title}
                   </h3>
-                  <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+                  <span className="text-[11px] font-medium px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
                     {selectedGroupNode.subPatterns?.length || 0} Patterns
                   </span>
-                  <span className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-[var(--bg-subtle)] text-[var(--text-muted)] border border-[var(--border)]">
-                    {selectedGroupNode.category}
+                  <span className="text-[11px] font-normal text-[var(--text-muted)]">
+                    · {selectedGroupNode.category}
                   </span>
                 </div>
-                <p className="text-xs text-[var(--text-muted)] leading-relaxed">
-                  Select an algorithmic pattern in this group to practice curated problems, code templates, and interview strategies.
+                <p className="text-[13px] text-[var(--text-muted)] pt-0.5 leading-relaxed font-normal">
+                  Select a pattern below to practice curated problems, code templates, and interview blueprints.
                 </p>
               </div>
 
               <button
                 type="button"
                 onClick={() => setSelectedGroupNode(null)}
-                className="apple-press p-1.5 rounded-lg text-[var(--text-light)] hover:text-[var(--text-main)] hover:bg-[var(--bg-subtle)] transition-colors cursor-pointer shrink-0 ml-2"
+                className="apple-press w-7 h-7 rounded-full bg-black/[0.05] hover:bg-black/[0.1] active:bg-black/[0.15] dark:bg-white/[0.1] dark:hover:bg-white/[0.18] flex items-center justify-center text-neutral-500 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-white transition-all cursor-pointer shrink-0 ml-3"
                 aria-label="Close pattern selection modal"
               >
-                <X className="w-4 h-4" />
+                <X className="w-3.5 h-3.5 stroke-[2.4]" />
               </button>
             </div>
 
-            {/* Modal Sub-Patterns List */}
-            <div className="p-4 space-y-2.5 overflow-y-auto overscroll-contain max-h-[55vh] [scrollbar-width:thin]">
+            {/* Modal Sub-Patterns List - Smooth Apple Inset Group with Hidden Raw Scrollbar */}
+            <div className="px-5 pb-5 pt-1 space-y-2 overflow-y-auto max-h-[56vh] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden overscroll-contain">
               {selectedGroupNode.subPatterns?.map((sub) => {
                 const { total, solved, pct } = getSubPatternProgress(sub);
+                const Icon = ICON_MAP[sub.slug] || GitBranch;
+
                 return (
                   <Link
                     key={sub.slug}
                     href={`/patterns/${sub.slug}`}
                     onClick={() => setSelectedGroupNode(null)}
-                    className="apple-press group flex flex-col gap-2 p-3.5 rounded-xl border border-[var(--border)] bg-[var(--bg-subtle)]/40 hover:bg-[var(--bg-subtle)] hover:border-emerald-500/40 transition-all cursor-pointer"
+                    className="apple-press group flex items-center gap-3.5 p-3.5 rounded-2xl bg-black/[0.025] hover:bg-black/[0.05] active:scale-[0.99] dark:bg-white/[0.04] dark:hover:bg-white/[0.08] border border-black/[0.04] hover:border-black/[0.08] dark:border-white/[0.06] dark:hover:border-white/[0.12] transition-all cursor-pointer"
                   >
-                    <div className="flex items-center justify-between gap-3">
-                      <span className="text-sm font-semibold text-[var(--text-main)] group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">
-                        {sub.name}
-                      </span>
-                      <div className="flex items-center gap-2 shrink-0">
-                        <span className="text-xs font-mono text-[var(--text-muted)]">
-                          {solved > 0 ? `${solved} / ${total} solved (${pct}%)` : `${total} problems`}
+                    {/* Apple Icon Squircle Tile */}
+                    <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-white dark:bg-white/[0.08] shadow-[0_1px_4px_rgba(0,0,0,0.06)] border border-black/[0.04] dark:border-white/[0.06] text-emerald-600 dark:text-emerald-400 shrink-0 group-hover:scale-105 transition-transform duration-200">
+                      <Icon className="w-5 h-5" />
+                    </div>
+
+                    {/* Middle Info */}
+                    <div className="min-w-0 flex-1 space-y-0.5">
+                      <div className="flex items-baseline justify-between gap-2">
+                        <span className="text-[14.5px] font-semibold text-[var(--text-main)] group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors tracking-tight truncate">
+                          {sub.name}
                         </span>
-                        <ChevronRight className="w-4 h-4 text-[var(--text-light)] group-hover:text-emerald-500 group-hover:translate-x-0.5 transition-all" />
+                        <span className="text-[11.5px] font-mono text-[var(--text-muted)] font-medium shrink-0">
+                          {solved > 0 ? `${solved} / ${total} (${pct}%)` : `${total} problems`}
+                        </span>
                       </div>
+
+                      {sub.tagline && (
+                        <p className="text-[12px] text-[var(--text-muted)] line-clamp-1 font-normal leading-normal">
+                          {sub.tagline}
+                        </p>
+                      )}
+
+                      {/* Apple Progress Bar */}
+                      {pct > 0 && (
+                        <div className="w-full h-1 rounded-full bg-black/[0.06] dark:bg-white/[0.08] overflow-hidden mt-1.5">
+                          <div
+                            className="h-full rounded-full bg-emerald-500 transition-all duration-300"
+                            style={{ width: `${pct}%` }}
+                          />
+                        </div>
+                      )}
                     </div>
 
-                    {sub.tagline && (
-                      <p className="text-xs text-[var(--text-muted)] leading-relaxed font-normal">
-                        {sub.tagline}
-                      </p>
-                    )}
-
-                    {/* Progress Bar */}
-                    <div className="w-full h-1.5 rounded-full bg-[var(--border)] overflow-hidden">
-                      <div
-                        className="h-full rounded-full bg-emerald-500 transition-all duration-300"
-                        style={{ width: `${pct}%` }}
-                      />
-                    </div>
+                    {/* Apple SF Chevron */}
+                    <ChevronRight className="w-4 h-4 text-neutral-400 dark:text-neutral-500 group-hover:text-emerald-500 group-hover:translate-x-0.5 transition-all shrink-0 ml-1" />
                   </Link>
                 );
               })}
             </div>
 
             {/* Modal Footer */}
-            <div className="flex items-center justify-between p-4 pt-3 border-t border-[var(--border)] bg-[var(--bg-subtle)]/30 text-xs text-[var(--text-muted)]">
-              <span>Want the primary study guide?</span>
+            <div className="px-6 py-3.5 border-t border-black/[0.05] dark:border-white/[0.07] bg-black/[0.015] dark:bg-white/[0.02] flex items-center justify-between text-[12px] text-[var(--text-muted)]">
+              <span>Looking for the primary overview?</span>
               <Link
                 href={`/patterns/${selectedGroupNode.slug}`}
                 onClick={() => setSelectedGroupNode(null)}
-                className="apple-press inline-flex items-center gap-1 font-semibold text-emerald-600 dark:text-emerald-400 hover:underline cursor-pointer"
+                className="apple-press inline-flex items-center gap-1 font-semibold text-emerald-600 dark:text-emerald-400 hover:text-emerald-500 transition-colors cursor-pointer"
               >
-                <span>Open {selectedGroupNode.title} Overview</span>
-                <span>→</span>
+                <span>{selectedGroupNode.title} Overview</span>
+                <ChevronRight className="w-3.5 h-3.5 stroke-[2.4]" />
               </Link>
             </div>
           </div>
