@@ -50,7 +50,8 @@ export const SqlHubClient: React.FC<SqlHubClientProps> = ({
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === '/' && document.activeElement !== searchInputRef.current) {
+      const isSearchShortcut = e.key === '/' || ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k');
+      if (isSearchShortcut && document.activeElement !== searchInputRef.current) {
         e.preventDefault();
         searchInputRef.current?.focus();
       } else if (e.key === 'Escape' && (document.activeElement === searchInputRef.current || searchQuery)) {
@@ -158,17 +159,17 @@ export const SqlHubClient: React.FC<SqlHubClientProps> = ({
         {/* Dynamic Body: Company Cards Grid OR Full Explorer Table */}
         {activeView === 'companies' ? (
           <div className="space-y-6">
-            {/* Minimal Search & Filter Controls */}
+            {/* Minimalist Spotlight Search & Filter Controls */}
             <section className="max-w-2xl mx-auto space-y-3">
-              <div className="relative group">
-                <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--text-light)] group-focus-within:text-[var(--text-main)] transition-colors" />
+              <div className="relative group flex items-center h-12 rounded-2xl bg-[var(--bg-card)] border border-[var(--border)] hover:border-[var(--text-muted)]/30 focus-within:border-[var(--text-main)]/30 shadow-[0_1px_3px_rgba(0,0,0,0.02)] focus-within:shadow-[0_4px_16px_rgba(0,0,0,0.04)] dark:focus-within:shadow-[0_4px_16px_rgba(0,0,0,0.2)] transition-[border-color,box-shadow] duration-150">
+                <Search className="absolute left-4 w-4 h-4 text-[var(--text-light)] group-focus-within:text-[var(--text-main)] transition-colors pointer-events-none" />
                 <input
                   ref={searchInputRef}
                   type="search"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder={`Search ${companies.length} SQL companies...`}
-                  className="w-full pl-10 pr-9 py-2.5 rounded-xl text-sm bg-[var(--bg-subtle)]/60 border border-[var(--border)] text-[var(--text-main)] placeholder:text-[var(--text-light)] focus:bg-[var(--bg-card)] focus:outline-none focus:border-[var(--text-muted)]/40 transition-colors"
+                  placeholder="Search SQL companies..."
+                  className="w-full h-full pl-11 pr-16 text-sm bg-transparent text-[var(--text-main)] placeholder:text-[var(--text-light)] focus:outline-none"
                 />
                 {searchQuery ? (
                   <button
@@ -177,15 +178,20 @@ export const SqlHubClient: React.FC<SqlHubClientProps> = ({
                       setSearchQuery('');
                       searchInputRef.current?.focus();
                     }}
-                    className="apple-press absolute right-3 top-1/2 -translate-y-1/2 p-1 rounded-full text-[var(--text-light)] hover:text-[var(--text-main)] transition-colors cursor-pointer"
+                    className="apple-press absolute right-3.5 p-1 rounded-full text-[var(--text-light)] hover:text-[var(--text-main)] hover:bg-[var(--bg-subtle)] transition-colors cursor-pointer"
                     title="Clear search (Esc)"
                   >
                     <X className="w-3.5 h-3.5" />
                   </button>
                 ) : (
-                  <kbd className="absolute right-3 top-1/2 -translate-y-1/2 px-1.5 py-0.5 rounded text-[10px] font-mono text-[var(--text-light)] bg-[var(--bg-subtle)]">
-                    /
-                  </kbd>
+                  <div className="absolute right-3.5 flex items-center gap-1 pointer-events-none">
+                    <kbd className="hidden sm:inline-flex items-center px-1.5 py-0.5 rounded-md text-[10px] font-mono text-[var(--text-light)] bg-[var(--bg-subtle)] border border-[var(--border)]">
+                      ⌘K
+                    </kbd>
+                    <kbd className="hidden sm:inline-flex items-center px-1.5 py-0.5 rounded-md text-[10px] font-mono text-[var(--text-light)] bg-[var(--bg-subtle)] border border-[var(--border)]">
+                      /
+                    </kbd>
+                  </div>
                 )}
               </div>
 
