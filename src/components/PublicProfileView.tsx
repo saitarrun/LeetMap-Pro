@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import Link from 'next/link';
 import {
   Flame,
@@ -16,12 +16,111 @@ import {
   Award,
   ShieldCheck,
   ArrowLeft,
+  X,
+  ChevronRight,
+  Info,
+  Sparkles,
+  Trophy,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { PublicUserProfileData } from '@/utils/server-user';
 import { useAuth } from '@/context/AuthContext';
 import { getUserActivityStats } from '@/utils/progress';
 import { useSolvedProblems } from '@/utils/useSolvedProblems';
+
+export interface PrepLevel {
+  level: number;
+  badge: string;
+  name: string;
+  minSolved: number;
+  maxSolved: number;
+  subtitle: string;
+  description: string;
+  focusPatterns: string[];
+  targetRounds: string;
+  badgeBg: string;
+  badgeColor: string;
+  progressBarColor: string;
+  accentBorder: string;
+}
+
+export const PREP_LEVELS: PrepLevel[] = [
+  {
+    level: 1,
+    badge: 'Lv. 1',
+    name: 'Foundation',
+    minSolved: 0,
+    maxSolved: 9,
+    subtitle: 'Syntax Fluency & Warmup',
+    description: 'Master language syntax, array indexing, and baseline loops without friction.',
+    focusPatterns: ['Arrays & Hashing', 'Two Pointers', 'Basic Strings'],
+    targetRounds: 'Screening Pre-tests & Baseline Coding Assessments',
+    badgeBg: 'bg-zinc-500/10 border-zinc-500/20',
+    badgeColor: 'text-zinc-600 dark:text-zinc-400',
+    progressBarColor: 'bg-zinc-500',
+    accentBorder: 'border-zinc-500/30',
+  },
+  {
+    level: 2,
+    badge: 'Lv. 2',
+    name: 'Apprentice',
+    minSolved: 10,
+    maxSolved: 29,
+    subtitle: 'Core Problem Patterns',
+    description: 'Recognize foundational patterns and solve Medium problems with clean time & space complexity.',
+    focusPatterns: ['Sliding Window', 'Prefix Sum', 'Stack', 'Fast & Slow Pointers'],
+    targetRounds: 'Online Assessments (OA) & 1st Round Phone Screens',
+    badgeBg: 'bg-blue-500/10 border-blue-500/20',
+    badgeColor: 'text-blue-600 dark:text-blue-400',
+    progressBarColor: 'bg-blue-500',
+    accentBorder: 'border-blue-500/40',
+  },
+  {
+    level: 3,
+    badge: 'Lv. 3',
+    name: 'Competitor',
+    minSolved: 30,
+    maxSolved: 74,
+    subtitle: 'Blind 75 Baseline',
+    description: 'Solid algorithmic intuition across all primary data structures. Confident under timed constraints.',
+    focusPatterns: ['Binary Search', 'Trees & BST', 'BFS / DFS Graphs', 'Heaps & Priority Queues'],
+    targetRounds: 'Full Phone Screens & Mid-Tier Tech Onsites',
+    badgeBg: 'bg-amber-500/10 border-amber-500/20',
+    badgeColor: 'text-amber-600 dark:text-amber-400',
+    progressBarColor: 'bg-amber-500',
+    accentBorder: 'border-amber-500/40',
+  },
+  {
+    level: 4,
+    badge: 'Lv. 4',
+    name: 'Onsite Ready',
+    minSolved: 75,
+    maxSolved: 149,
+    subtitle: 'NeetCode 150 Baseline',
+    description: 'Equipped to clear multi-round Big Tech onsite loops, including dynamic programming and graphs.',
+    focusPatterns: ['1-D & 2-D Dynamic Programming', 'Backtracking', 'Topological Sort', 'Monotonic Stack'],
+    targetRounds: 'FAANG / Big Tech Onsite Loops (Google, Meta, Amazon, Apple)',
+    badgeBg: 'bg-purple-500/10 border-purple-500/20',
+    badgeColor: 'text-purple-600 dark:text-purple-400',
+    progressBarColor: 'bg-purple-500',
+    accentBorder: 'border-purple-500/40',
+  },
+  {
+    level: 5,
+    badge: 'Lv. 5',
+    name: 'FAANG Master',
+    minSolved: 150,
+    maxSolved: Infinity,
+    subtitle: 'Elite Problem Solver',
+    description: 'Top 1% problem-solving mastery. Effortlessly breaks down Hard problems and evaluates deep trade-offs.',
+    focusPatterns: ['Hard DP', 'Tries & Segment Trees', 'Bitmask DP', 'Advanced Graphs'],
+    targetRounds: 'Staff / Principal Loops & Top Quant/HFT (Citadel, Jane Street, HRT)',
+    badgeBg: 'bg-emerald-500/10 border-emerald-500/20',
+    badgeColor: 'text-emerald-600 dark:text-emerald-400',
+    progressBarColor: 'bg-emerald-500',
+    accentBorder: 'border-emerald-500/40',
+  },
+];
 
 interface PublicProfileViewProps {
   initialData: PublicUserProfileData;
@@ -97,6 +196,17 @@ export const PublicProfileView: React.FC<PublicProfileViewProps> = ({ initialDat
   const currentYear = useMemo(() => new Date().getFullYear(), []);
   const [selectedYear, setSelectedYear] = useState<number>(currentYear);
   const [activeHoverDay, setActiveHoverDay] = useState<{ date: string; count: number } | null>(null);
+  const [showLevelModal, setShowLevelModal] = useState<boolean>(false);
+
+  // Close level modal on Escape
+  useEffect(() => {
+    if (!showLevelModal) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setShowLevelModal(false);
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [showLevelModal]);
 
   const profileUrl = typeof window !== 'undefined'
     ? `${window.location.origin}/u/${initialData.user.username}`
@@ -125,13 +235,44 @@ export const PublicProfileView: React.FC<PublicProfileViewProps> = ({ initialDat
     }
   };
 
-  // Readiness tier calculation
-  const readinessTier = useMemo(() => {
+  // Prep level & interview milestones
+  const levelInfo = useMemo(() => {
     const total = stats.totalSolved;
-    if (total >= 150) return { title: 'FAANG Interview Ready', color: 'text-emerald-500 dark:text-emerald-400', badge: 'Tier 1' };
-    if (total >= 75) return { title: 'Advanced Contender', color: 'text-blue-500 dark:text-blue-400', badge: 'Tier 2' };
-    if (total >= 30) return { title: 'Active Grinder', color: 'text-amber-500 dark:text-amber-400', badge: 'Tier 3' };
-    return { title: 'Rising Contender', color: 'text-[var(--text-muted)]', badge: 'Active' };
+    let currentLevel = PREP_LEVELS[0];
+    let nextLevel: PrepLevel | null = PREP_LEVELS[1];
+
+    for (let i = 0; i < PREP_LEVELS.length; i++) {
+      const lvl = PREP_LEVELS[i];
+      if (total >= lvl.minSolved) {
+        currentLevel = lvl;
+        nextLevel = PREP_LEVELS[i + 1] || null;
+      }
+    }
+
+    if (!nextLevel) {
+      return {
+        currentLevel,
+        nextLevel: null,
+        progressPct: 100,
+        questionsLeft: 0,
+        helperText: 'Max Level Achieved 🏆',
+      };
+    }
+
+    const levelMin = currentLevel.minSolved;
+    const levelTarget = nextLevel.minSolved;
+    const solvedInLevel = Math.max(0, total - levelMin);
+    const neededInLevel = levelTarget - levelMin;
+    const progressPct = Math.min(100, Math.max(0, Math.round((solvedInLevel / neededInLevel) * 100)));
+    const questionsLeft = Math.max(0, levelTarget - total);
+
+    return {
+      currentLevel,
+      nextLevel,
+      progressPct,
+      questionsLeft,
+      helperText: `${questionsLeft} more to ${nextLevel.name}`,
+    };
   }, [stats.totalSolved]);
 
   // Calendar weeks computation
@@ -245,13 +386,26 @@ export const PublicProfileView: React.FC<PublicProfileViewProps> = ({ initialDat
                   @{initialData.user.username}
                 </span>
               </div>
-              <p className="text-xs text-[var(--text-muted)] flex items-center gap-2">
-                <span>{readinessTier.title}</span>
+              <div className="text-xs text-[var(--text-muted)] flex items-center gap-2 flex-wrap">
+                <button
+                  type="button"
+                  onClick={() => setShowLevelModal(true)}
+                  className="apple-press inline-flex items-center gap-1.5 font-medium hover:opacity-80 transition-opacity cursor-pointer"
+                  title="Click to view Prep Level details"
+                >
+                  <span className={`px-1.5 py-0.5 rounded text-[10px] font-mono font-semibold border ${levelInfo.currentLevel.badgeBg} ${levelInfo.currentLevel.badgeColor}`}>
+                    {levelInfo.currentLevel.badge}
+                  </span>
+                  <span className="text-[var(--text-main)] font-semibold">
+                    {levelInfo.currentLevel.name}
+                  </span>
+                  <Info className="w-3 h-3 text-[var(--text-muted)]" />
+                </button>
                 <span>•</span>
                 <span className="font-mono text-emerald-600 dark:text-emerald-400 font-medium">
                   {stats.totalSolved} problems solved
                 </span>
-              </p>
+              </div>
             </div>
           </div>
 
@@ -308,15 +462,39 @@ export const PublicProfileView: React.FC<PublicProfileViewProps> = ({ initialDat
             </p>
           </div>
 
-          <div className="p-4 rounded-2xl border border-[var(--border)] bg-[var(--bg-subtle)]/40 space-y-1">
-            <div className="flex items-center justify-between text-xs text-[var(--text-muted)]">
-              <span>Readiness</span>
-              <Award className="w-4 h-4 text-purple-500" />
+          <button
+            type="button"
+            onClick={() => setShowLevelModal(true)}
+            className="apple-press group text-left p-4 rounded-2xl border border-[var(--border)] bg-[var(--bg-subtle)]/40 hover:bg-[var(--bg-subtle)] hover:border-purple-500/40 transition-all cursor-pointer space-y-1.5 relative overflow-hidden flex flex-col justify-between"
+          >
+            <div className="flex items-center justify-between text-xs text-[var(--text-muted)] w-full">
+              <span className="flex items-center gap-1 font-medium">
+                <span>Prep Level</span>
+                <Info className="w-3 h-3 text-[var(--text-muted)]/60 group-hover:text-purple-400 transition-colors" />
+              </span>
+              <span className={`text-[10px] font-mono px-1.5 py-0.5 rounded border font-semibold ${levelInfo.currentLevel.badgeBg} ${levelInfo.currentLevel.badgeColor}`}>
+                {levelInfo.currentLevel.badge}
+              </span>
             </div>
-            <p className="text-base font-bold text-[var(--text-main)] truncate mt-1">
-              {readinessTier.title}
-            </p>
-          </div>
+            <div className="w-full space-y-1.5">
+              <p className="text-base font-bold text-[var(--text-main)] group-hover:text-purple-400 transition-colors flex items-center justify-between">
+                <span className="truncate">{levelInfo.currentLevel.name}</span>
+                <ChevronRight className="w-3.5 h-3.5 text-[var(--text-muted)] group-hover:translate-x-0.5 transition-transform shrink-0 ml-1" />
+              </p>
+              <div className="space-y-1">
+                <div className="flex items-center justify-between text-[10px] font-mono text-[var(--text-muted)]">
+                  <span className="truncate pr-1">{levelInfo.helperText}</span>
+                  <span className="shrink-0">{levelInfo.progressPct}%</span>
+                </div>
+                <div className="w-full h-1.5 rounded-full bg-[var(--bg-muted)] overflow-hidden">
+                  <div
+                    className={`h-full rounded-full transition-all duration-500 ${levelInfo.currentLevel.progressBarColor}`}
+                    style={{ width: `${levelInfo.progressPct}%` }}
+                  />
+                </div>
+              </div>
+            </div>
+          </button>
         </div>
       </div>
 
@@ -585,6 +763,162 @@ export const PublicProfileView: React.FC<PublicProfileViewProps> = ({ initialDat
                 </div>
               </div>
             ))}
+          </div>
+        </div>
+      )}
+
+      {/* Level Progression Explainer Modal */}
+      {showLevelModal && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          onClick={() => setShowLevelModal(false)}
+          className="fixed inset-0 z-50 bg-black/60 backdrop-blur-md flex items-center justify-center p-4 sm:p-6 animate-in fade-in duration-200"
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="relative w-full max-w-2xl bg-[var(--bg-card)] border border-[var(--border)] rounded-3xl shadow-2xl p-6 sm:p-8 space-y-6 max-h-[90vh] overflow-y-auto"
+          >
+            {/* Modal Header */}
+            <div className="flex items-start justify-between gap-4">
+              <div className="space-y-1">
+                <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full text-xs font-semibold bg-purple-500/10 text-purple-500 dark:text-purple-400 border border-purple-500/20">
+                  <Trophy className="w-3.5 h-3.5" />
+                  <span>Interview Readiness System</span>
+                </div>
+                <h3 className="text-xl sm:text-2xl font-bold tracking-tight text-[var(--text-main)]">
+                  LeetMap Prep Levels &amp; Milestones
+                </h3>
+                <p className="text-xs text-[var(--text-muted)]">
+                  Levels are calibrated against industry benchmarks — Blind 75, NeetCode 150, and Big Tech interview bars.
+                </p>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => setShowLevelModal(false)}
+                className="apple-press p-2 rounded-xl text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--bg-subtle)] transition-colors cursor-pointer shrink-0"
+                aria-label="Close modal"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Candidate Current Status Banner */}
+            <div className="p-4 rounded-2xl border border-purple-500/30 bg-purple-500/5 space-y-3">
+              <div className="flex items-center justify-between flex-wrap gap-2">
+                <div className="flex items-center gap-2">
+                  <span className="text-xs text-[var(--text-muted)]">Candidate Standing:</span>
+                  <span className={`text-xs font-mono font-bold px-2 py-0.5 rounded border ${levelInfo.currentLevel.badgeBg} ${levelInfo.currentLevel.badgeColor}`}>
+                    {levelInfo.currentLevel.badge} · {levelInfo.currentLevel.name}
+                  </span>
+                </div>
+                <span className="text-xs font-mono font-bold text-[var(--text-main)]">
+                  {stats.totalSolved} solved
+                </span>
+              </div>
+
+              <div className="space-y-1">
+                <div className="flex items-center justify-between text-[11px] font-mono text-[var(--text-muted)]">
+                  <span>{levelInfo.helperText}</span>
+                  <span>{levelInfo.progressPct}%</span>
+                </div>
+                <div className="w-full h-2 rounded-full bg-[var(--bg-subtle)] border border-[var(--border)] overflow-hidden">
+                  <div
+                    className={`h-full rounded-full transition-all duration-500 ${levelInfo.currentLevel.progressBarColor}`}
+                    style={{ width: `${levelInfo.progressPct}%` }}
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Levels List */}
+            <div className="space-y-3">
+              <h4 className="text-xs font-semibold uppercase tracking-wider text-[var(--text-muted)]">
+                The 5 Prep Milestones
+              </h4>
+
+              <div className="space-y-3">
+                {PREP_LEVELS.map((lvl) => {
+                  const isCurrent = lvl.level === levelInfo.currentLevel.level;
+                  const isCompleted = lvl.level < levelInfo.currentLevel.level;
+
+                  return (
+                    <div
+                      key={lvl.level}
+                      className={`p-4 rounded-2xl border transition-all ${
+                        isCurrent
+                          ? 'border-purple-500/60 bg-purple-500/5 ring-2 ring-purple-500/20'
+                          : isCompleted
+                          ? 'border-[var(--border)] bg-[var(--bg-subtle)]/30 opacity-90'
+                          : 'border-[var(--border)] bg-[var(--bg-subtle)]/15 opacity-60'
+                      }`}
+                    >
+                      <div className="flex items-start justify-between gap-3 flex-wrap">
+                        <div className="flex items-center gap-2.5">
+                          <span className={`text-xs font-mono font-bold px-2 py-0.5 rounded border ${lvl.badgeBg} ${lvl.badgeColor}`}>
+                            {lvl.badge}
+                          </span>
+                          <span className="text-sm font-bold text-[var(--text-main)]">
+                            {lvl.name}
+                          </span>
+                          <span className="text-xs text-[var(--text-muted)] font-mono">
+                            ({lvl.maxSolved === Infinity ? '150+ solved' : `${lvl.minSolved}–${lvl.maxSolved} solved`})
+                          </span>
+                        </div>
+
+                        {isCurrent ? (
+                          <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-purple-500/20 text-purple-600 dark:text-purple-300 border border-purple-500/30">
+                            Current Level
+                          </span>
+                        ) : isCompleted ? (
+                          <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-emerald-600 dark:text-emerald-400">
+                            <CheckCircle2 className="w-3 h-3" />
+                            Achieved
+                          </span>
+                        ) : (
+                          <span className="text-[10px] text-[var(--text-muted)] font-mono">
+                            Locked
+                          </span>
+                        )}
+                      </div>
+
+                      <p className="text-xs text-[var(--text-muted)] mt-1.5 leading-relaxed">
+                        {lvl.description}
+                      </p>
+
+                      <div className="mt-3 pt-3 border-t border-[var(--border)]/60 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-[11px]">
+                        <div className="flex items-center gap-1.5 flex-wrap">
+                          <span className="text-[var(--text-muted)] font-medium">Core Focus:</span>
+                          {lvl.focusPatterns.map((pat) => (
+                            <span
+                              key={pat}
+                              className="px-2 py-0.5 rounded-md bg-[var(--bg-card)] border border-[var(--border)] font-mono text-[10px] text-[var(--text-main)]"
+                            >
+                              {pat}
+                            </span>
+                          ))}
+                        </div>
+                        <div className="text-[var(--text-muted)] shrink-0">
+                          <span className="font-medium text-[var(--text-main)]">Target:</span> {lvl.targetRounds}
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Modal Footer */}
+            <div className="pt-2 flex justify-end">
+              <button
+                type="button"
+                onClick={() => setShowLevelModal(false)}
+                className="apple-press w-full sm:w-auto px-5 py-2.5 rounded-xl text-xs font-semibold bg-[var(--text-main)] text-[var(--bg-page)] hover:opacity-90 transition-opacity cursor-pointer"
+              >
+                Close &amp; Continue
+              </button>
+            </div>
           </div>
         </div>
       )}
