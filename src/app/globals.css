@@ -1,7 +1,8 @@
 @import "tailwindcss";
+@custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
 
 :root {
-  --bg-page: #fafafa;
+  --bg-page: #ffffff;
   --bg-card: #ffffff;
   --bg-card-glass: rgba(255, 255, 255, 0.85);
   --bg-subtle: #f4f4f5;
@@ -23,13 +24,29 @@
   --accent: #18181b;
   --accent-hover: #27272a;
 
+  /* Strategy Graph Theme - Crisp White */
+  --graph-canvas-bg: #ffffff;
+  --graph-canvas-border: rgba(0, 0, 0, 0.08);
+  --graph-dot-color: #94a3b8;
+  --graph-dot-opacity: 0.35;
+  --graph-node-bg: #ffffff;
+  --graph-node-hover-bg: #f8fafc;
+  --graph-node-border: #cbd5e1;
+  --graph-node-text: #0f172a;
+  --graph-edge-color: #94a3b8;
+  --graph-progress-track: rgba(0, 0, 0, 0.08);
+  --graph-footer-bg: #f8fafc;
+  --graph-footer-border: rgba(0, 0, 0, 0.08);
+  --graph-footer-text: #0f172a;
+  --graph-footer-muted: #64748b;
+
   /* Apple fluid spring bezier & strong ease-out */
   --ease-apple-spring: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
 }
 
 [data-theme="dark"] {
-  --bg-page: #09090b;
+  --bg-page: #000000;
   --bg-card: #111113;
   --bg-card-glass: rgba(17, 17, 19, 0.85);
   --bg-subtle: #18181b;
@@ -50,6 +67,22 @@
 
   --accent: #fafafa;
   --accent-hover: #e4e4e7;
+
+  /* Strategy Graph Theme - Pure Dark Black */
+  --graph-canvas-bg: #000000;
+  --graph-canvas-border: rgba(255, 255, 255, 0.1);
+  --graph-dot-color: #334155;
+  --graph-dot-opacity: 0.3;
+  --graph-node-bg: #181e2e;
+  --graph-node-hover-bg: #242c42;
+  --graph-node-border: #2f3952;
+  --graph-node-text: #ffffff;
+  --graph-edge-color: #475569;
+  --graph-progress-track: rgba(255, 255, 255, 0.28);
+  --graph-footer-bg: #0a0d14;
+  --graph-footer-border: rgba(255, 255, 255, 0.1);
+  --graph-footer-text: #ffffff;
+  --graph-footer-muted: #94a3b8;
 }
 
 body {

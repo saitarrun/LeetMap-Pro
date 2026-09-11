@@ -39,6 +39,11 @@ export const Header: React.FC<HeaderProps> = ({ onOpenSync, syncStatus }) => {
 
     localStorage.setItem('theme', next);
     document.documentElement.setAttribute('data-theme', next);
+    if (next === 'dark') {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
     window.dispatchEvent(new Event('leetmap-theme-change'));
 
     // Force browser reflow to apply new CSS variables instantaneously

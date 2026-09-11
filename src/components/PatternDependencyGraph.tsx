@@ -233,38 +233,38 @@ export function PatternDependencyGraph({ patterns, solvedSet = new Set() }: Patt
         </div>
       </div>
 
-      {/* Main Graph Canvas Container - Pure Dark Black Background */}
-      <div className="relative rounded-2xl border border-white/10 bg-[#000000] dark:bg-[#000000] overflow-hidden shadow-2xl">
-        <div className="overflow-x-auto [scrollbar-width:thin] py-8 px-4 bg-[#000000]">
+      {/* Main Graph Canvas Container - Dark Black in Dark Mode, White in Light Mode */}
+      <div className="relative rounded-2xl border border-[var(--graph-canvas-border)] bg-[var(--graph-canvas-bg)] overflow-hidden shadow-2xl transition-colors duration-200">
+        <div className="overflow-x-auto [scrollbar-width:thin] py-8 px-4 bg-[var(--graph-canvas-bg)]">
           <div
-            className="min-w-[840px] sm:min-w-[980px] flex justify-center transition-transform duration-200 origin-top bg-[#000000]"
+            className="min-w-[840px] sm:min-w-[980px] flex justify-center transition-transform duration-200 origin-top bg-[var(--graph-canvas-bg)]"
             style={{ transform: `scale(${zoomLevel})`, transformOrigin: 'top center' }}
           >
             <svg
               viewBox="0 0 1120 900"
-              className="w-full h-auto max-w-[1080px] select-none bg-[#000000]"
+              className="w-full h-auto max-w-[1080px] select-none bg-[var(--graph-canvas-bg)]"
               aria-label="Interactive pattern dependency tree"
             >
               <defs>
-                {/* Subtle dot grid on pure dark black */}
+                {/* Responsive dot grid for dark and light modes */}
                 <pattern id="clear-dot-grid" x="0" y="0" width="28" height="28" patternUnits="userSpaceOnUse">
-                  <circle cx="2" cy="2" r="0.9" fill="#334155" opacity="0.3" />
+                  <circle cx="2" cy="2" r="1" fill="var(--graph-dot-color)" opacity="var(--graph-dot-opacity)" />
                 </pattern>
 
                 {/* Soft diffuse ambient card shadow */}
                 <filter id="soft-card-shadow" x="-15%" y="-15%" width="130%" height="130%">
-                  <feDropShadow dx="0" dy="3" stdDeviation="4" floodColor="#000000" floodOpacity="0.6" />
+                  <feDropShadow dx="0" dy="2" stdDeviation="3" floodColor="#000000" floodOpacity="0.08" />
                 </filter>
                 <filter id="glow-card-shadow" x="-25%" y="-25%" width="150%" height="150%">
-                  <feDropShadow dx="0" dy="0" stdDeviation="8" floodColor="#10b981" floodOpacity="0.5" />
+                  <feDropShadow dx="0" dy="0" stdDeviation="8" floodColor="#10b981" floodOpacity="0.45" />
                 </filter>
               </defs>
 
-              {/* Pure Dark Black Canvas Background */}
-              <rect width="100%" height="100%" fill="#000000" />
+              {/* Canvas Background: Pure dark black in dark mode, pure white in light mode */}
+              <rect width="100%" height="100%" fill="var(--graph-canvas-bg)" />
               <rect width="100%" height="100%" fill="url(#clear-dot-grid)" />
 
-              {/* Connecting Bezier Edges - High visibility over dark black */}
+              {/* Connecting Bezier Edges */}
               <g className="edges">
                 {EDGES.map((edge) => {
                   const source = nodeMap.get(edge.from);
@@ -297,10 +297,10 @@ export function PatternDependencyGraph({ patterns, solvedSet = new Set() }: Patt
                           ? '#10b981' // Green for prerequisites
                           : isOutgoing
                           ? '#38bdf8' // Blue for unlocks
-                          : '#475569' // Clearly visible slate over dark black
+                          : 'var(--graph-edge-color)'
                       }
                       strokeWidth={isHighlighted ? 3 : 2}
-                      strokeOpacity={isHighlighted ? 1 : isAnyHovered ? 0.12 : 0.6}
+                      strokeOpacity={isHighlighted ? 1 : isAnyHovered ? 0.15 : 0.6}
                       strokeLinecap="round"
                       className="transition-all duration-200"
                     />
@@ -308,7 +308,7 @@ export function PatternDependencyGraph({ patterns, solvedSet = new Set() }: Patt
                 })}
               </g>
 
-              {/* Nodes - High Contrast Slate Cards on Dark Black */}
+              {/* Nodes - Adaptive High Contrast Cards */}
               <g className="nodes">
                 {NODES.map((node) => {
                   const { pct } = getNodeProgress(node);
@@ -333,12 +333,12 @@ export function PatternDependencyGraph({ patterns, solvedSet = new Set() }: Patt
                       onMouseLeave={() => setHoveredNodeId(null)}
                       onClick={() => router.push(`/patterns/${node.slug}`)}
                     >
-                      {/* Node Card Outer Rectangle - High contrast slate card */}
+                      {/* Node Card Outer Rectangle */}
                       <rect
                         width={NODE_WIDTH}
                         height={NODE_HEIGHT}
                         rx={10}
-                        fill={isHovered ? '#242c42' : '#181e2e'}
+                        fill={isHovered ? 'var(--graph-node-hover-bg)' : 'var(--graph-node-bg)'}
                         stroke={
                           isHovered
                             ? '#10b981'
@@ -346,34 +346,34 @@ export function PatternDependencyGraph({ patterns, solvedSet = new Set() }: Patt
                             ? '#10b981'
                             : isChild
                             ? '#38bdf8'
-                            : '#2f3952'
+                            : 'var(--graph-node-border)'
                         }
                         strokeWidth={isFocused ? 2 : 1.4}
                         filter={isHovered ? 'url(#glow-card-shadow)' : 'url(#soft-card-shadow)'}
                         className="transition-all duration-150"
                       />
 
-                      {/* Main Node Title - Centered, high contrast crisp white */}
+                      {/* Main Node Title - Centered, dynamic text color */}
                       <text
                         x={NODE_WIDTH / 2}
                         y={27}
                         textAnchor="middle"
                         fontSize={fontSize}
                         fontWeight="600"
-                        fill="#ffffff"
+                        fill="var(--graph-node-text)"
                         className="font-sans select-none tracking-tight"
                       >
                         {node.title}
                       </text>
 
-                      {/* Progress Bar Background Track - High contrast translucent white pill */}
+                      {/* Progress Bar Background Track */}
                       <rect
                         x={(NODE_WIDTH - PROGRESS_BAR_WIDTH) / 2}
                         y={37}
                         width={PROGRESS_BAR_WIDTH}
                         height={4}
                         rx={2}
-                        fill="rgba(255, 255, 255, 0.28)"
+                        fill="var(--graph-progress-track)"
                       />
 
                       {/* Emerald Progress Fill */}
@@ -396,44 +396,44 @@ export function PatternDependencyGraph({ patterns, solvedSet = new Set() }: Patt
         </div>
 
         {/* Dynamic Context Footer on Node Hover */}
-        <div className="px-5 py-3 bg-[#0a0d14] border-t border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 text-xs">
+        <div className="px-5 py-3 bg-[var(--graph-footer-bg)] border-t border-[var(--graph-footer-border)] flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 text-xs text-[var(--graph-footer-text)] transition-colors duration-200">
           {hoveredNode && hoveredProgress ? (
-            <div className="flex items-center gap-2 min-w-0 flex-wrap text-[#e2e8f0]">
-              <span className="font-semibold text-white">{hoveredNode.title}</span>
-              <span className="text-[#94a3b8]">
+            <div className="flex items-center gap-2 min-w-0 flex-wrap">
+              <span className="font-semibold">{hoveredNode.title}</span>
+              <span className="text-[var(--graph-footer-muted)]">
                 · {hoveredProgress.total} curated problems ({hoveredProgress.solved} solved)
               </span>
               {parentIds.size > 0 && (
-                <span className="text-emerald-400 font-medium">
+                <span className="text-emerald-600 dark:text-emerald-400 font-medium">
                   · Prerequisites: {Array.from(parentIds).map(id => nodeMap.get(id)?.title).join(', ')}
                 </span>
               )}
               {childIds.size > 0 && (
-                <span className="text-sky-400 font-medium">
+                <span className="text-sky-600 dark:text-sky-400 font-medium">
                   · Unlocks: {Array.from(childIds).map(id => nodeMap.get(id)?.title).join(', ')}
                 </span>
               )}
-              <span className="text-[#94a3b8]">
+              <span className="text-[var(--graph-footer-muted)]">
                 · Click to practice →
               </span>
             </div>
           ) : (
-            <div className="flex items-center gap-2 text-xs text-[#94a3b8]">
-              <Compass className="w-4 h-4 text-emerald-400 shrink-0" />
+            <div className="flex items-center gap-2 text-xs text-[var(--graph-footer-muted)]">
+              <Compass className="w-4 h-4 text-emerald-500 dark:text-emerald-400 shrink-0" />
               <span>Prerequisites flow from top to bottom. Click any pattern card to view its study guide and problems.</span>
             </div>
           )}
 
-          <div className="hidden lg:flex items-center gap-3 text-[11px] text-[#94a3b8] font-mono shrink-0">
-            <span className="flex items-center gap-1.5 text-emerald-400">
+          <div className="hidden lg:flex items-center gap-3 text-[11px] text-[var(--graph-footer-muted)] font-mono shrink-0">
+            <span className="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400">
               <span className="w-2 h-2 rounded-full bg-emerald-500" /> Prerequisite
             </span>
-            <span className="flex items-center gap-1.5 text-sky-400">
-              <span className="w-2 h-2 rounded-full bg-sky-400" /> Unlocks
+            <span className="flex items-center gap-1.5 text-sky-600 dark:text-sky-400">
+              <span className="w-2 h-2 rounded-full bg-sky-500" /> Unlock
             </span>
           </div>
         </div>
       </div>
     </div>
   );
-}
+};
