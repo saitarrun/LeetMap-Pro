@@ -39,6 +39,11 @@ import {
   Flame,
   Cpu,
   LucideIcon,
+  Copy,
+  Check,
+  Target,
+  AlertTriangle,
+  Code2,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { PatternDetail, PatternProblem } from '@/types';
@@ -88,6 +93,7 @@ export const PatternDetailView: React.FC<PatternDetailViewProps> = ({ pattern })
 
   const [sortBy, setSortBy] = useState<'companiesCount' | 'difficulty' | 'title' | 'acceptance' | 'id' | 'frequency'>('companiesCount');
   const [sortDir, setSortDir] = useState<'asc' | 'desc'>('desc');
+  const [copiedTemplate, setCopiedTemplate] = useState(false);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -237,6 +243,14 @@ export const PatternDetailView: React.FC<PatternDetailViewProps> = ({ pattern })
   const IconComponent = ICON_MAP[pattern.icon] || GitBranch;
   const guide = PATTERN_GUIDES[pattern.slug];
 
+  const handleCopyTemplate = () => {
+    if (!guide?.template) return;
+    navigator.clipboard.writeText(guide.template);
+    setCopiedTemplate(true);
+    toast.success('Python template copied to clipboard');
+    setTimeout(() => setCopiedTemplate(false), 2000);
+  };
+
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 space-y-6">
       {/* Breadcrumb */}
@@ -291,75 +305,191 @@ export const PatternDetailView: React.FC<PatternDetailViewProps> = ({ pattern })
       </section>
 
       {/* Pattern Study Guide & Cheat Sheet (Sleek Collapsible) */}
-      <details className="group max-w-4xl mx-auto rounded-2xl border border-[var(--border)] bg-[var(--bg-card)] overflow-hidden transition-all text-xs">
-        <summary className="apple-press flex items-center justify-between px-5 py-3 cursor-pointer select-none text-[var(--text-muted)] hover:text-[var(--text-main)] transition-colors bg-[var(--bg-subtle)]/30 font-medium">
-          <div className="flex items-center gap-2">
-            <Sparkles className="w-3.5 h-3.5 text-amber-500" />
-            <span>Pattern Study Guide & Cheat Sheet</span>
-            <span className="text-[11px] text-[var(--text-light)] font-normal hidden sm:inline">· Clues, Strategy & Code Template</span>
-          </div>
-          <span className="text-[11px] text-[var(--text-muted)] group-open:rotate-180 transition-transform">▼</span>
-        </summary>
-
-        <div className="grid grid-cols-1 lg:grid-cols-3 border-t border-[var(--border)] p-5 gap-6">
-          <section className="space-y-3">
-            <div className="flex items-center gap-2 text-xs font-semibold text-[var(--text-main)]">
-              <Sparkles className="size-4 text-emerald-500" />
-              <h2>Recognize it</h2>
-            </div>
-            <ul className="space-y-2">
-              {pattern.clues.map((clue) => (
-                <li key={clue} className="flex gap-2 text-xs leading-relaxed text-[var(--text-muted)]">
-                  <span className="mt-[7px] size-1 shrink-0 rounded-full bg-emerald-500/70" />
-                  <span>{clue}</span>
-                </li>
-              ))}
-            </ul>
-          </section>
-
-          <section className="space-y-3 border-t border-[var(--border)] pt-4 lg:border-l lg:border-t-0 lg:pl-6 lg:pt-0">
-            <div className="flex items-center gap-2 text-xs font-semibold text-[var(--text-main)]">
-              <Lightbulb className="size-4 text-amber-500" />
-              <h2>How to solve</h2>
-            </div>
-            <p className="text-xs leading-relaxed text-[var(--text-muted)]">{pattern.strategy}</p>
-            {guide && (
-              <ol className="space-y-2 pt-1">
-                {guide.steps.map((step, index) => (
-                  <li key={step} className="flex gap-2 text-xs leading-relaxed text-[var(--text-muted)]">
-                    <span className="font-mono text-[10px] text-[var(--text-light)]">{index + 1}.</span>
-                    <span>{step}</span>
-                  </li>
-                ))}
-              </ol>
-            )}
-          </section>
-
-          <section className="space-y-3 border-t border-[var(--border)] pt-4 lg:border-l lg:border-t-0 lg:pl-6 lg:pt-0">
-            <div className="flex items-center gap-2 text-xs font-semibold text-[var(--text-main)]">
-              <BookOpen className="size-4 text-sky-500" />
-              <h2>Cheat sheet</h2>
-            </div>
-            {guide && (
-              <div className="space-y-3 text-xs">
-                <code className="block overflow-x-auto rounded-xl border border-[var(--border)] bg-[var(--bg-subtle)] px-3 py-2 text-[11px] leading-relaxed text-[var(--text-main)]">
-                  {guide.template}
-                </code>
-                <dl className="space-y-1.5 pt-1">
-                  <div className="flex gap-2">
-                    <dt className="w-16 shrink-0 text-[var(--text-light)]">Cost</dt>
-                    <dd className="text-[var(--text-muted)]">{guide.complexity}</dd>
-                  </div>
-                  <div className="flex gap-2">
-                    <dt className="w-16 shrink-0 text-[var(--text-light)]">Watch for</dt>
-                    <dd className="text-[var(--text-muted)]">{guide.pitfall}</dd>
-                  </div>
-                </dl>
+      {guide && (
+        <details className="group max-w-5xl mx-auto rounded-2xl border border-[var(--border)] bg-[var(--bg-card)] overflow-hidden transition-all text-xs shadow-[0_2px_10px_rgba(0,0,0,0.02)]">
+          <summary className="apple-press flex items-center justify-between px-5 py-3.5 cursor-pointer select-none text-[var(--text-muted)] hover:text-[var(--text-main)] transition-colors bg-[var(--bg-subtle)]/40 font-medium">
+            <div className="flex items-center gap-2.5 flex-wrap">
+              <div className="w-6 h-6 rounded-lg bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center">
+                <Sparkles className="w-3.5 h-3.5" />
               </div>
-            )}
-          </section>
-        </div>
-      </details>
+              <span className="font-semibold text-sm text-[var(--text-main)]">
+                Pattern Study Guide & Master Cheat Sheet
+              </span>
+              <span className="hidden sm:inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[11px] font-mono text-[var(--text-light)] bg-[var(--bg-card)] border border-[var(--border)]">
+                {guide.complexity.time}
+              </span>
+              <span className="hidden sm:inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[11px] font-mono text-[var(--text-light)] bg-[var(--bg-card)] border border-[var(--border)]">
+                {guide.complexity.space}
+              </span>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="text-[11px] text-[var(--text-light)] group-open:hidden">View Blueprint & Template</span>
+              <span className="text-[11px] text-[var(--text-muted)] group-open:rotate-180 transition-transform">▼</span>
+            </div>
+          </summary>
+
+          <div className="border-t border-[var(--border)] divide-y divide-[var(--border)]">
+            {/* Intuition & Invariant Header */}
+            <div className="p-5 sm:p-6 bg-gradient-to-b from-[var(--bg-subtle)]/30 to-transparent space-y-2">
+              <div className="flex items-start gap-2.5">
+                <Lightbulb className="w-4 h-4 text-amber-500 shrink-0 mt-0.5" />
+                <div>
+                  <p className="text-sm font-medium text-[var(--text-main)] leading-relaxed">
+                    {guide.summary}
+                  </p>
+                  <p className="text-xs text-[var(--text-muted)] mt-1.5 leading-relaxed">
+                    <strong className="text-[var(--text-main)] font-medium">Core Invariant: </strong>
+                    {guide.mentalModel}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Main Content Grid: 2 balanced columns */}
+            <div className="grid grid-cols-1 lg:grid-cols-12 divide-y lg:divide-y-0 lg:divide-x divide-[var(--border)]">
+              {/* Left Column: Recognition & Algorithm Steps */}
+              <div className="lg:col-span-6 p-5 sm:p-6 space-y-5">
+                {/* Recognition Triggers */}
+                <section className="space-y-2.5">
+                  <div className="flex items-center gap-2 text-xs font-semibold text-[var(--text-main)] uppercase tracking-wider">
+                    <Target className="w-3.5 h-3.5 text-emerald-500" />
+                    <span>How to Spot It (Recognition Triggers)</span>
+                  </div>
+                  <ul className="space-y-2">
+                    {guide.triggers.map((trigger, idx) => (
+                      <li key={idx} className="flex items-start gap-2.5 text-xs text-[var(--text-muted)] leading-relaxed">
+                        <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0" />
+                        <span>{trigger}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </section>
+
+                {/* When NOT to use (Crucial Anti-Pattern) */}
+                {guide.whenNotToUse && (
+                  <section className="p-3.5 rounded-xl border border-rose-500/20 bg-rose-500/5 space-y-1">
+                    <div className="flex items-center gap-1.5 text-xs font-semibold text-rose-600 dark:text-rose-400">
+                      <AlertTriangle className="w-3.5 h-3.5 shrink-0" />
+                      <span>When NOT to Use (Avoid This Trap)</span>
+                    </div>
+                    <p className="text-xs text-[var(--text-muted)] leading-relaxed pl-5">
+                      {guide.whenNotToUse}
+                    </p>
+                  </section>
+                )}
+
+                {/* Step-by-Step Blueprint */}
+                <section className="space-y-2.5 pt-1">
+                  <div className="flex items-center gap-2 text-xs font-semibold text-[var(--text-main)] uppercase tracking-wider">
+                    <BookOpen className="w-3.5 h-3.5 text-sky-500" />
+                    <span>Step-by-Step Problem Solving Blueprint</span>
+                  </div>
+                  <ol className="space-y-2.5">
+                    {guide.steps.map((step, index) => (
+                      <li key={index} className="flex items-start gap-2.5 text-xs leading-relaxed text-[var(--text-muted)]">
+                        <span className="w-5 h-5 rounded-full bg-[var(--bg-subtle)] border border-[var(--border)] text-[var(--text-main)] font-mono text-[10px] font-semibold flex items-center justify-center shrink-0 mt-0.5">
+                          {index + 1}
+                        </span>
+                        <span className="pt-0.5">{step}</span>
+                      </li>
+                    ))}
+                  </ol>
+                </section>
+
+                {/* Traps & Pitfalls */}
+                <section className="space-y-2.5 pt-1">
+                  <div className="flex items-center gap-2 text-xs font-semibold text-[var(--text-main)] uppercase tracking-wider">
+                    <AlertTriangle className="w-3.5 h-3.5 text-amber-500" />
+                    <span>Interview Traps & Edge Cases</span>
+                  </div>
+                  <ul className="space-y-2">
+                    {guide.pitfalls.map((pitfall, idx) => (
+                      <li key={idx} className="flex items-start gap-2 text-xs text-[var(--text-muted)] leading-relaxed">
+                        <span className="mt-1.5 w-1 h-1 rounded-full bg-amber-500 shrink-0" />
+                        <span>{pitfall}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </section>
+              </div>
+
+              {/* Right Column: Code Template & Canonical Problems */}
+              <div className="lg:col-span-6 p-5 sm:p-6 space-y-5 bg-[var(--bg-subtle)]/15">
+                {/* Python Master Template */}
+                <section className="space-y-2.5">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2 text-xs font-semibold text-[var(--text-main)] uppercase tracking-wider">
+                      <Code2 className="w-3.5 h-3.5 text-indigo-500" />
+                      <span>{guide.templateName || 'Python Master Template'}</span>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={handleCopyTemplate}
+                      className="apple-press inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg border border-[var(--border)] bg-[var(--bg-card)] hover:bg-[var(--bg-subtle)] text-[11px] font-medium text-[var(--text-muted)] hover:text-[var(--text-main)] transition-colors cursor-pointer"
+                      title="Copy code template"
+                    >
+                      {copiedTemplate ? (
+                        <>
+                          <Check className="w-3.5 h-3.5 text-emerald-500" />
+                          <span className="text-emerald-600 dark:text-emerald-400">Copied!</span>
+                        </>
+                      ) : (
+                        <>
+                          <Copy className="w-3.5 h-3.5" />
+                          <span>Copy</span>
+                        </>
+                      )}
+                    </button>
+                  </div>
+
+                  <div className="relative rounded-xl border border-[var(--border)] bg-[var(--bg-subtle)]/70 overflow-hidden">
+                    <pre className="p-4 font-mono text-[11.5px] leading-relaxed text-[var(--text-main)] overflow-x-auto whitespace-pre">
+                      <code>{guide.template}</code>
+                    </pre>
+                  </div>
+
+                  {/* Complexity Footnotes */}
+                  <div className="flex items-center justify-between gap-3 text-[11px] pt-0.5 text-[var(--text-muted)] flex-wrap">
+                    <div className="flex items-center gap-3">
+                      <span><strong>Time:</strong> {guide.complexity.time}</span>
+                      <span className="opacity-30">·</span>
+                      <span><strong>Space:</strong> {guide.complexity.space}</span>
+                    </div>
+                    {guide.complexity.note && (
+                      <span className="text-[var(--text-light)] italic">{guide.complexity.note}</span>
+                    )}
+                  </div>
+                </section>
+
+                {/* Canonical Problems Mapping */}
+                <section className="space-y-2.5 pt-2">
+                  <div className="flex items-center gap-2 text-xs font-semibold text-[var(--text-main)] uppercase tracking-wider">
+                    <Sparkles className="w-3.5 h-3.5 text-purple-500" />
+                    <span>Canonical Problems & Solution Mapping</span>
+                  </div>
+                  <div className="space-y-2">
+                    {guide.canonicalProblems.map((prob, idx) => (
+                      <div
+                        key={idx}
+                        className="p-3 rounded-xl border border-[var(--border)] bg-[var(--bg-card)] space-y-1 hover:border-[var(--text-muted)]/30 transition-colors"
+                      >
+                        <div className="flex items-center justify-between gap-2">
+                          <span className="font-semibold text-xs text-[var(--text-main)]">
+                            {prob.id ? `#${prob.id} · ` : ''}{prob.name}
+                          </span>
+                        </div>
+                        <p className="text-[11px] text-[var(--text-muted)] leading-relaxed">
+                          {prob.why}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                </section>
+              </div>
+            </div>
+          </div>
+        </details>
+      )}
 
       {/* Apple Spotlight Search Bar (Centered) */}
       <div className="max-w-2xl mx-auto">
