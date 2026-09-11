@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import fs from 'fs';
 import path from 'path';
 import { PatternSummary, SyncStatus } from '@/types';
@@ -41,5 +41,9 @@ export default async function PatternsPage() {
     }
   }
 
-  return <PatternsHubClient patterns={patterns} patternProblems={patternProblems} syncStatus={syncStatus} />;
+  return (
+    <Suspense fallback={null}>
+      <PatternsHubClient patterns={patterns} patternProblems={patternProblems} syncStatus={syncStatus} />
+    </Suspense>
+  );
 }

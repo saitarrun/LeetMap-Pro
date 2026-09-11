@@ -4,61 +4,7 @@ import React, { useState, useMemo } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { PatternSummary } from '@/types';
-import {
-  ZoomIn,
-  ZoomOut,
-  RotateCcw,
-  Compass,
-  X,
-  ChevronRight,
-  ArrowLeftRight,
-  SlidersHorizontal,
-  Binary,
-  Sigma,
-  IterationCcw,
-  Link2,
-  Layers,
-  Crown,
-  FolderTree,
-  Network,
-  CalendarRange,
-  GitBranch,
-  Rows3,
-  Split,
-  Share2,
-  ArrowDownUp,
-  Grid,
-  TrendingUp,
-  Boxes,
-  Flame,
-  Cpu,
-  LucideIcon,
-} from 'lucide-react';
-
-const ICON_MAP: Record<string, LucideIcon> = {
-  'two-pointers': ArrowLeftRight,
-  'sliding-window': SlidersHorizontal,
-  'binary-search': Binary,
-  'prefix-sum': Sigma,
-  'fast-slow-pointers': IterationCcw,
-  'linked-list-manipulation': Link2,
-  'monotonic-stack': Layers,
-  'heaps-top-k': Crown,
-  'trie': FolderTree,
-  'union-find': Network,
-  'intervals': CalendarRange,
-  'tree-dfs': GitBranch,
-  'tree-bfs': Rows3,
-  'binary-search-tree': Split,
-  'graph-traversal': Share2,
-  'topological-sort': ArrowDownUp,
-  'matrix-traversal': Grid,
-  'backtracking': RotateCcw,
-  'dynamic-programming-1d': TrendingUp,
-  'dynamic-programming-2d': Boxes,
-  'greedy': Flame,
-  'bit-manipulation': Cpu,
-};
+import { ZoomIn, ZoomOut, RotateCcw, Compass, ChevronRight } from 'lucide-react';
 
 export interface SubPattern {
   slug: string;
@@ -245,20 +191,7 @@ export function PatternDependencyGraph({
 }: PatternDependencyGraphProps) {
   const router = useRouter();
   const [hoveredNodeId, setHoveredNodeId] = useState<string | null>(null);
-  const [selectedGroupNode, setSelectedGroupNode] = useState<GraphNode | null>(null);
   const [zoomLevel, setZoomLevel] = useState<number>(1);
-
-  // Close modal on Escape key
-  React.useEffect(() => {
-    if (!selectedGroupNode) return;
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        setSelectedGroupNode(null);
-      }
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [selectedGroupNode]);
 
   // Pattern map for instant lookup
   const patternMap = useMemo(() => {
@@ -291,18 +224,6 @@ export function PatternDependencyGraph({
     const p = patternMap.get(node.slug);
     const total = p?.total || node.total;
     const slugs = patternProblems[node.slug];
-    const solved = slugs && solvedSet.size > 0
-      ? slugs.filter((id) => solvedSet.has(id)).length
-      : 0;
-    const pct = total > 0 ? Math.min(100, Math.round((solved / total) * 100)) : 0;
-    return { total, solved, pct, p };
-  };
-
-  // Compute progress for a single subpattern
-  const getSubPatternProgress = (sub: SubPattern) => {
-    const p = patternMap.get(sub.slug);
-    const total = p?.total || sub.total;
-    const slugs = patternProblems[sub.slug];
     const solved = slugs && solvedSet.size > 0
       ? slugs.filter((id) => solvedSet.has(id)).length
       : 0;
@@ -507,19 +428,15 @@ export function PatternDependencyGraph({
                     return (
                     <a
                       key={node.id}
-                      href={`/patterns/${node.slug}`}
+                      href={`/patterns?category=${encodeURIComponent(node.category)}`}
                       onClick={(e) => {
                         if (!e.metaKey && !e.ctrlKey && e.button === 0) {
                           e.preventDefault();
-                          if (node.subPatterns && node.subPatterns.length > 1) {
-                            setSelectedGroupNode(node);
-                          } else {
-                            router.push(`/patterns/${node.slug}`);
-                          }
+                          router.push(`/patterns?category=${encodeURIComponent(node.category)}`);
                         }
                       }}
                       className="cursor-pointer group select-none outline-none"
-                      aria-label={`View ${node.title} study guide and problems`}
+                      aria-label={`View ${node.title} in ${node.category} patterns`}
                     >
                       <g
                         transform={`translate(${left}, ${top})`}
@@ -546,7 +463,7 @@ export function PatternDependencyGraph({
                           className="transition-all duration-150"
                         />
 
-                        {/* Sub-patterns indicator pill if node has a group of patterns */}
+                        {/* Sub-patterns count badge if node represents multiple patterns */}
                         {node.subPatterns && node.subPatterns.length > 1 && (
                           <g transform={`translate(${NODE_WIDTH - 26}, 6)`} className="pointer-events-none opacity-80 group-hover:opacity-100 transition-opacity">
                             <rect width={18} height={13} rx={4} fill="var(--graph-canvas-bg)" stroke="var(--graph-node-border)" strokeWidth={0.8} />
@@ -619,29 +536,18 @@ export function PatternDependencyGraph({
                   · Unlocks: {Array.from(childIds).map(id => nodeMap.get(id)?.title).join(', ')}
                 </span>
               )}
-              {hoveredNode.subPatterns && hoveredNode.subPatterns.length > 1 ? (
-                <button
-                  type="button"
-                  onClick={() => setSelectedGroupNode(hoveredNode)}
-                  className="apple-press inline-flex items-center gap-1 font-semibold text-emerald-600 dark:text-emerald-400 hover:underline cursor-pointer ml-1 text-xs"
-                >
-                  <span>Explore {hoveredNode.title} ({hoveredNode.subPatterns.length} Patterns)</span>
-                  <ChevronRight className="w-3.5 h-3.5" />
-                </button>
-              ) : (
-                <Link
-                  href={`/patterns/${hoveredNode.slug}`}
-                  className="apple-press inline-flex items-center gap-1 font-semibold text-emerald-600 dark:text-emerald-400 hover:underline cursor-pointer ml-1"
-                >
-                  <span>Practice {hoveredNode.title}</span>
-                  <span>→</span>
-                </Link>
-              )}
+              <Link
+                href={`/patterns?category=${encodeURIComponent(hoveredNode.category)}`}
+                className="apple-press inline-flex items-center gap-1 font-semibold text-emerald-600 dark:text-emerald-400 hover:underline cursor-pointer ml-1 text-xs"
+              >
+                <span>View {hoveredNode.title} in Patterns ({hoveredNode.category})</span>
+                <ChevronRight className="w-3.5 h-3.5" />
+              </Link>
             </div>
           ) : (
             <div className="flex items-center gap-2 text-xs text-[var(--graph-footer-muted)]">
               <Compass className="w-4 h-4 text-emerald-500 dark:text-emerald-400 shrink-0" />
-              <span>Prerequisites flow from top to bottom. Click any pattern card to view its study guide and problems.</span>
+              <span>Prerequisites flow from top to bottom. Click any pattern card to filter by category in Patterns Hub.</span>
             </div>
           )}
 
@@ -655,117 +561,6 @@ export function PatternDependencyGraph({
           </div>
         </div>
       </div>
-
-      {/* Apple-Style Pattern Selection Modal Sheet */}
-      {selectedGroupNode && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/40 dark:bg-black/65 backdrop-blur-md animate-in fade-in duration-200"
-          onClick={() => setSelectedGroupNode(null)}
-        >
-          <div
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="group-pattern-title"
-            className="relative w-full max-w-lg max-h-[85vh] flex flex-col rounded-[28px] bg-white/90 dark:bg-[#1c1c1e]/90 backdrop-blur-2xl border border-black/[0.08] dark:border-white/[0.12] shadow-[0_32px_80px_rgba(0,0,0,0.18)] dark:shadow-[0_32px_80px_rgba(0,0,0,0.65)] overflow-hidden scale-in-95 duration-200"
-            onClick={(e) => e.stopPropagation()}
-          >
-            {/* Modal Header */}
-            <div className="px-6 pt-6 pb-3 flex items-start justify-between">
-              <div className="space-y-1 min-w-0 flex-1">
-                <div className="flex items-center gap-2 flex-wrap">
-                  <h3 id="group-pattern-title" className="text-[20px] font-semibold text-[var(--text-main)] tracking-tight">
-                    {selectedGroupNode.title}
-                  </h3>
-                  <span className="text-[11px] font-medium px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
-                    {selectedGroupNode.subPatterns?.length || 0} Patterns
-                  </span>
-                  <span className="text-[11px] font-normal text-[var(--text-muted)]">
-                    · {selectedGroupNode.category}
-                  </span>
-                </div>
-                <p className="text-[13px] text-[var(--text-muted)] pt-0.5 leading-relaxed font-normal">
-                  Select a pattern below to practice curated problems, code templates, and interview blueprints.
-                </p>
-              </div>
-
-              <button
-                type="button"
-                onClick={() => setSelectedGroupNode(null)}
-                className="apple-press w-7 h-7 rounded-full bg-black/[0.05] hover:bg-black/[0.1] active:bg-black/[0.15] dark:bg-white/[0.1] dark:hover:bg-white/[0.18] flex items-center justify-center text-neutral-500 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-white transition-all cursor-pointer shrink-0 ml-3"
-                aria-label="Close pattern selection modal"
-              >
-                <X className="w-3.5 h-3.5 stroke-[2.4]" />
-              </button>
-            </div>
-
-            {/* Modal Sub-Patterns List - Smooth Apple Inset Group with Hidden Raw Scrollbar */}
-            <div className="px-5 pb-5 pt-1 space-y-2 overflow-y-auto max-h-[56vh] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden overscroll-contain">
-              {selectedGroupNode.subPatterns?.map((sub) => {
-                const { total, solved, pct } = getSubPatternProgress(sub);
-                const Icon = ICON_MAP[sub.slug] || GitBranch;
-
-                return (
-                  <Link
-                    key={sub.slug}
-                    href={`/patterns/${sub.slug}`}
-                    onClick={() => setSelectedGroupNode(null)}
-                    className="apple-press group flex items-center gap-3.5 p-3.5 rounded-2xl bg-black/[0.025] hover:bg-black/[0.05] active:scale-[0.99] dark:bg-white/[0.04] dark:hover:bg-white/[0.08] border border-black/[0.04] hover:border-black/[0.08] dark:border-white/[0.06] dark:hover:border-white/[0.12] transition-all cursor-pointer"
-                  >
-                    {/* Apple Icon Squircle Tile */}
-                    <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-white dark:bg-white/[0.08] shadow-[0_1px_4px_rgba(0,0,0,0.06)] border border-black/[0.04] dark:border-white/[0.06] text-emerald-600 dark:text-emerald-400 shrink-0 group-hover:scale-105 transition-transform duration-200">
-                      <Icon className="w-5 h-5" />
-                    </div>
-
-                    {/* Middle Info */}
-                    <div className="min-w-0 flex-1 space-y-0.5">
-                      <div className="flex items-baseline justify-between gap-2">
-                        <span className="text-[14.5px] font-semibold text-[var(--text-main)] group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors tracking-tight truncate">
-                          {sub.name}
-                        </span>
-                        <span className="text-[11.5px] font-mono text-[var(--text-muted)] font-medium shrink-0">
-                          {solved > 0 ? `${solved} / ${total} (${pct}%)` : `${total} problems`}
-                        </span>
-                      </div>
-
-                      {sub.tagline && (
-                        <p className="text-[12px] text-[var(--text-muted)] line-clamp-1 font-normal leading-normal">
-                          {sub.tagline}
-                        </p>
-                      )}
-
-                      {/* Apple Progress Bar */}
-                      {pct > 0 && (
-                        <div className="w-full h-1 rounded-full bg-black/[0.06] dark:bg-white/[0.08] overflow-hidden mt-1.5">
-                          <div
-                            className="h-full rounded-full bg-emerald-500 transition-all duration-300"
-                            style={{ width: `${pct}%` }}
-                          />
-                        </div>
-                      )}
-                    </div>
-
-                    {/* Apple SF Chevron */}
-                    <ChevronRight className="w-4 h-4 text-neutral-400 dark:text-neutral-500 group-hover:text-emerald-500 group-hover:translate-x-0.5 transition-all shrink-0 ml-1" />
-                  </Link>
-                );
-              })}
-            </div>
-
-            {/* Modal Footer */}
-            <div className="px-6 py-3.5 border-t border-black/[0.05] dark:border-white/[0.07] bg-black/[0.015] dark:bg-white/[0.02] flex items-center justify-between text-[12px] text-[var(--text-muted)]">
-              <span>Looking for the primary overview?</span>
-              <Link
-                href={`/patterns/${selectedGroupNode.slug}`}
-                onClick={() => setSelectedGroupNode(null)}
-                className="apple-press inline-flex items-center gap-1 font-semibold text-emerald-600 dark:text-emerald-400 hover:text-emerald-500 transition-colors cursor-pointer"
-              >
-                <span>{selectedGroupNode.title} Overview</span>
-                <ChevronRight className="w-3.5 h-3.5 stroke-[2.4]" />
-              </Link>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 };

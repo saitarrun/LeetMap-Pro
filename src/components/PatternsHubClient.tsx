@@ -2,6 +2,7 @@
 
 import React, { useState, useMemo, useEffect, useRef } from 'react';
 import Link from 'next/link';
+import { useRouter, useSearchParams } from 'next/navigation';
 import {
   Search,
   X,
@@ -14,6 +15,46 @@ import { Header } from '@/components/Header';
 import { PatternCard } from '@/components/PatternCard';
 import { useSolvedProblems } from '@/utils/useSolvedProblems';
 
+export type CategoryFilterType =
+  | 'ALL'
+  | 'Arrays & Strings'
+  | 'Linked Lists'
+  | 'Trees & Tries'
+  | 'Graphs'
+  | 'Dynamic Programming'
+  | 'Stacks & Queues'
+  | 'Heaps & Intervals'
+  | 'Advanced & Greedy';
+
+const VALID_CATEGORIES: CategoryFilterType[] = [
+  'ALL',
+  'Arrays & Strings',
+  'Linked Lists',
+  'Trees & Tries',
+  'Graphs',
+  'Dynamic Programming',
+  'Stacks & Queues',
+  'Heaps & Intervals',
+  'Advanced & Greedy',
+];
+
+function normalizeCategory(param: string | null): CategoryFilterType {
+  if (!param) return 'ALL';
+  const clean = decodeURIComponent(param).trim().toLowerCase();
+  if (clean === 'all') return 'ALL';
+  if (clean.includes('array') || clean.includes('string') || clean.includes('pointer') || clean.includes('window') || clean.includes('hashing')) return 'Arrays & Strings';
+  if (clean.includes('linked')) return 'Linked Lists';
+  if (clean.includes('tree') || clean.includes('trie') || clean.includes('bst')) return 'Trees & Tries';
+  if (clean.includes('graph') || clean.includes('topological') || clean.includes('matrix') || clean.includes('union')) return 'Graphs';
+  if (clean.includes('dp') || clean.includes('dynamic')) return 'Dynamic Programming';
+  if (clean.includes('stack') || clean.includes('queue')) return 'Stacks & Queues';
+  if (clean.includes('heap') || clean.includes('interval') || clean.includes('priority')) return 'Heaps & Intervals';
+  if (clean.includes('greedy') || clean.includes('backtracking') || clean.includes('bit')) return 'Advanced & Greedy';
+
+  const exact = VALID_CATEGORIES.find((c) => c.toLowerCase() === clean);
+  return exact || 'ALL';
+}
+
 interface PatternsHubClientProps {
   patterns: PatternSummary[];
   patternProblems?: Record<string, string[]>;
@@ -25,10 +66,33 @@ export const PatternsHubClient: React.FC<PatternsHubClientProps> = ({
   patternProblems = {},
   syncStatus,
 }) => {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const categoryParam = searchParams?.get('category') || searchParams?.get('group') || searchParams?.get('filter');
+
   const [searchQuery, setSearchQuery] = useState('');
-  const [categoryFilter, setCategoryFilter] = useState<'ALL' | 'Arrays & Strings' | 'Linked Lists' | 'Trees & Tries' | 'Graphs' | 'Dynamic Programming' | 'Stacks & Queues' | 'Heaps & Intervals' | 'Advanced & Greedy'>('ALL');
+  const [internalCategory, setInternalCategory] = useState<CategoryFilterType>('ALL');
   const [sortBy, setSortBy] = useState<'total' | 'name' | 'hard'>('total');
   const solvedSet = useSolvedProblems();
+
+  // Derive categoryFilter directly from URL searchParams if present, or internal state
+  const categoryFilter: CategoryFilterType = categoryParam
+    ? normalizeCategory(categoryParam)
+    : internalCategory;
+
+  const handleCategoryChange = (newCat: CategoryFilterType) => {
+    setInternalCategory(newCat);
+    const params = new URLSearchParams(searchParams?.toString() || '');
+    if (newCat === 'ALL') {
+      params.delete('category');
+      params.delete('group');
+      params.delete('filter');
+    } else {
+      params.set('category', newCat);
+    }
+    const query = params.toString();
+    router.replace(`/patterns${query ? `?${query}` : ''}`, { scroll: false });
+  };
 
   const searchInputRef = useRef<HTMLInputElement>(null);
 
@@ -158,7 +222,7 @@ export const PatternsHubClient: React.FC<PatternsHubClientProps> = ({
             ].map((tab) => (
               <button
                 key={tab.key}
-                onClick={() => setCategoryFilter(tab.key as typeof categoryFilter)}
+                onClick={() => handleCategoryChange(tab.key as CategoryFilterType)}
                 className={`apple-press shrink-0 whitespace-nowrap px-3 py-1.5 rounded-lg font-medium transition-colors cursor-pointer ${
                   categoryFilter === tab.key
                     ? 'bg-[var(--bg-subtle)] text-[var(--text-main)] font-semibold'
@@ -243,7 +307,7 @@ export const PatternsHubClient: React.FC<PatternsHubClientProps> = ({
               <button
                 onClick={() => {
                   setSearchQuery('');
-                  setCategoryFilter('ALL');
+                  handleCategoryChange('ALL');
                 }}
                 className="apple-press inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-semibold bg-[var(--bg-subtle)] hover:bg-[var(--bg-hover)] text-[var(--text-main)] border border-[var(--border)] transition-colors cursor-pointer"
               >
