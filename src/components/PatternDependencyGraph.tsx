@@ -3,7 +3,7 @@
 import React, { useState, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { PatternSummary } from '@/types';
-import { ZoomIn, ZoomOut, RotateCcw, ArrowRight, Check, Compass } from 'lucide-react';
+import { ZoomIn, ZoomOut, RotateCcw, Compass, CheckCircle2 } from 'lucide-react';
 
 interface GraphNode {
   id: string;
@@ -21,14 +21,6 @@ interface GraphEdge {
 }
 
 // 8 Strictly Ordered Horizontal Tiers with generous spacing
-// Tier 0: Y = 60
-// Tier 1: Y = 165
-// Tier 2: Y = 275
-// Tier 3: Y = 385
-// Tier 4: Y = 495
-// Tier 5: Y = 615
-// Tier 6: Y = 725
-// Tier 7: Y = 835
 const NODES: GraphNode[] = [
   // Tier 0 (Root)
   { id: 'arrays-hashing', title: 'Arrays & Hashing', slug: 'prefix-sum', x: 560, y: 60, total: 220, category: 'Fundamentals' },
@@ -103,17 +95,9 @@ const EDGES: GraphEdge[] = [
   { from: 'bit-manipulation', to: 'math-geometry' },
 ];
 
-const NODE_WIDTH = 180;
-const NODE_HEIGHT = 56;
-const PROGRESS_BAR_WIDTH = 152;
-
-// Calming, eye-friendly pastel category color tokens
-const CATEGORY_THEME: Record<GraphNode['category'], { dot: string; label: string; accent: string }> = {
-  'Fundamentals': { dot: '#10B981', label: 'Fundamentals', accent: 'rgba(16, 185, 129, 0.15)' },
-  'Data Structures': { dot: '#38BDF8', label: 'Data Structures', accent: 'rgba(56, 189, 248, 0.15)' },
-  'Trees & Graphs': { dot: '#A78BFA', label: 'Trees & Graphs', accent: 'rgba(167, 139, 250, 0.15)' },
-  'Advanced & DP': { dot: '#F59E0B', label: 'Advanced & DP', accent: 'rgba(245, 158, 11, 0.15)' },
-};
+const NODE_WIDTH = 176;
+const NODE_HEIGHT = 52;
+const PROGRESS_BAR_WIDTH = 144;
 
 interface PatternDependencyGraphProps {
   patterns: PatternSummary[];
@@ -143,7 +127,7 @@ export function PatternDependencyGraph({ patterns, solvedSet = new Set() }: Patt
       ? Math.min(total, Array.from(solvedSet).filter(id => id.startsWith(node.slug)).length)
       : 0;
     const pct = total > 0 ? Math.round((solved / total) * 100) : 0;
-    return { total, solved, pct };
+    return { total, solved, pct, p };
   };
 
   // Trace prerequisite parents and unlocked children
@@ -181,46 +165,38 @@ export function PatternDependencyGraph({ patterns, solvedSet = new Set() }: Patt
   }, [hoveredNodeId]);
 
   const hoveredNode = hoveredNodeId ? nodeMap.get(hoveredNodeId) : null;
+  const hoveredProgress = hoveredNode ? getNodeProgress(hoveredNode) : null;
 
   return (
     <div className="space-y-3.5 max-w-5xl mx-auto w-full">
-      {/* Quiet Apple-Style Header & Controls */}
+      {/* High-contrast Apple-Style Header & Controls */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 px-1">
         <div className="space-y-0.5">
           <div className="flex items-center gap-2">
             <h2 className="text-sm font-semibold text-[var(--text-main)]">Learning Roadmap &amp; Dependencies</h2>
-            <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-[var(--bg-subtle)] text-[var(--text-muted)] font-medium border border-[var(--border)]/60">
+            <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-medium border border-emerald-500/20">
               18 Topics
             </span>
           </div>
           <p className="text-xs text-[var(--text-muted)]">
-            Hover any node to spotlight prerequisite flows; click to explore the study guide and problems.
+            Follow the arrows to master prerequisites. Hover any pattern to trace unlock paths; click to practice.
           </p>
         </div>
 
-        {/* Category Legend & Zoom Bar */}
+        {/* Minimalist Zoom Controls & Legend */}
         <div className="flex items-center gap-2.5 flex-wrap">
-          <div className="hidden md:flex items-center gap-2.5 text-[11px] text-[var(--text-muted)] py-1 px-2.5 rounded-xl bg-[var(--bg-card)] border border-[var(--border)]/50">
-            <span className="inline-flex items-center gap-1">
-              <span className="w-2 h-2 rounded-full bg-emerald-500 inline-block" />
-              <span>Fundamentals</span>
+          <div className="flex items-center gap-3 text-xs text-[var(--text-muted)] py-1 px-3 rounded-xl bg-[var(--bg-card)] border border-[var(--border)]">
+            <span className="inline-flex items-center gap-1.5">
+              <span className="w-2.5 h-1 rounded-sm bg-slate-400 inline-block opacity-70" />
+              <span>Path</span>
             </span>
-            <span className="inline-flex items-center gap-1">
-              <span className="w-2 h-2 rounded-full bg-sky-400 inline-block" />
-              <span>Data Structures</span>
-            </span>
-            <span className="inline-flex items-center gap-1">
-              <span className="w-2 h-2 rounded-full bg-purple-400 inline-block" />
-              <span>Trees &amp; Graphs</span>
-            </span>
-            <span className="inline-flex items-center gap-1">
-              <span className="w-2 h-2 rounded-full bg-amber-400 inline-block" />
-              <span>Advanced &amp; DP</span>
+            <span className="inline-flex items-center gap-1.5">
+              <span className="w-2.5 h-1.5 rounded-sm bg-emerald-500 inline-block" />
+              <span>Solved</span>
             </span>
           </div>
 
-          {/* Minimalist Zoom Controls */}
-          <div className="flex items-center rounded-lg border border-[var(--border)]/60 bg-[var(--bg-card)] p-0.5 text-xs text-[var(--text-muted)]">
+          <div className="flex items-center rounded-lg border border-[var(--border)] bg-[var(--bg-card)] p-0.5 text-xs text-[var(--text-muted)]">
             <button
               type="button"
               onClick={() => setZoomLevel((z) => Math.max(0.75, +(z - 0.15).toFixed(2)))}
@@ -246,7 +222,7 @@ export function PatternDependencyGraph({ patterns, solvedSet = new Set() }: Patt
               <button
                 type="button"
                 onClick={() => setZoomLevel(1)}
-                className="apple-press p-1.5 hover:text-[var(--text-main)] hover:bg-[var(--bg-subtle)] rounded transition-colors border-l border-[var(--border)]/40 ml-0.5"
+                className="apple-press p-1.5 hover:text-[var(--text-main)] hover:bg-[var(--bg-subtle)] rounded transition-colors border-l border-[var(--border)] ml-0.5"
                 title="Reset zoom"
                 aria-label="Reset zoom"
               >
@@ -258,8 +234,8 @@ export function PatternDependencyGraph({ patterns, solvedSet = new Set() }: Patt
       </div>
 
       {/* Main Graph Canvas Container */}
-      <div className="relative rounded-2xl border border-[var(--border)]/60 bg-[var(--bg-card)]/70 backdrop-blur-sm overflow-hidden shadow-xs">
-        <div className="overflow-x-auto [scrollbar-width:thin] py-6 px-4">
+      <div className="relative rounded-2xl border border-[var(--border)] bg-[#0d111a] dark:bg-[#0d111a] overflow-hidden shadow-sm">
+        <div className="overflow-x-auto [scrollbar-width:thin] py-8 px-4">
           <div
             className="min-w-[840px] sm:min-w-[980px] flex justify-center transition-transform duration-200 origin-top"
             style={{ transform: `scale(${zoomLevel})`, transformOrigin: 'top center' }}
@@ -270,24 +246,24 @@ export function PatternDependencyGraph({ patterns, solvedSet = new Set() }: Patt
               aria-label="Interactive pattern dependency tree"
             >
               <defs>
-                {/* Gentle canvas dot grid */}
-                <pattern id="calm-dot-grid" x="0" y="0" width="28" height="28" patternUnits="userSpaceOnUse">
-                  <circle cx="2" cy="2" r="0.9" fill="currentColor" opacity="0.07" />
+                {/* Clearly visible canvas dot grid */}
+                <pattern id="clear-dot-grid" x="0" y="0" width="28" height="28" patternUnits="userSpaceOnUse">
+                  <circle cx="2" cy="2" r="1.1" fill="#475569" opacity="0.35" />
                 </pattern>
 
                 {/* Soft diffuse ambient card shadow */}
                 <filter id="soft-card-shadow" x="-15%" y="-15%" width="130%" height="130%">
-                  <feDropShadow dx="0" dy="2" stdDeviation="4" floodOpacity="0.04" />
+                  <feDropShadow dx="0" dy="3" stdDeviation="4" floodColor="#000000" floodOpacity="0.4" />
                 </filter>
-                <filter id="glow-card-shadow" x="-20%" y="-20%" width="140%" height="140%">
-                  <feDropShadow dx="0" dy="0" stdDeviation="7" floodColor="#10b981" floodOpacity="0.25" />
+                <filter id="glow-card-shadow" x="-25%" y="-25%" width="150%" height="150%">
+                  <feDropShadow dx="0" dy="0" stdDeviation="8" floodColor="#10b981" floodOpacity="0.4" />
                 </filter>
               </defs>
 
               {/* Dot Grid Background */}
-              <rect width="100%" height="100%" fill="url(#calm-dot-grid)" />
+              <rect width="100%" height="100%" fill="url(#clear-dot-grid)" />
 
-              {/* Connecting Bezier Edges */}
+              {/* Connecting Bezier Edges - High visibility */}
               <g className="edges">
                 {EDGES.map((edge) => {
                   const source = nodeMap.get(edge.from);
@@ -320,10 +296,10 @@ export function PatternDependencyGraph({ patterns, solvedSet = new Set() }: Patt
                           ? '#10b981' // Green for prerequisites
                           : isOutgoing
                           ? '#38bdf8' // Blue for unlocks
-                          : 'currentColor'
+                          : '#64748b' // Clearly visible slate
                       }
-                      strokeWidth={isHighlighted ? 2.4 : 1.4}
-                      strokeOpacity={isHighlighted ? 0.95 : isAnyHovered ? 0.06 : 0.2}
+                      strokeWidth={isHighlighted ? 3 : 2}
+                      strokeOpacity={isHighlighted ? 1 : isAnyHovered ? 0.12 : 0.45}
                       strokeLinecap="round"
                       className="transition-all duration-200"
                     />
@@ -331,11 +307,10 @@ export function PatternDependencyGraph({ patterns, solvedSet = new Set() }: Patt
                 })}
               </g>
 
-              {/* Nodes */}
+              {/* Nodes - High Contrast NeetCode Cards */}
               <g className="nodes">
                 {NODES.map((node) => {
-                  const { total, solved, pct } = getNodeProgress(node);
-                  const theme = CATEGORY_THEME[node.category];
+                  const { pct } = getNodeProgress(node);
 
                   const isHovered = hoveredNodeId === node.id;
                   const isParent = parentIds.has(node.id);
@@ -344,6 +319,9 @@ export function PatternDependencyGraph({ patterns, solvedSet = new Set() }: Patt
 
                   const left = node.x - NODE_WIDTH / 2;
                   const top = node.y - NODE_HEIGHT / 2;
+
+                  const isLongTitle = node.title.length > 18;
+                  const fontSize = isLongTitle ? 11.5 : 12.5;
 
                   return (
                     <g
@@ -354,105 +332,57 @@ export function PatternDependencyGraph({ patterns, solvedSet = new Set() }: Patt
                       onMouseLeave={() => setHoveredNodeId(null)}
                       onClick={() => router.push(`/patterns/${node.slug}`)}
                     >
-                      {/* Node Card Outer Rectangle */}
+                      {/* Node Card Outer Rectangle - High contrast slate card */}
                       <rect
                         width={NODE_WIDTH}
                         height={NODE_HEIGHT}
-                        rx={12}
-                        fill="var(--bg-card)"
+                        rx={10}
+                        fill={isHovered ? '#262f48' : '#1e2438'}
                         stroke={
                           isHovered
-                            ? 'var(--text-main)'
+                            ? '#10b981'
                             : isParent
                             ? '#10b981'
                             : isChild
                             ? '#38bdf8'
-                            : 'var(--border)'
+                            : '#3e4768'
                         }
-                        strokeWidth={isFocused ? 1.6 : 1}
+                        strokeWidth={isFocused ? 2 : 1.5}
                         filter={isHovered ? 'url(#glow-card-shadow)' : 'url(#soft-card-shadow)'}
                         className="transition-all duration-150"
                       />
 
-                      {/* Subtle hover backdrop wash */}
-                      <rect
-                        width={NODE_WIDTH}
-                        height={NODE_HEIGHT}
-                        rx={12}
-                        fill={isHovered ? 'var(--bg-subtle)' : theme.accent}
-                        opacity={isHovered ? 0.5 : 0.08}
-                        className="transition-all duration-150 pointer-events-none"
-                      />
-
-                      {/* Category Color Accent Dot */}
-                      <circle
-                        cx={14}
-                        cy={15}
-                        r={3}
-                        fill={theme.dot}
-                        className="transition-all duration-150"
-                      />
-
-                      {/* Category Label (Small quiet uppercase) */}
-                      <text
-                        x={23}
-                        y={18}
-                        fontSize={8.5}
-                        fill="var(--text-muted)"
-                        opacity={0.8}
-                        className="font-mono tracking-wider select-none uppercase"
-                      >
-                        {theme.label}
-                      </text>
-
-                      {/* Question Count Pill on Top Right */}
-                      <text
-                        x={NODE_WIDTH - 14}
-                        y={18}
-                        textAnchor="end"
-                        fontSize={8.5}
-                        fill="var(--text-muted)"
-                        opacity={isHovered ? 0.9 : 0.6}
-                        fontFamily="monospace"
-                        className="select-none"
-                      >
-                        {total} Qs
-                      </text>
-
-                      {/* Main Node Title - Centered with safe margins */}
+                      {/* Main Node Title - Centered, high contrast crisp white */}
                       <text
                         x={NODE_WIDTH / 2}
-                        y={34}
+                        y={27}
                         textAnchor="middle"
-                        fontSize={10.8}
+                        fontSize={fontSize}
                         fontWeight="600"
-                        fill="var(--text-main)"
+                        fill="#ffffff"
                         className="font-sans select-none tracking-tight"
                       >
                         {node.title}
                       </text>
 
-                      {/* Progress Bar Background Track */}
+                      {/* Progress Bar Background Track - High contrast translucent white pill */}
                       <rect
                         x={(NODE_WIDTH - PROGRESS_BAR_WIDTH) / 2}
-                        y={43}
+                        y={37}
                         width={PROGRESS_BAR_WIDTH}
-                        height={3}
-                        rx={1.5}
-                        fill="var(--bg-subtle)"
-                        stroke="var(--border)"
-                        strokeWidth={0.5}
-                        opacity={0.8}
+                        height={4}
+                        rx={2}
+                        fill="rgba(255, 255, 255, 0.25)"
                       />
 
                       {/* Emerald Progress Fill */}
                       {pct > 0 && (
                         <rect
                           x={(NODE_WIDTH - PROGRESS_BAR_WIDTH) / 2}
-                          y={43}
-                          width={Math.max(4, (PROGRESS_BAR_WIDTH * pct) / 100)}
-                          height={3}
-                          rx={1.5}
+                          y={37}
+                          width={Math.max(6, (PROGRESS_BAR_WIDTH * pct) / 100)}
+                          height={4}
+                          rx={2}
                           fill="#10b981"
                         />
                       )}
@@ -465,40 +395,40 @@ export function PatternDependencyGraph({ patterns, solvedSet = new Set() }: Patt
         </div>
 
         {/* Dynamic Context Footer on Node Hover */}
-        <div className="px-4 py-2.5 bg-[var(--bg-subtle)]/40 border-t border-[var(--border)]/40 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs">
-          {hoveredNode ? (
-            <div className="flex items-center gap-2 min-w-0 flex-wrap">
-              <span className="font-semibold text-[var(--text-main)]">{hoveredNode.title}</span>
-              <span className="text-[11px] text-[var(--text-muted)]">
-                · {getNodeProgress(hoveredNode).total} problems
+        <div className="px-5 py-3 bg-[#131826] border-t border-[#262e45] flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 text-xs">
+          {hoveredNode && hoveredProgress ? (
+            <div className="flex items-center gap-2 min-w-0 flex-wrap text-[#e2e8f0]">
+              <span className="font-semibold text-white">{hoveredNode.title}</span>
+              <span className="text-[#94a3b8]">
+                · {hoveredProgress.total} curated problems ({hoveredProgress.solved} solved)
               </span>
               {parentIds.size > 0 && (
-                <span className="text-[11px] text-emerald-600 dark:text-emerald-400">
+                <span className="text-emerald-400 font-medium">
                   · Prerequisites: {Array.from(parentIds).map(id => nodeMap.get(id)?.title).join(', ')}
                 </span>
               )}
               {childIds.size > 0 && (
-                <span className="text-[11px] text-sky-600 dark:text-sky-400">
+                <span className="text-sky-400 font-medium">
                   · Unlocks: {Array.from(childIds).map(id => nodeMap.get(id)?.title).join(', ')}
                 </span>
               )}
-              <span className="text-[11px] text-[var(--text-muted)] opacity-80">
+              <span className="text-[#94a3b8]">
                 · Click to practice →
               </span>
             </div>
           ) : (
-            <div className="flex items-center gap-2 text-[11px] text-[var(--text-muted)]">
-              <Compass className="w-3.5 h-3.5 opacity-60 shrink-0" />
-              <span>Prerequisites flow top to bottom. Click any pattern card to view its templates &amp; curated problems.</span>
+            <div className="flex items-center gap-2 text-xs text-[#94a3b8]">
+              <Compass className="w-4 h-4 text-emerald-400 shrink-0" />
+              <span>Prerequisites flow from top to bottom. Click any pattern card to view its study guide and problems.</span>
             </div>
           )}
 
-          <div className="hidden lg:flex items-center gap-2 text-[11px] text-[var(--text-muted)] font-mono shrink-0">
-            <span className="flex items-center gap-1 text-emerald-600 dark:text-emerald-400">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" /> Prerequisite
+          <div className="hidden lg:flex items-center gap-3 text-[11px] text-[#94a3b8] font-mono shrink-0">
+            <span className="flex items-center gap-1.5 text-emerald-400">
+              <span className="w-2 h-2 rounded-full bg-emerald-500" /> Prerequisite
             </span>
-            <span className="flex items-center gap-1 text-sky-600 dark:text-sky-400">
-              <span className="w-1.5 h-1.5 rounded-full bg-sky-400" /> Unlocks
+            <span className="flex items-center gap-1.5 text-sky-400">
+              <span className="w-2 h-2 rounded-full bg-sky-400" /> Unlocks
             </span>
           </div>
         </div>
