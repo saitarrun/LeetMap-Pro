@@ -425,9 +425,7 @@ export function PatternDependencyGraph({
                   const isLongTitle = node.title.length > 18;
                   const fontSize = isLongTitle ? 11.5 : 12.5;
 
-                    const targetUrl = node.id === 'arrays-hashing'
-                      ? `/patterns?category=${encodeURIComponent(node.category)}`
-                      : `/patterns?category=${encodeURIComponent(node.category)}&pattern=${node.slug}`;
+                    const targetUrl = `/patterns/${node.slug}`;
 
                     return (
                     <a
@@ -440,7 +438,7 @@ export function PatternDependencyGraph({
                         }
                       }}
                       className="cursor-pointer group select-none outline-none"
-                      aria-label={`View ${node.title} in ${node.category} patterns`}
+                      aria-label={`Open ${node.title} pattern problems`}
                     >
                       <g
                         transform={`translate(${left}, ${top})`}
@@ -541,21 +539,17 @@ export function PatternDependencyGraph({
                 </span>
               )}
               <Link
-                href={
-                  hoveredNode.id === 'arrays-hashing'
-                    ? `/patterns?category=${encodeURIComponent(hoveredNode.category)}`
-                    : `/patterns?category=${encodeURIComponent(hoveredNode.category)}&pattern=${hoveredNode.slug}`
-                }
+                href={`/patterns/${hoveredNode.slug}`}
                 className="apple-press inline-flex items-center gap-1 font-semibold text-emerald-600 dark:text-emerald-400 hover:underline cursor-pointer ml-1 text-xs"
               >
-                <span>Go to {hoveredNode.title} in Patterns Hub</span>
+                <span>Practice {hoveredNode.title} Problems</span>
                 <ChevronRight className="w-3.5 h-3.5" />
               </Link>
             </div>
           ) : (
             <div className="flex items-center gap-2 text-xs text-[var(--graph-footer-muted)]">
               <Compass className="w-4 h-4 text-emerald-500 dark:text-emerald-400 shrink-0" />
-              <span>Prerequisites flow from top to bottom. Click any pattern card to filter by category in Patterns Hub.</span>
+              <span>Prerequisites flow from top to bottom. Click any pattern card to open its curated interview problems.</span>
             </div>
           )}
 
