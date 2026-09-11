@@ -1,9 +1,10 @@
 'use client';
 
 import React, { useEffect, useRef, useState } from 'react';
+import Link from 'next/link';
 import { createPortal } from 'react-dom';
 import { useClerk } from '@clerk/nextjs';
-import { Flame, LogOut, Settings, ShieldCheck, UserCheck, X } from 'lucide-react';
+import { Flame, LogOut, Settings, ShieldCheck, UserCheck, X, User, ExternalLink } from 'lucide-react';
 import { ActivityTracker } from '@/components/ActivityTracker';
 import { useAuth } from '@/context/AuthContext';
 import { getUserActivityStats } from '@/utils/progress';
@@ -101,9 +102,19 @@ export const UserProfileMenu: React.FC = () => {
             </div>
 
             <footer className="border-t border-[var(--border)] bg-[var(--bg-card)] px-6 py-3.5 sm:px-7">
-              <div className="mb-2.5 flex items-center justify-center gap-1.5 text-center text-xs text-[var(--text-muted)]">
-                <ShieldCheck className="h-3.5 w-3.5 shrink-0 text-emerald-500" />
-                <span><strong className="font-medium text-[var(--text-main)]">Private profile.</strong> Solves and streak are tied to your account.</span>
+              <div className="mb-2.5 flex items-center justify-between text-xs text-[var(--text-muted)]">
+                <div className="flex items-center gap-1.5">
+                  <ShieldCheck className="h-3.5 w-3.5 shrink-0 text-emerald-500" />
+                  <span>Streak &amp; progress synced to your account.</span>
+                </div>
+                <Link
+                  href={`/u/${user.username}`}
+                  onClick={() => setIsActivityOpen(false)}
+                  className="apple-press text-emerald-600 dark:text-emerald-400 hover:underline inline-flex items-center gap-1 font-medium cursor-pointer"
+                >
+                  <span>Public profile</span>
+                  <ExternalLink className="w-3 h-3" />
+                </Link>
               </div>
               <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
                 <button
@@ -167,6 +178,19 @@ export const UserProfileMenu: React.FC = () => {
           </div>
 
           <div className="h-px bg-[var(--border)]/40" />
+          <Link
+            href={`/u/${user.username}`}
+            onClick={() => setIsOpen(false)}
+            className="apple-press flex w-full items-center gap-2.5 px-3.5 py-2 text-left text-xs text-[var(--text-main)] hover:bg-[var(--bg-subtle)] transition-colors cursor-pointer"
+          >
+            <User className="h-3.5 w-3.5 shrink-0 text-emerald-500" />
+            <div className="flex-1 flex items-center justify-between">
+              <span>Public profile</span>
+              <span className="text-[10px] font-mono text-[var(--text-muted)] bg-[var(--bg-subtle)] px-1.5 py-0.5 rounded border border-[var(--border)]">
+                /u/{user.username}
+              </span>
+            </div>
+          </Link>
           <button
             onClick={() => {
               setIsOpen(false);
