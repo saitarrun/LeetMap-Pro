@@ -399,6 +399,47 @@ export const PatternsHubClient: React.FC<PatternsHubClientProps> = ({
             })
           )}
         </section>
+
+        {/* Generative AI & Educational Overview Section */}
+        <section className="pt-16 border-t border-[var(--border)] max-w-4xl mx-auto space-y-6">
+          <div className="text-center space-y-2">
+            <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-[var(--text-main)]">
+              Why Learn LeetCode Coding Patterns?
+            </h2>
+            <p className="text-xs sm:text-sm text-[var(--text-muted)] font-normal">
+              Rather than memorizing hundreds of disconnected questions, learning patterns enables you to solve any unseen interview problem.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2">
+            <div className="p-4 rounded-2xl border border-[var(--border)] bg-[var(--bg-card)] space-y-2">
+              <h3 className="text-xs font-semibold text-[var(--text-main)] uppercase tracking-wider">
+                Recognize Signals
+              </h3>
+              <p className="text-xs text-[var(--text-muted)] leading-relaxed font-normal">
+                Identify key problem clues: sorted array points to Two Pointers or Binary Search; contiguous subarray points to Sliding Window; shortest path points to BFS.
+              </p>
+            </div>
+
+            <div className="p-4 rounded-2xl border border-[var(--border)] bg-[var(--bg-card)] space-y-2">
+              <h3 className="text-xs font-semibold text-[var(--text-main)] uppercase tracking-wider">
+                Reusable Templates
+              </h3>
+              <p className="text-xs text-[var(--text-muted)] leading-relaxed font-normal">
+                Apply standard algorithmic blueprints that handle complex loop conditions, off-by-one errors, and pointer boundaries reliably.
+              </p>
+            </div>
+
+            <div className="p-4 rounded-2xl border border-[var(--border)] bg-[var(--bg-card)] space-y-2">
+              <h3 className="text-xs font-semibold text-[var(--text-main)] uppercase tracking-wider">
+                FAANG Relevance
+              </h3>
+              <p className="text-xs text-[var(--text-muted)] leading-relaxed font-normal">
+                Over 85% of interview questions asked at Google, Meta, Amazon, Apple, and Microsoft map directly to these 22 foundational patterns.
+              </p>
+            </div>
+          </div>
+        </section>
       </main>
     </div>
   );

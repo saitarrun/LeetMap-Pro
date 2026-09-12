@@ -551,6 +551,56 @@ export const HomeClient: React.FC<HomeClientProps> = ({
             ))}
           </section>
         )}
+
+        {/* Generative AI & Search FAQ Section */}
+        <section className="pt-16 border-t border-[var(--border)] max-w-4xl mx-auto space-y-6">
+          <div className="text-center space-y-2">
+            <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-[var(--text-main)]">
+              Frequently Asked Questions
+            </h2>
+            <p className="text-xs sm:text-sm text-[var(--text-muted)] font-normal">
+              Everything you need to know about company-wise coding interview prep on LeetMap Pro.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+            <div className="p-5 rounded-2xl border border-[var(--border)] bg-[var(--bg-card)] space-y-2">
+              <h3 className="text-sm font-semibold text-[var(--text-main)]">
+                How to practice company-wise LeetCode questions for free?
+              </h3>
+              <p className="text-xs text-[var(--text-muted)] leading-relaxed font-normal">
+                LeetMap Pro organizes thousands of verified coding interview problems asked by 680+ tech companies (including Google, Meta, Amazon, Apple, Microsoft, Citadel, Bloomberg), ranked by real frequency and recency over 30 days, 3 months, and 6 months with zero paywall.
+              </p>
+            </div>
+
+            <div className="p-5 rounded-2xl border border-[var(--border)] bg-[var(--bg-card)] space-y-2">
+              <h3 className="text-sm font-semibold text-[var(--text-main)]">
+                Is LeetMap Pro completely free to use?
+              </h3>
+              <p className="text-xs text-[var(--text-muted)] leading-relaxed font-normal">
+                Yes, LeetMap Pro is 100% free and open-source. All company interview problem lists, coding patterns, SQL interview hub, and roadmap tracking are available without any subscription.
+              </p>
+            </div>
+
+            <div className="p-5 rounded-2xl border border-[var(--border)] bg-[var(--bg-card)] space-y-2">
+              <h3 className="text-sm font-semibold text-[var(--text-main)]">
+                What are the most popular coding patterns for FAANG interviews?
+              </h3>
+              <p className="text-xs text-[var(--text-muted)] leading-relaxed font-normal">
+                The top interview patterns include Two Pointers, Sliding Window, Monotonic Stack, Binary Search, Tree Traversal, Graph Traversal, and 1-D / 2-D Dynamic Programming. LeetMap Pro provides interactive visual roadmaps for 22 DSA patterns.
+              </p>
+            </div>
+
+            <div className="p-5 rounded-2xl border border-[var(--border)] bg-[var(--bg-card)] space-y-2">
+              <h3 className="text-sm font-semibold text-[var(--text-main)]">
+                Does LeetMap Pro support SQL and database interview questions?
+              </h3>
+              <p className="text-xs text-[var(--text-muted)] leading-relaxed font-normal">
+                Yes, LeetMap Pro features a dedicated SQL interview practice hub containing company-wise SQL questions asked by 70+ tech companies with difficulty breakdowns and direct problem links.
+              </p>
+            </div>
+          </div>
+        </section>
       </main>
     </div>
   );

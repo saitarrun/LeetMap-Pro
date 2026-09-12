@@ -14,6 +14,11 @@ export default function robots(): MetadataRoute.Robots {
         disallow: ['/api/', '/__clerk/'],
       },
       {
+        userAgent: 'Google-Extended',
+        allow: '/',
+        disallow: ['/api/', '/__clerk/'],
+      },
+      {
         userAgent: 'Googlebot-Image',
         allow: '/',
       },
