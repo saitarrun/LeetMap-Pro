@@ -82,7 +82,7 @@ export async function GET(request: Request) {
 
     const atomXml = `<?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
-  <title>LeetMap Pro — Coding Interview Questions &amp; Roadmap</title>
+  <title>LeetMap Pro | Company Wise Leetcode and SQL Questions</title>
   <subtitle>Browse coding interview problems asked by 680+ tech companies, ranked by frequency and recency.</subtitle>
   <link href="${BASE_URL}/feed.xml?format=atom" rel="self" />
   <link href="${BASE_URL}" />
@@ -146,7 +146,7 @@ export async function GET(request: Request) {
   const rssXml = `<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>LeetMap Pro — Coding Interview Questions &amp; Roadmap</title>
+    <title>LeetMap Pro | Company Wise Leetcode and SQL Questions</title>
     <link>${BASE_URL}</link>
     <description>Browse coding interview problems asked by 680+ tech companies, ranked by frequency and recency. Free interactive strategy roadmap and curated SQL problems.</description>
     <language>en-US</language>

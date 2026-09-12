@@ -2,7 +2,7 @@ import type { MetadataRoute } from 'next';
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: 'LeetMap Pro — Company Wise LeetCode & SQL Questions',
+    name: 'LeetMap Pro | Company Wise Leetcode and SQL Questions',
     short_name: 'LeetMap Pro',
     description: 'Browse coding interview problems asked by 680+ tech companies, ranked by frequency and recency. Free interactive strategy roadmap and SQL interview hub.',
     start_url: '/',

@@ -19,14 +19,14 @@ export const metadata = {
     canonical: 'https://leetmap-pro.vercel.app/sql',
   },
   openGraph: {
-    title: 'Company-wise LeetCode SQL Questions — LeetMap Pro',
+    title: 'Company-wise LeetCode SQL Questions | LeetMap Pro',
     description: 'Browse coding interview SQL questions asked by 73+ tech firms, ranked by interview frequency and recency.',
     url: 'https://leetmap-pro.vercel.app/sql',
     type: 'website',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Company-wise LeetCode SQL Questions — LeetMap Pro',
+    title: 'Company-wise LeetCode SQL Questions | LeetMap Pro',
     description: 'Browse coding interview SQL questions asked by 73+ tech firms, ranked by interview frequency and recency.',
   },
 };

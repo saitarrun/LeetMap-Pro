@@ -14,13 +14,13 @@ export async function generateMetadata({ params }: PageProps) {
 
   if (!profileData) {
     return {
-      title: 'User Profile Not Found — LeetMap Pro',
+      title: 'User Profile Not Found | LeetMap Pro',
       description: 'The requested LeetMap Pro user profile could not be found.',
     };
   }
 
   const { user, stats } = profileData;
-  const title = `${user.name} (@${user.username}) — LeetMap Pro Profile`;
+  const title = `${user.name} (@${user.username}) | LeetMap Pro Profile`;
   const description = `${user.name} has solved ${stats.totalSolved} LeetCode problems with a ${stats.currentStreak}-day active study streak. View verified interview pattern readiness on LeetMap Pro.`;
 
   return {

@@ -237,8 +237,12 @@ export const HomeClient: React.FC<HomeClientProps> = ({
         {/* Minimal Hero */}
         <section className="text-center max-w-2xl mx-auto space-y-3 pt-2">
           <h1 className="text-3xl sm:text-5xl font-bold tracking-tight text-[var(--text-main)]">
-            Company-wise LeetCode DSA
+            LeetMap Pro
           </h1>
+
+          <p className="text-base sm:text-xl font-medium text-[var(--text-main)]/90 tracking-tight">
+            Company Wise Leetcode and SQL Questions
+          </p>
 
           <p className="text-sm sm:text-base text-[var(--text-muted)] leading-relaxed font-normal max-w-xl mx-auto">
             Interview problems top firms actually ask, ranked by frequency and recency.

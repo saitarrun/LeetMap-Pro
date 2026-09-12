@@ -15,7 +15,7 @@ export default function robots(): MetadataRoute.Robots {
       },
       {
         userAgent: 'Googlebot-Image',
-        allow: ['/', '/icon*.png', '/icon.svg', '/apple-touch-icon.png', '/data/'],
+        allow: ['/', '/favicon.ico', '/icon*.png', '/icon.svg', '/apple-touch-icon.png', '/data/'],
       },
       {
         userAgent: 'Bingbot',

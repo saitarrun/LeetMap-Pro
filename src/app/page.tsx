@@ -5,13 +5,13 @@ import { SyncStatus, DailyChallenge } from '@/types';
 import { HomeClient } from '@/components/HomeClient';
 
 export const metadata = {
-  title: 'LeetMap Pro — Company Wise LeetCode & SQL Questions',
+  title: 'LeetMap Pro | Company Wise Leetcode and SQL Questions',
   description: 'Browse coding interview problems asked by 680+ tech companies, ranked by frequency and recency. Free interactive strategy roadmap and SQL interview hub.',
   alternates: {
     canonical: 'https://leetmap-pro.vercel.app',
   },
   openGraph: {
-    title: 'LeetMap Pro — Company Wise LeetCode & SQL Questions',
+    title: 'LeetMap Pro | Company Wise Leetcode and SQL Questions',
     description: 'Browse coding interview problems asked by 680+ tech companies, ranked by frequency and recency. Free interactive strategy roadmap and SQL interview hub.',
     url: 'https://leetmap-pro.vercel.app',
     type: 'website',

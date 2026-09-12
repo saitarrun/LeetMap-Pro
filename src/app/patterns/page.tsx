@@ -20,14 +20,14 @@ export const metadata = {
     canonical: 'https://leetmap-pro.vercel.app/patterns',
   },
   openGraph: {
-    title: 'Browse by Pattern for LeetCode DSA — LeetMap Pro',
+    title: 'Browse by Pattern for LeetCode DSA | LeetMap Pro',
     description: 'Master 22 core LeetCode coding interview patterns asked by top tech firms.',
     url: 'https://leetmap-pro.vercel.app/patterns',
     type: 'website',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Browse by Pattern for LeetCode DSA — LeetMap Pro',
+    title: 'Browse by Pattern for LeetCode DSA | LeetMap Pro',
     description: 'Master 22 core LeetCode coding interview patterns asked by top tech firms.',
   },
 };

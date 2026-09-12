@@ -1,6 +1,6 @@
 import { ImageResponse } from 'next/og';
 
-export const alt = 'LeetMap Pro — Company Wise LeetCode & SQL Questions';
+export const alt = 'LeetMap Pro | Company Wise Leetcode and SQL Questions';
 export const size = {
   width: 1200,
   height: 630,

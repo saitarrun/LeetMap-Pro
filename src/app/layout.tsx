@@ -28,8 +28,8 @@ export const metadata: Metadata = {
     statusBarStyle: 'default',
   },
   title: {
-    default: 'LeetMap Pro — Company Wise LeetCode & SQL Questions',
-    template: '%s — LeetMap Pro',
+    default: 'LeetMap Pro | Company Wise Leetcode and SQL Questions',
+    template: '%s | LeetMap Pro',
   },
   description: 'Browse coding interview problems actually asked by 680+ tech companies, ranked by frequency and recency. Visual pattern roadmap, SQL interview questions, and real-time multi-source sync.',
   keywords: [
@@ -76,7 +76,7 @@ export const metadata: Metadata = {
     locale: 'en_US',
     url: 'https://leetmap-pro.vercel.app',
     siteName: 'LeetMap Pro',
-    title: 'LeetMap Pro — Company Wise LeetCode & SQL Questions',
+    title: 'LeetMap Pro | Company Wise Leetcode and SQL Questions',
     description: 'Browse coding interview problems actually asked by 680+ tech companies, ranked by frequency and recency. Free interactive strategy roadmap and curated SQL problems.',
     images: [
       {
@@ -91,7 +91,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     site: '@saitarrun',
     creator: '@saitarrun',
-    title: 'LeetMap Pro — Company Wise LeetCode & SQL Questions',
+    title: 'LeetMap Pro | Company Wise Leetcode and SQL Questions',
     description: 'Browse coding interview problems actually asked by 680+ tech companies, ranked by frequency and recency.',
     images: ['/icon-512.png'],
   },
@@ -224,7 +224,7 @@ export default async function RootLayout({
         <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png" />
         <link rel="shortcut icon" href="/favicon.ico" />
         <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
-        <link rel="alternate" type="application/rss+xml" title="LeetMap Pro — Latest Interview Questions & Daily Challenges" href="/feed.xml" />
+        <link rel="alternate" type="application/rss+xml" title="LeetMap Pro | Latest Interview Questions & Daily Challenges" href="/feed.xml" />
         <link rel="alternate" type="application/atom+xml" title="LeetMap Pro Atom Feed" href="/feed.xml?format=atom" />
         <link rel="author" href="/humans.txt" />
         <Script src="/theme-init.js" strategy="beforeInteractive" nonce={nonce} />
