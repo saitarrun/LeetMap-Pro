@@ -21,8 +21,8 @@ export async function generateMetadata({ params }: PageProps) {
 
   const company: CompanyDetail = JSON.parse(fs.readFileSync(filePath, 'utf8'));
   const sqlCount = company.sqlTotal || 0;
-  const title = `${company.name} LeetCode SQL Questions (${sqlCount} Asked)`;
-  const description = `Practice ${sqlCount} LeetCode SQL and database interview questions asked in ${company.name} data science and software engineering interviews, ranked by frequency and recency.`;
+  const title = `${company.name} SQL Interview Questions (${sqlCount} LeetCode Problems)`;
+  const description = `Practice ${sqlCount} company-wise ${company.name} LeetCode SQL and database interview questions asked in technical interviews, ranked by real frequency and recency free on LeetMap Pro.`;
 
   return {
     title,
@@ -31,21 +31,27 @@ export async function generateMetadata({ params }: PageProps) {
       `${company.name} SQL interview questions`,
       `${company.name} leetcode sql`,
       `${company.name} database questions`,
+      `company wise sql questions`,
+      `company wise leetcode sql ${company.name}`,
       'SQL interview practice',
       'leetcode sql frequency',
+      'SQL leetcode company wise',
+      `${company.name} data engineer sql`,
+      `${company.name} data analyst sql`,
     ],
     alternates: {
       canonical: `https://leetmap-pro.vercel.app/sql/${safeSlug}`,
     },
     openGraph: {
-      title,
+      title: `${company.name} SQL Interview Questions (${sqlCount} Problems) | LeetMap Pro`,
       description,
       url: `https://leetmap-pro.vercel.app/sql/${safeSlug}`,
       type: 'article',
+      siteName: 'LeetMap Pro',
     },
     twitter: {
       card: 'summary_large_image',
-      title,
+      title: `${company.name} SQL Interview Questions (${sqlCount} Problems) | LeetMap Pro`,
       description,
     },
   };
@@ -56,7 +62,7 @@ export async function generateStaticParams() {
     const sqlCompaniesPath = path.join(process.cwd(), 'public', 'data', 'sql-companies.json');
     if (fs.existsSync(sqlCompaniesPath)) {
       const companies = JSON.parse(fs.readFileSync(sqlCompaniesPath, 'utf8'));
-      return companies.slice(0, 30).map((c: { slug: string }) => ({
+      return companies.map((c: { slug: string }) => ({
         slug: c.slug,
       }));
     }

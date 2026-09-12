@@ -54,8 +54,12 @@ export async function generateMetadata({ params }: PageProps) {
       `${pattern.name} leetcode`,
       `${pattern.name} pattern interview questions`,
       `${pattern.name} coding problems`,
+      `${pattern.name} dsa pattern`,
+      `dsa questions ${pattern.name}`,
       `${pattern.category} interview prep`,
+      'company wise dsa',
       'leetcode patterns roadmap',
+      'dsa coding interview',
     ],
     alternates: {
       canonical: `https://leetmap-pro.vercel.app/patterns/${safeSlug}`,
