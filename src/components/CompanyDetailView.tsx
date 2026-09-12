@@ -261,8 +261,9 @@ export const CompanyDetailView: React.FC<CompanyDetailViewProps> = ({ company })
               <span className="text-xs font-semibold text-[var(--text-muted)]">{initials}</span>
             )}
           </div>
-          <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-[var(--text-main)]">
-            {company.name}
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-[var(--text-main)] flex items-baseline gap-2 flex-wrap justify-center">
+            <span>{company.name}</span>
+            <span className="font-normal text-lg sm:text-2xl text-[var(--text-muted)]">LeetCode Questions</span>
           </h1>
           <span className="inline-flex items-center gap-1 text-[11px] text-[var(--text-muted)] font-normal">
             <ShieldCheck className="w-3.5 h-3.5 text-emerald-500" />
@@ -288,7 +289,7 @@ export const CompanyDetailView: React.FC<CompanyDetailViewProps> = ({ company })
         </div>
 
         <p className="text-xs sm:text-sm text-[var(--text-muted)] max-w-xl mx-auto font-normal leading-relaxed">
-          Coding interview questions asked by {company.name}, ranked by frequency across 30-day, 3-month, and 6-month recency windows.
+          Company-wise coding interview questions asked by {company.name}, ranked by real frequency across 30-day, 3-month, and 6-month recency windows.
         </p>
 
         {/* Discreet Actions (Pin & Track Switcher) */}

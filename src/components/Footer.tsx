@@ -80,6 +80,16 @@ export const Footer: React.FC = () => {
                 </Link>
               </li>
               <li>
+                <Link href="/company/apple" className="hover:text-[var(--text-main)] transition-colors">
+                  Apple
+                </Link>
+              </li>
+              <li>
+                <Link href="/company/netflix" className="hover:text-[var(--text-main)] transition-colors">
+                  Netflix
+                </Link>
+              </li>
+              <li>
                 <Link href="/company/microsoft" className="hover:text-[var(--text-main)] transition-colors">
                   Microsoft
                 </Link>

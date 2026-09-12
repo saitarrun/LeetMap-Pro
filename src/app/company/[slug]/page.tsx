@@ -21,31 +21,39 @@ export async function generateMetadata({ params }: PageProps) {
   }
 
   const company: CompanyDetail = JSON.parse(fs.readFileSync(filePath, 'utf8'));
-  const title = `${company.name} LeetCode Questions (${company.total} Most Frequent)`;
-  const description = `Practice ${company.total} interview problems asked in ${company.name} technical interviews, ranked by real frequency: ${company.easy} Easy, ${company.medium} Medium, ${company.hard} Hard. Filter by 30 days, 3 months, 6 months recency.`;
+  const title = `${company.name} LeetCode Questions (${company.total} Problems by Frequency)`;
+  const description = `Practice ${company.total} company-wise ${company.name} LeetCode questions asked in real interviews. Filter by 30-day, 3-month, and 6-month recency across Easy (${company.easy}), Medium (${company.medium}), Hard (${company.hard}), and SQL questions free on LeetMap Pro.`;
 
   return {
     title,
     description,
     keywords: [
       `${company.name} LeetCode questions`,
-      `${company.name} interview questions`,
-      `${company.name} coding interview`,
+      `${company.name} LeetCode`,
+      `company wise leetcode questions`,
+      `company wise leetcode questions ${company.name}`,
+      `${company.name} coding interview questions`,
       `${company.name} most asked leetcode`,
       `${company.name} software engineer interview`,
+      `leetcode ${company.slug}`,
+      `${company.name} interview questions`,
+      `${company.name} technical interview`,
+      `${company.name} leetcode frequency`,
+      `leetcode company wise`,
     ],
     alternates: {
       canonical: `https://leetmap-pro.vercel.app/company/${safeSlug}`,
     },
     openGraph: {
-      title,
+      title: `${company.name} LeetCode Questions (${company.total} Problems) | LeetMap Pro`,
       description,
       url: `https://leetmap-pro.vercel.app/company/${safeSlug}`,
       type: 'article',
+      siteName: 'LeetMap Pro',
     },
     twitter: {
       card: 'summary_large_image',
-      title,
+      title: `${company.name} LeetCode Questions (${company.total} Problems) | LeetMap Pro`,
       description,
     },
   };
@@ -56,7 +64,7 @@ export async function generateStaticParams() {
     const companiesPath = path.join(process.cwd(), 'public', 'data', 'companies.json');
     if (fs.existsSync(companiesPath)) {
       const companies = JSON.parse(fs.readFileSync(companiesPath, 'utf8'));
-      return companies.slice(0, 50).map((c: { slug: string }) => ({
+      return companies.map((c: { slug: string }) => ({
         slug: c.slug,
       }));
     }
@@ -96,7 +104,7 @@ export default async function CompanyPage({ params }: PageProps) {
       {
         '@type': 'ListItem',
         position: 2,
-        name: 'Companies',
+        name: 'Company-Wise LeetCode Questions',
         item: 'https://leetmap-pro.vercel.app',
       },
       {
@@ -114,14 +122,14 @@ export default async function CompanyPage({ params }: PageProps) {
   const itemListJsonLd = {
     '@context': 'https://schema.org',
     '@type': 'ItemList',
-    name: `${company.name} Most Frequent Interview Questions`,
-    description: `Curated coding interview questions asked at ${company.name}`,
+    name: `${company.name} LeetCode Questions Ranked by Frequency`,
+    description: `Curated company-wise coding interview problems frequently asked by ${company.name}`,
     numberOfItems: topProblems.length,
     itemListElement: topProblems.map((p, idx) => ({
       '@type': 'ListItem',
       position: idx + 1,
-      name: p.title,
-      url: `https://leetcode.com/problems/${p.slug}`,
+      name: `${company.name}: #${p.id} ${p.title} (${p.difficulty})`,
+      url: `https://leetmap-pro.vercel.app/company/${safeSlug}`,
     })),
   };
 
@@ -135,6 +143,14 @@ export default async function CompanyPage({ params }: PageProps) {
         acceptedAnswer: {
           '@type': 'Answer',
           text: `The top problems asked in ${company.name} technical interviews include ${topThreeProblems}. In total, ${company.total} verified problems are tracked across Easy (${company.easy}), Medium (${company.medium}), and Hard (${company.hard}) tiers.`,
+        },
+      },
+      {
+        '@type': 'Question',
+        name: `Where can I find company-wise LeetCode questions for ${company.name}?`,
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: `LeetMap Pro provides a complete, verified list of ${company.total} company-wise ${company.name} coding interview questions filtered by 30-day, 3-month, and 6-month recency windows, 100% free with no paywall or subscription.`,
         },
       },
       {
@@ -172,7 +188,7 @@ export default async function CompanyPage({ params }: PageProps) {
             <div className="md:col-span-2 space-y-6">
               <div>
                 <h2 className="text-lg font-bold text-[var(--text-main)] tracking-tight">
-                  {company.name} Technical Interview Overview
+                  {company.name} Technical Interview Overview & Company-Wise Questions
                 </h2>
                 <p className="mt-2 text-sm text-[var(--text-muted)] leading-relaxed">
                   Software engineering and technical interviews at {company.name} emphasize real-world problem solving, algorithmic efficiency, and scalable data structure design. The curated dataset above contains {company.total} verified LeetCode problems, categorized by frequency and filtered across recent interview seasons.
@@ -190,6 +206,14 @@ export default async function CompanyPage({ params }: PageProps) {
                     </h4>
                     <p className="mt-1 text-xs text-[var(--text-muted)] leading-relaxed">
                       Leading questions include {topThreeProblems}. Reviewing questions with higher recency (within the last 30 to 90 days) yields the highest return on preparation time.
+                    </p>
+                  </div>
+                  <div className="p-4 rounded-xl border border-[var(--border)] bg-[var(--bg-subtle)]/40">
+                    <h4 className="text-xs font-semibold text-[var(--text-main)]">
+                      Where can I practice company-wise LeetCode questions for {company.name}?
+                    </h4>
+                    <p className="mt-1 text-xs text-[var(--text-muted)] leading-relaxed">
+                      You can practice all {company.total} {company.name} LeetCode questions right here on LeetMap Pro. Filter by 30-day, 3-month, and 6-month recency, track your progress with local checkpoints, and practice curated SQL problems completely free.
                     </p>
                   </div>
                   <div className="p-4 rounded-xl border border-[var(--border)] bg-[var(--bg-subtle)]/40">
@@ -214,14 +238,15 @@ export default async function CompanyPage({ params }: PageProps) {
                   { name: 'Google', slug: 'google' },
                   { name: 'Meta', slug: 'meta' },
                   { name: 'Amazon', slug: 'amazon' },
-                  { name: 'Microsoft', slug: 'microsoft' },
                   { name: 'Apple', slug: 'apple' },
+                  { name: 'Netflix', slug: 'netflix' },
+                  { name: 'Microsoft', slug: 'microsoft' },
                   { name: 'Bloomberg', slug: 'bloomberg' },
                   { name: 'Citadel', slug: 'citadel' },
                   { name: 'Uber', slug: 'uber' },
                 ]
                   .filter((item) => item.slug !== safeSlug)
-                  .slice(0, 6)
+                  .slice(0, 8)
                   .map((peer) => (
                     <Link
                       key={peer.slug}

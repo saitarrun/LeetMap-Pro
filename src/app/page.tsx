@@ -27,7 +27,7 @@ const homeFaqJsonLd = {
       name: 'How to practice company-wise LeetCode questions for free?',
       acceptedAnswer: {
         '@type': 'Answer',
-        text: 'LeetMap Pro organizes thousands of verified coding interview problems asked by 680+ tech companies (including Google, Meta, Amazon, Apple, Microsoft, Citadel, Bloomberg), ranked by real frequency and recency over 30 days, 3 months, and 6 months.',
+        text: 'LeetMap Pro organizes thousands of verified coding interview problems asked by 680+ tech companies (including Google, Meta, Amazon, Apple, Netflix, Microsoft, Citadel, Bloomberg), ranked by real frequency and recency over 30 days, 3 months, and 6 months.',
       },
     },
     {

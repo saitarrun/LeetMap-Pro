@@ -86,7 +86,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
             url: `${BASE_URL}/company/${comp.slug}`,
             lastModified: currentDate,
             changeFrequency: 'weekly',
-            priority: comp.total > 100 ? 0.85 : 0.75,
+            priority: comp.total > 20 ? 0.9 : 0.8,
           });
         }
       }
