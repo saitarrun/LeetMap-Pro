@@ -186,24 +186,24 @@ export async function GET(
 
     <line x1="228" y1="52" x2="228" y2="104" stroke="rgba(255, 255, 255, 0.06)" stroke-width="1"/>
 
-    <!-- Streak & Target Focus (Clean Vector Icons, Zero Overlap) -->
+    <!-- Streak & Target Focus (Clean Vector Icons, Zero Overlap, Optical Centering) -->
     <g transform="translate(248, 54)">
       <!-- Row 1: Streak with Vector Flame -->
-      <g transform="translate(0, 1)">
-        <path d="M6.5 0.5C6.5 0.5 4 2.8 4 5C4 6.5 5.1 7.7 6.5 7.7C7.9 7.7 9 6.5 9 5C9 3.6 8 2.2 8 2.2C8 2.2 7.4 3.4 6.8 3.4C6.2 3.4 5.9 2.6 6.5 0.5Z" fill="#f59e0b" transform="scale(1.2)"/>
-        <text x="18" y="11" font-size="12" font-weight="600" fill="#f8fafc">${streak} <tspan font-weight="400" fill="#94a3b8" font-size="11">Days Streak</tspan></text>
+      <g transform="translate(0, 4)">
+        <path d="M6 1C6 1 3.5 3.5 3.5 6C3.5 7.4 4.6 8.5 6 8.5C7.4 8.5 8.5 7.4 8.5 6C8.5 4.5 7.5 3 7.5 3C7.5 3 6.9 4.2 6.3 4.2C5.7 4.2 5.4 3.4 6 1Z" fill="#f59e0b" transform="scale(1.2)"/>
+        <text x="18" y="6" dominant-baseline="central" font-size="12" font-weight="600" fill="#f8fafc">${streak}&#160;<tspan font-weight="400" fill="#94a3b8" font-size="11">Days Streak</tspan></text>
       </g>
 
       <!-- Row 2: Target / Status with Vector Icon -->
-      <g transform="translate(0, 25)">
+      <g transform="translate(0, 26)">
         ${targetType === 'status' ? `
-        <path d="M7 1L3.5 6.5H6.5L6 11L9.5 5.5H6.5L7 1Z" fill="#10b981"/>
+        <path d="M6 0.5L3 5.5H5.5L5 9.5L8 4.5H5.5L6 0.5Z" fill="#10b981" transform="scale(1.2)"/>
         ` : `
-        <circle cx="6.5" cy="5.5" r="4.8" stroke="#38bdf8" stroke-width="1.1" fill="none" opacity="0.4"/>
-        <circle cx="6.5" cy="5.5" r="2.2" stroke="#38bdf8" stroke-width="1.1" fill="none"/>
-        <circle cx="6.5" cy="5.5" r="0.8" fill="#38bdf8"/>
+        <circle cx="6" cy="6" r="4.8" stroke="#38bdf8" stroke-width="1.1" fill="none" opacity="0.4"/>
+        <circle cx="6" cy="6" r="2.2" stroke="#38bdf8" stroke-width="1.1" fill="none"/>
+        <circle cx="6" cy="6" r="0.8" fill="#38bdf8"/>
         `}
-        <text x="18" y="9" font-size="11" font-weight="500" fill="#94a3b8">${targetLabel}:<tspan dx="4" font-weight="600" fill="${targetColor}">${escapeXml(targetValue)}</tspan></text>
+        <text x="18" y="6" dominant-baseline="central" font-size="11" font-weight="500" fill="#94a3b8">${targetLabel}:&#160;<tspan font-weight="600" fill="${targetColor}">${escapeXml(targetValue)}</tspan></text>
       </g>
     </g>
 
@@ -218,7 +218,7 @@ export async function GET(
   return new Response(svgContent, {
     headers: {
       'Content-Type': 'image/svg+xml; charset=utf-8',
-      'Cache-Control': 'public, max-age=1800, s-maxage=3600, stale-while-revalidate=86400',
+      'Cache-Control': 'public, max-age=0, s-maxage=60, stale-while-revalidate=300',
     },
   });
 }
