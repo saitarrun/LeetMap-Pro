@@ -19,6 +19,8 @@ import {
   ArrowLeft,
   X,
   ChevronRight,
+  ChevronDown,
+  Target,
   Info,
   Sparkles,
   Trophy,
@@ -1055,14 +1057,14 @@ export const PublicProfileView: React.FC<PublicProfileViewProps> = ({ initialDat
                 </button>
               </div>
 
-              {/* Target Company Selector (for Rich Editorial Card) */}
+              {/* Target Company Selector (Apple Design) */}
               {badgeStyle === 'card' && (
-                <div className="space-y-1.5 p-3 rounded-2xl bg-[var(--bg-subtle)]/40 border border-[var(--border)]">
+                <div className="space-y-2.5 p-3.5 rounded-2xl bg-[var(--bg-subtle)]/30 border border-[var(--border)]/70 backdrop-blur-md shadow-2xs">
                   <div className="flex items-center justify-between">
-                    <label className="text-[11px] font-semibold text-[var(--text-muted)] uppercase tracking-wider flex items-center gap-1.5">
-                      <span>🎯</span>
-                      <span>Target Company Focus</span>
-                    </label>
+                    <div className="flex items-center gap-1.5 text-[11px] font-medium text-[var(--text-muted)] tracking-wider uppercase">
+                      <Target className="w-3.5 h-3.5 text-sky-500" />
+                      <span>Target Focus</span>
+                    </div>
                     {badgeTarget !== 'auto' && (
                       <button
                         type="button"
@@ -1072,47 +1074,85 @@ export const PublicProfileView: React.FC<PublicProfileViewProps> = ({ initialDat
                             localStorage.setItem('leetmap_badge_target', 'auto');
                           } catch {}
                         }}
-                        className="apple-press text-[11px] text-emerald-600 dark:text-emerald-400 font-semibold hover:underline cursor-pointer"
+                        className="apple-press text-[11px] font-medium text-[var(--text-muted)] hover:text-[var(--text-main)] transition-colors cursor-pointer"
                       >
                         Reset to Auto
                       </button>
                     )}
                   </div>
-                  <select
-                    value={badgeTarget}
-                    onChange={(e) => {
-                      const val = e.target.value;
-                      setBadgeTarget(val);
-                      try {
-                        localStorage.setItem('leetmap_badge_target', val);
-                      } catch {}
-                    }}
-                    className="w-full bg-[var(--bg-card)] border border-[var(--border)] rounded-xl px-3 py-2 text-xs text-[var(--text-main)] font-medium focus:outline-none focus:border-emerald-500 cursor-pointer"
-                  >
-                    <option value="auto">⚡ Auto (Most Practiced / General FAANG)</option>
-                    <option value="none">🚫 None (Remove Target from Badge)</option>
-                    <optgroup label="Select Target Company">
-                      <option value="google">Google</option>
-                      <option value="meta">Meta</option>
-                      <option value="amazon">Amazon</option>
-                      <option value="apple">Apple</option>
-                      <option value="microsoft">Microsoft</option>
-                      <option value="netflix">Netflix</option>
-                      <option value="uber">Uber</option>
-                      <option value="bloomberg">Bloomberg</option>
-                      <option value="citadel">Citadel</option>
-                      <option value="stripe">Stripe</option>
-                      <option value="tiktok">TikTok</option>
-                      <option value="nvidia">NVIDIA</option>
-                      <option value="goldman-sachs">Goldman Sachs</option>
-                      <option value="salesforce">Salesforce</option>
-                      <option value="linkedin">LinkedIn</option>
-                      <option value="palantir">Palantir</option>
-                      <option value="databricks">Databricks</option>
-                      <option value="snowflake">Snowflake</option>
-                      <option value="doordash">DoorDash</option>
-                    </optgroup>
-                  </select>
+
+                  <div className="relative flex items-center rounded-xl border border-[var(--border)] bg-[var(--bg-card)] shadow-xs transition-colors hover:border-[var(--text-muted)]/40 focus-within:ring-1 focus-within:ring-[var(--border)]">
+                    <Building2 className="w-3.5 h-3.5 text-[var(--text-muted)] absolute left-3 pointer-events-none opacity-60" />
+                    <select
+                      value={badgeTarget}
+                      onChange={(e) => {
+                        const val = e.target.value;
+                        setBadgeTarget(val);
+                        try {
+                          localStorage.setItem('leetmap_badge_target', val);
+                        } catch {}
+                      }}
+                      className="w-full appearance-none pl-8.5 pr-8 py-2 text-xs font-medium text-[var(--text-main)] bg-transparent focus:outline-none cursor-pointer"
+                    >
+                      <option value="auto">Auto (Most Practiced / General)</option>
+                      <option value="none">None (Remove Target from Badge)</option>
+                      <optgroup label="Select Target Company">
+                        <option value="google">Google</option>
+                        <option value="meta">Meta</option>
+                        <option value="amazon">Amazon</option>
+                        <option value="apple">Apple</option>
+                        <option value="microsoft">Microsoft</option>
+                        <option value="netflix">Netflix</option>
+                        <option value="uber">Uber</option>
+                        <option value="bloomberg">Bloomberg</option>
+                        <option value="citadel">Citadel</option>
+                        <option value="stripe">Stripe</option>
+                        <option value="tiktok">TikTok</option>
+                        <option value="nvidia">NVIDIA</option>
+                        <option value="goldman-sachs">Goldman Sachs</option>
+                        <option value="salesforce">Salesforce</option>
+                        <option value="linkedin">LinkedIn</option>
+                        <option value="palantir">Palantir</option>
+                        <option value="databricks">Databricks</option>
+                        <option value="snowflake">Snowflake</option>
+                        <option value="doordash">DoorDash</option>
+                      </optgroup>
+                    </select>
+                    <ChevronDown className="w-3.5 h-3.5 text-[var(--text-muted)] absolute right-3 pointer-events-none opacity-60" />
+                  </div>
+
+                  {/* Quick-select Apple Segmented Chips */}
+                  <div className="flex items-center gap-1.5 flex-wrap pt-0.5">
+                    {[
+                      { id: 'auto', label: 'Auto' },
+                      { id: 'none', label: 'None' },
+                      { id: 'google', label: 'Google' },
+                      { id: 'meta', label: 'Meta' },
+                      { id: 'amazon', label: 'Amazon' },
+                      { id: 'apple', label: 'Apple' },
+                    ].map((chip) => {
+                      const isActive = badgeTarget === chip.id;
+                      return (
+                        <button
+                          key={chip.id}
+                          type="button"
+                          onClick={() => {
+                            setBadgeTarget(chip.id);
+                            try {
+                              localStorage.setItem('leetmap_badge_target', chip.id);
+                            } catch {}
+                          }}
+                          className={`apple-press text-[11px] px-2.5 py-1 rounded-lg transition-all cursor-pointer ${
+                            isActive
+                              ? 'bg-[var(--text-main)] text-[var(--bg-main)] font-semibold shadow-2xs'
+                              : 'bg-[var(--bg-subtle)]/70 text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--bg-hover)] border border-[var(--border)]/40 font-normal'
+                          }`}
+                        >
+                          {chip.label}
+                        </button>
+                      );
+                    })}
+                  </div>
                 </div>
               )}
 
