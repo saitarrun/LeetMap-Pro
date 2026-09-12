@@ -198,25 +198,30 @@ export const PublicProfileView: React.FC<PublicProfileViewProps> = ({ initialDat
   const [selectedYear, setSelectedYear] = useState<number>(currentYear);
   const [activeHoverDay, setActiveHoverDay] = useState<{ date: string; count: number } | null>(null);
   const [showLevelModal, setShowLevelModal] = useState<boolean>(false);
+  const [showBadgeModal, setShowBadgeModal] = useState<boolean>(false);
+  const [badgeStyle, setBadgeStyle] = useState<'card' | 'compact'>('card');
   const [mounted, setMounted] = useState<boolean>(false);
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
-  // Close level modal on Escape
+  // Close modals on Escape
   useEffect(() => {
-    if (!showLevelModal) return;
+    if (!showLevelModal && !showBadgeModal) return;
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') setShowLevelModal(false);
+      if (e.key === 'Escape') {
+        setShowLevelModal(false);
+        setShowBadgeModal(false);
+      }
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [showLevelModal]);
+  }, [showLevelModal, showBadgeModal]);
 
   // Lock body scroll when modal is active
   useEffect(() => {
-    if (showLevelModal) {
+    if (showLevelModal || showBadgeModal) {
       document.body.style.overflow = 'hidden';
     } else {
       document.body.style.overflow = '';
@@ -224,11 +229,19 @@ export const PublicProfileView: React.FC<PublicProfileViewProps> = ({ initialDat
     return () => {
       document.body.style.overflow = '';
     };
-  }, [showLevelModal]);
+  }, [showLevelModal, showBadgeModal]);
 
   const profileUrl = typeof window !== 'undefined'
     ? `${window.location.origin}/u/${initialData.user.username}`
     : `https://leetmap-pro.vercel.app/u/${initialData.user.username}`;
+
+  const badgeBaseUrl = typeof window !== 'undefined'
+    ? `${window.location.origin}/api/badge/${initialData.user.username}`
+    : `https://leetmap-pro.vercel.app/api/badge/${initialData.user.username}`;
+
+  const currentBadgeSrc = badgeStyle === 'compact' ? `${badgeBaseUrl}?style=compact` : badgeBaseUrl;
+  const badgeMarkdown = `[![LeetMap Pro Stats](${currentBadgeSrc})](${profileUrl})`;
+  const badgeHtml = `<a href="${profileUrl}"><img src="${currentBadgeSrc}" alt="LeetMap Pro Stats for ${initialData.user.name}" /></a>`;
 
   const handleCopyLink = async () => {
     try {
@@ -241,15 +254,25 @@ export const PublicProfileView: React.FC<PublicProfileViewProps> = ({ initialDat
     }
   };
 
-  const handleCopyBadge = async () => {
-    const badgeMarkdown = `[![LeetMap Streak](https://img.shields.io/badge/LeetMap_Streak-${stats.currentStreak}_Days-10b981?style=flat&logo=leetcode&logoColor=white)](${profileUrl})`;
+  const handleCopyMarkdown = async () => {
     try {
       await navigator.clipboard.writeText(badgeMarkdown);
-      toast.success('GitHub README badge copied!', {
-        description: 'Paste it into your personal README.md',
+      toast.success('GitHub README Markdown copied!', {
+        description: 'Paste it directly into your personal README.md',
       });
     } catch {
-      toast.error('Failed to copy badge');
+      toast.error('Failed to copy Markdown badge');
+    }
+  };
+
+  const handleCopyHtml = async () => {
+    try {
+      await navigator.clipboard.writeText(badgeHtml);
+      toast.success('HTML Badge snippet copied!', {
+        description: 'Embed into websites or blogs',
+      });
+    } catch {
+      toast.error('Failed to copy HTML badge');
     }
   };
 
@@ -438,11 +461,11 @@ export const PublicProfileView: React.FC<PublicProfileViewProps> = ({ initialDat
             </button>
 
             <button
-              onClick={handleCopyBadge}
+              onClick={() => setShowBadgeModal(true)}
               className="apple-press inline-flex items-center justify-center gap-1.5 h-7.5 px-3 rounded-full text-[11px] font-medium border border-[var(--border)] bg-[var(--bg-subtle)] text-[var(--text-main)] hover:bg-[var(--bg-hover)] transition-colors cursor-pointer"
-              title="Copy Markdown badge for GitHub profile README"
+              title="Copy dynamic badge for GitHub profile README"
             >
-              <Code2 className="w-3 h-3 text-[var(--text-muted)]" />
+              <Code2 className="w-3 h-3 text-emerald-500" />
               <span>README Badge</span>
             </button>
           </div>
@@ -944,6 +967,158 @@ export const PublicProfileView: React.FC<PublicProfileViewProps> = ({ initialDat
                 className="apple-press w-full sm:w-auto px-6 py-2.5 rounded-xl text-xs font-semibold bg-[var(--text-main)] text-[var(--bg-page)] hover:opacity-90 transition-opacity cursor-pointer"
               >
                 Close &amp; Continue
+              </button>
+            </div>
+          </div>
+        </div>,
+        document.body
+      )}
+
+      {/* GitHub README Badge Modal */}
+      {mounted && showBadgeModal && createPortal(
+        <div
+          role="dialog"
+          aria-modal="true"
+          onClick={() => setShowBadgeModal(false)}
+          className="fixed inset-0 z-[200] bg-black/75 backdrop-blur-md flex items-center justify-center p-4 sm:p-6 overflow-y-auto animate-in fade-in duration-200"
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="relative w-full max-w-xl bg-[var(--bg-card)] border border-[var(--border)] rounded-3xl shadow-2xl overflow-hidden my-auto max-h-[90vh] flex flex-col"
+          >
+            {/* Modal Header */}
+            <div className="p-6 pb-4 border-b border-[var(--border)]/60 bg-[var(--bg-card)] shrink-0 flex items-start justify-between gap-4">
+              <div className="space-y-1">
+                <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+                  <Code2 className="w-3.5 h-3.5" />
+                  <span>GitHub Profile Integration</span>
+                </div>
+                <h3 className="text-xl font-bold tracking-tight text-[var(--text-main)]">
+                  Live README Stats Badge
+                </h3>
+                <p className="text-xs text-[var(--text-muted)]">
+                  Embed real-time LeetCode progress, streak, and target company prep into your GitHub profile.
+                </p>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => setShowBadgeModal(false)}
+                className="apple-press p-2 rounded-xl text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--bg-subtle)] transition-colors cursor-pointer shrink-0"
+                aria-label="Close modal"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Modal Body */}
+            <div className="p-6 overflow-y-auto space-y-6 text-xs">
+              {/* Style Selector */}
+              <div className="flex items-center justify-between gap-2 p-1 rounded-xl bg-[var(--bg-subtle)] border border-[var(--border)]">
+                <button
+                  type="button"
+                  onClick={() => setBadgeStyle('card')}
+                  className={`apple-press flex-1 py-1.5 px-3 rounded-lg font-medium text-center transition-colors cursor-pointer ${
+                    badgeStyle === 'card'
+                      ? 'bg-[var(--bg-card)] text-[var(--text-main)] shadow-xs'
+                      : 'text-[var(--text-muted)] hover:text-[var(--text-main)]'
+                  }`}
+                >
+                  Rich Editorial Card
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setBadgeStyle('compact')}
+                  className={`apple-press flex-1 py-1.5 px-3 rounded-lg font-medium text-center transition-colors cursor-pointer ${
+                    badgeStyle === 'compact'
+                      ? 'bg-[var(--bg-card)] text-[var(--text-main)] shadow-xs'
+                      : 'text-[var(--text-muted)] hover:text-[var(--text-main)]'
+                  }`}
+                >
+                  Compact Shield Pill
+                </button>
+              </div>
+
+              {/* Live Preview Box */}
+              <div className="space-y-2">
+                <span className="text-[11px] font-semibold text-[var(--text-muted)] uppercase tracking-wider">
+                  Live Preview (Auto-Updates)
+                </span>
+                <div className="p-4 rounded-2xl bg-[#090a0f] border border-[var(--border)] flex items-center justify-center overflow-x-auto shadow-inner min-h-[140px]">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={currentBadgeSrc}
+                    alt={`LeetMap Pro stats badge for ${initialData.user.name}`}
+                    className="max-w-full h-auto"
+                  />
+                </div>
+              </div>
+
+              {/* Markdown Code Block */}
+              <div className="space-y-1.5">
+                <div className="flex items-center justify-between">
+                  <span className="text-[11px] font-semibold text-[var(--text-muted)] uppercase tracking-wider">
+                    Markdown (for GitHub README.md)
+                  </span>
+                  <button
+                    type="button"
+                    onClick={handleCopyMarkdown}
+                    className="apple-press inline-flex items-center gap-1 text-[11px] text-emerald-500 font-semibold hover:underline cursor-pointer"
+                  >
+                    <Copy className="w-3 h-3" />
+                    <span>Copy Markdown</span>
+                  </button>
+                </div>
+                <div className="p-3 rounded-xl bg-[var(--bg-subtle)] border border-[var(--border)] font-mono text-[11px] text-[var(--text-main)] break-all select-all">
+                  {badgeMarkdown}
+                </div>
+              </div>
+
+              {/* HTML Code Block */}
+              <div className="space-y-1.5">
+                <div className="flex items-center justify-between">
+                  <span className="text-[11px] font-semibold text-[var(--text-muted)] uppercase tracking-wider">
+                    HTML Snippet (for Blogs &amp; Portfolios)
+                  </span>
+                  <button
+                    type="button"
+                    onClick={handleCopyHtml}
+                    className="apple-press inline-flex items-center gap-1 text-[11px] text-emerald-500 font-semibold hover:underline cursor-pointer"
+                  >
+                    <Copy className="w-3 h-3" />
+                    <span>Copy HTML</span>
+                  </button>
+                </div>
+                <div className="p-3 rounded-xl bg-[var(--bg-subtle)] border border-[var(--border)] font-mono text-[11px] text-[var(--text-main)] break-all select-all">
+                  {badgeHtml}
+                </div>
+              </div>
+
+              {/* Information Note */}
+              <div className="p-3.5 rounded-xl bg-emerald-500/5 border border-emerald-500/20 text-emerald-700 dark:text-emerald-300 text-[11px] leading-relaxed">
+                <p className="font-semibold mb-0.5">💡 SEO &amp; Recruiter Impact</p>
+                <p>
+                  Adding this badge to your GitHub profile links your LeetMap Pro roadmap so recruiters and engineers can verify your solved problems and topic readiness. It automatically updates whenever you log new solves.
+                </p>
+              </div>
+            </div>
+
+            {/* Modal Footer */}
+            <div className="p-4 sm:p-5 border-t border-[var(--border)]/60 bg-[var(--bg-card)] shrink-0 flex items-center justify-end gap-2">
+              <button
+                type="button"
+                onClick={handleCopyMarkdown}
+                className="apple-press px-4 py-2 rounded-xl text-xs font-semibold bg-emerald-600 hover:bg-emerald-500 text-white transition-colors cursor-pointer flex items-center gap-1.5"
+              >
+                <Copy className="w-3.5 h-3.5" />
+                <span>Copy Markdown Badge</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setShowBadgeModal(false)}
+                className="apple-press px-4 py-2 rounded-xl text-xs font-semibold bg-[var(--bg-subtle)] text-[var(--text-main)] hover:bg-[var(--bg-hover)] transition-colors cursor-pointer"
+              >
+                Close
               </button>
             </div>
           </div>

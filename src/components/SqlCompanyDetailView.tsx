@@ -10,6 +10,7 @@ import {
   CheckCircle2,
   ExternalLink,
   Download,
+  FileText,
   ShieldCheck,
   Code2,
   X,
@@ -172,6 +173,29 @@ export const SqlCompanyDetailView: React.FC<SqlCompanyDetailViewProps> = ({ comp
     toast.success('Downloaded SQL CSV', {
       description: `Exported ${sortedProblems.length} SQL questions for ${company.name}`,
     });
+  };
+
+  const handleExportMarkdown = async () => {
+    const pageUrl = `https://leetmap-pro.vercel.app/sql/${company.slug}`;
+    let md = `# ${company.name} SQL Interview Questions (${currentWindow.name})\n\n`;
+    md += `> Curated from [LeetMap Pro](${pageUrl}) — Ranked by real database interview frequency.\n\n`;
+    md += `| Solved | Query Problem | Difficulty | Frequency |\n`;
+    md += `| :---: | :--- | :---: | :---: |\n`;
+
+    sortedProblems.forEach((p) => {
+      const isSolved = solvedSet.has(p.slug) ? '[x]' : '[ ]';
+      const url = getLeetCodeProblemUrl(p.slug);
+      md += `| ${isSolved} | [${p.title}](${url}) | ${p.difficulty} | ${p.frequency.toFixed(1)}% |\n`;
+    });
+
+    try {
+      await navigator.clipboard.writeText(md);
+      toast.success('Copied Notion / Markdown Checklist!', {
+        description: `Ready to paste directly into Notion, Obsidian, or GitHub (${sortedProblems.length} SQL questions).`,
+      });
+    } catch {
+      toast.error('Failed to copy Markdown checklist');
+    }
   };
 
   // Calculate total distinct SQL solved for this company
@@ -422,6 +446,15 @@ export const SqlCompanyDetailView: React.FC<SqlCompanyDetailViewProps> = ({ comp
 
               <button
                 type="button"
+                onClick={handleExportMarkdown}
+                className="apple-press flex items-center justify-center p-2 rounded-xl border border-[var(--border)] bg-[var(--bg-subtle)] text-xs text-[var(--text-muted)] hover:text-[var(--text-main)] transition-colors cursor-pointer shrink-0"
+                title="Copy Notion / Markdown Checklist"
+              >
+                <FileText className="w-3.5 h-3.5" />
+              </button>
+
+              <button
+                type="button"
                 onClick={handleExportCSV}
                 className="apple-press flex items-center justify-center p-2 rounded-xl border border-[var(--border)] bg-[var(--bg-subtle)] text-xs text-[var(--text-muted)] hover:text-[var(--text-main)] transition-colors cursor-pointer shrink-0"
                 title="Export to CSV"
@@ -477,6 +510,13 @@ export const SqlCompanyDetailView: React.FC<SqlCompanyDetailViewProps> = ({ comp
               >
                 <CheckCircle2 className="w-3.5 h-3.5" />
                 <span>Solved</span>
+              </button>
+              <button
+                onClick={handleExportMarkdown}
+                className="apple-press p-1.5 rounded-md text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--bg-subtle)] transition-colors cursor-pointer"
+                title="Copy Notion / Markdown Checklist"
+              >
+                <FileText className="w-3.5 h-3.5" />
               </button>
               <button
                 onClick={handleExportCSV}

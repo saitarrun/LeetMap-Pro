@@ -12,6 +12,7 @@ import {
   CheckCircle2,
   ExternalLink,
   Download,
+  FileText,
   ShieldCheck,
   Database,
   X,
@@ -188,6 +189,30 @@ export const CompanyDetailView: React.FC<CompanyDetailViewProps> = ({ company })
     toast.success('Downloaded CSV', {
       description: `Exported ${sortedProblems.length} questions for ${company.name}`,
     });
+  };
+
+  const handleExportMarkdown = async () => {
+    const pageUrl = `https://leetmap-pro.vercel.app/company/${company.slug}`;
+    let md = `# ${company.name} LeetCode Questions (${currentWindow.name})\n\n`;
+    md += `> Curated from [LeetMap Pro](${pageUrl}) — Ranked by real interview frequency and recency.\n\n`;
+    md += `| Solved | Problem | Difficulty | Frequency | Topics |\n`;
+    md += `| :---: | :--- | :---: | :---: | :--- |\n`;
+
+    sortedProblems.forEach((p) => {
+      const isSolved = solvedSet.has(p.slug) ? '[x]' : '[ ]';
+      const url = getLeetCodeProblemUrl(p.slug);
+      const topicsStr = p.topics.slice(0, 3).join(', ') || '-';
+      md += `| ${isSolved} | [${p.title}](${url}) | ${p.difficulty} | ${p.frequency.toFixed(1)}% | ${topicsStr} |\n`;
+    });
+
+    try {
+      await navigator.clipboard.writeText(md);
+      toast.success('Copied Notion / Markdown Checklist!', {
+        description: `Ready to paste directly into Notion, Obsidian, or GitHub (${sortedProblems.length} questions).`,
+      });
+    } catch {
+      toast.error('Failed to copy Markdown checklist');
+    }
   };
 
   const companySolvedCount = useMemo(() => {
@@ -463,6 +488,15 @@ export const CompanyDetailView: React.FC<CompanyDetailViewProps> = ({ company })
 
             <button
               type="button"
+              onClick={handleExportMarkdown}
+              className="apple-press p-2 rounded-lg border border-[var(--border)] bg-[var(--bg-subtle)] text-[var(--text-muted)] hover:text-[var(--text-main)] transition-colors cursor-pointer"
+              title="Copy Notion / Markdown Checklist"
+            >
+              <FileText className="w-3.5 h-3.5" />
+            </button>
+
+            <button
+              type="button"
               onClick={handleExportCSV}
               className="apple-press p-2 rounded-lg border border-[var(--border)] bg-[var(--bg-subtle)] text-[var(--text-muted)] hover:text-[var(--text-main)] transition-colors cursor-pointer"
               title="Export to CSV"
@@ -532,6 +566,13 @@ export const CompanyDetailView: React.FC<CompanyDetailViewProps> = ({ company })
               >
                 <CheckCircle2 className="w-3.5 h-3.5" />
                 <span>Solved</span>
+              </button>
+              <button
+                onClick={handleExportMarkdown}
+                className="apple-press p-1.5 rounded-md text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--bg-subtle)] transition-colors cursor-pointer"
+                title="Copy Notion / Markdown Checklist"
+              >
+                <FileText className="w-3.5 h-3.5" />
               </button>
               <button
                 onClick={handleExportCSV}
