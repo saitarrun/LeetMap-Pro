@@ -65,7 +65,6 @@ export const CompanyCard: React.FC<CompanyCardProps> = ({
               alt=""
               width={22}
               height={22}
-              unoptimized
               onError={() => setImgFailed(true)}
               className="w-5 h-5 object-contain"
             />

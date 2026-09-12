@@ -35,6 +35,7 @@ export default clerkMiddleware(
         'base-uri': ["'self'"],
         'frame-ancestors': ["'none'"],
         'object-src': ["'none'"],
+        'img-src': ["'self'", "https://img.clerk.com", "https://www.google.com", "data:"],
       },
     },
   }
