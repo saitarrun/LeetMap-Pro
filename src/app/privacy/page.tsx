@@ -3,7 +3,18 @@ import path from 'path';
 import fs from 'fs';
 import { SyncStatus } from '@/types';
 import { Header } from '@/components/Header';
-import { ShieldCheck, Lock, EyeOff, Server, Cookie, UserX } from 'lucide-react';
+import {
+  ShieldCheck,
+  Lock,
+  EyeOff,
+  Server,
+  Cookie,
+  UserX,
+  Share2,
+  Globe2,
+  Database,
+  CheckCircle2,
+} from 'lucide-react';
 
 export const metadata = {
   title: 'Privacy Policy',
@@ -24,7 +35,7 @@ export default function PrivacyPage() {
     }
   }
 
-  const lastUpdated = 'September 11, 2025';
+  const lastUpdated = 'September 12, 2026';
 
   return (
     <div className="min-h-screen flex flex-col bg-[var(--bg-main)] text-[var(--text-main)]">
@@ -34,7 +45,7 @@ export default function PrivacyPage() {
         <div className="space-y-4 mb-12">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 text-xs font-semibold">
             <ShieldCheck className="w-3.5 h-3.5" />
-            <span>Privacy-First Architecture</span>
+            <span>Privacy-First Architecture & GDPR/CCPA Compliance</span>
           </div>
           <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-[var(--text-main)]">
             Privacy Policy
@@ -46,54 +57,60 @@ export default function PrivacyPage() {
 
         <div className="prose prose-neutral dark:prose-invert max-w-none space-y-8 text-sm leading-relaxed text-[var(--text-muted)]">
           {/* Section 1 */}
-          <section className="space-y-3 p-6 rounded-2xl bg-[var(--bg-card)] border border-[var(--border)]">
+          <section className="space-y-3 p-6 rounded-2xl bg-[var(--bg-card)] border border-[var(--border)] shadow-xs">
             <div className="flex items-center gap-2.5 text-[var(--text-main)] font-semibold text-base">
-              <EyeOff className="w-5 h-5 text-emerald-500" />
-              <h2>1. Our Privacy Philosophy: Zero Data Monetization</h2>
+              <EyeOff className="w-5 h-5 text-emerald-500 shrink-0" />
+              <h2>1. Our Core Promise: Zero Data Monetization</h2>
             </div>
             <p>
-              LeetMap Pro was built by engineers, for engineers. We believe software interview preparation tools should be fast, uncluttered, and respect your privacy.
+              LeetMap Pro was engineered by developers for developers. We believe software study tools should be distraction-free, lightning-fast, and completely transparent regarding privacy.
             </p>
-            <p className="font-medium text-[var(--text-main)]">
-              We do not sell, rent, monetize, or broker your personal data to advertisers, data brokers, or recruiters.
+            <p className="font-semibold text-[var(--text-main)]">
+              We never sell, rent, monetize, trade, or broker your personal information or study habits to third-party advertisers, data aggregators, recruiting agencies, or commercial brokers.
             </p>
           </section>
 
           {/* Section 2 */}
           <section className="space-y-3">
             <div className="flex items-center gap-2.5 text-[var(--text-main)] font-semibold text-base">
-              <Lock className="w-5 h-5 text-emerald-500" />
-              <h2>2. Information We Collect</h2>
+              <Lock className="w-5 h-5 text-emerald-500 shrink-0" />
+              <h2>2. Information We Process</h2>
             </div>
-            <p>We collect only the minimum data required to deliver the core service:</p>
-            <ul className="list-disc pl-5 space-y-2">
+            <p>We process only the minimum information necessary to provide study tracking and collaborative tools:</p>
+            <ul className="list-disc pl-5 space-y-2.5">
               <li>
-                <strong className="text-[var(--text-main)]">Authentication Data (Optional):</strong> If you choose to sign in to sync your progress across devices, we use Clerk for secure identity management. We receive your verified email address and account ID. We never have access to your passwords.
+                <strong className="text-[var(--text-main)]">Anonymous Local Progress (Default):</strong> You can use LeetMap Pro completely anonymously without creating an account. When signed out, your solved problem IDs, pinned companies, and active visual theme are saved strictly on your own device via <code className="px-1.5 py-0.5 rounded bg-[var(--bg-subtle)] text-xs font-mono">localStorage</code>. This data never touches our servers.
               </li>
               <li>
-                <strong className="text-[var(--text-main)]">Solved Problems & Pinned Companies:</strong> Your problem checkmarks and pinned company preferences are saved locally in your browser (<code className="px-1.5 py-0.5 rounded bg-[var(--bg-subtle)] text-xs font-mono">localStorage</code>). When signed in, this data is synchronized to our encrypted database so you can access it on other devices.
+                <strong className="text-[var(--text-main)]">Authentication Information (Optional):</strong> If you choose to sign in to synchronize your progress across multiple devices, authentication is powered securely by Clerk. We store your Clerk user identifier, username, display name, and avatar image. We never store, process, or have access to your passwords or sensitive authentication credentials.
               </li>
               <li>
-                <strong className="text-[var(--text-main)]">Technical Diagnostics:</strong> Standard HTTP request data (IP address, browser type, referring URL) processed transiently by Vercel for routing and DDoS mitigation.
+                <strong className="text-[var(--text-main)]">Cloud Sync Progress:</strong> For signed-in users, solved problem slugs, timestamps, and pinned company lists are securely synchronized to our encrypted database to support multi-device continuation and streak tracking.
+              </li>
+              <li>
+                <strong className="text-[var(--text-main)]">Transient Infrastructure Logs:</strong> When accessing our site, standard edge request metadata (such as IP address, browser user-agent, and requested route) is processed transiently by Vercel for routing, DDoS defense, and rate-limiting.
               </li>
             </ul>
           </section>
 
           {/* Section 3 */}
-          <section className="space-y-3">
+          <section className="space-y-3 p-6 rounded-2xl bg-[var(--bg-card)] border border-[var(--border)]">
             <div className="flex items-center gap-2.5 text-[var(--text-main)] font-semibold text-base">
-              <Cookie className="w-5 h-5 text-emerald-500" />
-              <h2>3. Cookies & Local Storage</h2>
+              <Share2 className="w-5 h-5 text-emerald-500 shrink-0" />
+              <h2>3. Public Shareable Profiles & Social Dynamics</h2>
             </div>
             <p>
-              We use strictly necessary cookies and local storage tokens:
+              Signed-in users may choose to generate and share a public profile URL (<code className="px-1.5 py-0.5 rounded bg-[var(--bg-subtle)] text-xs font-mono">/u/[username]</code>) or embed an SVG/Markdown badge in their GitHub README or resume:
             </p>
             <ul className="list-disc pl-5 space-y-2">
               <li>
-                <strong className="text-[var(--text-main)]">Local Storage:</strong> Used to store your active theme (dark/light) and solved problem IDs locally.
+                Public profiles display your public username, display name, avatar, prep level, total questions solved, current streak, and activity heatmap.
               </li>
               <li>
-                <strong className="text-[var(--text-main)]">Session Cookies:</strong> Provided by Clerk to maintain your authenticated session securely. We do not use third-party tracking cookies or advertising pixels.
+                Email addresses and private account credentials are <strong>never</strong> displayed on public profile pages or exposed in API endpoints.
+              </li>
+              <li>
+                You control whether you distribute your public profile link. You can reset your progress or delete your account at any time.
               </li>
             </ul>
           </section>
@@ -101,38 +118,101 @@ export default function PrivacyPage() {
           {/* Section 4 */}
           <section className="space-y-3">
             <div className="flex items-center gap-2.5 text-[var(--text-main)] font-semibold text-base">
-              <Server className="w-5 h-5 text-emerald-500" />
-              <h2>4. Infrastructure & Service Providers</h2>
+              <Cookie className="w-5 h-5 text-emerald-500 shrink-0" />
+              <h2>4. Cookies & Storage Policy</h2>
             </div>
             <p>
-              LeetMap Pro relies on vetted, enterprise-grade cloud providers that uphold rigorous data protection standards:
+              LeetMap Pro utilizes strictly necessary, privacy-preserving storage mechanisms:
             </p>
             <ul className="list-disc pl-5 space-y-2">
-              <li><strong className="text-[var(--text-main)]">Vercel:</strong> Global edge hosting, serverless functions, and static content delivery.</li>
-              <li><strong className="text-[var(--text-main)]">Clerk:</strong> SOC 2 Type II certified user authentication and credential security.</li>
+              <li>
+                <strong className="text-[var(--text-main)]">Strictly Necessary Session Cookies:</strong> Managed by Clerk solely to keep you signed in securely across browser tabs.
+              </li>
+              <li>
+                <strong className="text-[var(--text-main)]">Local Storage:</strong> Browser-side key-value pairs used to remember your theme preference (Dark/Light mode) and offline solved status.
+              </li>
+              <li>
+                <strong className="text-[var(--text-main)]">No Advertising or Behavioral Trackers:</strong> We do NOT employ third-party advertising cookies, cross-site trackers, Facebook Pixels, or invasive behavioral fingerprinting scripts.
+              </li>
             </ul>
           </section>
 
           {/* Section 5 */}
           <section className="space-y-3">
             <div className="flex items-center gap-2.5 text-[var(--text-main)] font-semibold text-base">
-              <UserX className="w-5 h-5 text-emerald-500" />
-              <h2>5. Your Rights & Data Deletion</h2>
+              <Server className="w-5 h-5 text-emerald-500 shrink-0" />
+              <h2>5. Subprocessors & Cloud Infrastructure</h2>
             </div>
             <p>
-              You maintain complete ownership of your learning progress:
+              We partner with industry-leading infrastructure providers that maintain strict SOC 2, ISO 27001, and GDPR compliance:
             </p>
             <ul className="list-disc pl-5 space-y-2">
-              <li>You can reset your solved problems at any time by clearing your browser cache or clicking &ldquo;Reset Progress&rdquo; in your user profile.</li>
-              <li>You can delete your Clerk account at any time, which permanently purges your user profile and stored progress records from our database.</li>
+              <li>
+                <strong className="text-[var(--text-main)]">Vercel Inc.:</strong> Global Edge Network hosting, compute execution, and DDoS mitigation.
+              </li>
+              <li>
+                <strong className="text-[var(--text-main)]">Clerk Inc.:</strong> SOC 2 Type II certified user identity, encrypted authentication, and session security.
+              </li>
             </ul>
           </section>
 
           {/* Section 6 */}
-          <section className="space-y-3 pt-4 border-t border-[var(--border)]">
-            <h2 className="text-[var(--text-main)] font-semibold text-base">6. Contact Us</h2>
+          <section className="space-y-3">
+            <div className="flex items-center gap-2.5 text-[var(--text-main)] font-semibold text-base">
+              <Globe2 className="w-5 h-5 text-emerald-500 shrink-0" />
+              <h2>6. GDPR, CCPA/CPRA & Global Privacy Rights</h2>
+            </div>
             <p>
-              If you have questions, feedback, or security inquiries regarding this policy, feel free to open an issue or pull request on our public{' '}
+              Depending on your jurisdiction (including the European Economic Area, the United Kingdom, and California), you possess statutory privacy rights:
+            </p>
+            <ul className="list-disc pl-5 space-y-2">
+              <li>
+                <strong className="text-[var(--text-main)]">Right to Access & Portability:</strong> You may request a copy of the personal data associated with your account.
+              </li>
+              <li>
+                <strong className="text-[var(--text-main)]">Right to Erasure (&ldquo;Right to be Forgotten&rdquo;):</strong> You have the absolute right to have all your data deleted from our systems.
+              </li>
+              <li>
+                <strong className="text-[var(--text-main)]">Do Not Sell or Share My Information:</strong> Under the California Consumer Privacy Act (CCPA/CPRA), we confirm that we do not &ldquo;sell&rdquo; or &ldquo;share&rdquo; your personal information for cross-context behavioral advertising.
+              </li>
+            </ul>
+          </section>
+
+          {/* Section 7 */}
+          <section className="space-y-3">
+            <div className="flex items-center gap-2.5 text-[var(--text-main)] font-semibold text-base">
+              <UserX className="w-5 h-5 text-emerald-500 shrink-0" />
+              <h2>7. How to Delete Your Data</h2>
+            </div>
+            <p>
+              You maintain total autonomy over your data:
+            </p>
+            <ul className="list-disc pl-5 space-y-2">
+              <li>
+                <strong>Anonymous Local Data:</strong> Clear your browser&apos;s site data or local storage for <code className="px-1.5 py-0.5 rounded bg-[var(--bg-subtle)] text-xs font-mono">leetmap-pro.vercel.app</code> to immediately remove all stored data.
+              </li>
+              <li>
+                <strong>Cloud Account & Progress:</strong> Click on your profile avatar in the header, select <strong>&ldquo;Manage Account&rdquo;</strong>, and choose <strong>&ldquo;Delete Account&rdquo;</strong>. This triggers immediate, permanent erasure of your user profile, solved history, and streak records across all databases.
+              </li>
+            </ul>
+          </section>
+
+          {/* Section 8 */}
+          <section className="space-y-3">
+            <div className="flex items-center gap-2.5 text-[var(--text-main)] font-semibold text-base">
+              <Database className="w-5 h-5 text-emerald-500 shrink-0" />
+              <h2>8. Children&apos;s Privacy (COPPA)</h2>
+            </div>
+            <p>
+              LeetMap Pro is designed for software engineers, university students, and adult job seekers. We do not knowingly collect or solicit personal information from children under 13 years of age (or under 16 in certain jurisdictions). If we discover that personal data of a minor has been collected without parental consent, we will take immediate steps to delete the information.
+            </p>
+          </section>
+
+          {/* Section 9 */}
+          <section className="space-y-3 pt-6 border-t border-[var(--border)]">
+            <h2 className="text-[var(--text-main)] font-semibold text-base">9. Contact & Inquiries</h2>
+            <p>
+              For any questions regarding this Privacy Policy, your data protection rights, or security reporting, please open an issue or pull request in our public{' '}
               <a
                 href="https://github.com/saitarrun/LeetMap-Pro"
                 target="_blank"
