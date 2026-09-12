@@ -43,11 +43,11 @@ export async function GET(
   let svgContent = '';
 
   if (style === 'shield' || style === 'compact') {
-    // Compact pill badge (similar to shields.io)
+    // Minimalist pill badge
     const label = 'LeetMap Pro';
     const value = `${totalSolved} Solved • ${streak}d Streak`;
-    const labelWidth = 96;
-    const valueWidth = Math.max(160, value.length * 8.5 + 20);
+    const labelWidth = 98;
+    const valueWidth = Math.max(150, value.length * 8 + 24);
     const totalWidth = labelWidth + valueWidth;
 
     svgContent = `<svg xmlns="http://www.w3.org/2000/svg" width="${totalWidth}" height="28" viewBox="0 0 ${totalWidth} 28" fill="none" role="img" aria-label="${escapeXml(label)}: ${escapeXml(value)}">
@@ -56,98 +56,84 @@ export async function GET(
   </clipPath>
   <g clip-path="url(#r)">
     <rect width="${labelWidth}" height="28" fill="#161b22"/>
-    <rect x="${labelWidth}" width="${valueWidth}" height="28" fill="#10b981"/>
-    <rect id="glow" width="${totalWidth}" height="28" fill="url(#overlay)" opacity="0.1"/>
+    <rect x="${labelWidth}" width="${valueWidth}" height="28" fill="#0d1117"/>
+    <rect width="${totalWidth}" height="28" stroke="#30363d" stroke-width="1" fill="none"/>
   </g>
-  <g font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="12" font-weight="600">
-    <!-- Brand Icon Dot -->
-    <circle cx="16" cy="14" r="4" fill="#34d399"/>
-    <text x="28" y="18" fill="#e6edf3" letter-spacing="0.2">${escapeXml(label)}</text>
-    <text x="${labelWidth + 14}" y="18" fill="#042f2e" font-weight="700">${escapeXml(value)}</text>
+  <g font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11" font-weight="600">
+    <circle cx="14" cy="14" r="3.5" fill="#3fb950"/>
+    <text x="24" y="18" fill="#f0f6fc">${escapeXml(label)}</text>
+    <text x="${labelWidth + 14}" y="18" fill="#3fb950">${escapeXml(value)}</text>
   </g>
 </svg>`;
   } else {
-    // Rich Editorial Card (default)
-    svgContent = `<svg xmlns="http://www.w3.org/2000/svg" width="490" height="175" viewBox="0 0 490 175" fill="none" role="img" aria-label="LeetMap Pro Stats for ${escapeXml(displayName)}">
+    // Sleek Minimalist Editorial Card
+    svgContent = `<svg xmlns="http://www.w3.org/2000/svg" width="450" height="150" viewBox="0 0 450 150" fill="none" role="img" aria-label="LeetMap Pro Stats for ${escapeXml(displayName)}">
   <defs>
-    <linearGradient id="cardGrad" x1="0" y1="0" x2="490" y2="175" gradientUnits="userSpaceOnUse">
-      <stop offset="0%" stop-color="#0d1117" />
-      <stop offset="100%" stop-color="#161b22" />
-    </linearGradient>
-    <linearGradient id="emeraldGrad" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#34d399" />
-      <stop offset="100%" stop-color="#059669" />
+    <linearGradient id="topSheen" x1="0" y1="0" x2="450" y2="0" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#10b981" stop-opacity="0"/>
+      <stop offset="25%" stop-color="#10b981" stop-opacity="0.5"/>
+      <stop offset="75%" stop-color="#38bdf8" stop-opacity="0.5"/>
+      <stop offset="100%" stop-color="#38bdf8" stop-opacity="0"/>
     </linearGradient>
   </defs>
 
-  <!-- Card Background with subtle border -->
-  <rect width="490" height="175" rx="14" fill="url(#cardGrad)" stroke="#30363d" stroke-width="1.2" />
+  <!-- Card Canvas -->
+  <rect x="0.5" y="0.5" width="449" height="149" rx="12" fill="#0d1117" stroke="#30363d" stroke-width="1"/>
+  <!-- Top Accent Sheen -->
+  <line x1="30" y1="1" x2="420" y2="1" stroke="url(#topSheen)" stroke-width="1.5" stroke-linecap="round"/>
 
-  <!-- Ambient Glow Accent -->
-  <circle cx="440" cy="30" r="80" fill="#10b981" opacity="0.08" filter="blur(20px)" />
+  <g font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif">
+    <!-- Header -->
+    <g transform="translate(20, 24)">
+      <circle cx="4" cy="-4" r="3.5" fill="#3fb950"/>
+      <text x="14" y="0" font-size="13" font-weight="700" fill="#f0f6fc" letter-spacing="-0.2px">LeetMap <tspan fill="#3fb950">Pro</tspan></text>
+      <text x="105" y="0" font-size="12" fill="#484f58">•</text>
+      <text x="117" y="0" font-size="12" fill="#8b949e" font-weight="500">@${escapeXml(safeUsername)}</text>
 
-  <g font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif">
-    <!-- Header Row -->
-    <g transform="translate(24, 28)">
-      <!-- Brand Logo Indicator -->
-      <rect width="18" height="18" rx="5" fill="#10b981" opacity="0.2" stroke="#10b981" stroke-width="1" />
-      <circle cx="9" cy="9" r="3.5" fill="#34d399" />
-      
-      <text x="26" y="14" font-size="14" font-weight="700" fill="#ffffff" letter-spacing="-0.01em">LeetMap <tspan fill="#34d399">Pro</tspan></text>
-      <text x="135" y="14" font-size="12" font-weight="500" fill="#8b949e">/@${escapeXml(safeUsername)}</text>
-      
-      <!-- Prep Level Badge -->
-      <g transform="translate(320, -3)">
-        <rect width="120" height="24" rx="12" fill="rgba(255, 255, 255, 0.05)" stroke="#30363d" stroke-width="1" />
-        <circle cx="12" cy="12" r="3.5" fill="${level.color}" />
-        <text x="22" y="16" font-size="11" font-weight="700" fill="#e6edf3">${escapeXml(level.level)} ${escapeXml(level.name)}</text>
+      <!-- Level Pill -->
+      <g transform="translate(294, -12)">
+        <rect width="116" height="22" rx="11" fill="rgba(255, 255, 255, 0.04)" stroke="#30363d" stroke-width="1"/>
+        <circle cx="11" cy="11" r="3" fill="${level.color}"/>
+        <text x="20" y="15" font-size="11" font-weight="600" fill="#c9d1d9">${escapeXml(level.level)} · ${escapeXml(level.name)}</text>
       </g>
     </g>
 
-    <!-- Main Stats Section -->
-    <g transform="translate(24, 76)">
-      <!-- Total Solved -->
-      <text x="0" y="32" font-size="36" font-weight="800" fill="#ffffff" letter-spacing="-0.03em">${totalSolved}</text>
-      <text x="0" y="48" font-size="10" font-weight="700" fill="#8b949e" letter-spacing="0.06em">PROBLEMS SOLVED</text>
-
-      <!-- Difficulty Pillars -->
-      <g transform="translate(145, 2)">
-        <g transform="translate(0, 0)">
-          <text x="0" y="12" font-size="11" font-weight="600" fill="#7ee787">Easy</text>
-          <text x="44" y="12" font-size="13" font-weight="700" fill="#ffffff">${easyCount}</text>
-        </g>
-        <g transform="translate(0, 22)">
-          <text x="0" y="12" font-size="11" font-weight="600" fill="#f6c177">Med</text>
-          <text x="44" y="12" font-size="13" font-weight="700" fill="#ffffff">${mediumCount}</text>
-        </g>
-        <g transform="translate(0, 44)">
-          <text x="0" y="12" font-size="11" font-weight="600" fill="#ff7b72">Hard</text>
-          <text x="44" y="12" font-size="13" font-weight="700" fill="#ffffff">${hardCount}</text>
-        </g>
-      </g>
-
-      <!-- Divider line -->
-      <line x1="250" y1="0" x2="250" y2="52" stroke="#21262d" stroke-width="1" />
-
-      <!-- Streak & Focus -->
-      <g transform="translate(270, 4)">
-        <g transform="translate(0, 10)">
-          <text x="0" y="12" font-size="13" font-weight="700" fill="#f0883e">🔥 ${streak} Days</text>
-          <text x="75" y="12" font-size="11" font-weight="500" fill="#8b949e">Active Streak</text>
-        </g>
-        <g transform="translate(0, 34)">
-          <text x="0" y="12" font-size="12" font-weight="600" fill="#58a6ff">🎯 Target:</text>
-          <text x="58" y="12" font-size="12" font-weight="600" fill="#e6edf3">${escapeXml(topCompany)}</text>
-        </g>
-      </g>
+    <!-- Center Content Section -->
+    <!-- Solved Counter -->
+    <g transform="translate(24, 60)">
+      <text x="0" y="26" font-size="32" font-weight="700" fill="#f0f6fc" letter-spacing="-0.5px">${totalSolved}</text>
+      <text x="0" y="42" font-size="10" font-weight="600" fill="#8b949e" letter-spacing="0.6px">SOLVED</text>
     </g>
 
-    <!-- Bottom Footer Accent -->
-    <g transform="translate(24, 154)">
-      <line x1="0" y1="0" x2="442" y2="0" stroke="#21262d" stroke-width="1" />
-      <text x="0" y="13" font-size="10" font-weight="500" fill="#484f58">Verified Company &amp; SQL Preparation</text>
-      <text x="442" y="13" text-anchor="end" font-size="10" font-weight="600" fill="#34d399">leetmap-pro.vercel.app</text>
+    <line x1="116" y1="52" x2="116" y2="104" stroke="#21262d" stroke-width="1"/>
+
+    <!-- Difficulty Breakdown -->
+    <g transform="translate(134, 52)">
+      <circle cx="4" cy="10" r="3" fill="#3fb950"/>
+      <text x="14" y="13" font-size="11" font-weight="500" fill="#8b949e">Easy</text>
+      <text x="70" y="13" font-size="12" font-weight="600" fill="#f0f6fc" text-anchor="end">${easyCount}</text>
+
+      <circle cx="4" cy="28" r="3" fill="#d29922"/>
+      <text x="14" y="31" font-size="11" font-weight="500" fill="#8b949e">Medium</text>
+      <text x="70" y="31" font-size="12" font-weight="600" fill="#f0f6fc" text-anchor="end">${mediumCount}</text>
+
+      <circle cx="4" cy="46" r="3" fill="#f85149"/>
+      <text x="14" y="49" font-size="11" font-weight="500" fill="#8b949e">Hard</text>
+      <text x="70" y="49" font-size="12" font-weight="600" fill="#f0f6fc" text-anchor="end">${hardCount}</text>
     </g>
+
+    <line x1="228" y1="52" x2="228" y2="104" stroke="#21262d" stroke-width="1"/>
+
+    <!-- Streak & Target Focus -->
+    <g transform="translate(248, 56)">
+      <text x="0" y="15" font-size="12" font-weight="600" fill="#f0883e">🔥 ${streak} Days <tspan font-weight="400" fill="#8b949e" font-size="11">Streak</tspan></text>
+      <text x="0" y="38" font-size="11" font-weight="500" fill="#8b949e">🎯 Target: <tspan font-weight="600" fill="#58a6ff">${escapeXml(topCompany)}</tspan></text>
+    </g>
+
+    <!-- Bottom Bar -->
+    <line x1="20" y1="118" x2="430" y2="118" stroke="#21262d" stroke-width="1"/>
+    <text x="20" y="134" font-size="10" font-weight="500" fill="#484f58">Verified Company &amp; SQL Questions</text>
+    <text x="430" y="134" font-size="10" font-weight="600" fill="#3fb950" text-anchor="end">leetmap-pro.vercel.app</text>
   </g>
 </svg>`;
   }

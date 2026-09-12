@@ -1044,12 +1044,12 @@ export const PublicProfileView: React.FC<PublicProfileViewProps> = ({ initialDat
                 <span className="text-[11px] font-semibold text-[var(--text-muted)] uppercase tracking-wider">
                   Live Preview (Auto-Updates)
                 </span>
-                <div className="p-4 rounded-2xl bg-[#090a0f] border border-[var(--border)] flex items-center justify-center overflow-x-auto shadow-inner min-h-[140px]">
+                <div className="p-5 sm:p-6 rounded-2xl bg-[var(--bg-subtle)]/50 border border-[var(--border)]/60 flex items-center justify-center overflow-x-auto min-h-[160px]">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={currentBadgeSrc}
                     alt={`LeetMap Pro stats badge for ${initialData.user.name}`}
-                    className="max-w-full h-auto"
+                    className="max-w-full h-auto rounded-xl drop-shadow-md"
                   />
                 </div>
               </div>
