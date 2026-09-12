@@ -2,12 +2,22 @@ import { ClerkProvider } from "@clerk/nextjs";
 import { headers } from "next/headers";
 import Script from "next/script";
 import { connection } from "next/server";
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Toaster } from "sonner";
 import { AuthProvider } from "@/context/AuthContext";
 import { Footer } from "@/components/Footer";
 import { CommandPalette } from "@/components/CommandPalette";
 import "./globals.css";
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 5,
+  themeColor: [
+    { media: '(prefers-color-scheme: light)', color: '#ffffff' },
+    { media: '(prefers-color-scheme: dark)', color: '#09090b' },
+  ],
+};
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://leetmap-pro.vercel.app'),

@@ -1,9 +1,9 @@
 'use client';
 
-import React, { useState, useSyncExternalStore } from 'react';
+import React, { useState, useEffect, useSyncExternalStore } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Sun, Moon, Search } from 'lucide-react';
+import { Sun, Moon, Search, Menu, X, ExternalLink } from 'lucide-react';
 import { SignInButton, SignUpButton, Show } from '@clerk/nextjs';
 import { toast } from 'sonner';
 import { SyncStatus } from '@/types';
@@ -18,6 +18,13 @@ interface HeaderProps {
 export const Header: React.FC<HeaderProps> = () => {
   const pathname = usePathname() || '/';
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  // Close mobile navigation on route changes
+  useEffect(() => {
+    setMobileMenuOpen(false);
+  }, [pathname]);
+
   const theme = useSyncExternalStore(
     (onStoreChange) => {
       window.addEventListener('leetmap-theme-change', onStoreChange);
@@ -81,8 +88,8 @@ export const Header: React.FC<HeaderProps> = () => {
 
   return (
     <header className="sticky top-0 z-[110] border-b border-[var(--border)] bg-[var(--bg-page)]/80 backdrop-blur-2xl">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between gap-3">
-        {/* Brand & Track Switcher */}
+      <div className="max-w-7xl mx-auto px-3.5 sm:px-6 h-14 flex items-center justify-between gap-2 sm:gap-3">
+        {/* Brand & Desktop Track Switcher */}
         <div className="flex items-center gap-2.5 sm:gap-5">
           <Link
             href="/"
@@ -95,8 +102,8 @@ export const Header: React.FC<HeaderProps> = () => {
             </span>
           </Link>
 
-          {/* Primary Minimal Navigation */}
-          <nav className="flex items-center gap-0.5 text-xs">
+          {/* Primary Desktop Navigation */}
+          <nav className="hidden md:flex items-center gap-0.5 text-xs">
             <Link
               href="/"
               className={`apple-press px-3 py-1.5 rounded-xl transition-colors ${
@@ -149,7 +156,7 @@ export const Header: React.FC<HeaderProps> = () => {
           <button
             type="button"
             onClick={() => window.dispatchEvent(new Event('leetmap-open-command-palette'))}
-            className="apple-press inline-flex items-center gap-2 h-8 px-2.5 sm:px-3 rounded-full text-xs text-[var(--text-muted)] hover:text-[var(--text-main)] bg-[var(--bg-subtle)] hover:bg-[var(--bg-hover)] border border-[var(--border)] transition-colors cursor-pointer"
+            className="apple-press inline-flex items-center gap-2 h-8 px-2 sm:px-3 rounded-full text-xs text-[var(--text-muted)] hover:text-[var(--text-main)] bg-[var(--bg-subtle)] hover:bg-[var(--bg-hover)] border border-[var(--border)] transition-colors cursor-pointer"
             title="Search companies, patterns, and questions (⌘K)"
             aria-label="Search everything"
           >
@@ -158,11 +165,11 @@ export const Header: React.FC<HeaderProps> = () => {
             <kbd className="hidden sm:inline-flex items-center px-1.5 py-0.5 rounded bg-[var(--bg-card)] border border-[var(--border)] text-[10px] font-mono text-[var(--text-muted)]">⌘K</kbd>
           </button>
 
-          {/* Realtime Live Refresh Button */}
+          {/* Realtime Live Refresh Button (Desktop only, mobile in drawer) */}
           <button
             onClick={handleLiveRefresh}
             disabled={isRefreshing}
-            className="apple-press flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-xs text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--bg-subtle)] transition-colors cursor-pointer disabled:opacity-70"
+            className="apple-press hidden md:flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-xs text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--bg-subtle)] transition-colors cursor-pointer disabled:opacity-70"
             title="Click to refresh live dataset"
             aria-label="Refresh live dataset"
           >
@@ -170,12 +177,12 @@ export const Header: React.FC<HeaderProps> = () => {
             <span className="text-[11px] font-medium">{isRefreshing ? 'Checking...' : 'Live'}</span>
           </button>
 
-          {/* User Github Profile */}
+          {/* User Github Profile (Desktop only, mobile in drawer) */}
           <a
             href="https://github.com/saitarrun"
             target="_blank"
             rel="noopener noreferrer"
-            className="apple-press h-8 w-8 inline-flex items-center justify-center rounded-full text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--bg-hover)] transition-colors shrink-0"
+            className="apple-press hidden md:inline-flex h-8 w-8 items-center justify-center rounded-full text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--bg-hover)] transition-colors shrink-0"
             title="GitHub Profile (@saitarrun)"
             aria-label="GitHub Profile"
           >
@@ -189,7 +196,7 @@ export const Header: React.FC<HeaderProps> = () => {
           <Show when="signed-out">
             <div className="flex items-center gap-1.5 shrink-0">
               <SignInButton mode="modal">
-                <button className="apple-press h-8 inline-flex items-center text-xs font-semibold px-3 rounded-full bg-[var(--text-main)] text-[var(--bg-page)] hover:opacity-90 transition-opacity cursor-pointer shadow-2xs shrink-0">
+                <button className="apple-press h-8 inline-flex items-center text-xs font-semibold px-2.5 sm:px-3 rounded-full bg-[var(--text-main)] text-[var(--bg-page)] hover:opacity-90 transition-opacity cursor-pointer shadow-2xs shrink-0">
                   Sign in
                 </button>
               </SignInButton>
@@ -202,8 +209,8 @@ export const Header: React.FC<HeaderProps> = () => {
           </Show>
 
           <div className="inline-flex items-center">
-              <UserProfileMenu />
-            </div>
+            <UserProfileMenu />
+          </div>
 
           {/* Theme Toggle */}
           <button
@@ -216,8 +223,102 @@ export const Header: React.FC<HeaderProps> = () => {
               {theme === 'dark' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
             </span>
           </button>
+
+          {/* Mobile Menu Button */}
+          <button
+            type="button"
+            onClick={() => setMobileMenuOpen((prev) => !prev)}
+            className="apple-press md:hidden h-8 w-8 inline-flex items-center justify-center rounded-full text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--bg-subtle)] transition-colors cursor-pointer shrink-0"
+            aria-label={mobileMenuOpen ? 'Close navigation menu' : 'Open navigation menu'}
+            aria-expanded={mobileMenuOpen}
+          >
+            {mobileMenuOpen ? <X className="w-4.5 h-4.5" /> : <Menu className="w-4.5 h-4.5" />}
+          </button>
         </div>
       </div>
+
+      {/* Mobile Collapsible Navigation Panel */}
+      {mobileMenuOpen && (
+        <div className="md:hidden border-t border-[var(--border)] bg-[var(--bg-page)]/95 backdrop-blur-3xl px-4 py-3 space-y-1 shadow-lg animate-in slide-in-from-top-2 duration-200">
+          <nav className="flex flex-col space-y-1 text-sm font-medium">
+            <Link
+              href="/"
+              onClick={() => setMobileMenuOpen(false)}
+              className={`apple-press flex items-center justify-between px-3.5 py-2.5 rounded-xl transition-colors ${
+                pathname === '/' || pathname.startsWith('/company')
+                  ? 'bg-[var(--bg-subtle)] text-[var(--text-main)] font-semibold'
+                  : 'text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--bg-subtle)]/50'
+              }`}
+            >
+              <span>Companies</span>
+              <span className="text-xs text-[var(--text-muted)] font-mono">680+</span>
+            </Link>
+
+            <Link
+              href="/patterns"
+              onClick={() => setMobileMenuOpen(false)}
+              className={`apple-press flex items-center justify-between px-3.5 py-2.5 rounded-xl transition-colors ${
+                pathname.startsWith('/patterns')
+                  ? 'bg-[var(--bg-subtle)] text-[var(--text-main)] font-semibold'
+                  : 'text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--bg-subtle)]/50'
+              }`}
+            >
+              <span>Patterns</span>
+              <span className="text-xs text-[var(--text-muted)] font-mono">22</span>
+            </Link>
+
+            <Link
+              href="/strategy"
+              onClick={() => setMobileMenuOpen(false)}
+              className={`apple-press flex items-center justify-between px-3.5 py-2.5 rounded-xl transition-colors ${
+                pathname.startsWith('/strategy')
+                  ? 'bg-[var(--bg-subtle)] text-[var(--text-main)] font-semibold'
+                  : 'text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--bg-subtle)]/50'
+              }`}
+            >
+              <span>Strategy</span>
+              <span className="text-xs text-[var(--text-muted)] font-mono">Roadmap</span>
+            </Link>
+
+            <Link
+              href="/sql"
+              onClick={() => setMobileMenuOpen(false)}
+              className={`apple-press flex items-center justify-between px-3.5 py-2.5 rounded-xl transition-colors ${
+                pathname.startsWith('/sql')
+                  ? 'bg-[var(--bg-subtle)] text-[var(--text-main)] font-semibold'
+                  : 'text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--bg-subtle)]/50'
+              }`}
+            >
+              <span>SQL Interview Hub</span>
+              <span className="text-xs text-emerald-500 font-mono">NEW</span>
+            </Link>
+          </nav>
+
+          <div className="pt-2 border-t border-[var(--border)]/60 flex items-center justify-between text-xs text-[var(--text-muted)]">
+            <button
+              onClick={() => {
+                handleLiveRefresh();
+                setMobileMenuOpen(false);
+              }}
+              disabled={isRefreshing}
+              className="apple-press flex items-center gap-1.5 py-2 px-2 rounded-lg hover:text-[var(--text-main)] cursor-pointer"
+            >
+              <span className={`w-2 h-2 rounded-full bg-emerald-500 ${isRefreshing ? 'animate-ping' : ''}`} />
+              <span>{isRefreshing ? 'Checking live status...' : 'Live Dataset Sync'}</span>
+            </button>
+
+            <a
+              href="https://github.com/saitarrun/LeetMap-Pro"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="apple-press flex items-center gap-1 py-2 px-2 rounded-lg hover:text-[var(--text-main)]"
+            >
+              <span>GitHub</span>
+              <ExternalLink className="w-3 h-3" />
+            </a>
+          </div>
+        </div>
+      )}
     </header>
   );
 };
