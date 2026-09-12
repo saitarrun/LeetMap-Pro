@@ -1,7 +1,7 @@
 {
   "status": "success",
-  "lastSynced": 1789099976364,
-  "lastSyncedISO": "2026-09-11T04:12:56Z",
+  "lastSynced": 1789179867950,
+  "lastSyncedISO": "2026-09-12T02:24:27Z",
   "commitSha": "03850eb+e095c25+03850eb",
   "sources": [
     {
@@ -29,7 +29,7 @@
     },
     {
       "name": "LeetCode Live Daily Challenge",
-      "dailyProblem": "#3483 Unique 3-Digit Even Numbers",
+      "dailyProblem": "#3414 Maximum Score of Non-overlapping Intervals",
       "description": "Active 24-hour questionOfToday daily challenge"
     },
     {
@@ -41,5 +41,5 @@
   "companiesCount": 684,
   "uniqueProblemsCount": 3422,
   "sqlProblemsCount": 194,
-  "durationSeconds": 7.67
+  "durationSeconds": 9.14
 }
