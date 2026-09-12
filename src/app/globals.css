@@ -88,6 +88,8 @@
 html {
   scroll-behavior: smooth;
   -webkit-overflow-scrolling: touch;
+  overflow-x: hidden;
+  max-width: 100vw;
 }
 
 body {
@@ -100,6 +102,8 @@ body {
   text-rendering: optimizeLegibility;
   line-height: 1.5;
   min-height: 100vh;
+  overflow-x: hidden;
+  max-width: 100vw;
 }
 
 /* Calm long-form reading rhythm for guide content. */

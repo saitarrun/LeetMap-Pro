@@ -3,7 +3,18 @@
 import React, { useState, useEffect, useSyncExternalStore } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Sun, Moon, Search, Menu, X, ExternalLink } from 'lucide-react';
+import {
+  Sun,
+  Moon,
+  Search,
+  Menu,
+  X,
+  ExternalLink,
+  Building2,
+  Layers,
+  Compass,
+  Database,
+} from 'lucide-react';
 import { SignInButton, SignUpButton, Show } from '@clerk/nextjs';
 import { toast } from 'sonner';
 import { SyncStatus } from '@/types';
@@ -87,17 +98,17 @@ export const Header: React.FC<HeaderProps> = () => {
   };
 
   return (
-    <header className="sticky top-0 z-[110] border-b border-[var(--border)] bg-[var(--bg-page)]/80 backdrop-blur-2xl">
-      <div className="max-w-7xl mx-auto px-3.5 sm:px-6 h-14 flex items-center justify-between gap-2 sm:gap-3">
+    <header className="sticky top-0 z-[110] w-full border-b border-[var(--border)] bg-[var(--bg-page)]/80 backdrop-blur-2xl">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between gap-2">
         {/* Brand & Desktop Track Switcher */}
-        <div className="flex items-center gap-2.5 sm:gap-5">
+        <div className="flex items-center gap-3 sm:gap-5 min-w-0">
           <Link
             href="/"
             className="apple-press group flex items-center gap-2 select-none shrink-0 rounded-xl focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-emerald-500"
             aria-label="LeetMap Pro home"
           >
             <LeetMapLogo size={24} />
-            <span className="text-[17px] font-bold tracking-[-0.035em] text-[var(--text-main)]">
+            <span className="text-[16px] sm:text-[17px] font-bold tracking-[-0.035em] text-[var(--text-main)]">
               LeetMap <span className="text-emerald-500 dark:text-emerald-400">Pro</span>
             </span>
           </Link>
@@ -151,12 +162,12 @@ export const Header: React.FC<HeaderProps> = () => {
         </div>
 
         {/* Right Actions */}
-        <div className="flex items-center gap-1 sm:gap-1.5">
+        <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
           {/* Quick Search Button (Cmd+K) */}
           <button
             type="button"
             onClick={() => window.dispatchEvent(new Event('leetmap-open-command-palette'))}
-            className="apple-press inline-flex items-center gap-2 h-8 px-2 sm:px-3 rounded-full text-xs text-[var(--text-muted)] hover:text-[var(--text-main)] bg-[var(--bg-subtle)] hover:bg-[var(--bg-hover)] border border-[var(--border)] transition-colors cursor-pointer"
+            className="apple-press inline-flex items-center justify-center gap-2 h-8 w-8 sm:w-auto px-0 sm:px-3 rounded-full text-xs text-[var(--text-muted)] hover:text-[var(--text-main)] bg-[var(--bg-subtle)] hover:bg-[var(--bg-hover)] border border-[var(--border)] transition-colors cursor-pointer shrink-0"
             title="Search companies, patterns, and questions (⌘K)"
             aria-label="Search everything"
           >
@@ -169,7 +180,7 @@ export const Header: React.FC<HeaderProps> = () => {
           <button
             onClick={handleLiveRefresh}
             disabled={isRefreshing}
-            className="apple-press hidden md:flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-xs text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--bg-subtle)] transition-colors cursor-pointer disabled:opacity-70"
+            className="apple-press hidden lg:flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-xs text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--bg-subtle)] transition-colors cursor-pointer disabled:opacity-70 shrink-0"
             title="Click to refresh live dataset"
             aria-label="Refresh live dataset"
           >
@@ -196,19 +207,21 @@ export const Header: React.FC<HeaderProps> = () => {
           <Show when="signed-out">
             <div className="flex items-center gap-1.5 shrink-0">
               <SignInButton mode="modal">
-                <button className="apple-press h-8 inline-flex items-center text-xs font-semibold px-2.5 sm:px-3 rounded-full bg-[var(--text-main)] text-[var(--bg-page)] hover:opacity-90 transition-opacity cursor-pointer shadow-2xs shrink-0">
+                <button className="apple-press h-8 inline-flex items-center text-xs font-semibold px-3 rounded-full bg-[var(--text-main)] text-[var(--bg-page)] hover:opacity-90 transition-opacity cursor-pointer shadow-2xs shrink-0">
                   Sign in
                 </button>
               </SignInButton>
-              <SignUpButton mode="modal">
-                <button className="apple-press h-8 inline-flex items-center text-xs font-medium px-3 rounded-full bg-[var(--bg-subtle)] border border-[var(--border)] text-[var(--text-main)] hover:bg-[var(--bg-hover)] transition-colors cursor-pointer hidden sm:inline-flex shrink-0">
-                  Sign up
-                </button>
-              </SignUpButton>
+              <div className="hidden sm:block shrink-0">
+                <SignUpButton mode="modal">
+                  <button className="apple-press h-8 inline-flex items-center text-xs font-medium px-3 rounded-full bg-[var(--bg-subtle)] border border-[var(--border)] text-[var(--text-main)] hover:bg-[var(--bg-hover)] transition-colors cursor-pointer shrink-0">
+                    Sign up
+                  </button>
+                </SignUpButton>
+              </div>
             </div>
           </Show>
 
-          <div className="inline-flex items-center">
+          <div className="inline-flex items-center shrink-0">
             <UserProfileMenu />
           </div>
 
@@ -239,7 +252,7 @@ export const Header: React.FC<HeaderProps> = () => {
 
       {/* Mobile Collapsible Navigation Panel */}
       {mobileMenuOpen && (
-        <div className="md:hidden border-t border-[var(--border)] bg-[var(--bg-page)]/95 backdrop-blur-3xl px-4 py-3 space-y-1 shadow-lg animate-in slide-in-from-top-2 duration-200">
+        <div className="md:hidden border-t border-[var(--border)] bg-[var(--bg-page)]/95 backdrop-blur-3xl px-4 py-3.5 space-y-3 shadow-xl animate-in slide-in-from-top-2 duration-200">
           <nav className="flex flex-col space-y-1 text-sm font-medium">
             <Link
               href="/"
@@ -250,7 +263,10 @@ export const Header: React.FC<HeaderProps> = () => {
                   : 'text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--bg-subtle)]/50'
               }`}
             >
-              <span>Companies</span>
+              <div className="flex items-center gap-2.5">
+                <Building2 className="w-4 h-4 text-emerald-500" />
+                <span>Companies</span>
+              </div>
               <span className="text-xs text-[var(--text-muted)] font-mono">680+</span>
             </Link>
 
@@ -263,7 +279,10 @@ export const Header: React.FC<HeaderProps> = () => {
                   : 'text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--bg-subtle)]/50'
               }`}
             >
-              <span>Patterns</span>
+              <div className="flex items-center gap-2.5">
+                <Layers className="w-4 h-4 text-teal-500" />
+                <span>Patterns</span>
+              </div>
               <span className="text-xs text-[var(--text-muted)] font-mono">22</span>
             </Link>
 
@@ -276,8 +295,11 @@ export const Header: React.FC<HeaderProps> = () => {
                   : 'text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--bg-subtle)]/50'
               }`}
             >
-              <span>Strategy</span>
-              <span className="text-xs text-[var(--text-muted)] font-mono">Roadmap</span>
+              <div className="flex items-center gap-2.5">
+                <Compass className="w-4 h-4 text-blue-500" />
+                <span>Strategy Roadmap</span>
+              </div>
+              <span className="text-xs text-[var(--text-muted)] font-mono">Guide</span>
             </Link>
 
             <Link
@@ -289,10 +311,35 @@ export const Header: React.FC<HeaderProps> = () => {
                   : 'text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--bg-subtle)]/50'
               }`}
             >
-              <span>SQL Interview Hub</span>
-              <span className="text-xs text-emerald-500 font-mono">NEW</span>
+              <div className="flex items-center gap-2.5">
+                <Database className="w-4 h-4 text-purple-500" />
+                <span>SQL Interview Hub</span>
+              </div>
+              <span className="text-[10px] px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-500 font-mono font-semibold">NEW</span>
             </Link>
           </nav>
+
+          {/* Auth options for signed-out users in drawer */}
+          <Show when="signed-out">
+            <div className="pt-2 border-t border-[var(--border)]/60 grid grid-cols-2 gap-2">
+              <SignInButton mode="modal">
+                <button
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="apple-press h-9 w-full rounded-xl text-xs font-semibold bg-[var(--text-main)] text-[var(--bg-page)] flex items-center justify-center cursor-pointer shadow-2xs"
+                >
+                  Sign in
+                </button>
+              </SignInButton>
+              <SignUpButton mode="modal">
+                <button
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="apple-press h-9 w-full rounded-xl text-xs font-medium bg-[var(--bg-subtle)] border border-[var(--border)] text-[var(--text-main)] flex items-center justify-center cursor-pointer"
+                >
+                  Sign up
+                </button>
+              </SignUpButton>
+            </div>
+          </Show>
 
           <div className="pt-2 border-t border-[var(--border)]/60 flex items-center justify-between text-xs text-[var(--text-muted)]">
             <button
@@ -304,14 +351,14 @@ export const Header: React.FC<HeaderProps> = () => {
               className="apple-press flex items-center gap-1.5 py-2 px-2 rounded-lg hover:text-[var(--text-main)] cursor-pointer"
             >
               <span className={`w-2 h-2 rounded-full bg-emerald-500 ${isRefreshing ? 'animate-ping' : ''}`} />
-              <span>{isRefreshing ? 'Checking live status...' : 'Live Dataset Sync'}</span>
+              <span>{isRefreshing ? 'Checking sync...' : 'Live Dataset Sync'}</span>
             </button>
 
             <a
               href="https://github.com/saitarrun/LeetMap-Pro"
               target="_blank"
               rel="noopener noreferrer"
-              className="apple-press flex items-center gap-1 py-2 px-2 rounded-lg hover:text-[var(--text-main)]"
+              className="apple-press flex items-center gap-1.5 py-2 px-2 rounded-lg hover:text-[var(--text-main)]"
             >
               <span>GitHub</span>
               <ExternalLink className="w-3 h-3" />
