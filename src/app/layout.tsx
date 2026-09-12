@@ -106,6 +106,7 @@ export const metadata: Metadata = {
       { url: '/favicon.ico', sizes: '48x48 32x32 16x16', type: 'image/x-icon' },
       { url: '/icon-48.png', sizes: '48x48', type: 'image/png' },
       { url: '/icon-96.png', sizes: '96x96', type: 'image/png' },
+      { url: '/icon-144.png', sizes: '144x144', type: 'image/png' },
       { url: '/icon-192.png', sizes: '192x192', type: 'image/png' },
       { url: '/icon.svg', type: 'image/svg+xml' },
     ],
@@ -122,7 +123,7 @@ const jsonLd = [
     '@type': 'WebSite',
     name: 'LeetMap Pro',
     alternateName: ['LeetMap', 'LeetMapPro', 'leetmap-pro.vercel.app'],
-    url: 'https://leetmap-pro.vercel.app',
+    url: 'https://leetmap-pro.vercel.app/',
     inLanguage: 'en-US',
     potentialAction: {
       '@type': 'SearchAction',
@@ -221,6 +222,7 @@ export default async function RootLayout({
         <link rel="icon" type="image/x-icon" href="/favicon.ico" sizes="48x48 32x32 16x16" />
         <link rel="icon" type="image/png" sizes="48x48" href="/icon-48.png" />
         <link rel="icon" type="image/png" sizes="96x96" href="/icon-96.png" />
+        <link rel="icon" type="image/png" sizes="144x144" href="/icon-144.png" />
         <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png" />
         <link rel="shortcut icon" href="/favicon.ico" />
         <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
