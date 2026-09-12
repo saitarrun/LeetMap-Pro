@@ -9,6 +9,9 @@ import {
   Clock,
   ChevronRight,
   Code2,
+  SlidersHorizontal,
+  ArrowUpDown,
+  ChevronDown,
 } from 'lucide-react';
 import { PatternSummary, SyncStatus } from '@/types';
 import { Header } from '@/components/Header';
@@ -227,8 +230,53 @@ export const PatternsHubClient: React.FC<PatternsHubClientProps> = ({
           </div>
         </div>
 
-        {/* Minimal Category Tabs & Sort */}
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-2.5 text-xs max-w-4xl mx-auto w-full pt-1">
+        {/* Mobile Filter & Sort Controls (Single Clean Row) */}
+        <div className="flex sm:hidden items-center justify-between gap-2 text-xs max-w-4xl mx-auto w-full pt-1">
+          <div
+            className={`relative flex-1 flex items-center gap-1.5 px-3 py-2 rounded-xl border transition-all ${
+              categoryFilter !== 'ALL'
+                ? 'bg-[var(--accent)]/10 border-[var(--accent)]/30 text-[var(--accent)] font-medium'
+                : 'bg-[var(--bg-subtle)] border-[var(--border)] text-[var(--text-main)]'
+            }`}
+          >
+            <SlidersHorizontal className="w-3.5 h-3.5 shrink-0 opacity-70" />
+            <select
+              value={categoryFilter}
+              onChange={(e) => handleCategoryChange(e.target.value as CategoryFilterType)}
+              className="w-full bg-transparent text-xs font-medium focus:outline-none cursor-pointer appearance-none pr-4 text-inherit"
+              aria-label="Filter patterns by category"
+            >
+              <option value="ALL" className="bg-[var(--bg-card)] text-[var(--text-main)]">All Categories</option>
+              <option value="Arrays & Strings" className="bg-[var(--bg-card)] text-[var(--text-main)]">Arrays & Strings</option>
+              <option value="Linked Lists" className="bg-[var(--bg-card)] text-[var(--text-main)]">Linked Lists</option>
+              <option value="Trees & Tries" className="bg-[var(--bg-card)] text-[var(--text-main)]">Trees & Tries</option>
+              <option value="Graphs" className="bg-[var(--bg-card)] text-[var(--text-main)]">Graphs</option>
+              <option value="Dynamic Programming" className="bg-[var(--bg-card)] text-[var(--text-main)]">Dynamic Programming</option>
+              <option value="Stacks & Queues" className="bg-[var(--bg-card)] text-[var(--text-main)]">Stacks & Queues</option>
+              <option value="Heaps & Intervals" className="bg-[var(--bg-card)] text-[var(--text-main)]">Heaps & Intervals</option>
+              <option value="Advanced & Greedy" className="bg-[var(--bg-card)] text-[var(--text-main)]">Advanced & Greedy</option>
+            </select>
+            <ChevronDown className="w-3 h-3 opacity-60 absolute right-2.5 pointer-events-none" />
+          </div>
+
+          <div className="relative flex-1 flex items-center gap-1.5 px-3 py-2 rounded-xl border bg-[var(--bg-subtle)] border-[var(--border)] text-[var(--text-main)]">
+            <ArrowUpDown className="w-3.5 h-3.5 shrink-0 opacity-70" />
+            <select
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value as typeof sortBy)}
+              className="w-full bg-transparent text-xs font-medium focus:outline-none cursor-pointer appearance-none pr-4 text-[var(--text-main)]"
+              aria-label="Sort patterns"
+            >
+              <option value="total" className="bg-[var(--bg-card)] text-[var(--text-main)]">Most Questions</option>
+              <option value="name" className="bg-[var(--bg-card)] text-[var(--text-main)]">Name (A-Z)</option>
+              <option value="hard" className="bg-[var(--bg-card)] text-[var(--text-main)]">Most Hard</option>
+            </select>
+            <ChevronDown className="w-3 h-3 opacity-60 absolute right-2.5 pointer-events-none" />
+          </div>
+        </div>
+
+        {/* Desktop Category Tabs & Sort */}
+        <div className="hidden sm:flex sm:flex-row items-center justify-between gap-2.5 text-xs max-w-4xl mx-auto w-full pt-1">
           <div className="flex flex-wrap items-center justify-center gap-1">
             {[
               { key: 'ALL', label: 'All' },
@@ -255,7 +303,7 @@ export const PatternsHubClient: React.FC<PatternsHubClientProps> = ({
             ))}
           </div>
 
-          <div className="flex items-center gap-1.5 self-center sm:self-auto shrink-0 text-xs text-[var(--text-muted)]">
+          <div className="flex items-center gap-1.5 shrink-0 text-xs text-[var(--text-muted)]">
             <span className="text-[11px] opacity-60">Sort:</span>
             <select
               value={sortBy}

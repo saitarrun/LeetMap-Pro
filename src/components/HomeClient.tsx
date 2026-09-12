@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useMemo, useEffect, useRef } from 'react';
-import { Search, X, Pin, Sparkles, ExternalLink, CheckCircle2 } from 'lucide-react';
+import { Search, X, Pin, Sparkles, ExternalLink, CheckCircle2, SlidersHorizontal, ArrowUpDown, ChevronDown } from 'lucide-react';
 import { toast } from 'sonner';
 import { CompanySummary, SyncStatus, DailyChallenge } from '@/types';
 import { Header } from '@/components/Header';
@@ -290,9 +290,53 @@ export const HomeClient: React.FC<HomeClientProps> = ({
             )}
           </div>
 
-          {/* Minimal Category Tabs */}
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 text-xs pt-1">
-            <div className="flex items-center gap-1 overflow-x-auto pb-1 sm:pb-0 scrollbar-none">
+          {/* Mobile Filter & Sort Controls (Single Clean Row) */}
+          <div className="flex sm:hidden items-center justify-between gap-2 text-xs pt-1">
+            <div
+              className={`relative flex-1 flex items-center gap-1.5 px-3 py-2 rounded-xl border transition-all ${
+                categoryFilter !== 'ALL'
+                  ? 'bg-[var(--accent)]/10 border-[var(--accent)]/30 text-[var(--accent)] font-medium'
+                  : 'bg-[var(--bg-subtle)] border-[var(--border)] text-[var(--text-main)]'
+              }`}
+            >
+              <SlidersHorizontal className="w-3.5 h-3.5 shrink-0 opacity-70" />
+              <select
+                value={categoryFilter}
+                onChange={(e) => setCategoryFilter(e.target.value as typeof categoryFilter)}
+                className="w-full bg-transparent text-xs font-medium focus:outline-none cursor-pointer appearance-none pr-4 text-inherit"
+                aria-label="Filter companies by category"
+              >
+                <option value="ALL" className="bg-[var(--bg-card)] text-[var(--text-main)]">All Categories</option>
+                <option value="PINNED" className="bg-[var(--bg-card)] text-[var(--text-main)]">
+                  Pinned {pinnedSet.size > 0 ? `(${pinnedSet.size})` : ''}
+                </option>
+                <option value="FAANG" className="bg-[var(--bg-card)] text-[var(--text-main)]">FAANG & Big Tech</option>
+                <option value="FINTECH" className="bg-[var(--bg-card)] text-[var(--text-main)]">FinTech & Quant</option>
+                <option value="POPULAR" className="bg-[var(--bg-card)] text-[var(--text-main)]">100+ Questions</option>
+                <option value="SQL" className="bg-[var(--bg-card)] text-[var(--text-main)]">Has SQL</option>
+              </select>
+              <ChevronDown className="w-3 h-3 opacity-60 absolute right-2.5 pointer-events-none" />
+            </div>
+
+            <div className="relative flex-1 flex items-center gap-1.5 px-3 py-2 rounded-xl border bg-[var(--bg-subtle)] border-[var(--border)] text-[var(--text-main)]">
+              <ArrowUpDown className="w-3.5 h-3.5 shrink-0 opacity-70" />
+              <select
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value as typeof sortBy)}
+                className="w-full bg-transparent text-xs font-medium focus:outline-none cursor-pointer appearance-none pr-4 text-[var(--text-main)]"
+                aria-label="Sort companies"
+              >
+                <option value="total" className="bg-[var(--bg-card)] text-[var(--text-main)]">Most Questions</option>
+                <option value="name" className="bg-[var(--bg-card)] text-[var(--text-main)]">Name (A-Z)</option>
+                <option value="hard" className="bg-[var(--bg-card)] text-[var(--text-main)]">Most Hard</option>
+              </select>
+              <ChevronDown className="w-3 h-3 opacity-60 absolute right-2.5 pointer-events-none" />
+            </div>
+          </div>
+
+          {/* Desktop Category Tabs & Sort */}
+          <div className="hidden sm:flex sm:items-center justify-between gap-2.5 text-xs pt-1">
+            <div className="flex items-center gap-1 overflow-x-auto pb-0 scrollbar-none">
               {[
                 { key: 'ALL', label: 'All' },
                 {
@@ -328,7 +372,7 @@ export const HomeClient: React.FC<HomeClientProps> = ({
               ))}
             </div>
 
-            <div className="flex items-center gap-1.5 self-end sm:self-auto shrink-0 text-xs">
+            <div className="flex items-center gap-1.5 shrink-0 text-xs">
               <span className="text-[var(--text-muted)] text-[11px]">Sort:</span>
               <select
                 value={sortBy}
