@@ -345,15 +345,15 @@ export const HomeClient: React.FC<HomeClientProps> = ({
 
         {/* LeetCode Daily Challenge Banner */}
         {dailyChallenge && !searchQuery && categoryFilter === 'ALL' && (
-          <section className="max-w-2xl mx-auto">
-            <div className={`p-3.5 sm:p-4 rounded-2xl border transition-all ${
+          <section className="max-w-2xl mx-auto w-full">
+            <div className={`p-3.5 sm:p-4 rounded-2xl border transition-all overflow-hidden ${
               isDailySolved
                 ? 'bg-emerald-500/5 border-emerald-500/20'
                 : 'bg-[var(--bg-card)] border-[var(--border)] shadow-sm hover:border-[var(--text-muted)]/30'
             }`}>
-              <div className="flex items-center justify-between gap-3 flex-wrap sm:flex-nowrap">
-                <div className="flex items-center gap-3 min-w-0">
-                  <div className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 ${
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 min-w-0">
+                <div className="flex items-start sm:items-center gap-3 min-w-0 flex-1">
+                  <div className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 mt-0.5 sm:mt-0 ${
                     isDailySolved
                       ? 'bg-emerald-500/15 text-emerald-500'
                       : 'bg-amber-500/10 text-amber-500 border border-amber-500/20'
@@ -361,12 +361,12 @@ export const HomeClient: React.FC<HomeClientProps> = ({
                     {isDailySolved ? <CheckCircle2 className="w-5 h-5" /> : <Sparkles className="w-4 h-4" />}
                   </div>
 
-                  <div className="min-w-0">
+                  <div className="min-w-0 flex-1 space-y-0.5">
                     <div className="flex items-center gap-2 flex-wrap">
                       <span className="text-[10px] font-mono uppercase tracking-wider text-[var(--text-muted)]">
                         Today&apos;s LeetCode Challenge
                       </span>
-                      <span className={`px-1.5 py-0.2 rounded text-[9px] font-semibold uppercase ${
+                      <span className={`px-1.5 py-0.5 rounded text-[9px] font-semibold uppercase ${
                         dailyChallenge.difficulty === 'EASY'
                           ? 'text-emerald-500 bg-emerald-500/10'
                           : dailyChallenge.difficulty === 'MEDIUM'
@@ -381,22 +381,22 @@ export const HomeClient: React.FC<HomeClientProps> = ({
                       href={dailyChallenge.link}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="group inline-flex items-center gap-1.5 mt-0.5"
+                      className="group flex items-center gap-1.5 mt-0.5 min-w-0 max-w-full"
                     >
-                      <h3 className={`text-sm font-semibold truncate hover:underline ${
+                      <h3 className={`text-xs sm:text-sm font-semibold hover:underline break-words line-clamp-2 leading-snug ${
                         isDailySolved ? 'line-through text-[var(--text-muted)]' : 'text-[var(--text-main)]'
                       }`}>
                         #{dailyChallenge.id} {dailyChallenge.title}
                       </h3>
-                      <ExternalLink className="w-3 h-3 text-[var(--text-muted)] group-hover:text-[var(--text-main)] shrink-0 transition-colors" />
+                      <ExternalLink className="w-3.5 h-3.5 text-[var(--text-muted)] group-hover:text-[var(--text-main)] shrink-0 transition-colors" />
                     </a>
                   </div>
                 </div>
 
-                <div className="flex items-center gap-2 shrink-0 self-end sm:self-center">
+                <div className="flex items-center gap-2 shrink-0 sm:self-center pt-2 sm:pt-0 border-t sm:border-t-0 border-[var(--border)]/50 justify-end sm:justify-start">
                   <button
                     onClick={() => handleToggleSolvedDaily(dailyChallenge)}
-                    className={`apple-press text-xs px-3 py-1.5 rounded-xl font-medium flex items-center gap-1.5 transition-colors cursor-pointer ${
+                    className={`apple-press text-xs px-3.5 py-1.5 rounded-xl font-medium flex items-center justify-center gap-1.5 transition-colors cursor-pointer w-full sm:w-auto ${
                       isDailySolved
                         ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20'
                         : 'bg-[var(--bg-subtle)] hover:bg-[var(--bg-hover)] text-[var(--text-main)] border border-[var(--border)]'

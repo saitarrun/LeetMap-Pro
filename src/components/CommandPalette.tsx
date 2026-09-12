@@ -86,13 +86,13 @@ export function CommandPalette() {
               {query.trim().length >= 2 ? (loading ? <p className="px-3 py-8 text-center text-sm text-[var(--text-muted)]">Searching every problem...</p> : results.length > 0 ? results.map(({ label, description, href, meta, type }) => (
                 <button key={`${type}-${href}`} type="button" onClick={() => href.startsWith('http') ? window.open(href, '_blank', 'noopener,noreferrer') : navigate(href)} className="apple-press flex w-full items-center gap-3 rounded-xl px-3 py-3 text-left hover:bg-[var(--bg-hover)]" role="option" aria-selected="false">
                   <span className="grid size-9 shrink-0 place-items-center rounded-xl border border-[var(--border)] bg-[var(--bg-subtle)] text-[var(--text-muted)]"><Search className="size-4" /></span>
-                  <span className="min-w-0"><span className="block text-sm font-semibold text-[var(--text-main)]">{label}</span><span className="block truncate text-xs text-[var(--text-muted)]">{description}</span></span>
+                  <span className="min-w-0 flex-1"><span className="block text-sm font-semibold text-[var(--text-main)] truncate">{label}</span><span className="block truncate text-xs text-[var(--text-muted)]">{description}</span></span>
                   {meta && <span className="ml-auto shrink-0 text-[10px] font-medium text-[var(--text-light)]">{meta}</span>}
                 </button>
               )) : <p className="px-3 py-8 text-center text-sm text-[var(--text-muted)]">No matching companies, problems, patterns, or SQL questions</p>) : filteredCommands.length > 0 ? filteredCommands.map(({ label, description, href, Icon }) => (
                 <button key={href} type="button" onClick={() => navigate(href)} className={`apple-press flex w-full items-center gap-3 rounded-xl px-3 py-3 text-left hover:bg-[var(--bg-hover)] ${pathname === href ? 'bg-[var(--bg-subtle)]' : ''}`} role="option" aria-selected={pathname === href}>
                   <span className="grid size-9 shrink-0 place-items-center rounded-xl border border-[var(--border)] bg-[var(--bg-subtle)] text-[var(--text-muted)]"><Icon className="size-4" /></span>
-                  <span className="min-w-0"><span className="block text-sm font-semibold text-[var(--text-main)]">{label}</span><span className="block truncate text-xs text-[var(--text-muted)]">{description}</span></span>
+                  <span className="min-w-0 flex-1"><span className="block text-sm font-semibold text-[var(--text-main)] truncate">{label}</span><span className="block truncate text-xs text-[var(--text-muted)]">{description}</span></span>
                 </button>
               )) : <p className="px-3 py-8 text-center text-sm text-[var(--text-muted)]">No matching sections</p>}
             </div>

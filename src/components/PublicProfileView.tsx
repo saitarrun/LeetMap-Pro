@@ -749,7 +749,7 @@ export const PublicProfileView: React.FC<PublicProfileViewProps> = ({ initialDat
                 key={`${prob.slug}-${prob.solvedAt}`}
                 className="py-3 flex items-center justify-between gap-4 text-xs"
               >
-                <div className="flex items-center gap-3 min-w-0">
+                <div className="flex items-center gap-3 min-w-0 flex-1">
                   <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />
                   <a
                     href={`https://leetcode.com/problems/${prob.slug}`}
