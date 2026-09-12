@@ -148,11 +148,57 @@ export default async function PatternDetailPage({ params }: PageProps) {
     url: `https://leetmap-pro.vercel.app/patterns/${safeSlug}`,
   };
 
+  const topProblems = (pattern.problems || []).slice(0, 15);
+  const itemListJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    name: `${pattern.name} Practice Problems`,
+    description: `Core curated LeetCode coding problems for the ${pattern.name} pattern.`,
+    numberOfItems: topProblems.length,
+    itemListElement: topProblems.map((p, idx) => ({
+      '@type': 'ListItem',
+      position: idx + 1,
+      name: p.title,
+      url: `https://leetcode.com/problems/${p.slug}`,
+    })),
+  };
+
+  const faqJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: [
+      {
+        '@type': 'Question',
+        name: `What is the ${pattern.name} pattern in coding interviews?`,
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: `${pattern.tagline} It is categorized under ${pattern.category} and features ${pattern.total} curated interview problems across Easy (${pattern.easy}), Medium (${pattern.medium}), and Hard (${pattern.hard}) difficulties.`,
+        },
+      },
+      {
+        '@type': 'Question',
+        name: `Which tech companies frequently test ${pattern.name}?`,
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: `Companies frequently asking ${pattern.name} questions include ${(pattern.topCompanies || []).slice(0, 6).join(', ') || 'Google, Meta, Amazon, and Microsoft'}.`,
+        },
+      },
+      {
+        '@type': 'Question',
+        name: `How do I master the ${pattern.name} pattern?`,
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: `Start by studying the algorithmic strategy and template code, then practice Easy and Medium problems before attempting Hard problems under timed conditions.`,
+        },
+      },
+    ],
+  };
+
   return (
     <div className="min-h-screen flex flex-col">
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify([breadcrumbJsonLd, articleJsonLd]) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify([breadcrumbJsonLd, articleJsonLd, itemListJsonLd, faqJsonLd]) }}
       />
       <Header syncStatus={syncStatus} />
       <main className="flex-1 pb-16">

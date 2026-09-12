@@ -21,6 +21,36 @@ export const metadata = {
   alternates: {
     canonical: 'https://leetmap-pro.vercel.app/terms',
   },
+  openGraph: {
+    title: 'Terms of Service | LeetMap Pro',
+    description: 'Terms of Service and legal disclosures for using LeetMap Pro, an open-source technical interview preparation and frequency explorer.',
+    url: 'https://leetmap-pro.vercel.app/terms',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Terms of Service | LeetMap Pro',
+    description: 'Terms of Service and legal disclosures for using LeetMap Pro.',
+  },
+};
+
+const termsBreadcrumbJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    {
+      '@type': 'ListItem',
+      position: 1,
+      name: 'Home',
+      item: 'https://leetmap-pro.vercel.app',
+    },
+    {
+      '@type': 'ListItem',
+      position: 2,
+      name: 'Terms of Service',
+      item: 'https://leetmap-pro.vercel.app/terms',
+    },
+  ],
 };
 
 export default function TermsPage() {
@@ -38,6 +68,10 @@ export default function TermsPage() {
 
   return (
     <div className="min-h-screen flex flex-col bg-[var(--bg-main)] text-[var(--text-main)]">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(termsBreadcrumbJsonLd) }}
+      />
       <Header syncStatus={syncStatus} />
 
       <main className="flex-1 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">

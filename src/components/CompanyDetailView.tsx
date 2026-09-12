@@ -231,7 +231,7 @@ export const CompanyDetailView: React.FC<CompanyDetailViewProps> = ({ company })
         <div className="flex items-center justify-center gap-3">
           <div className="w-12 h-12 rounded-2xl bg-[var(--bg-subtle)] border border-[var(--border)] flex items-center justify-center shrink-0 overflow-hidden">
             {faviconUrl ? (
-              <Image src={faviconUrl} alt="" width={26} height={26} className="w-6.5 h-6.5 object-contain" />
+              <Image src={faviconUrl} alt={`${company.name} logo`} width={26} height={26} className="w-6.5 h-6.5 object-contain" />
             ) : (
               <span className="text-xs font-semibold text-[var(--text-muted)]">{initials}</span>
             )}
@@ -261,6 +261,10 @@ export const CompanyDetailView: React.FC<CompanyDetailViewProps> = ({ company })
             </>
           )}
         </div>
+
+        <p className="text-xs sm:text-sm text-[var(--text-muted)] max-w-xl mx-auto font-normal leading-relaxed">
+          Coding interview questions asked by {company.name}, ranked by frequency across 30-day, 3-month, and 6-month recency windows.
+        </p>
 
         {/* Discreet Actions (Pin & Track Switcher) */}
         <div className="flex items-center justify-center gap-2 pt-1">

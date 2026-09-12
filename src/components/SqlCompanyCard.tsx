@@ -68,7 +68,7 @@ export const SqlCompanyCard: React.FC<SqlCompanyCardProps> = ({
           {faviconUrl && !imgFailed ? (
             <Image
               src={faviconUrl}
-              alt=""
+              alt={`${company.name} logo`}
               width={22}
               height={22}
               onError={() => setImgFailed(true)}

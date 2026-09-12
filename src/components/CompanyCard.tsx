@@ -62,7 +62,7 @@ export const CompanyCard: React.FC<CompanyCardProps> = ({
           {faviconUrl && !imgFailed ? (
             <Image
               src={faviconUrl}
-              alt=""
+              alt={`${company.name} logo`}
               width={22}
               height={22}
               onError={() => setImgFailed(true)}

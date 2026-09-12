@@ -128,11 +128,34 @@ export default async function SqlCompanyPage({ params }: PageProps) {
     })),
   };
 
+  const faqJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: [
+      {
+        '@type': 'Question',
+        name: `What SQL questions are asked in ${company.name} interviews?`,
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: `Technical interviews at ${company.name} cover ${sqlProblems.length} curated SQL and relational database queries, including joins, window functions, aggregations, and subqueries.`,
+        },
+      },
+      {
+        '@type': 'Question',
+        name: `Are SQL questions common for software engineers and data analysts at ${company.name}?`,
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: `Yes, data engineers, backend engineers, business intelligence analysts, and data scientists at ${company.name} are routinely tested on real-world database query problems.`,
+        },
+      },
+    ],
+  };
+
   return (
     <div className="min-h-screen flex flex-col">
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify([breadcrumbJsonLd, itemListJsonLd]) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify([breadcrumbJsonLd, itemListJsonLd, faqJsonLd]) }}
       />
       <Header syncStatus={syncStatus} />
       <main className="flex-1 pb-16">

@@ -22,6 +22,36 @@ export const metadata = {
   alternates: {
     canonical: 'https://leetmap-pro.vercel.app/privacy',
   },
+  openGraph: {
+    title: 'Privacy Policy | LeetMap Pro',
+    description: 'Learn how LeetMap Pro handles your data with privacy-first engineering, transparent local storage, and zero third-party ads.',
+    url: 'https://leetmap-pro.vercel.app/privacy',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Privacy Policy | LeetMap Pro',
+    description: 'Learn how LeetMap Pro handles your data with privacy-first engineering.',
+  },
+};
+
+const privacyBreadcrumbJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    {
+      '@type': 'ListItem',
+      position: 1,
+      name: 'Home',
+      item: 'https://leetmap-pro.vercel.app',
+    },
+    {
+      '@type': 'ListItem',
+      position: 2,
+      name: 'Privacy Policy',
+      item: 'https://leetmap-pro.vercel.app/privacy',
+    },
+  ],
 };
 
 export default function PrivacyPage() {
@@ -39,6 +69,10 @@ export default function PrivacyPage() {
 
   return (
     <div className="min-h-screen flex flex-col bg-[var(--bg-main)] text-[var(--text-main)]">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(privacyBreadcrumbJsonLd) }}
+      />
       <Header syncStatus={syncStatus} />
 
       <main className="flex-1 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
