@@ -67,7 +67,7 @@ export default function TermsPage() {
   const lastUpdated = 'September 12, 2026';
 
   return (
-    <div className="min-h-screen flex flex-col bg-[var(--bg-main)] text-[var(--text-main)]">
+    <div className="min-h-screen flex flex-col bg-[var(--bg-page)] text-[var(--text-main)]">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(termsBreadcrumbJsonLd) }}

@@ -14,7 +14,7 @@ export const metadata: Metadata = {
 
 export default function NotFound() {
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center px-4 sm:px-6 py-16 text-center bg-[var(--bg-main)] text-[var(--text-main)]">
+    <div className="min-h-screen flex flex-col items-center justify-center px-4 sm:px-6 py-16 text-center bg-[var(--bg-page)] text-[var(--text-main)]">
       <div className="w-16 h-16 rounded-2xl bg-[var(--bg-subtle)] border border-[var(--border)] flex items-center justify-center mb-6 text-[var(--text-muted)] shadow-sm">
         <Compass className="w-8 h-8 opacity-70 animate-pulse" />
       </div>
@@ -34,7 +34,7 @@ export default function NotFound() {
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full max-w-md text-left mb-8">
         <Link
           href="/"
-          className="apple-press flex items-center justify-between p-3.5 rounded-xl border border-[var(--border)] bg-[var(--bg-card)] hover:bg-[var(--bg-hover)] transition-colors group"
+          className="apple-press flex items-center justify-between p-3.5 rounded-2xl border border-[var(--border)] bg-[var(--bg-card)] hover:bg-[var(--bg-hover)] transition-colors group"
         >
           <div className="flex items-center gap-3">
             <Home className="w-4 h-4 text-[var(--text-muted)] group-hover:text-emerald-500 transition-colors" />
@@ -48,7 +48,7 @@ export default function NotFound() {
 
         <Link
           href="/patterns"
-          className="apple-press flex items-center justify-between p-3.5 rounded-xl border border-[var(--border)] bg-[var(--bg-card)] hover:bg-[var(--bg-hover)] transition-colors group"
+          className="apple-press flex items-center justify-between p-3.5 rounded-2xl border border-[var(--border)] bg-[var(--bg-card)] hover:bg-[var(--bg-hover)] transition-colors group"
         >
           <div className="flex items-center gap-3">
             <LayoutGrid className="w-4 h-4 text-[var(--text-muted)] group-hover:text-emerald-500 transition-colors" />
@@ -62,7 +62,7 @@ export default function NotFound() {
 
         <Link
           href="/strategy"
-          className="apple-press flex items-center justify-between p-3.5 rounded-xl border border-[var(--border)] bg-[var(--bg-card)] hover:bg-[var(--bg-hover)] transition-colors group"
+          className="apple-press flex items-center justify-between p-3.5 rounded-2xl border border-[var(--border)] bg-[var(--bg-card)] hover:bg-[var(--bg-hover)] transition-colors group"
         >
           <div className="flex items-center gap-3">
             <GitFork className="w-4 h-4 text-[var(--text-muted)] group-hover:text-emerald-500 transition-colors" />
@@ -76,7 +76,7 @@ export default function NotFound() {
 
         <Link
           href="/sql"
-          className="apple-press flex items-center justify-between p-3.5 rounded-xl border border-[var(--border)] bg-[var(--bg-card)] hover:bg-[var(--bg-hover)] transition-colors group"
+          className="apple-press flex items-center justify-between p-3.5 rounded-2xl border border-[var(--border)] bg-[var(--bg-card)] hover:bg-[var(--bg-hover)] transition-colors group"
         >
           <div className="flex items-center gap-3">
             <Database className="w-4 h-4 text-[var(--text-muted)] group-hover:text-emerald-500 transition-colors" />
@@ -91,7 +91,7 @@ export default function NotFound() {
 
       <Link
         href="/"
-        className="apple-press inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-[var(--text-main)] text-[var(--bg-main)] text-xs font-semibold shadow-sm hover:opacity-90 transition-opacity"
+        className="apple-press inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-[var(--text-main)] text-[var(--bg-page)] text-xs font-semibold shadow-sm hover:opacity-90 transition-opacity"
       >
         Back to Home
       </Link>

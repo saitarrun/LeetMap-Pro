@@ -85,12 +85,12 @@ export const PatternCard: React.FC<PatternCardProps> = ({
       <div className="space-y-3">
         {/* Header row: Icon + Category Badge */}
         <div className="flex items-center justify-between gap-3">
-          <div className="w-9 h-9 rounded-xl bg-[var(--bg-subtle)] flex items-center justify-center shrink-0 text-[var(--text-main)]">
+          <div className="w-9 h-9 rounded-xl bg-[var(--bg-subtle)] border border-[var(--border-subtle)] flex items-center justify-center shrink-0 text-[var(--text-main)]">
             <IconComponent className="w-4.5 h-4.5 opacity-80" />
           </div>
 
           <div className="flex items-center gap-1.5">
-            <span className="px-2 py-0.5 rounded-md text-[10px] font-medium bg-[var(--bg-subtle)] text-[var(--text-muted)]">
+            <span className="px-2 py-0.5 rounded-md text-[10px] font-medium bg-[var(--bg-subtle)] text-[var(--text-muted)] border border-[var(--border-subtle)]">
               {pattern.category}
             </span>
             {solvedCount > 0 && (
@@ -104,7 +104,7 @@ export const PatternCard: React.FC<PatternCardProps> = ({
 
         {/* Title & Tagline */}
         <div>
-          <h3 className="text-sm font-semibold text-[var(--text-main)] transition-colors">
+          <h3 className="text-sm font-semibold tracking-[-0.015em] text-[var(--text-main)] transition-colors">
             {pattern.name}
           </h3>
           <p className="text-xs text-[var(--text-muted)] mt-1 line-clamp-2 leading-relaxed font-normal">

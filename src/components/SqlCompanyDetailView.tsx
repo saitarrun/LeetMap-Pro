@@ -600,7 +600,7 @@ export const SqlCompanyDetailView: React.FC<SqlCompanyDetailViewProps> = ({ comp
                     }`}
                     aria-label={`Mark ${prob.title} as ${isSolved ? 'unsolved' : 'solved'}`}
                   >
-                    {isSolved && <CheckCircle2 className="w-3.5 h-3.5 stroke-[2.5]" />}
+                    {isSolved && <CheckCircle2 className="w-3.5 h-3.5 stroke-[2.5] apple-check-pop" />}
                   </button>
 
                   {/* Problem Info */}

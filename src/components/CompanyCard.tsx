@@ -54,11 +54,11 @@ export const CompanyCard: React.FC<CompanyCardProps> = ({
   return (
     <Link
       href={`/company/${company.slug}`}
-      className="apple-card group relative flex items-center justify-between p-3.5 rounded-xl border border-[var(--border)] bg-[var(--bg-card)] hover:border-[var(--text-muted)]/30 select-none"
+      className="apple-card group relative flex items-center justify-between p-3.5 rounded-2xl border border-[var(--border)] bg-[var(--bg-card)] hover:border-[var(--text-muted)]/30 select-none"
     >
       <div className="flex items-center gap-3 min-w-0">
         {/* Minimal Logo Container */}
-        <div className="w-9 h-9 rounded-lg bg-[var(--bg-subtle)] flex items-center justify-center shrink-0 overflow-hidden">
+        <div className="w-9 h-9 rounded-xl bg-[var(--bg-subtle)] border border-[var(--border-subtle)] flex items-center justify-center shrink-0 overflow-hidden">
           {faviconUrl && !imgFailed ? (
             <Image
               src={faviconUrl}
@@ -76,7 +76,7 @@ export const CompanyCard: React.FC<CompanyCardProps> = ({
         {/* Company Meta */}
         <div className="min-w-0">
           <div className="flex items-center gap-2">
-            <h3 className="text-sm font-semibold text-[var(--text-main)] truncate">
+            <h3 className="text-sm font-semibold tracking-[-0.015em] text-[var(--text-main)] truncate">
               {company.name}
             </h3>
             {solvedCount > 0 && (
@@ -109,7 +109,7 @@ export const CompanyCard: React.FC<CompanyCardProps> = ({
         <button
           type="button"
           onClick={handlePin}
-          className={`apple-press p-1 rounded-md transition-colors cursor-pointer ${
+          className={`apple-press p-1.5 rounded-lg transition-colors cursor-pointer ${
             pinned
               ? 'text-amber-500'
               : 'text-[var(--text-light)] opacity-0 group-hover:opacity-100 hover:text-[var(--text-main)]'
@@ -119,7 +119,7 @@ export const CompanyCard: React.FC<CompanyCardProps> = ({
         >
           <Pin className={`w-3.5 h-3.5 ${pinned ? 'fill-amber-500 rotate-45' : ''}`} />
         </button>
-        <ChevronRight className="w-3.5 h-3.5 text-[var(--text-light)] opacity-40 group-hover:opacity-100 transition-opacity" />
+        <ChevronRight className="w-3.5 h-3.5 text-[var(--text-light)] opacity-40 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all duration-150" />
       </div>
     </Link>
   );
