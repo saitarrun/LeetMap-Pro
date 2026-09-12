@@ -62,7 +62,15 @@ export const UserProfileMenu: React.FC = () => {
   if (!user) return null;
 
   const openAccountSettings = () => {
-    router.push('/account');
+    try {
+      if (typeof clerk?.openUserProfile === 'function') {
+        clerk.openUserProfile();
+      } else {
+        router.push('/account');
+      }
+    } catch {
+      router.push('/account');
+    }
   };
 
   const activityModal = isActivityOpen
@@ -352,7 +360,15 @@ export const MobileUserMenuSection: React.FC<{ onClose: () => void }> = ({ onClo
           type="button"
           onClick={() => {
             onClose();
-            router.push('/account');
+            try {
+              if (typeof clerk?.openUserProfile === 'function') {
+                clerk.openUserProfile();
+              } else {
+                router.push('/account');
+              }
+            } catch {
+              router.push('/account');
+            }
           }}
           className="flex h-9 items-center justify-center gap-1.5 rounded-xl border border-[var(--border)] bg-[var(--bg-card)] text-xs font-medium text-[var(--text-main)] active:bg-[var(--bg-hover)] cursor-pointer"
         >
