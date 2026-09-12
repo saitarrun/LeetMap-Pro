@@ -74,10 +74,15 @@ export const SqlExplorerView: React.FC<SqlExplorerViewProps> = ({ catalog }) => 
     return catalog.problems.filter((p) => {
       if (searchQuery.trim()) {
         const q = searchQuery.toLowerCase().trim();
+        const cleanNum = q.replace(/^#/, '');
+        const isNum = /^\d+$/.test(cleanNum);
+        const matchesId = p.id && (p.id === cleanNum || (cleanNum.length >= 2 && p.id.startsWith(cleanNum)));
         const matchesTitle = p.title.toLowerCase().includes(q);
-        const matchesId = p.id && p.id.includes(q);
         const matchesTopic = p.topics.some((t) => t.toLowerCase().includes(q));
-        if (!matchesTitle && !matchesId && !matchesTopic) return false;
+        const matchesCompany = p.companies.some((c) =>
+          c.name.toLowerCase().includes(q) || c.slug.toLowerCase().includes(q)
+        );
+        if (!matchesTitle && !matchesId && !matchesTopic && !matchesCompany) return false;
       }
       if (difficultyFilter !== 'ALL' && p.difficulty !== difficultyFilter) {
         return false;
@@ -227,7 +232,7 @@ export const SqlExplorerView: React.FC<SqlExplorerViewProps> = ({ catalog }) => 
             type="search"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Filter SQL problems (#176, Second Highest Salary, JOIN...)"
+            placeholder="Search SQL problems by name, # (176), company (Amazon), or topic..."
             className="w-full pl-10 pr-9 py-2.5 rounded-2xl text-xs bg-[var(--bg-card)] border border-[var(--border)] text-[var(--text-main)] placeholder:text-[var(--text-light)] focus:outline-none focus:border-[var(--text-muted)]/40 focus:ring-4 focus:ring-[var(--border)]/40 transition-[box-shadow,border-color] duration-150"
           />
           {searchQuery && (
