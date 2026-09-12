@@ -1,7 +1,7 @@
 import React from 'react';
 import fs from 'fs';
 import path from 'path';
-import { SyncStatus, DailyChallenge } from '@/types';
+import { SyncStatus, DailyChallenge, CompanySummary } from '@/types';
 import { HomeClient } from '@/components/HomeClient';
 
 export const metadata = {
@@ -80,12 +80,17 @@ export default function HomePage() {
     }
   }
 
-  let companies = [];
+  let totalCompaniesCount = 0;
+  let initialCompanies: CompanySummary[] = [];
   if (fs.existsSync(companiesPath)) {
     try {
-      companies = JSON.parse(fs.readFileSync(companiesPath, 'utf8'));
+      const allCompanies: CompanySummary[] = JSON.parse(fs.readFileSync(companiesPath, 'utf8'));
+      totalCompaniesCount = allCompanies.length;
+      // Provide top 36 most popular companies for instant SSR render and lean HTML payload (<100KB)
+      const sorted = [...allCompanies].sort((a, b) => b.total - a.total);
+      initialCompanies = sorted.slice(0, 36);
     } catch {
-      companies = [];
+      initialCompanies = [];
     }
   }
 
@@ -96,7 +101,8 @@ export default function HomePage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(homeFaqJsonLd) }}
       />
       <HomeClient
-        initialCompanies={companies}
+        initialCompanies={initialCompanies}
+        totalCompaniesCount={totalCompaniesCount}
         initialSyncStatus={syncStatus}
         initialDailyChallenge={dailyChallenge}
       />

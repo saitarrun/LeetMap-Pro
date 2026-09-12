@@ -12,6 +12,7 @@ import { toggleProblemSolved } from '@/utils/progress';
 
 interface HomeClientProps {
   initialCompanies?: CompanySummary[];
+  totalCompaniesCount?: number;
   initialSyncStatus: SyncStatus | null;
   initialDailyChallenge?: DailyChallenge | null;
 }
@@ -40,11 +41,14 @@ function getMillisecondsUntilLocalMidnight(now: Date = new Date()): number {
 
 export const HomeClient: React.FC<HomeClientProps> = ({
   initialCompanies = [],
+  totalCompaniesCount = 0,
   initialSyncStatus,
   initialDailyChallenge = null,
 }) => {
   const [companies, setCompanies] = useState<CompanySummary[]>(initialCompanies);
-  const [isLoadingCompanies, setIsLoadingCompanies] = useState(initialCompanies.length === 0);
+  const [totalCount, setTotalCount] = useState<number>(totalCompaniesCount || initialCompanies.length);
+  const [isLoadingCompanies, setIsLoadingCompanies] = useState(false);
+  const [visibleCount, setVisibleCount] = useState<number>(36);
   const [syncStatus, setSyncStatus] = useState<SyncStatus | null>(initialSyncStatus);
   const [dailyChallenge, setDailyChallenge] = useState<DailyChallenge | null>(initialDailyChallenge);
   const [searchQuery, setSearchQuery] = useState('');
@@ -56,6 +60,10 @@ export const HomeClient: React.FC<HomeClientProps> = ({
   const isDailySolved = dailyChallenge ? solvedSet.has(dailyChallenge.slug) : false;
 
   useEffect(() => {
+    setVisibleCount(36);
+  }, [searchQuery, categoryFilter, sortBy]);
+
+  useEffect(() => {
     const controller = new AbortController();
 
     const loadCompanies = () => {
@@ -65,7 +73,10 @@ export const HomeClient: React.FC<HomeClientProps> = ({
           return response.json();
         })
         .then((data) => {
-          if (Array.isArray(data)) setCompanies(data);
+          if (Array.isArray(data)) {
+            setCompanies(data);
+            setTotalCount(data.length);
+          }
         })
         .catch((error: unknown) => {
           if (error instanceof Error && error.name !== 'AbortError') {
@@ -75,10 +86,8 @@ export const HomeClient: React.FC<HomeClientProps> = ({
         .finally(() => setIsLoadingCompanies(false));
     };
 
-    // If initialCompanies was empty (e.g. client navigation), fetch once
-    if (initialCompanies.length === 0) {
-      loadCompanies();
-    }
+    // Populate full dataset after initial lightweight SSR render
+    loadCompanies();
 
     const handleLiveRefreshEvent = (e: Event) => {
       const customEvent = e as CustomEvent<SyncStatus>;
@@ -229,6 +238,10 @@ export const HomeClient: React.FC<HomeClientProps> = ({
       });
   }, [companies, searchQuery, categoryFilter, sortBy, pinnedSet]);
 
+  const displayedCompanies = useMemo(() => {
+    return filteredCompanies.slice(0, visibleCount);
+  }, [filteredCompanies, visibleCount]);
+
   return (
     <div className="min-h-screen flex flex-col">
       <Header syncStatus={syncStatus} />
@@ -249,7 +262,7 @@ export const HomeClient: React.FC<HomeClientProps> = ({
           </p>
 
           <div className="flex items-center justify-center gap-2 pt-1 text-xs text-[var(--text-muted)] font-normal">
-            <span>{companies.length} companies</span>
+            <span>{totalCount || companies.length} companies</span>
             <span className="opacity-30">·</span>
             <span>{syncStatus?.uniqueProblemsCount?.toLocaleString() || '3,400+'} questions</span>
             {userSolvedCount > 0 && (
@@ -545,10 +558,28 @@ export const HomeClient: React.FC<HomeClientProps> = ({
             </button>
           </div>
         ) : (
-          <section className="apple-enter grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-            {filteredCompanies.map((company) => (
-              <CompanyCard key={company.slug} company={company} />
-            ))}
+          <section className="space-y-6">
+            <div className="apple-enter grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+              {displayedCompanies.map((company) => (
+                <CompanyCard key={company.slug} company={company} />
+              ))}
+            </div>
+
+            {visibleCount < filteredCompanies.length && (
+              <div className="flex flex-col items-center justify-center pt-4 pb-2 gap-2">
+                <button
+                  type="button"
+                  onClick={() => setVisibleCount((prev) => Math.min(prev + 36, filteredCompanies.length))}
+                  className="apple-press inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-[var(--border)] bg-[var(--bg-card)] hover:bg-[var(--bg-hover)] text-xs font-semibold text-[var(--text-main)] shadow-xs transition-all cursor-pointer"
+                >
+                  <span>Show More Companies</span>
+                  <ChevronDown className="w-3.5 h-3.5 text-[var(--text-muted)]" />
+                </button>
+                <p className="text-[11px] text-[var(--text-muted)] font-normal">
+                  Showing {Math.min(visibleCount, filteredCompanies.length)} of {filteredCompanies.length} companies
+                </p>
+              </div>
+            )}
           </section>
         )}
 
