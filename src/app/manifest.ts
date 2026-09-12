@@ -8,7 +8,38 @@ export default function manifest(): MetadataRoute.Manifest {
     start_url: '/',
     display: 'standalone',
     background_color: '#09090b',
-    theme_color: '#10b981',
+    categories: ['education', 'developer tools', 'productivity'],
+    orientation: 'any',
+    shortcuts: [
+      {
+        name: 'Companies',
+        short_name: 'Companies',
+        description: 'Browse 680+ company-wise question lists',
+        url: '/',
+        icons: [{ src: '/icon-192.png', sizes: '192x192' }],
+      },
+      {
+        name: 'Patterns',
+        short_name: 'Patterns',
+        description: 'Master 22 LeetCode coding patterns',
+        url: '/patterns',
+        icons: [{ src: '/icon-192.png', sizes: '192x192' }],
+      },
+      {
+        name: 'Strategy Roadmap',
+        short_name: 'Roadmap',
+        description: 'Interview prerequisite and strategy graph',
+        url: '/strategy',
+        icons: [{ src: '/icon-192.png', sizes: '192x192' }],
+      },
+      {
+        name: 'SQL Hub',
+        short_name: 'SQL',
+        description: 'Company-wise SQL database questions',
+        url: '/sql',
+        icons: [{ src: '/icon-192.png', sizes: '192x192' }],
+      },
+    ],
     icons: [
       {
         src: '/icon-192.png',

@@ -45,8 +45,20 @@ export const metadata: Metadata = {
   authors: [{ name: 'LeetMap Pro' }],
   creator: 'LeetMap Pro',
   publisher: 'LeetMap Pro',
+  category: 'education',
+  classification: 'Software Engineering Coding Interview Preparation & LeetCode Roadmaps',
+  formatDetection: {
+    telephone: false,
+    date: false,
+    email: false,
+    address: false,
+  },
   alternates: {
     canonical: '/',
+    types: {
+      'application/rss+xml': [{ url: 'https://leetmap-pro.vercel.app/feed.xml', title: 'LeetMap Pro RSS Feed' }],
+      'application/atom+xml': [{ url: 'https://leetmap-pro.vercel.app/feed.xml?format=atom', title: 'LeetMap Pro Atom Feed' }],
+    },
   },
   robots: {
     index: true,
@@ -77,12 +89,17 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
+    site: '@saitarrun',
+    creator: '@saitarrun',
     title: 'LeetMap Pro — Company Wise LeetCode & SQL Questions',
     description: 'Browse coding interview problems actually asked by 680+ tech companies, ranked by frequency and recency.',
     images: ['/icon-512.png'],
   },
   verification: {
     google: 'zQTd5IdhklFb7tgLr2_5ixhggoG5rfAD-NnMdoJ4Ijk',
+    other: {
+      'msvalidate.01': '3197E69BB7A94B4BD584F66EB2436C2C',
+    },
   },
   icons: {
     icon: [
@@ -106,6 +123,7 @@ const jsonLd = [
     name: 'LeetMap Pro',
     alternateName: ['LeetMap', 'LeetMapPro', 'leetmap-pro.vercel.app'],
     url: 'https://leetmap-pro.vercel.app',
+    inLanguage: 'en-US',
     potentialAction: {
       '@type': 'SearchAction',
       target: {
@@ -139,6 +157,49 @@ const jsonLd = [
       price: '0',
       priceCurrency: 'USD',
     },
+    learningResourceType: 'Practice Problem Set & Interactive Roadmap',
+    educationalLevel: 'Beginner to Advanced Software Engineers',
+    teaches: [
+      'Data Structures and Algorithms',
+      'Technical Coding Interviews',
+      'LeetCode Problem Solving Patterns',
+      'SQL Database Queries',
+      'Time and Space Complexity Analysis',
+    ],
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    itemListElement: [
+      {
+        '@type': 'SiteNavigationElement',
+        position: 1,
+        name: 'Companies',
+        description: 'Browse 680+ tech companies and their most frequently asked interview problems',
+        url: 'https://leetmap-pro.vercel.app/',
+      },
+      {
+        '@type': 'SiteNavigationElement',
+        position: 2,
+        name: 'Patterns',
+        description: '22 core coding interview patterns with problem lists and templates',
+        url: 'https://leetmap-pro.vercel.app/patterns',
+      },
+      {
+        '@type': 'SiteNavigationElement',
+        position: 3,
+        name: 'Strategy Roadmap',
+        description: 'Prerequisite graph and study roadmap for technical interviews',
+        url: 'https://leetmap-pro.vercel.app/strategy',
+      },
+      {
+        '@type': 'SiteNavigationElement',
+        position: 4,
+        name: 'SQL Interview Hub',
+        description: 'Company-wise SQL database interview questions and solution walkthroughs',
+        url: 'https://leetmap-pro.vercel.app/sql',
+      },
+    ],
   },
 ];
 
@@ -163,6 +224,9 @@ export default async function RootLayout({
         <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png" />
         <link rel="shortcut icon" href="/favicon.ico" />
         <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+        <link rel="alternate" type="application/rss+xml" title="LeetMap Pro — Latest Interview Questions & Daily Challenges" href="/feed.xml" />
+        <link rel="alternate" type="application/atom+xml" title="LeetMap Pro Atom Feed" href="/feed.xml?format=atom" />
+        <link rel="author" href="/humans.txt" />
         <Script src="/theme-init.js" strategy="beforeInteractive" nonce={nonce} />
         <script
           type="application/ld+json"
@@ -173,6 +237,7 @@ export default async function RootLayout({
         <ClerkProvider
           dynamic
           nonce={nonce}
+          prefetchUI={false}
           appearance={{
             options: {
               unsafe_disableDevelopmentModeWarnings: true,

@@ -68,11 +68,50 @@ export default async function SqlPage() {
     }
   }
 
+  const breadcrumbJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      {
+        '@type': 'ListItem',
+        position: 1,
+        name: 'Home',
+        item: 'https://leetmap-pro.vercel.app',
+      },
+      {
+        '@type': 'ListItem',
+        position: 2,
+        name: 'SQL Interview Hub',
+        item: 'https://leetmap-pro.vercel.app/sql',
+      },
+    ],
+  };
+
+  const itemListJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    name: 'Company-Wise SQL Interview Practice',
+    description: 'Browse coding interview SQL questions asked by top tech firms.',
+    numberOfItems: companies.length,
+    itemListElement: companies.slice(0, 30).map((c, idx) => ({
+      '@type': 'ListItem',
+      position: idx + 1,
+      name: `${c.name} SQL Questions`,
+      url: `https://leetmap-pro.vercel.app/sql/${c.slug}`,
+    })),
+  };
+
   return (
-    <SqlHubClient
-      companies={companies}
-      catalog={catalog}
-      syncStatus={syncStatus}
-    />
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify([breadcrumbJsonLd, itemListJsonLd]) }}
+      />
+      <SqlHubClient
+        companies={companies}
+        catalog={catalog}
+        syncStatus={syncStatus}
+      />
+    </>
   );
 }

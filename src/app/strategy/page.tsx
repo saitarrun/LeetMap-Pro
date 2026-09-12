@@ -63,5 +63,44 @@ export default async function StrategyPage() {
     }
   }
 
-  return <StrategyClient patterns={patterns} patternProblems={patternProblems} syncStatus={syncStatus} />;
+  const breadcrumbJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      {
+        '@type': 'ListItem',
+        position: 1,
+        name: 'Home',
+        item: 'https://leetmap-pro.vercel.app',
+      },
+      {
+        '@type': 'ListItem',
+        position: 2,
+        name: 'Strategy Roadmap',
+        item: 'https://leetmap-pro.vercel.app/strategy',
+      },
+    ],
+  };
+
+  const articleJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'TechArticle',
+    headline: 'LeetCode Pattern Strategy & Dependency Roadmap',
+    description: 'Master the 18 core LeetCode coding interview patterns in optimal prerequisite order with an interactive visual dependency graph.',
+    author: {
+      '@type': 'Organization',
+      name: 'LeetMap Pro',
+    },
+    url: 'https://leetmap-pro.vercel.app/strategy',
+  };
+
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify([breadcrumbJsonLd, articleJsonLd]) }}
+      />
+      <StrategyClient patterns={patterns} patternProblems={patternProblems} syncStatus={syncStatus} />
+    </>
+  );
 }

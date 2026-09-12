@@ -1,0 +1,11 @@
+/* TEAM */
+Founder & Developer: Sai Tarrun Pitta
+Site: https://leetmap-pro.vercel.app
+GitHub: https://github.com/saitarrun/LeetMap-Pro
+Twitter: @saitarrun
+
+/* SITE */
+Standards: HTML5, CSS3, JSON-LD, OpenGraph, Schema.org
+Components: Next.js 16 (App Router & Turbopack), React 19, Tailwind CSS
+Authentication: Clerk
+Hosting: Vercel

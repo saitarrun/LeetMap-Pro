@@ -64,9 +64,48 @@ export default async function PatternsPage() {
     }
   }
 
+  const breadcrumbJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      {
+        '@type': 'ListItem',
+        position: 1,
+        name: 'Home',
+        item: 'https://leetmap-pro.vercel.app',
+      },
+      {
+        '@type': 'ListItem',
+        position: 2,
+        name: 'Coding Patterns',
+        item: 'https://leetmap-pro.vercel.app/patterns',
+      },
+    ],
+  };
+
+  const itemListJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    name: '22 Core LeetCode Coding Patterns',
+    description: 'Master 22 essential interview patterns for technical coding interviews.',
+    numberOfItems: patterns.length,
+    itemListElement: patterns.map((p, idx) => ({
+      '@type': 'ListItem',
+      position: idx + 1,
+      name: p.name,
+      url: `https://leetmap-pro.vercel.app/patterns/${p.slug}`,
+    })),
+  };
+
   return (
-    <Suspense fallback={null}>
-      <PatternsHubClient patterns={patterns} patternProblems={patternProblems} syncStatus={syncStatus} />
-    </Suspense>
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify([breadcrumbJsonLd, itemListJsonLd]) }}
+      />
+      <Suspense fallback={null}>
+        <PatternsHubClient patterns={patterns} patternProblems={patternProblems} syncStatus={syncStatus} />
+      </Suspense>
+    </>
   );
 }
