@@ -11,6 +11,12 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://leetmap-pro.vercel.app'),
+  applicationName: 'LeetMap Pro',
+  appleWebApp: {
+    title: 'LeetMap Pro',
+    capable: true,
+    statusBarStyle: 'default',
+  },
   title: {
     default: 'LeetMap Pro — Company Wise LeetCode & SQL Questions',
     template: '%s — LeetMap Pro',
@@ -50,20 +56,33 @@ export const metadata: Metadata = {
     siteName: 'LeetMap Pro',
     title: 'LeetMap Pro — Company Wise LeetCode & SQL Questions',
     description: 'Browse coding interview problems actually asked by 680+ tech companies, ranked by frequency and recency. Free interactive strategy roadmap and curated SQL problems.',
+    images: [
+      {
+        url: '/icon-512.png',
+        width: 512,
+        height: 512,
+        alt: 'LeetMap Pro Logo',
+      },
+    ],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'LeetMap Pro — Company Wise LeetCode & SQL Questions',
     description: 'Browse coding interview problems actually asked by 680+ tech companies, ranked by frequency and recency.',
+    images: ['/icon-512.png'],
   },
   verification: {
     google: 'zQTd5IdhklFb7tgLr2_5ixhggoG5rfAD-NnMdoJ4Ijk',
   },
   icons: {
     icon: [
+      { url: '/favicon.ico', sizes: '48x48 32x32 16x16', type: 'image/x-icon' },
+      { url: '/icon-48.png', sizes: '48x48', type: 'image/png' },
+      { url: '/icon-96.png', sizes: '96x96', type: 'image/png' },
+      { url: '/icon-192.png', sizes: '192x192', type: 'image/png' },
       { url: '/icon.svg', type: 'image/svg+xml' },
-      { url: '/favicon.ico', sizes: 'any' },
     ],
+    shortcut: ['/favicon.ico'],
     apple: [
       { url: '/apple-touch-icon.png', sizes: '180x180', type: 'image/png' },
     ],
@@ -75,6 +94,7 @@ const jsonLd = [
     '@context': 'https://schema.org',
     '@type': 'WebSite',
     name: 'LeetMap Pro',
+    alternateName: ['LeetMap', 'LeetMapPro', 'leetmap-pro.vercel.app'],
     url: 'https://leetmap-pro.vercel.app',
     potentialAction: {
       '@type': 'SearchAction',
@@ -90,7 +110,8 @@ const jsonLd = [
     '@type': 'Organization',
     name: 'LeetMap Pro',
     url: 'https://leetmap-pro.vercel.app',
-    logo: 'https://leetmap-pro.vercel.app/apple-touch-icon.png',
+    logo: 'https://leetmap-pro.vercel.app/icon-192.png',
+    image: 'https://leetmap-pro.vercel.app/icon-512.png',
     sameAs: [
       'https://github.com/saitarrun/LeetMap-Pro',
     ],
@@ -123,6 +144,15 @@ export default async function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <head>
         <meta name="google-site-verification" content="zQTd5IdhklFb7tgLr2_5ixhggoG5rfAD-NnMdoJ4Ijk" />
+        <meta name="application-name" content="LeetMap Pro" />
+        <meta name="apple-mobile-web-app-title" content="LeetMap Pro" />
+        <meta property="og:site_name" content="LeetMap Pro" />
+        <link rel="icon" type="image/x-icon" href="/favicon.ico" sizes="48x48 32x32 16x16" />
+        <link rel="icon" type="image/png" sizes="48x48" href="/icon-48.png" />
+        <link rel="icon" type="image/png" sizes="96x96" href="/icon-96.png" />
+        <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png" />
+        <link rel="shortcut icon" href="/favicon.ico" />
+        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
         <Script src="/theme-init.js" strategy="beforeInteractive" nonce={nonce} />
         <script
           type="application/ld+json"
