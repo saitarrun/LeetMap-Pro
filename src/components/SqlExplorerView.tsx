@@ -12,6 +12,9 @@ import {
   Building2,
   ArrowLeft,
   X,
+  Zap,
+  ArrowUpDown,
+  ChevronDown,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { SqlProblem, SqlCatalog } from '@/types';
@@ -239,8 +242,8 @@ export const SqlExplorerView: React.FC<SqlExplorerViewProps> = ({ catalog }) => 
           )}
         </div>
 
-        {/* Controls */}
-        <div className="flex flex-wrap items-center gap-2">
+        {/* Desktop Controls */}
+        <div className="hidden md:flex flex-wrap items-center gap-2">
           {/* Company Filter Dropdown */}
           <div className="flex items-center gap-1.5 bg-[var(--bg-card)] border border-[var(--border)] px-3 py-1.5 rounded-2xl text-xs shadow-2xs">
             <Building2 className="w-3.5 h-3.5 text-[var(--text-muted)]" />
@@ -311,9 +314,224 @@ export const SqlExplorerView: React.FC<SqlExplorerViewProps> = ({ catalog }) => 
         </div>
       </div>
 
-      {/* SQL Table */}
+      {/* Mobile Unified Controls (Single clean block, zero clutter) */}
+      <div className="md:hidden space-y-2 pt-1">
+        {/* Row 1: Company & Difficulty */}
+        <div className="grid grid-cols-2 gap-2 text-xs">
+          {/* Company Filter */}
+          <div className="relative flex items-center gap-1.5 px-3 py-2 rounded-xl border bg-[var(--bg-subtle)] border-[var(--border)] text-[var(--text-main)]">
+            <Building2 className="w-3.5 h-3.5 opacity-70 shrink-0" />
+            <select
+              value={selectedCompany}
+              onChange={(e) => setSelectedCompany(e.target.value)}
+              className="w-full bg-transparent text-xs font-medium focus:outline-none cursor-pointer appearance-none pr-4 text-inherit"
+              aria-label="Filter SQL problems by company"
+            >
+              <option value="ALL" className="bg-[var(--bg-card)] text-[var(--text-main)]">All Companies</option>
+              {companyOptions.map(([slug, { name, count }]) => (
+                <option key={slug} value={slug} className="bg-[var(--bg-card)] text-[var(--text-main)]">
+                  {name} ({count})
+                </option>
+              ))}
+            </select>
+            <ChevronDown className="w-3.5 h-3.5 opacity-60 absolute right-2.5 pointer-events-none" />
+          </div>
+
+          {/* Difficulty Select */}
+          <div
+            className={`relative flex items-center gap-1.5 px-3 py-2 rounded-xl border transition-all ${
+              difficultyFilter !== 'ALL'
+                ? 'bg-[var(--accent)]/10 border-[var(--accent)]/30 text-[var(--accent)] font-medium'
+                : 'bg-[var(--bg-subtle)] border-[var(--border)] text-[var(--text-main)]'
+            }`}
+          >
+            <Zap className="w-3.5 h-3.5 opacity-70 shrink-0" />
+            <select
+              value={difficultyFilter}
+              onChange={(e) => setDifficultyFilter(e.target.value as typeof difficultyFilter)}
+              className="w-full bg-transparent text-xs font-medium focus:outline-none cursor-pointer appearance-none pr-4 text-inherit"
+              aria-label="Filter SQL problems by difficulty"
+            >
+              <option value="ALL" className="bg-[var(--bg-card)] text-[var(--text-main)]">All Difficulties</option>
+              <option value="EASY" className="bg-[var(--bg-card)] text-[var(--text-main)]">Easy</option>
+              <option value="MEDIUM" className="bg-[var(--bg-card)] text-[var(--text-main)]">Medium</option>
+              <option value="HARD" className="bg-[var(--bg-card)] text-[var(--text-main)]">Hard</option>
+            </select>
+            <ChevronDown className="w-3.5 h-3.5 opacity-60 absolute right-2.5 pointer-events-none" />
+          </div>
+        </div>
+
+        {/* Row 2: Sort & Quick Actions */}
+        <div className="grid grid-cols-2 gap-2 text-xs">
+          {/* Sort */}
+          <div className="relative flex items-center gap-1.5 px-3 py-2 rounded-xl border bg-[var(--bg-subtle)] border-[var(--border)] text-[var(--text-main)]">
+            <ArrowUpDown className="w-3.5 h-3.5 opacity-70 shrink-0" />
+            <select
+              value={sortBy}
+              onChange={(e) => {
+                handleSort(e.target.value as typeof sortBy);
+              }}
+              className="w-full bg-transparent text-xs font-medium focus:outline-none cursor-pointer appearance-none pr-4 text-inherit"
+              aria-label="Sort SQL problems"
+            >
+              <option value="companiesCount" className="bg-[var(--bg-card)] text-[var(--text-main)]">Companies Asking</option>
+              <option value="difficulty" className="bg-[var(--bg-card)] text-[var(--text-main)]">Difficulty</option>
+              <option value="title" className="bg-[var(--bg-card)] text-[var(--text-main)]">Problem Name</option>
+              <option value="acceptance" className="bg-[var(--bg-card)] text-[var(--text-main)]">Acceptance %</option>
+              <option value="id" className="bg-[var(--bg-card)] text-[var(--text-main)]">Problem #</option>
+            </select>
+            <ChevronDown className="w-3.5 h-3.5 opacity-60 absolute right-2.5 pointer-events-none" />
+          </div>
+
+          {/* Quick Action Buttons */}
+          <div className="flex items-center gap-1.5">
+            <button
+              type="button"
+              onClick={() => setHideSolved(!hideSolved)}
+              className={`apple-press flex-1 flex items-center justify-center gap-1 py-2 px-2 rounded-xl border text-xs font-medium transition-all cursor-pointer truncate ${
+                hideSolved
+                  ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-600 dark:text-emerald-400 font-semibold'
+                  : 'bg-[var(--bg-subtle)] border-[var(--border)] text-[var(--text-muted)] hover:text-[var(--text-main)]'
+              }`}
+              title="Toggle solved problems"
+            >
+              <CheckCircle2 className="w-3.5 h-3.5 shrink-0" />
+              <span className="truncate">{hideSolved ? 'Unsolved' : 'Hide Solved'}</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={handleRandomProblem}
+              className="apple-press flex items-center justify-center p-2 rounded-xl border border-[var(--border)] bg-[var(--bg-subtle)] text-xs text-[var(--text-muted)] hover:text-[var(--text-main)] transition-colors cursor-pointer shrink-0"
+              title="Open random SQL problem"
+            >
+              <Shuffle className="w-3.5 h-3.5" />
+            </button>
+
+            <button
+              type="button"
+              onClick={handleExportCSV}
+              className="apple-press flex items-center justify-center p-2 rounded-xl border border-[var(--border)] bg-[var(--bg-subtle)] text-xs text-[var(--text-muted)] hover:text-[var(--text-main)] transition-colors cursor-pointer shrink-0"
+              title="Export to CSV"
+            >
+              <Download className="w-3.5 h-3.5" />
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* SQL Table & Mobile Cards */}
       <div className="apple-enter border border-[var(--border)] rounded-3xl bg-[var(--bg-card)] overflow-hidden shadow-xs">
-        <div className="overflow-x-auto">
+        {/* Mobile Problems Card List (No horizontal table scrolling needed) */}
+        <div className="md:hidden divide-y divide-[var(--border)]">
+          {sortedProblems.length === 0 ? (
+            <div className="py-12 px-4 text-center space-y-2">
+              <p className="text-sm font-semibold text-[var(--text-main)]">No matching SQL problems</p>
+              <p className="text-xs text-[var(--text-muted)]">Try adjusting your difficulty or company filters.</p>
+              <button
+                onClick={() => {
+                  setSearchQuery('');
+                  setDifficultyFilter('ALL');
+                  setSelectedCompany('ALL');
+                }}
+                className="apple-press mt-2 inline-flex items-center px-3.5 py-1.5 rounded-xl text-xs font-medium bg-[var(--bg-subtle)] text-[var(--text-main)] hover:bg-[var(--bg-hover)] border border-[var(--border)] cursor-pointer"
+              >
+                Reset filters
+              </button>
+            </div>
+          ) : (
+            sortedProblems.map((prob) => {
+              const isSolved = solvedSet.has(prob.slug);
+              const accPercent = prob.acceptance > 0
+                ? (prob.acceptance <= 1 ? (prob.acceptance * 100).toFixed(1) : prob.acceptance.toFixed(1)) + '%'
+                : '-';
+
+              let diffColorClass = 'text-[var(--diff-easy-text)] bg-[var(--diff-easy-bg)]';
+              if (prob.difficulty === 'MEDIUM') {
+                diffColorClass = 'text-[var(--diff-medium-text)] bg-[var(--diff-medium-bg)]';
+              } else if (prob.difficulty === 'HARD') {
+                diffColorClass = 'text-[var(--diff-hard-text)] bg-[var(--diff-hard-bg)]';
+              }
+
+              return (
+                <div
+                  key={prob.slug || prob.title}
+                  className={`p-3.5 transition-colors flex items-start gap-3 ${
+                    isSolved ? 'opacity-60 bg-[var(--bg-subtle)]/20' : ''
+                  }`}
+                >
+                  {/* Solved Checkbox */}
+                  <button
+                    type="button"
+                    onClick={() => handleToggleSolved(prob)}
+                    className={`apple-press mt-0.5 w-5 h-5 rounded-md border flex items-center justify-center shrink-0 transition-all cursor-pointer ${
+                      isSolved
+                        ? 'bg-emerald-500 border-emerald-500 text-white'
+                        : 'border-[var(--border)] hover:border-[var(--text-muted)] bg-[var(--bg-card)]'
+                    }`}
+                    aria-label={`Mark ${prob.title} as ${isSolved ? 'unsolved' : 'solved'}`}
+                  >
+                    {isSolved && <CheckCircle2 className="w-3.5 h-3.5 stroke-[2.5]" />}
+                  </button>
+
+                  {/* Problem Info */}
+                  <div className="flex-1 min-w-0 space-y-1">
+                    <div className="flex items-center gap-1.5 flex-wrap">
+                      {prob.id && (
+                        <span className="text-[11px] font-mono text-[var(--text-light)] font-medium shrink-0">
+                          #{prob.id}
+                        </span>
+                      )}
+                      <a
+                        href={getLeetCodeProblemUrl(prob.slug)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-xs font-semibold text-[var(--text-main)] hover:text-[var(--accent)] transition-colors inline-flex items-center gap-1 break-words line-clamp-2"
+                      >
+                        <span>{prob.title}</span>
+                        <ExternalLink className="w-3 h-3 opacity-40 shrink-0 inline" />
+                      </a>
+                    </div>
+
+                    {/* Metadata Row */}
+                    <div className="flex items-center gap-2 text-[11px] text-[var(--text-muted)] flex-wrap pt-0.5">
+                      <span className={`px-2 py-0.5 rounded-md text-[10px] font-semibold border ${diffColorClass}`}>
+                        {prob.difficulty.charAt(0) + prob.difficulty.slice(1).toLowerCase()}
+                      </span>
+                      <span>·</span>
+                      <span>{prob.companiesCount} companies</span>
+                      <span>·</span>
+                      <span>Acc {accPercent}</span>
+                    </div>
+
+                    {/* Companies asking */}
+                    {prob.companies && prob.companies.length > 0 && (
+                      <div className="flex flex-wrap items-center gap-1 pt-0.5">
+                        {Array.from(new Map(prob.companies.map((c) => [c.slug, c])).values())
+                          .slice(0, 3)
+                          .map((c) => (
+                            <Link
+                              key={c.slug}
+                              href={`/sql/${c.slug}`}
+                              className="text-[10px] px-1.5 py-0.5 rounded bg-[var(--bg-subtle)] text-[var(--text-light)] hover:text-[var(--text-main)]"
+                            >
+                              {c.name}
+                            </Link>
+                          ))}
+                        {prob.companies.length > 3 && (
+                          <span className="text-[9px] text-[var(--text-light)]">+{prob.companies.length - 3}</span>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              );
+            })
+          )}
+        </div>
+
+        {/* Desktop Table (Hidden on Mobile) */}
+        <div className="hidden md:block overflow-x-auto">
           <table className="w-full text-left text-xs border-collapse">
             <thead>
               <tr className="border-b border-[var(--border)] bg-[var(--bg-subtle)]/70 text-[var(--text-muted)] font-medium">
