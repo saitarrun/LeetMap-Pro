@@ -1,27 +1,12 @@
-import { UserProfile } from "@clerk/nextjs";
-import { currentUser } from "@clerk/nextjs/server";
-import { redirect } from "next/navigation";
-import { Header } from "@/components/Header";
-import Link from "next/link";
-import { ArrowLeft, Shield } from "lucide-react";
-import { Metadata } from "next";
+'use client';
 
-export const metadata: Metadata = {
-  title: "Account Settings | LeetMap Pro",
-  description: "Manage your LeetMap Pro user profile, connected accounts, security keys, and sessions.",
-  robots: {
-    index: false,
-    follow: false,
-  },
-};
+import React from 'react';
+import Link from 'next/link';
+import { UserProfile, SignedIn, SignedOut, RedirectToSignIn } from '@clerk/nextjs';
+import { Header } from '@/components/Header';
+import { ArrowLeft, Shield } from 'lucide-react';
 
-export default async function AccountPage() {
-  const user = await currentUser();
-
-  if (!user) {
-    redirect("/sign-in?redirect_url=/account");
-  }
-
+export default function AccountPage() {
   return (
     <div className="min-h-screen bg-[var(--bg-page)] text-[var(--text-main)] flex flex-col">
       <Header />
@@ -43,21 +28,26 @@ export default async function AccountPage() {
 
         {/* UserProfile Component */}
         <div className="flex justify-center pb-12">
-          <UserProfile
-            routing="hash"
-            appearance={{
-              elements: {
-                rootBox: "w-full max-w-3xl",
-                cardBox: "w-full shadow-none border border-[var(--border)] rounded-2xl bg-[var(--bg-card)]",
-                navbar: "border-r border-[var(--border)]",
-                navbarMobileMenuButton: "text-[var(--text-main)]",
-                headerTitle: "text-[var(--text-main)] font-bold",
-                headerSubtitle: "text-[var(--text-muted)]",
-                profileSectionTitleText: "text-[var(--text-main)] font-semibold",
-                userPreviewSecondaryIdentifier: "text-[var(--text-muted)]",
-              },
-            }}
-          />
+          <SignedIn>
+            <UserProfile
+              routing="hash"
+              appearance={{
+                elements: {
+                  rootBox: 'w-full max-w-3xl',
+                  cardBox: 'w-full shadow-none border border-[var(--border)] rounded-2xl bg-[var(--bg-card)]',
+                  navbar: 'border-r border-[var(--border)]',
+                  navbarMobileMenuButton: 'text-[var(--text-main)]',
+                  headerTitle: 'text-[var(--text-main)] font-bold',
+                  headerSubtitle: 'text-[var(--text-muted)]',
+                  profileSectionTitleText: 'text-[var(--text-main)] font-semibold',
+                  userPreviewSecondaryIdentifier: 'text-[var(--text-muted)]',
+                },
+              }}
+            />
+          </SignedIn>
+          <SignedOut>
+            <RedirectToSignIn redirectUrl="/account" />
+          </SignedOut>
         </div>
       </main>
     </div>
