@@ -239,7 +239,6 @@ export default async function RootLayout({
         <ClerkProvider
           dynamic
           nonce={nonce}
-          prefetchUI={false}
           appearance={{
             options: {
               unsafe_disableDevelopmentModeWarnings: true,

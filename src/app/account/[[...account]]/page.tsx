@@ -44,8 +44,7 @@ export default async function AccountPage() {
         {/* UserProfile Component */}
         <div className="flex justify-center pb-12">
           <UserProfile
-            routing="path"
-            path="/account"
+            routing="hash"
             appearance={{
               elements: {
                 rootBox: "w-full max-w-3xl",
