@@ -86,9 +86,9 @@ export default function HomePage() {
     try {
       const allCompanies: CompanySummary[] = JSON.parse(fs.readFileSync(companiesPath, 'utf8'));
       totalCompaniesCount = allCompanies.length;
-      // Provide top 36 most popular companies for instant SSR render and lean HTML payload (<100KB)
+      // Provide top 18 most popular companies for instant SSR render and lean HTML payload (<120KB)
       const sorted = [...allCompanies].sort((a, b) => b.total - a.total);
-      initialCompanies = sorted.slice(0, 36);
+      initialCompanies = sorted.slice(0, 18);
     } catch {
       initialCompanies = [];
     }

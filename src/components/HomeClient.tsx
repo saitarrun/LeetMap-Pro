@@ -48,7 +48,7 @@ export const HomeClient: React.FC<HomeClientProps> = ({
   const [companies, setCompanies] = useState<CompanySummary[]>(initialCompanies);
   const [totalCount, setTotalCount] = useState<number>(totalCompaniesCount || initialCompanies.length);
   const [isLoadingCompanies, setIsLoadingCompanies] = useState(false);
-  const [visibleCount, setVisibleCount] = useState<number>(36);
+  const [visibleCount, setVisibleCount] = useState<number>(18);
   const [syncStatus, setSyncStatus] = useState<SyncStatus | null>(initialSyncStatus);
   const [dailyChallenge, setDailyChallenge] = useState<DailyChallenge | null>(initialDailyChallenge);
   const [searchQuery, setSearchQuery] = useState('');
@@ -60,7 +60,7 @@ export const HomeClient: React.FC<HomeClientProps> = ({
   const isDailySolved = dailyChallenge ? solvedSet.has(dailyChallenge.slug) : false;
 
   useEffect(() => {
-    setVisibleCount(36);
+    setVisibleCount(18);
   }, [searchQuery, categoryFilter, sortBy]);
 
   useEffect(() => {
