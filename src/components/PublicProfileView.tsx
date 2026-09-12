@@ -200,10 +200,15 @@ export const PublicProfileView: React.FC<PublicProfileViewProps> = ({ initialDat
   const [showLevelModal, setShowLevelModal] = useState<boolean>(false);
   const [showBadgeModal, setShowBadgeModal] = useState<boolean>(false);
   const [badgeStyle, setBadgeStyle] = useState<'card' | 'compact'>('card');
+  const [badgeTarget, setBadgeTarget] = useState<string>('auto');
   const [mounted, setMounted] = useState<boolean>(false);
 
   useEffect(() => {
     setMounted(true);
+    try {
+      const saved = localStorage.getItem('leetmap_badge_target');
+      if (saved) setBadgeTarget(saved);
+    } catch {}
   }, []);
 
   // Close modals on Escape
@@ -239,7 +244,18 @@ export const PublicProfileView: React.FC<PublicProfileViewProps> = ({ initialDat
     ? `${window.location.origin}/api/badge/${initialData.user.username}`
     : `https://leetmap-pro.vercel.app/api/badge/${initialData.user.username}`;
 
-  const currentBadgeSrc = badgeStyle === 'compact' ? `${badgeBaseUrl}?style=compact` : badgeBaseUrl;
+  const currentBadgeSrc = useMemo(() => {
+    const params = new URLSearchParams();
+    if (badgeStyle === 'compact') {
+      params.set('style', 'compact');
+    }
+    if (badgeTarget && badgeTarget !== 'auto') {
+      params.set('target', badgeTarget);
+    }
+    const qs = params.toString();
+    return qs ? `${badgeBaseUrl}?${qs}` : badgeBaseUrl;
+  }, [badgeBaseUrl, badgeStyle, badgeTarget]);
+
   const badgeMarkdown = `[![LeetMap Pro Stats](${currentBadgeSrc})](${profileUrl})`;
   const badgeHtml = `<a href="${profileUrl}"><img src="${currentBadgeSrc}" alt="LeetMap Pro Stats for ${initialData.user.name}" /></a>`;
 
@@ -1038,6 +1054,67 @@ export const PublicProfileView: React.FC<PublicProfileViewProps> = ({ initialDat
                   Compact Shield Pill
                 </button>
               </div>
+
+              {/* Target Company Selector (for Rich Editorial Card) */}
+              {badgeStyle === 'card' && (
+                <div className="space-y-1.5 p-3 rounded-2xl bg-[var(--bg-subtle)]/40 border border-[var(--border)]">
+                  <div className="flex items-center justify-between">
+                    <label className="text-[11px] font-semibold text-[var(--text-muted)] uppercase tracking-wider flex items-center gap-1.5">
+                      <span>🎯</span>
+                      <span>Target Company Focus</span>
+                    </label>
+                    {badgeTarget !== 'auto' && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setBadgeTarget('auto');
+                          try {
+                            localStorage.setItem('leetmap_badge_target', 'auto');
+                          } catch {}
+                        }}
+                        className="apple-press text-[11px] text-emerald-600 dark:text-emerald-400 font-semibold hover:underline cursor-pointer"
+                      >
+                        Reset to Auto
+                      </button>
+                    )}
+                  </div>
+                  <select
+                    value={badgeTarget}
+                    onChange={(e) => {
+                      const val = e.target.value;
+                      setBadgeTarget(val);
+                      try {
+                        localStorage.setItem('leetmap_badge_target', val);
+                      } catch {}
+                    }}
+                    className="w-full bg-[var(--bg-card)] border border-[var(--border)] rounded-xl px-3 py-2 text-xs text-[var(--text-main)] font-medium focus:outline-none focus:border-emerald-500 cursor-pointer"
+                  >
+                    <option value="auto">⚡ Auto (Most Practiced / General FAANG)</option>
+                    <option value="none">🚫 None (Remove Target from Badge)</option>
+                    <optgroup label="Select Target Company">
+                      <option value="google">Google</option>
+                      <option value="meta">Meta</option>
+                      <option value="amazon">Amazon</option>
+                      <option value="apple">Apple</option>
+                      <option value="microsoft">Microsoft</option>
+                      <option value="netflix">Netflix</option>
+                      <option value="uber">Uber</option>
+                      <option value="bloomberg">Bloomberg</option>
+                      <option value="citadel">Citadel</option>
+                      <option value="stripe">Stripe</option>
+                      <option value="tiktok">TikTok</option>
+                      <option value="nvidia">NVIDIA</option>
+                      <option value="goldman-sachs">Goldman Sachs</option>
+                      <option value="salesforce">Salesforce</option>
+                      <option value="linkedin">LinkedIn</option>
+                      <option value="palantir">Palantir</option>
+                      <option value="databricks">Databricks</option>
+                      <option value="snowflake">Snowflake</option>
+                      <option value="doordash">DoorDash</option>
+                    </optgroup>
+                  </select>
+                </div>
+              )}
 
               {/* Live Preview Box */}
               <div className="space-y-2">

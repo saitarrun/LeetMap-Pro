@@ -379,6 +379,8 @@ export async function fetchPublicUserProfile(rawUsername: string): Promise<Publi
           total: company.total,
         });
       });
+
+      topCompaniesBreakdown.sort((a, b) => b.solved - a.solved || b.total - a.total);
     }
   } catch (error) {
     console.error('Failed to compute company breakdown', error);

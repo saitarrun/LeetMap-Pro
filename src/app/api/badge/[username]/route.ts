@@ -37,8 +37,60 @@ export async function GET(
   const hardCount = profileData?.stats.hardCount || 0;
   const streak = profileData?.stats.currentStreak || 0;
   const displayName = profileData?.user.name || safeUsername;
-  const topCompany = profileData?.topCompaniesBreakdown?.[0]?.name || 'FAANG Ready';
   const level = getPrepLevel(totalSolved);
+
+  const targetParam = url.searchParams.get('target')?.trim().toLowerCase();
+
+  let targetLabel = '🎯 Target:';
+  let targetValue = '';
+  let targetColor = '#58a6ff';
+
+  const knownCompanyNames: Record<string, string> = {
+    google: 'Google',
+    meta: 'Meta',
+    amazon: 'Amazon',
+    microsoft: 'Microsoft',
+    apple: 'Apple',
+    netflix: 'Netflix',
+    uber: 'Uber',
+    bloomberg: 'Bloomberg',
+    citadel: 'Citadel',
+    tiktok: 'TikTok',
+    stripe: 'Stripe',
+    salesforce: 'Salesforce',
+    'goldman-sachs': 'Goldman Sachs',
+    linkedin: 'LinkedIn',
+    nvidia: 'NVIDIA',
+    adobe: 'Adobe',
+    oracle: 'Oracle',
+    airbnb: 'Airbnb',
+    palantir: 'Palantir',
+    databricks: 'Databricks',
+    snowflake: 'Snowflake',
+    doordash: 'DoorDash',
+  };
+
+  if (targetParam === 'none' || targetParam === 'hide') {
+    targetLabel = '⚡ Status:';
+    targetValue = 'Active Prep';
+    targetColor = '#3fb950';
+  } else if (targetParam && targetParam !== 'auto') {
+    targetLabel = '🎯 Target:';
+    targetValue = knownCompanyNames[targetParam] || (targetParam.charAt(0).toUpperCase() + targetParam.slice(1));
+    targetColor = '#58a6ff';
+  } else {
+    // Auto mode: check if user has actual solved problems for any company
+    const bestSolvedCompany = profileData?.topCompaniesBreakdown?.find((c) => c.solved > 0);
+    if (bestSolvedCompany) {
+      targetLabel = '🎯 Target:';
+      targetValue = bestSolvedCompany.name;
+      targetColor = '#58a6ff';
+    } else {
+      targetLabel = '🎯 Focus:';
+      targetValue = 'FAANG / Big Tech';
+      targetColor = '#38bdf8';
+    }
+  }
 
   let svgContent = '';
 
@@ -127,7 +179,7 @@ export async function GET(
     <!-- Streak & Target Focus -->
     <g transform="translate(248, 56)">
       <text x="0" y="15" font-size="12" font-weight="600" fill="#f0883e">🔥 ${streak} Days <tspan font-weight="400" fill="#8b949e" font-size="11">Streak</tspan></text>
-      <text x="0" y="38" font-size="11" font-weight="500" fill="#8b949e">🎯 Target: <tspan font-weight="600" fill="#58a6ff">${escapeXml(topCompany)}</tspan></text>
+      <text x="0" y="38" font-size="11" font-weight="500" fill="#8b949e">${targetLabel} <tspan font-weight="600" fill="${targetColor}">${escapeXml(targetValue)}</tspan></text>
     </g>
 
     <!-- Bottom Bar -->
