@@ -23,7 +23,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
     const username =
       clerkUser.username ||
-      clerkUser.primaryEmailAddress?.emailAddress?.split('@')[0] ||
+      clerkUser.firstName?.toLowerCase().replace(/[^a-z0-9]/g, '') ||
       clerkUser.id;
 
     return {

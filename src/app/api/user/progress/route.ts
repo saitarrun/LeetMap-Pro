@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import { randomUUID } from 'crypto';
-import { get, put } from '@vercel/blob';
+import { get, put, del } from '@vercel/blob';
 import { auth } from '@clerk/nextjs/server';
 import { NextResponse } from 'next/server';
 import { SolvedProblemRecord } from '@/types';
@@ -195,6 +195,47 @@ export async function POST(request: Request) {
     if (error instanceof SyntaxError) {
       return NextResponse.json({ error: 'Invalid JSON body' }, { status: 400 });
     }
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+  }
+}
+
+export async function deleteUserData(userId: string): Promise<void> {
+  if (process.env.BLOB_READ_WRITE_TOKEN) {
+    try {
+      await del(getBlobPath(userId));
+    } catch {
+      // ignore if non-existent
+    }
+  }
+
+  const filePath = getSafeFilePath(userId);
+  if (fs.existsSync(filePath)) {
+    try {
+      fs.unlinkSync(filePath);
+    } catch {
+      // ignore
+    }
+  }
+}
+
+export async function DELETE(request: Request) {
+  const { userId } = await auth();
+  if (!userId) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
+  if (!isTrustedMutationRequest(request)) {
+    return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+  }
+
+  try {
+    await deleteUserData(userId);
+    return NextResponse.json(
+      { success: true, message: 'User progress erased successfully.' },
+      { headers: { 'Cache-Control': 'no-store' } }
+    );
+  } catch (error) {
+    console.error('Failed to erase user progress on server:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

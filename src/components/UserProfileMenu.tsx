@@ -4,10 +4,11 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { createPortal } from 'react-dom';
 import { useClerk } from '@clerk/nextjs';
-import { Flame, LogOut, Settings, ShieldCheck, UserCheck, X, User, ExternalLink } from 'lucide-react';
+import { Flame, LogOut, Settings, ShieldCheck, UserCheck, X, User, ExternalLink, RotateCcw } from 'lucide-react';
+import { toast } from 'sonner';
 import { ActivityTracker } from '@/components/ActivityTracker';
 import { useAuth } from '@/context/AuthContext';
-import { getUserActivityStats } from '@/utils/progress';
+import { getUserActivityStats, resetUserProgress } from '@/utils/progress';
 import { useSolvedProblems } from '@/utils/useSolvedProblems';
 
 export const UserProfileMenu: React.FC = () => {
@@ -260,9 +261,32 @@ export const UserProfileMenu: React.FC = () => {
             <span className="flex-1">Account settings</span>
           </button>
 
+          {/* Action 4: Reset progress (GDPR / CCPA Right to Erasure) */}
+          <button
+            type="button"
+            onClick={async () => {
+              setIsOpen(false);
+              const confirmed = window.confirm(
+                'Are you sure you want to reset all your solved problems and streak records? This will permanently erase your progress history.'
+              );
+              if (confirmed) {
+                const success = await resetUserProgress(user.id);
+                if (success) {
+                  toast.success('Your progress and streak records have been permanently erased.');
+                } else {
+                  toast.error('Failed to reset progress. Please try again.');
+                }
+              }
+            }}
+            className="flex w-full items-center gap-2.5 px-3.5 py-2.5 text-left text-xs font-medium text-[var(--text-muted)] hover:text-rose-600 dark:hover:text-rose-400 hover:bg-rose-500/10 active:bg-rose-500/20 transition-colors cursor-pointer rounded-xl"
+          >
+            <RotateCcw className="h-4 w-4 shrink-0 opacity-70" />
+            <span className="flex-1">Reset progress</span>
+          </button>
+
           <div className="my-1 h-px bg-[var(--border)]/50" />
 
-          {/* Action 4: Sign out */}
+          {/* Action 5: Sign out */}
           <button
             type="button"
             onClick={() => {

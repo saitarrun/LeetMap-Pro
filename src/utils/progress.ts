@@ -425,3 +425,43 @@ async function syncUserProgressWithServer(username?: string): Promise<void> {
     // Offline mode / network hiccup: local storage continues uninterrupted
   }
 }
+
+/**
+ * Permanently erases user progress, solving history, and streaks
+ * both locally in the browser and in cloud storage (Right to Erasure / GDPR / CCPA).
+ */
+export async function resetUserProgress(usernameOrId?: string): Promise<boolean> {
+  if (typeof window === 'undefined') return false;
+  const target = usernameOrId || getActiveUser()?.id;
+
+  try {
+    if (target) {
+      const userKey = getStorageKey(target);
+      const actKey = getActivityKey(target);
+      localStorage.removeItem(userKey);
+      localStorage.removeItem(actKey);
+
+      // Call server deletion
+      await fetch('/api/user/progress', {
+        method: 'DELETE',
+      });
+    }
+
+    // Also clear guest local storage if present
+    localStorage.removeItem(GUEST_KEY);
+    localStorage.removeItem(GUEST_ACTIVITY_KEY);
+    localStorage.removeItem(LEGACY_GUEST_KEY);
+    localStorage.removeItem(LEGACY_GUEST_ACTIVITY_KEY);
+
+    window.dispatchEvent(
+      new CustomEvent('leetmap-solved-updated', {
+        detail: { count: 0 },
+      })
+    );
+    return true;
+  } catch (error) {
+    console.error('Failed to reset user progress:', error);
+    return false;
+  }
+}
+

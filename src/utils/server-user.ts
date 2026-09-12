@@ -106,7 +106,7 @@ export async function fetchPublicUserProfile(rawUsername: string): Promise<Publi
       try {
         const u = await client.users.getUser(cleanUsername);
         if (u) {
-          const uName = u.username || u.primaryEmailAddress?.emailAddress?.split('@')[0] || u.id;
+          const uName = u.username || u.firstName?.toLowerCase().replace(/[^a-z0-9]/g, '') || u.id;
           clerkUser = {
             id: u.id,
             username: uName,
