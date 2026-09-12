@@ -60,10 +60,15 @@ const homeFaqJsonLd = {
 export default function HomePage() {
   const statusPath = path.join(process.cwd(), 'public', 'data', 'sync-status.json');
   const dailyPath = path.join(process.cwd(), 'public', 'data', 'daily-challenge.json');
+  const companiesPath = path.join(process.cwd(), 'public', 'data', 'companies.json');
 
   let syncStatus: SyncStatus | null = null;
   if (fs.existsSync(statusPath)) {
-    syncStatus = JSON.parse(fs.readFileSync(statusPath, 'utf8'));
+    try {
+      syncStatus = JSON.parse(fs.readFileSync(statusPath, 'utf8'));
+    } catch {
+      syncStatus = null;
+    }
   }
 
   let dailyChallenge: DailyChallenge | null = null;
@@ -75,6 +80,15 @@ export default function HomePage() {
     }
   }
 
+  let companies = [];
+  if (fs.existsSync(companiesPath)) {
+    try {
+      companies = JSON.parse(fs.readFileSync(companiesPath, 'utf8'));
+    } catch {
+      companies = [];
+    }
+  }
+
   return (
     <>
       <script
@@ -82,6 +96,7 @@ export default function HomePage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(homeFaqJsonLd) }}
       />
       <HomeClient
+        initialCompanies={companies}
         initialSyncStatus={syncStatus}
         initialDailyChallenge={dailyChallenge}
       />

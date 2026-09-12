@@ -11,6 +11,7 @@ import { usePinnedCompanies } from '@/utils/usePinnedCompanies';
 import { toggleProblemSolved } from '@/utils/progress';
 
 interface HomeClientProps {
+  initialCompanies?: CompanySummary[];
   initialSyncStatus: SyncStatus | null;
   initialDailyChallenge?: DailyChallenge | null;
 }
@@ -38,11 +39,12 @@ function getMillisecondsUntilLocalMidnight(now: Date = new Date()): number {
 }
 
 export const HomeClient: React.FC<HomeClientProps> = ({
+  initialCompanies = [],
   initialSyncStatus,
   initialDailyChallenge = null,
 }) => {
-  const [companies, setCompanies] = useState<CompanySummary[]>([]);
-  const [isLoadingCompanies, setIsLoadingCompanies] = useState(true);
+  const [companies, setCompanies] = useState<CompanySummary[]>(initialCompanies);
+  const [isLoadingCompanies, setIsLoadingCompanies] = useState(initialCompanies.length === 0);
   const [syncStatus, setSyncStatus] = useState<SyncStatus | null>(initialSyncStatus);
   const [dailyChallenge, setDailyChallenge] = useState<DailyChallenge | null>(initialDailyChallenge);
   const [searchQuery, setSearchQuery] = useState('');
@@ -73,7 +75,10 @@ export const HomeClient: React.FC<HomeClientProps> = ({
         .finally(() => setIsLoadingCompanies(false));
     };
 
-    loadCompanies();
+    // If initialCompanies was empty (e.g. client navigation), fetch once
+    if (initialCompanies.length === 0) {
+      loadCompanies();
+    }
 
     const handleLiveRefreshEvent = (e: Event) => {
       const customEvent = e as CustomEvent<SyncStatus>;

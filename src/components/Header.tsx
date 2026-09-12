@@ -36,6 +36,24 @@ export const Header: React.FC<HeaderProps> = () => {
     setMobileMenuOpen(false);
   }, [pathname]);
 
+  // Lock body scroll and listen for Escape key when mobile menu is open
+  useEffect(() => {
+    if (!mobileMenuOpen) return;
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setMobileMenuOpen(false);
+    };
+
+    const originalOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    window.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      document.body.style.overflow = originalOverflow;
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [mobileMenuOpen]);
+
   const theme = useSyncExternalStore(
     (onStoreChange) => {
       window.addEventListener('leetmap-theme-change', onStoreChange);
@@ -252,7 +270,13 @@ export const Header: React.FC<HeaderProps> = () => {
 
       {/* Mobile Collapsible Navigation Panel */}
       {mobileMenuOpen && (
-        <div className="md:hidden border-t border-[var(--border)] bg-[var(--bg-page)]/95 backdrop-blur-3xl px-4 py-3.5 space-y-3 shadow-xl animate-in slide-in-from-top-2 duration-200">
+        <>
+          <div
+            className="fixed inset-0 top-14 bg-black/50 backdrop-blur-xs z-[105] md:hidden animate-in fade-in duration-200"
+            onClick={() => setMobileMenuOpen(false)}
+            aria-hidden="true"
+          />
+          <div className="relative z-[110] md:hidden border-t border-[var(--border)] bg-[var(--bg-page)]/98 backdrop-blur-3xl px-4 py-3.5 space-y-3 shadow-2xl animate-in slide-in-from-top-2 duration-200">
           <nav className="flex flex-col space-y-1 text-sm font-medium">
             <Link
               href="/"
@@ -365,7 +389,8 @@ export const Header: React.FC<HeaderProps> = () => {
             </a>
           </div>
         </div>
-      )}
+      </>
+    )}
     </header>
   );
 };

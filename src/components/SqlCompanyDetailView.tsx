@@ -217,7 +217,7 @@ export const SqlCompanyDetailView: React.FC<SqlCompanyDetailViewProps> = ({ comp
         <div className="flex items-center justify-center gap-3">
           <div className="w-12 h-12 rounded-2xl bg-[var(--bg-subtle)] border border-[var(--border)] flex items-center justify-center shrink-0 overflow-hidden">
             {faviconUrl ? (
-              <Image src={faviconUrl} alt="" width={26} height={26} className="w-6.5 h-6.5 object-contain" />
+              <Image src={faviconUrl} alt="" width={26} height={26} unoptimized className="w-6.5 h-6.5 object-contain" />
             ) : (
               <span className="text-xs font-semibold text-[var(--text-muted)]">{initials}</span>
             )}
