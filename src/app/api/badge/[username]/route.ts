@@ -100,26 +100,30 @@ export async function GET(
   let svgContent = '';
 
   if (style === 'shield' || style === 'compact') {
-    // Minimalist pill badge
+    // Apple-grade Minimalist Pill Badge (shields.io compatible, symmetric curves, optical centering)
     const label = 'LeetMap Pro';
     const value = `${totalSolved} Solved • ${streak}d Streak`;
-    const labelWidth = 98;
-    const valueWidth = Math.max(150, value.length * 8 + 24);
+    const labelWidth = 108;
+    const valueWidth = Math.max(130, Math.round(value.length * 6.8 + 26));
     const totalWidth = labelWidth + valueWidth;
 
     svgContent = `<svg xmlns="http://www.w3.org/2000/svg" width="${totalWidth}" height="28" viewBox="0 0 ${totalWidth} 28" fill="none" role="img" aria-label="${escapeXml(label)}: ${escapeXml(value)}">
-  <clipPath id="r">
-    <rect width="${totalWidth}" height="28" rx="6" fill="#fff"/>
-  </clipPath>
-  <g clip-path="url(#r)">
+  <defs>
+    <clipPath id="pillClip">
+      <rect width="${totalWidth}" height="28" rx="14" fill="#fff"/>
+    </clipPath>
+  </defs>
+  <g clip-path="url(#pillClip)">
     <rect width="${labelWidth}" height="28" fill="#161b22"/>
     <rect x="${labelWidth}" width="${valueWidth}" height="28" fill="#0d1117"/>
-    <rect width="${totalWidth}" height="28" stroke="#30363d" stroke-width="1" fill="none"/>
+    <line x1="${labelWidth}" y1="0" x2="${labelWidth}" y2="28" stroke="#30363d" stroke-width="1"/>
   </g>
+  <!-- Crisp outer border drawn outside clipPath so corners are never clipped -->
+  <rect x="0.5" y="0.5" width="${totalWidth - 1}" height="27" rx="13.5" stroke="#30363d" stroke-width="1" fill="none"/>
   <g font-family="-apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11" font-weight="600">
-    <circle cx="14" cy="14" r="3.5" fill="#10b981"/>
-    <text x="24" y="18" fill="#f8fafc">${escapeXml(label)}</text>
-    <text x="${labelWidth + 14}" y="18" fill="#10b981">${escapeXml(value)}</text>
+    <circle cx="15" cy="14" r="3.5" fill="#10b981"/>
+    <text x="26" y="14" dominant-baseline="central" fill="#f8fafc">${escapeXml(label)}</text>
+    <text x="${labelWidth + valueWidth / 2}" y="14" text-anchor="middle" dominant-baseline="central" fill="#10b981">${escapeXml(value)}</text>
   </g>
 </svg>`;
   } else {
