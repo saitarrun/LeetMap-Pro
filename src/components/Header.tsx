@@ -18,7 +18,7 @@ import {
 import { SignInButton, SignUpButton, Show } from '@clerk/nextjs';
 import { toast } from 'sonner';
 import { SyncStatus } from '@/types';
-import { UserProfileMenu } from '@/components/UserProfileMenu';
+import { UserProfileMenu, MobileUserMenuSection } from '@/components/UserProfileMenu';
 import { LeetMapLogo } from '@/components/LeetMapLogo';
 
 interface HeaderProps {
@@ -363,6 +363,11 @@ export const Header: React.FC<HeaderProps> = () => {
                 </button>
               </SignUpButton>
             </div>
+          </Show>
+
+          {/* Auth options for signed-in users in drawer */}
+          <Show when="signed-in">
+            <MobileUserMenuSection onClose={() => setMobileMenuOpen(false)} />
           </Show>
 
           <div className="pt-2 border-t border-[var(--border)]/60 flex items-center justify-between text-xs text-[var(--text-muted)]">

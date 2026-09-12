@@ -52,7 +52,11 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   }, [isClerkLoaded, user]);
 
   const logout = useCallback(async () => {
-    await signOut();
+    try {
+      await signOut({ redirectUrl: '/' });
+    } catch {
+      await signOut();
+    }
   }, [signOut]);
 
   return (

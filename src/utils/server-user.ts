@@ -146,13 +146,48 @@ export async function fetchPublicUserProfile(rawUsername: string): Promise<Publi
       try {
         const search = await client.users.getUserList({
           query: cleanUsername,
-          limit: 5,
+          limit: 10,
         });
         const found = search.data.find((u) => {
-          const uname = (u.username || u.primaryEmailAddress?.emailAddress?.split('@')[0] || u.id).toLowerCase();
-          return uname === cleanUsername;
+          const directUsername = u.username?.toLowerCase();
+          const emailPrefix = u.primaryEmailAddress?.emailAddress?.split('@')[0]?.toLowerCase();
+          const fullEmail = u.primaryEmailAddress?.emailAddress?.toLowerCase();
+          const anyEmail = u.emailAddresses?.some(
+            (e) =>
+              e.emailAddress.toLowerCase() === cleanUsername ||
+              e.emailAddress.toLowerCase().split('@')[0] === cleanUsername
+          );
+          return (
+            directUsername === cleanUsername ||
+            emailPrefix === cleanUsername ||
+            fullEmail === cleanUsername ||
+            Boolean(anyEmail) ||
+            u.id.toLowerCase() === cleanUsername
+          );
         });
         if (found) {
+          const uName = found.username || found.primaryEmailAddress?.emailAddress?.split('@')[0] || found.id;
+          clerkUser = {
+            id: found.id,
+            username: uName,
+            name: found.fullName || found.firstName || uName,
+            avatarUrl: found.imageUrl,
+            createdAt: found.createdAt,
+          };
+        }
+      } catch {
+        // ignore
+      }
+    }
+
+    if (!clerkUser && !cleanUsername.includes('@')) {
+      try {
+        const emailSearch = await client.users.getUserList({
+          emailAddress: [cleanUsername, `${cleanUsername}@gmail.com`],
+          limit: 2,
+        });
+        if (emailSearch.data.length > 0) {
+          const found = emailSearch.data[0];
           const uName = found.username || found.primaryEmailAddress?.emailAddress?.split('@')[0] || found.id;
           clerkUser = {
             id: found.id,
@@ -185,10 +220,13 @@ export async function fetchPublicUserProfile(rawUsername: string): Promise<Publi
 
   if (!clerkUser) return null;
 
-  // Retrieve storage data (try user.id first, then user.username)
+  // Retrieve storage data (try user.id first, then user.username, then cleanUsername)
   let storage = await readUserRaw(clerkUser.id);
   if (!storage && clerkUser.username) {
     storage = await readUserRaw(clerkUser.username);
+  }
+  if (!storage && cleanUsername !== clerkUser.username?.toLowerCase()) {
+    storage = await readUserRaw(cleanUsername);
   }
 
   const solvedSlugs = Array.isArray(storage?.solvedSlugs) ? storage.solvedSlugs : [];
