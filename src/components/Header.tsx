@@ -135,13 +135,13 @@ export const Header: React.FC<HeaderProps> = () => {
           <nav className="hidden md:flex items-center gap-0.5 text-xs">
             <Link
               href="/"
-              className={`apple-press px-3 py-1.5 rounded-xl transition-colors ${
+              className={`apple-press px-3.5 py-1.5 rounded-xl transition-colors ${
                 pathname === '/' || pathname.startsWith('/company')
                   ? 'bg-[var(--bg-subtle)] text-[var(--text-main)] font-semibold'
                   : 'text-[var(--text-muted)] hover:text-[var(--text-main)] font-medium'
               }`}
             >
-              Companies
+              DSA
             </Link>
 
             <Link
@@ -289,7 +289,7 @@ export const Header: React.FC<HeaderProps> = () => {
             >
               <div className="flex items-center gap-2.5">
                 <Building2 className="w-4 h-4 text-emerald-500" />
-                <span>Companies</span>
+                <span>DSA</span>
               </div>
               <span className="text-xs text-[var(--text-muted)] font-mono">680+</span>
             </Link>

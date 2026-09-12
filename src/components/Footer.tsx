@@ -32,7 +32,7 @@ export const Footer: React.FC = () => {
             <ul className="space-y-2 text-xs text-[var(--text-muted)]">
               <li>
                 <Link href="/" className="hover:text-[var(--text-main)] transition-colors">
-                  Companies
+                  DSA
                 </Link>
               </li>
               <li>

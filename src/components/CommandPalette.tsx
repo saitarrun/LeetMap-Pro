@@ -5,7 +5,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { BookOpen, Building2, Command, Database, GitBranch, Search } from 'lucide-react';
 
 const commands = [
-  { label: 'Companies', description: 'Browse company interview questions', href: '/', Icon: Building2 },
+  { label: 'DSA', description: 'Browse company interview questions and DSA problems', href: '/', Icon: Building2 },
   { label: 'Patterns', description: 'Study DSA patterns', href: '/patterns', Icon: GitBranch },
   { label: 'SQL', description: 'Practice SQL interview questions', href: '/sql', Icon: Database },
   { label: 'Time Complexity', description: 'Learn Big O and space analysis', href: '/patterns/time-complexity#time-complexity', Icon: BookOpen },
