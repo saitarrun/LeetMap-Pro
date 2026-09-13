@@ -6,6 +6,7 @@ import type { Metadata, Viewport } from "next";
 import { Toaster } from "sonner";
 import { AuthProvider } from "@/context/AuthContext";
 import { Footer } from "@/components/Footer";
+import { BottomAdBanner } from "@/components/BottomAdBanner";
 import { CommandPalette } from "@/components/CommandPalette";
 import "./globals.css";
 
@@ -238,6 +239,12 @@ export default async function RootLayout({
         <link rel="alternate" type="application/atom+xml" title="LeetMap Pro Atom Feed" href="/feed.xml?format=atom" />
         <link rel="author" href="/humans.txt" />
         <Script src="/theme-init.js" strategy="beforeInteractive" nonce={nonce} />
+        <Script
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930264634833391"
+          crossOrigin="anonymous"
+          strategy="afterInteractive"
+        />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
@@ -258,6 +265,7 @@ export default async function RootLayout({
               <div className="flex-1">
                 {children}
               </div>
+              <BottomAdBanner />
               <Footer />
             </div>
             <CommandPalette />
