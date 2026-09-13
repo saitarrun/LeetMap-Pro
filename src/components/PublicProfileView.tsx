@@ -168,7 +168,58 @@ export const PublicProfileView: React.FC<PublicProfileViewProps> = ({ initialDat
   const { user: currentUser } = useAuth();
   useSolvedProblems(); // Listen for realtime solve changes
 
-  const isOwner = currentUser?.id === initialData.user.id || currentUser?.username?.toLowerCase() === initialData.user.username.toLowerCase();
+  const [profileData, setProfileData] = useState<PublicUserProfileData>(initialData);
+
+  useEffect(() => {
+    setProfileData(initialData);
+  }, [initialData]);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function refreshProfile() {
+      try {
+        const targetUsername = initialData.user.username;
+        if (!targetUsername) return;
+        const res = await fetch(`/api/user/profile/${encodeURIComponent(targetUsername)}`, {
+          cache: 'no-store',
+        });
+        if (res.ok) {
+          const fresh = await res.json();
+          if (!cancelled && fresh && fresh.user) {
+            setProfileData(fresh);
+          }
+        }
+      } catch {
+        // ignore network error
+      }
+    }
+
+    refreshProfile();
+
+    const onUpdate = () => {
+      setTimeout(() => {
+        refreshProfile();
+      }, 350);
+    };
+
+    const onFocus = () => {
+      refreshProfile();
+    };
+
+    window.addEventListener('leetmap-solved-updated', onUpdate);
+    window.addEventListener('focus', onFocus);
+
+    return () => {
+      cancelled = true;
+      window.removeEventListener('leetmap-solved-updated', onUpdate);
+      window.removeEventListener('focus', onFocus);
+    };
+  }, [initialData.user.username]);
+
+  const isOwner =
+    currentUser?.id === profileData.user.id ||
+    currentUser?.username?.toLowerCase() === profileData.user.username.toLowerCase();
 
   // If the owner is looking at their own profile, blend with any fresh client-side solves
   const clientStats = useMemo(() => {
@@ -181,20 +232,20 @@ export const PublicProfileView: React.FC<PublicProfileViewProps> = ({ initialDat
   const stats = useMemo(() => {
     if (clientStats && isOwner) {
       return {
-        totalSolved: Math.max(clientStats.totalSolved, initialData.stats.totalSolved),
-        easyCount: initialData.stats.easyCount,
-        mediumCount: initialData.stats.mediumCount,
-        hardCount: initialData.stats.hardCount,
-        currentStreak: Math.max(clientStats.currentStreak, initialData.stats.currentStreak),
-        longestStreak: Math.max(clientStats.maxStreak, initialData.stats.longestStreak),
+        totalSolved: Math.max(clientStats.totalSolved, profileData.stats.totalSolved),
+        easyCount: profileData.stats.easyCount,
+        mediumCount: profileData.stats.mediumCount,
+        hardCount: profileData.stats.hardCount,
+        currentStreak: Math.max(clientStats.currentStreak, profileData.stats.currentStreak),
+        longestStreak: Math.max(clientStats.maxStreak, profileData.stats.longestStreak),
         dailyHistory: {
-          ...initialData.stats.dailyHistory,
+          ...profileData.stats.dailyHistory,
           ...clientStats.dailyHistory,
         },
       };
     }
-    return initialData.stats;
-  }, [clientStats, isOwner, initialData.stats]);
+    return profileData.stats;
+  }, [clientStats, isOwner, profileData.stats]);
 
   const currentYear = useMemo(() => new Date().getFullYear(), []);
   const [selectedYear, setSelectedYear] = useState<number>(currentYear);
@@ -239,12 +290,12 @@ export const PublicProfileView: React.FC<PublicProfileViewProps> = ({ initialDat
   }, [showLevelModal, showBadgeModal]);
 
   const profileUrl = typeof window !== 'undefined'
-    ? `${window.location.origin}/u/${initialData.user.username}`
-    : `https://www.leetmap-pro.com/u/${initialData.user.username}`;
+    ? `${window.location.origin}/u/${profileData.user.username}`
+    : `https://www.leetmap-pro.com/u/${profileData.user.username}`;
 
   const badgeBaseUrl = typeof window !== 'undefined'
-    ? `${window.location.origin}/api/badge/${initialData.user.username}`
-    : `https://www.leetmap-pro.com/api/badge/${initialData.user.username}`;
+    ? `${window.location.origin}/api/badge/${profileData.user.username}`
+    : `https://www.leetmap-pro.com/api/badge/${profileData.user.username}`;
 
   const currentBadgeSrc = useMemo(() => {
     const params = new URLSearchParams();
@@ -259,7 +310,7 @@ export const PublicProfileView: React.FC<PublicProfileViewProps> = ({ initialDat
   }, [badgeBaseUrl, badgeStyle, badgeTarget]);
 
   const badgeMarkdown = `[![LeetMap Pro Stats](${currentBadgeSrc})](${profileUrl})`;
-  const badgeHtml = `<a href="${profileUrl}"><img src="${currentBadgeSrc}" alt="LeetMap Pro Stats for ${initialData.user.name}" /></a>`;
+  const badgeHtml = `<a href="${profileUrl}"><img src="${currentBadgeSrc}" alt="LeetMap Pro Stats for ${profileData.user.name}" /></a>`;
 
   const handleCopyLink = async () => {
     try {
@@ -423,8 +474,8 @@ export const PublicProfileView: React.FC<PublicProfileViewProps> = ({ initialDat
               <div className="w-18 h-18 sm:w-20 sm:h-20 rounded-full border-2 border-[var(--border)] overflow-hidden bg-[var(--bg-subtle)] shadow-md ring-4 ring-emerald-500/10">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
-                  src={initialData.user.avatarUrl}
-                  alt={initialData.user.name}
+                  src={profileData.user.avatarUrl}
+                  alt={profileData.user.name}
                   className="w-full h-full object-cover"
                 />
               </div>
@@ -439,10 +490,10 @@ export const PublicProfileView: React.FC<PublicProfileViewProps> = ({ initialDat
             <div className="space-y-1">
               <div className="flex items-center gap-2 flex-wrap">
                 <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-[var(--text-main)]">
-                  {initialData.user.name}
+                  {profileData.user.name}
                 </h1>
                 <span className="text-xs px-2 py-0.5 rounded-md font-mono bg-[var(--bg-subtle)] border border-[var(--border)] text-[var(--text-muted)]">
-                  @{initialData.user.username}
+                  @{profileData.user.username}
                 </span>
               </div>
               <div className="text-xs text-[var(--text-muted)] flex items-center gap-2 flex-wrap">
@@ -700,7 +751,7 @@ export const PublicProfileView: React.FC<PublicProfileViewProps> = ({ initialDat
           </div>
 
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-            {initialData.topCompaniesBreakdown.map((company) => (
+            {profileData.topCompaniesBreakdown.map((company) => (
               <Link
                 key={company.slug}
                 href={`/company/${company.slug}`}
@@ -749,7 +800,7 @@ export const PublicProfileView: React.FC<PublicProfileViewProps> = ({ initialDat
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-          {initialData.patternsBreakdown.slice(0, 12).map((pattern) => {
+          {profileData.patternsBreakdown.slice(0, 12).map((pattern) => {
             const pct = Math.min(100, Math.round((pattern.solved / Math.max(1, pattern.total)) * 100));
             return (
               <Link
@@ -778,14 +829,14 @@ export const PublicProfileView: React.FC<PublicProfileViewProps> = ({ initialDat
       </div>
 
       {/* Recent Activity Feed */}
-      {initialData.recentActivity.length > 0 && (
+      {profileData.recentActivity.length > 0 && (
         <div className="rounded-3xl border border-[var(--border)] bg-[var(--bg-card)]/80 backdrop-blur-xl p-6 sm:p-8 space-y-4">
           <h2 className="text-base font-bold text-[var(--text-main)]">
             Recent Problem Solves
           </h2>
 
           <div className="divide-y divide-[var(--border)]">
-            {initialData.recentActivity.map((prob) => (
+            {profileData.recentActivity.map((prob) => (
               <div
                 key={`${prob.slug}-${prob.solvedAt}`}
                 className="py-3 flex items-center justify-between gap-4 text-xs"
@@ -1132,7 +1183,7 @@ export const PublicProfileView: React.FC<PublicProfileViewProps> = ({ initialDat
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={`${currentBadgeSrc}${currentBadgeSrc.includes('?') ? '&' : '?'}v=3`}
-                    alt={`LeetMap Pro stats badge for ${initialData.user.name}`}
+                    alt={`LeetMap Pro stats badge for ${profileData.user.name}`}
                     className="max-w-full h-auto drop-shadow-md select-none"
                   />
                 </div>

@@ -4,6 +4,9 @@ import { Header } from '@/components/Header';
 import { PublicProfileView } from '@/components/PublicProfileView';
 import { fetchPublicUserProfile } from '@/utils/server-user';
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 interface PageProps {
   params: Promise<{ username: string }>;
 }
