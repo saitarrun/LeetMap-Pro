@@ -1,15 +1,13 @@
 {
-  "date": "2026-09-12",
-  "link": "https://leetcode.com/problems/maximum-score-of-non-overlapping-intervals/",
-  "id": "3414",
-  "title": "Maximum Score of Non-overlapping Intervals",
-  "slug": "maximum-score-of-non-overlapping-intervals",
-  "difficulty": "HARD",
+  "date": "2026-09-13",
+  "link": "https://leetcode.com/problems/image-overlap/",
+  "id": "835",
+  "title": "Image Overlap",
+  "slug": "image-overlap",
+  "difficulty": "MEDIUM",
   "topics": [
     "Array",
-    "Binary Search",
-    "Dynamic Programming",
-    "Sorting"
+    "Matrix"
   ],
-  "fetchedAt": 1789179862040
+  "fetchedAt": 1789266174249
 }
