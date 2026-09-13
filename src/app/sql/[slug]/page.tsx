@@ -21,20 +21,22 @@ export async function generateMetadata({ params }: PageProps) {
 
   const company: CompanyDetail = JSON.parse(fs.readFileSync(filePath, 'utf8'));
   const sqlCount = company.sqlTotal || 0;
-  const title = `${company.name} SQL Interview Questions (${sqlCount} LeetCode Problems)`;
-  const description = `Practice ${sqlCount} company-wise ${company.name} LeetCode SQL and database interview questions asked in technical interviews, ranked by real frequency and recency free on LeetMap Pro.`;
+  const title = `Free ${company.name} SQL Interview Questions (2026) – ${sqlCount} Company-Wise Problems by Frequency`;
+  const description = `Practice ${sqlCount} free company-wise ${company.name} LeetCode SQL and database interview questions asked in 2026 technical interviews, ranked by frequency and recency on LeetMap Pro.`;
 
   return {
     title,
     description,
     keywords: [
-      `${company.name} SQL interview questions`,
+      `free ${company.name} sql questions`,
+      `${company.name} SQL interview questions 2026`,
       `${company.name} leetcode sql`,
+      `company wise sql questions by frequency`,
       `${company.name} database questions`,
       `company wise sql questions`,
       `company wise leetcode sql ${company.name}`,
       'SQL interview practice',
-      'leetcode sql frequency',
+      'leetcode sql frequency 2026',
       'SQL leetcode company wise',
       `${company.name} data engineer sql`,
       `${company.name} data analyst sql`,
@@ -43,7 +45,7 @@ export async function generateMetadata({ params }: PageProps) {
       canonical: `https://www.leetmap-pro.com/sql/${safeSlug}`,
     },
     openGraph: {
-      title: `${company.name} SQL Interview Questions (${sqlCount} Problems) | LeetMap Pro`,
+      title: `Free ${company.name} SQL Interview Questions (2026) – ${sqlCount} Company-Wise Problems by Frequency | LeetMap Pro`,
       description,
       url: `https://www.leetmap-pro.com/sql/${safeSlug}`,
       type: 'article',
@@ -51,7 +53,7 @@ export async function generateMetadata({ params }: PageProps) {
     },
     twitter: {
       card: 'summary_large_image',
-      title: `${company.name} SQL Interview Questions (${sqlCount} Problems) | LeetMap Pro`,
+      title: `Free ${company.name} SQL Interview Questions (2026) – ${sqlCount} Company-Wise Problems by Frequency | LeetMap Pro`,
       description,
     },
   };

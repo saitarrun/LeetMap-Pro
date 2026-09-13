@@ -5,11 +5,13 @@ import { SqlCatalog, SqlCompanySummary, SyncStatus } from '@/types';
 import { SqlHubClient } from '@/components/SqlHubClient';
 
 export const metadata = {
-  title: 'Company-wise LeetCode SQL Questions',
-  description: 'Browse coding interview SQL questions asked by 73+ tech firms (Amazon, Google, Meta, Bloomberg, Microsoft), ranked by interview frequency and recency.',
+  title: 'Free Company-Wise LeetCode SQL Questions (2026) by Frequency',
+  description: 'Browse and practice company-wise LeetCode SQL questions asked by 73+ top tech firms (Amazon, Google, Meta, Bloomberg, Microsoft), ranked by interview frequency and recency. 100% free.',
   keywords: [
-    'LeetCode SQL Questions',
+    'free leetcode sql questions',
+    'LeetCode SQL Questions 2026',
     'SQL Interview Questions by Company',
+    'company wise sql questions',
     'FAANG SQL Questions',
     'Data Engineer Interview SQL',
     'Data Analyst LeetCode SQL',
@@ -19,15 +21,15 @@ export const metadata = {
     canonical: 'https://www.leetmap-pro.com/sql',
   },
   openGraph: {
-    title: 'Company-wise LeetCode SQL Questions | LeetMap Pro',
-    description: 'Browse coding interview SQL questions asked by 73+ tech firms, ranked by interview frequency and recency.',
+    title: 'Free Company-Wise LeetCode SQL Questions (2026) by Frequency | LeetMap Pro',
+    description: 'Browse and practice company-wise LeetCode SQL questions asked by 73+ top tech firms, ranked by interview frequency and recency. 100% free.',
     url: 'https://www.leetmap-pro.com/sql',
     type: 'website',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Company-wise LeetCode SQL Questions | LeetMap Pro',
-    description: 'Browse coding interview SQL questions asked by 73+ tech firms, ranked by interview frequency and recency.',
+    title: 'Free Company-Wise LeetCode SQL Questions (2026) by Frequency | LeetMap Pro',
+    description: 'Browse and practice company-wise LeetCode SQL questions asked by 73+ top tech firms, ranked by interview frequency and recency. 100% free.',
   },
 };
 

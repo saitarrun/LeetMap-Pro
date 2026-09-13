@@ -21,31 +21,34 @@ export async function generateMetadata({ params }: PageProps) {
   }
 
   const company: CompanyDetail = JSON.parse(fs.readFileSync(filePath, 'utf8'));
-  const title = `${company.name} LeetCode Questions (${company.total} Problems by Frequency)`;
-  const description = `Practice ${company.total} company-wise ${company.name} LeetCode questions asked in real interviews. Filter by 30-day, 3-month, and 6-month recency across Easy (${company.easy}), Medium (${company.medium}), Hard (${company.hard}), and SQL questions free on LeetMap Pro.`;
+  const title = `Free ${company.name} LeetCode Questions (2026) – ${company.total} Company-Wise Problems by Frequency`;
+  const description = `Practice ${company.total} free company-wise ${company.name} LeetCode questions asked in real 2026 interviews. Filter by frequency across 30-day, 3-month, and 6-month recency (Easy: ${company.easy}, Med: ${company.medium}, Hard: ${company.hard}). 100% free alternative to LeetCode Premium.`;
 
   return {
     title,
     description,
     keywords: [
-      `${company.name} LeetCode questions`,
-      `${company.name} LeetCode`,
-      `company wise leetcode questions`,
+      `free ${company.name} leetcode questions`,
+      `${company.name} LeetCode questions 2026`,
+      `${company.name} LeetCode 2026`,
+      `free leetcode premium ${company.name}`,
+      `${company.name} leetcode tagged questions free`,
       `company wise leetcode questions ${company.name}`,
+      `${company.name} leetcode frequency`,
+      `${company.name} most asked leetcode 30 days`,
       `${company.name} coding interview questions`,
-      `${company.name} most asked leetcode`,
       `${company.name} software engineer interview`,
       `leetcode ${company.slug}`,
       `${company.name} interview questions`,
       `${company.name} technical interview`,
-      `${company.name} leetcode frequency`,
+      `company wise leetcode questions`,
       `leetcode company wise`,
     ],
     alternates: {
       canonical: `https://www.leetmap-pro.com/company/${safeSlug}`,
     },
     openGraph: {
-      title: `${company.name} LeetCode Questions (${company.total} Problems) | LeetMap Pro`,
+      title: `Free ${company.name} LeetCode Questions (2026) – ${company.total} Company-Wise Problems by Frequency | LeetMap Pro`,
       description,
       url: `https://www.leetmap-pro.com/company/${safeSlug}`,
       type: 'article',
@@ -53,7 +56,7 @@ export async function generateMetadata({ params }: PageProps) {
     },
     twitter: {
       card: 'summary_large_image',
-      title: `${company.name} LeetCode Questions (${company.total} Problems) | LeetMap Pro`,
+      title: `Free ${company.name} LeetCode Questions (2026) – ${company.total} Company-Wise Problems by Frequency | LeetMap Pro`,
       description,
     },
   };

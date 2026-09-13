@@ -5,14 +5,14 @@ import { SyncStatus, DailyChallenge, CompanySummary } from '@/types';
 import { HomeClient } from '@/components/HomeClient';
 
 export const metadata = {
-  title: 'LeetMap Pro | Company Wise Leetcode and SQL Questions',
-  description: 'Browse coding interview problems asked by 680+ tech companies, ranked by frequency and recency. Free interactive strategy roadmap and SQL interview hub.',
+  title: 'LeetMap Pro | Free Company-Wise LeetCode & SQL Questions (2026) by Frequency',
+  description: 'Practice verified coding interview problems asked by 680+ tech companies (Google, Meta, Amazon, Microsoft, Apple), ranked by frequency and 30-day recency. 100% free alternative to LeetCode Premium.',
   alternates: {
     canonical: 'https://www.leetmap-pro.com',
   },
   openGraph: {
-    title: 'LeetMap Pro | Company Wise Leetcode and SQL Questions',
-    description: 'Browse coding interview problems asked by 680+ tech companies, ranked by frequency and recency. Free interactive strategy roadmap and SQL interview hub.',
+    title: 'LeetMap Pro | Free Company-Wise LeetCode & SQL Questions (2026) by Frequency',
+    description: 'Practice verified coding interview problems asked by 680+ tech companies (Google, Meta, Amazon, Microsoft, Apple), ranked by frequency and 30-day recency. 100% free alternative to LeetCode Premium.',
     url: 'https://www.leetmap-pro.com',
     type: 'website',
   },

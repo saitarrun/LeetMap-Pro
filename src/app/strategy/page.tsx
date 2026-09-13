@@ -5,11 +5,12 @@ import { PatternSummary, SyncStatus } from '@/types';
 import { StrategyClient } from '@/components/StrategyClient';
 
 export const metadata = {
-  title: 'Interview Strategy & Dependency Roadmap',
-  description: 'Master the 18 core LeetCode coding interview patterns in optimal prerequisite order. Interactive Apple-designed roadmap from Arrays & Hashing to Advanced Dynamic Programming.',
+  title: 'Free Coding Interview Strategy & DSA Roadmap (2026)',
+  description: 'Master the 18 core LeetCode coding interview patterns in optimal prerequisite order. Free interactive Apple-designed roadmap from Arrays & Hashing to Advanced Dynamic Programming.',
   keywords: [
-    'LeetCode Roadmap',
-    'Coding Interview Strategy',
+    'free leetcode roadmap',
+    'LeetCode Roadmap 2026',
+    'Coding Interview Strategy 2026',
     'LeetCode Pattern Dependency Graph',
     'Algorithm Prerequisites',
     'NeetCode alternative',
@@ -19,14 +20,14 @@ export const metadata = {
     canonical: 'https://www.leetmap-pro.com/strategy',
   },
   openGraph: {
-    title: 'Interview Strategy & Dependency Roadmap | LeetMap Pro',
+    title: 'Free Coding Interview Strategy & DSA Roadmap (2026) | LeetMap Pro',
     description: 'Master the 18 core LeetCode coding interview patterns in optimal prerequisite order with an interactive visual dependency graph.',
     url: 'https://www.leetmap-pro.com/strategy',
     type: 'website',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Interview Strategy & Dependency Roadmap | LeetMap Pro',
+    title: 'Free Coding Interview Strategy & DSA Roadmap (2026) | LeetMap Pro',
     description: 'Master the 18 core LeetCode coding interview patterns in optimal prerequisite order.',
   },
 };

@@ -51,18 +51,32 @@
 
 ---
 
-## 🏢 Top Featured Companies
+## 🏢 Top Featured Companies (Free Company-Wise Problems by Frequency)
 
-| Company | LeetCode Questions | SQL Questions | Top Problem Patterns |
+| Company | LeetCode Questions (2026) | SQL Questions | Top Problem Patterns |
 | :--- | :--- | :--- | :--- |
-| **[Google](https://www.leetmap-pro.com/company/google)** | [View Google Questions](https://www.leetmap-pro.com/company/google) | [Google SQL](https://www.leetmap-pro.com/sql/google) | Trees, Graphs, DP, Trie |
-| **[Meta](https://www.leetmap-pro.com/company/meta)** | [View Meta Questions](https://www.leetmap-pro.com/company/meta) | [Meta SQL](https://www.leetmap-pro.com/sql/meta) | Two Pointers, Binary Search, Sliding Window |
-| **[Amazon](https://www.leetmap-pro.com/company/amazon)** | [View Amazon Questions](https://www.leetmap-pro.com/company/amazon) | [Amazon SQL](https://www.leetmap-pro.com/sql/amazon) | Arrays, Heaps, BFS/DFS, Greedy |
-| **[Netflix](https://www.leetmap-pro.com/company/netflix)** | [View Netflix Questions](https://www.leetmap-pro.com/company/netflix) | [Netflix SQL](https://www.leetmap-pro.com/sql/netflix) | Design, Slidng Window, Graph Traversal |
-| **[Apple](https://www.leetmap-pro.com/company/apple)** | [View Apple Questions](https://www.leetmap-pro.com/company/apple) | [Apple SQL](https://www.leetmap-pro.com/sql/apple) | Linked Lists, Trees, Strings, Dynamic Programming |
-| **[Microsoft](https://www.leetmap-pro.com/company/microsoft)** | [View Microsoft Questions](https://www.leetmap-pro.com/company/microsoft) | [Microsoft SQL](https://www.leetmap-pro.com/sql/microsoft) | String Manipulation, Trees, Hash Tables |
-| **[Bloomberg](https://www.leetmap-pro.com/company/bloomberg)** | [View Bloomberg Questions](https://www.leetmap-pro.com/company/bloomberg) | [Bloomberg SQL](https://www.leetmap-pro.com/sql/bloomberg) | Design, Stack, Two Pointers, Sorting |
-| **[Citadel](https://www.leetmap-pro.com/company/citadel)** | [View Citadel Questions](https://www.leetmap-pro.com/company/citadel) | [Citadel SQL](https://www.leetmap-pro.com/sql/citadel) | Heaps, Monotonic Stack, Segment Trees |
+| **[Google](https://www.leetmap-pro.com/company/google)** | [Google LeetCode Questions (2,361)](https://www.leetmap-pro.com/company/google) | [Google SQL](https://www.leetmap-pro.com/sql/google) | Trees, Graphs, DP, Trie |
+| **[Amazon](https://www.leetmap-pro.com/company/amazon)** | [Amazon LeetCode Questions (2,045)](https://www.leetmap-pro.com/company/amazon) | [Amazon SQL](https://www.leetmap-pro.com/sql/amazon) | Arrays, Heaps, BFS/DFS, Greedy |
+| **[Microsoft](https://www.leetmap-pro.com/company/microsoft)** | [Microsoft LeetCode Questions (1,423)](https://www.leetmap-pro.com/company/microsoft) | [Microsoft SQL](https://www.leetmap-pro.com/sql/microsoft) | String Manipulation, Trees, Hash Tables |
+| **[Meta](https://www.leetmap-pro.com/company/meta)** | [Meta LeetCode Questions (1,420)](https://www.leetmap-pro.com/company/meta) | [Meta SQL](https://www.leetmap-pro.com/sql/meta) | Two Pointers, Binary Search, Sliding Window |
+| **[Bloomberg](https://www.leetmap-pro.com/company/bloomberg)** | [Bloomberg LeetCode Questions (1,257)](https://www.leetmap-pro.com/company/bloomberg) | [Bloomberg SQL](https://www.leetmap-pro.com/sql/bloomberg) | Design, Stack, Two Pointers, Sorting |
+| **[Uber](https://www.leetmap-pro.com/company/uber)** | [Uber LeetCode Questions (371)](https://www.leetmap-pro.com/company/uber) | [Uber SQL](https://www.leetmap-pro.com/sql/uber) | Graphs, Hash Tables, Dynamic Programming |
+| **[TikTok](https://www.leetmap-pro.com/company/tiktok)** | [TikTok LeetCode Questions (353)](https://www.leetmap-pro.com/company/tiktok) | [TikTok SQL](https://www.leetmap-pro.com/sql/tiktok) | Sliding Window, DP, Trees, Greedy |
+| **[Oracle](https://www.leetmap-pro.com/company/oracle)** | [Oracle LeetCode Questions (314)](https://www.leetmap-pro.com/company/oracle) | [Oracle SQL](https://www.leetmap-pro.com/sql/oracle) | SQL, Trees, Binary Search |
+| **[Apple](https://www.leetmap-pro.com/company/apple)** | [Apple LeetCode Questions (310)](https://www.leetmap-pro.com/company/apple) | [Apple SQL](https://www.leetmap-pro.com/sql/apple) | Linked Lists, Trees, Strings, DP |
+| **[Goldman Sachs](https://www.leetmap-pro.com/company/goldman-sachs)** | [Goldman Sachs Questions (273)](https://www.leetmap-pro.com/company/goldman-sachs) | [Goldman SQL](https://www.leetmap-pro.com/sql/goldman-sachs) | Math, Strings, Hash Tables |
+| **[Salesforce](https://www.leetmap-pro.com/company/salesforce)** | [Salesforce LeetCode Questions (202)](https://www.leetmap-pro.com/company/salesforce) | [Salesforce SQL](https://www.leetmap-pro.com/sql/salesforce) | Graphs, Trees, Arrays |
+| **[LinkedIn](https://www.leetmap-pro.com/company/linkedin)** | [LinkedIn LeetCode Questions (179)](https://www.leetmap-pro.com/company/linkedin) | [LinkedIn SQL](https://www.leetmap-pro.com/sql/linkedin) | Binary Search, Backtracking, Design |
+| **[Adobe](https://www.leetmap-pro.com/company/adobe)** | [Adobe LeetCode Questions (154)](https://www.leetmap-pro.com/company/adobe) | [Adobe SQL](https://www.leetmap-pro.com/sql/adobe) | Math, Arrays, Strings |
+| **[Visa](https://www.leetmap-pro.com/company/visa)** | [Visa LeetCode Questions (147)](https://www.leetmap-pro.com/company/visa) | [Visa SQL](https://www.leetmap-pro.com/sql/visa) | Hash Tables, SQL, Arrays |
+| **[Nvidia](https://www.leetmap-pro.com/company/nvidia)** | [Nvidia LeetCode Questions (142)](https://www.leetmap-pro.com/company/nvidia) | [Nvidia SQL](https://www.leetmap-pro.com/sql/nvidia) | Bit Manipulation, Two Pointers, Trees |
+| **[PayPal](https://www.leetmap-pro.com/company/paypal)** | [PayPal LeetCode Questions (106)](https://www.leetmap-pro.com/company/paypal) | [PayPal SQL](https://www.leetmap-pro.com/sql/paypal) | Two Pointers, Strings, SQL |
+| **[Snowflake](https://www.leetmap-pro.com/company/snowflake)** | [Snowflake LeetCode Questions (104)](https://www.leetmap-pro.com/company/snowflake) | [Snowflake SQL](https://www.leetmap-pro.com/sql/snowflake) | Concurrency, Trees, Heaps |
+| **[Citadel](https://www.leetmap-pro.com/company/citadel)** | [Citadel LeetCode Questions (90)](https://www.leetmap-pro.com/company/citadel) | [Citadel SQL](https://www.leetmap-pro.com/sql/citadel) | Monotonic Stack, Heaps, DP |
+| **[DoorDash](https://www.leetmap-pro.com/company/doordash)** | [DoorDash LeetCode Questions (77)](https://www.leetmap-pro.com/company/doordash) | [DoorDash SQL](https://www.leetmap-pro.com/sql/doordash) | BFS/DFS, Trees, Heaps |
+| **[JPMorgan Chase](https://www.leetmap-pro.com/company/jpmorgan)** | [JPMorgan Questions (74)](https://www.leetmap-pro.com/company/jpmorgan) | [JPMorgan SQL](https://www.leetmap-pro.com/sql/jpmorgan) | Arrays, DP, Hash Tables |
+| **[Netflix](https://www.leetmap-pro.com/company/netflix)** | [Netflix LeetCode Questions (63)](https://www.leetmap-pro.com/company/netflix) | [Netflix SQL](https://www.leetmap-pro.com/sql/netflix) | Design, Sliding Window, Graphs |
+| **[Airbnb](https://www.leetmap-pro.com/company/airbnb)** | [Airbnb LeetCode Questions (65)](https://www.leetmap-pro.com/company/airbnb) | [Airbnb SQL](https://www.leetmap-pro.com/sql/airbnb) | Backtracking, BFS/DFS, Trie |
 
 ---
 
