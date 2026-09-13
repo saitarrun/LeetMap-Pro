@@ -19,12 +19,12 @@ export const metadata = {
   title: 'Terms of Service',
   description: 'Terms of Service and legal disclosures for using LeetMap Pro, an open-source technical interview preparation and frequency explorer.',
   alternates: {
-    canonical: 'https://leetmap-pro.vercel.app/terms',
+    canonical: 'https://www.leetmap-pro.com/terms',
   },
   openGraph: {
     title: 'Terms of Service | LeetMap Pro',
     description: 'Terms of Service and legal disclosures for using LeetMap Pro, an open-source technical interview preparation and frequency explorer.',
-    url: 'https://leetmap-pro.vercel.app/terms',
+    url: 'https://www.leetmap-pro.com/terms',
     type: 'website',
   },
   twitter: {
@@ -42,13 +42,13 @@ const termsBreadcrumbJsonLd = {
       '@type': 'ListItem',
       position: 1,
       name: 'Home',
-      item: 'https://leetmap-pro.vercel.app',
+      item: 'https://www.leetmap-pro.com',
     },
     {
       '@type': 'ListItem',
       position: 2,
       name: 'Terms of Service',
-      item: 'https://leetmap-pro.vercel.app/terms',
+      item: 'https://www.leetmap-pro.com/terms',
     },
   ],
 };
@@ -96,7 +96,7 @@ export default function TermsPage() {
               <h2>1. Agreement to Terms</h2>
             </div>
             <p>
-              By accessing, browsing, or utilizing LeetMap Pro (<code className="px-1.5 py-0.5 rounded bg-[var(--bg-subtle)] text-xs font-mono">leetmap-pro.vercel.app</code>, its subdomains, or affiliated software services), you enter into a binding agreement with the operators and maintainers of LeetMap Pro (&ldquo;we,&rdquo; &ldquo;us,&rdquo; or &ldquo;our&rdquo;) and agree to comply with these Terms of Service. If you disagree with any portion of these terms, your sole remedy is to cease using the platform immediately.
+              By accessing, browsing, or utilizing LeetMap Pro (<code className="px-1.5 py-0.5 rounded bg-[var(--bg-subtle)] text-xs font-mono">www.leetmap-pro.com</code>, its subdomains, or affiliated software services), you enter into a binding agreement with the operators and maintainers of LeetMap Pro (&ldquo;we,&rdquo; &ldquo;us,&rdquo; or &ldquo;our&rdquo;) and agree to comply with these Terms of Service. If you disagree with any portion of these terms, your sole remedy is to cease using the platform immediately.
             </p>
           </section>
 

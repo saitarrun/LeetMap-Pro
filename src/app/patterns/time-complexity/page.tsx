@@ -6,12 +6,13 @@ export const metadata: Metadata = {
   description:
     'Master Big O notation from scratch. Learn how to calculate time and space complexity for every DSA pattern used in coding interviews.',
   alternates: {
-    canonical: 'https://leetmap-pro.vercel.app/patterns/time-complexity',
+    canonical: 'https://www.leetmap-pro.com/patterns/time-complexity',
   },
   openGraph: {
     title: 'Time & Space Complexity | LeetMap Pro',
-    description: 'Master Big O notation from scratch. Learn how to calculate time and space complexity for every DSA pattern used in coding interviews.',
-    url: 'https://leetmap-pro.vercel.app/patterns/time-complexity',
+    description:
+      'Master Big O notation from scratch. Learn how to calculate time and space complexity for every DSA pattern used in coding interviews.',
+    url: 'https://www.leetmap-pro.com/patterns/time-complexity',
     type: 'article',
   },
   twitter: {
@@ -29,19 +30,19 @@ const breadcrumbJsonLd = {
       '@type': 'ListItem',
       position: 1,
       name: 'Home',
-      item: 'https://leetmap-pro.vercel.app',
+      item: 'https://www.leetmap-pro.com',
     },
     {
       '@type': 'ListItem',
       position: 2,
       name: 'Patterns',
-      item: 'https://leetmap-pro.vercel.app/patterns',
+      item: 'https://www.leetmap-pro.com/patterns',
     },
     {
       '@type': 'ListItem',
       position: 3,
       name: 'Time & Space Complexity',
-      item: 'https://leetmap-pro.vercel.app/patterns/time-complexity',
+      item: 'https://www.leetmap-pro.com/patterns/time-complexity',
     },
   ],
 };
@@ -54,9 +55,9 @@ const articleJsonLd = {
   author: {
     '@type': 'Organization',
     name: 'LeetMap Pro',
-    url: 'https://leetmap-pro.vercel.app',
+    url: 'https://www.leetmap-pro.com',
   },
-  url: 'https://leetmap-pro.vercel.app/patterns/time-complexity',
+  url: 'https://www.leetmap-pro.com/patterns/time-complexity',
 };
 
 export default function TimeComplexityPage() {

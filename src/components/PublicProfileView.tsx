@@ -240,11 +240,11 @@ export const PublicProfileView: React.FC<PublicProfileViewProps> = ({ initialDat
 
   const profileUrl = typeof window !== 'undefined'
     ? `${window.location.origin}/u/${initialData.user.username}`
-    : `https://leetmap-pro.vercel.app/u/${initialData.user.username}`;
+    : `https://www.leetmap-pro.com/u/${initialData.user.username}`;
 
   const badgeBaseUrl = typeof window !== 'undefined'
     ? `${window.location.origin}/api/badge/${initialData.user.username}`
-    : `https://leetmap-pro.vercel.app/api/badge/${initialData.user.username}`;
+    : `https://www.leetmap-pro.com/api/badge/${initialData.user.username}`;
 
   const currentBadgeSrc = useMemo(() => {
     const params = new URLSearchParams();

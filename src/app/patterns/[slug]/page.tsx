@@ -62,12 +62,12 @@ export async function generateMetadata({ params }: PageProps) {
       'dsa coding interview',
     ],
     alternates: {
-      canonical: `https://leetmap-pro.vercel.app/patterns/${safeSlug}`,
+      canonical: `https://www.leetmap-pro.com/patterns/${safeSlug}`,
     },
     openGraph: {
       title,
       description,
-      url: `https://leetmap-pro.vercel.app/patterns/${safeSlug}`,
+      url: `https://www.leetmap-pro.com/patterns/${safeSlug}`,
       type: 'article',
     },
     twitter: {
@@ -123,19 +123,19 @@ export default async function PatternDetailPage({ params }: PageProps) {
         '@type': 'ListItem',
         position: 1,
         name: 'Home',
-        item: 'https://leetmap-pro.vercel.app',
+        item: 'https://www.leetmap-pro.com',
       },
       {
         '@type': 'ListItem',
         position: 2,
         name: 'Patterns',
-        item: 'https://leetmap-pro.vercel.app/patterns',
+        item: 'https://www.leetmap-pro.com/patterns',
       },
       {
         '@type': 'ListItem',
         position: 3,
         name: `${pattern.name} Pattern`,
-        item: `https://leetmap-pro.vercel.app/patterns/${safeSlug}`,
+        item: `https://www.leetmap-pro.com/patterns/${safeSlug}`,
       },
     ],
   };
@@ -149,7 +149,7 @@ export default async function PatternDetailPage({ params }: PageProps) {
       '@type': 'Organization',
       name: 'LeetMap Pro',
     },
-    url: `https://leetmap-pro.vercel.app/patterns/${safeSlug}`,
+    url: `https://www.leetmap-pro.com/patterns/${safeSlug}`,
   };
 
   const topProblems = (pattern.problems || []).slice(0, 15);

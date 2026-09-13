@@ -27,12 +27,12 @@ export async function generateMetadata({ params }: PageProps) {
     title,
     description,
     alternates: {
-      canonical: `https://leetmap-pro.vercel.app/u/${user.username}`,
+      canonical: `https://www.leetmap-pro.com/u/${user.username}`,
     },
     openGraph: {
       title,
       description,
-      url: `https://leetmap-pro.vercel.app/u/${user.username}`,
+      url: `https://www.leetmap-pro.com/u/${user.username}`,
       type: 'profile',
       images: [
         {
@@ -70,7 +70,7 @@ export default async function PublicProfilePage({ params }: PageProps) {
       name: user.name,
       alternateName: user.username,
       image: user.avatarUrl,
-      url: `https://leetmap-pro.vercel.app/u/${user.username}`,
+      url: `https://www.leetmap-pro.com/u/${user.username}`,
     },
   };
 

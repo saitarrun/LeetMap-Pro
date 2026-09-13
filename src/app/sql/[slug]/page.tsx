@@ -40,12 +40,12 @@ export async function generateMetadata({ params }: PageProps) {
       `${company.name} data analyst sql`,
     ],
     alternates: {
-      canonical: `https://leetmap-pro.vercel.app/sql/${safeSlug}`,
+      canonical: `https://www.leetmap-pro.com/sql/${safeSlug}`,
     },
     openGraph: {
       title: `${company.name} SQL Interview Questions (${sqlCount} Problems) | LeetMap Pro`,
       description,
-      url: `https://leetmap-pro.vercel.app/sql/${safeSlug}`,
+      url: `https://www.leetmap-pro.com/sql/${safeSlug}`,
       type: 'article',
       siteName: 'LeetMap Pro',
     },
@@ -101,19 +101,19 @@ export default async function SqlCompanyPage({ params }: PageProps) {
         '@type': 'ListItem',
         position: 1,
         name: 'Home',
-        item: 'https://leetmap-pro.vercel.app',
+        item: 'https://www.leetmap-pro.com',
       },
       {
         '@type': 'ListItem',
         position: 2,
         name: 'SQL Interview Hub',
-        item: 'https://leetmap-pro.vercel.app/sql',
+        item: 'https://www.leetmap-pro.com/sql',
       },
       {
         '@type': 'ListItem',
         position: 3,
         name: `${company.name} SQL Questions`,
-        item: `https://leetmap-pro.vercel.app/sql/${safeSlug}`,
+        item: `https://www.leetmap-pro.com/sql/${safeSlug}`,
       },
     ],
   };

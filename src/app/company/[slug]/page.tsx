@@ -42,12 +42,12 @@ export async function generateMetadata({ params }: PageProps) {
       `leetcode company wise`,
     ],
     alternates: {
-      canonical: `https://leetmap-pro.vercel.app/company/${safeSlug}`,
+      canonical: `https://www.leetmap-pro.com/company/${safeSlug}`,
     },
     openGraph: {
       title: `${company.name} LeetCode Questions (${company.total} Problems) | LeetMap Pro`,
       description,
-      url: `https://leetmap-pro.vercel.app/company/${safeSlug}`,
+      url: `https://www.leetmap-pro.com/company/${safeSlug}`,
       type: 'article',
       siteName: 'LeetMap Pro',
     },
@@ -99,19 +99,19 @@ export default async function CompanyPage({ params }: PageProps) {
         '@type': 'ListItem',
         position: 1,
         name: 'Home',
-        item: 'https://leetmap-pro.vercel.app',
+        item: 'https://www.leetmap-pro.com',
       },
       {
         '@type': 'ListItem',
         position: 2,
         name: 'Company-Wise LeetCode Questions',
-        item: 'https://leetmap-pro.vercel.app',
+        item: 'https://www.leetmap-pro.com',
       },
       {
         '@type': 'ListItem',
         position: 3,
         name: `${company.name} LeetCode Questions`,
-        item: `https://leetmap-pro.vercel.app/company/${safeSlug}`,
+        item: `https://www.leetmap-pro.com/company/${safeSlug}`,
       },
     ],
   };
@@ -129,7 +129,7 @@ export default async function CompanyPage({ params }: PageProps) {
       '@type': 'ListItem',
       position: idx + 1,
       name: `${company.name}: #${p.id} ${p.title} (${p.difficulty})`,
-      url: `https://leetmap-pro.vercel.app/company/${safeSlug}`,
+      url: `https://www.leetmap-pro.com/company/${safeSlug}`,
     })),
   };
 

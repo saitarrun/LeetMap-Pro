@@ -16,12 +16,12 @@ export const metadata = {
     'SQL Frequency',
   ],
   alternates: {
-    canonical: 'https://leetmap-pro.vercel.app/sql',
+    canonical: 'https://www.leetmap-pro.com/sql',
   },
   openGraph: {
     title: 'Company-wise LeetCode SQL Questions | LeetMap Pro',
     description: 'Browse coding interview SQL questions asked by 73+ tech firms, ranked by interview frequency and recency.',
-    url: 'https://leetmap-pro.vercel.app/sql',
+    url: 'https://www.leetmap-pro.com/sql',
     type: 'website',
   },
   twitter: {
@@ -76,13 +76,13 @@ export default async function SqlPage() {
         '@type': 'ListItem',
         position: 1,
         name: 'Home',
-        item: 'https://leetmap-pro.vercel.app',
+        item: 'https://www.leetmap-pro.com',
       },
       {
         '@type': 'ListItem',
         position: 2,
         name: 'SQL Interview Hub',
-        item: 'https://leetmap-pro.vercel.app/sql',
+        item: 'https://www.leetmap-pro.com/sql',
       },
     ],
   };
@@ -97,7 +97,7 @@ export default async function SqlPage() {
       '@type': 'ListItem',
       position: idx + 1,
       name: `${c.name} SQL Questions`,
-      url: `https://leetmap-pro.vercel.app/sql/${c.slug}`,
+      url: `https://www.leetmap-pro.com/sql/${c.slug}`,
     })),
   };
 

@@ -410,7 +410,7 @@ export default async function Image({ params }: Props) {
               color: '#a78bfa',
             }}
           >
-            leetmap-pro.vercel.app/patterns/{safeSlug}
+            www.leetmap-pro.com/patterns/{safeSlug}
           </span>
         </div>
       </div>

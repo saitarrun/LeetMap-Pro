@@ -176,7 +176,7 @@ export const SqlCompanyDetailView: React.FC<SqlCompanyDetailViewProps> = ({ comp
   };
 
   const handleExportMarkdown = async () => {
-    const pageUrl = `https://leetmap-pro.vercel.app/sql/${company.slug}`;
+    const pageUrl = `https://www.leetmap-pro.com/sql/${company.slug}`;
     let md = `# ${company.name} SQL Interview Questions (${currentWindow.name})\n\n`;
     md += `> Curated from [LeetMap Pro](${pageUrl}) — Ranked by real database interview frequency.\n\n`;
     md += `| Solved | Query Problem | Difficulty | Frequency |\n`;

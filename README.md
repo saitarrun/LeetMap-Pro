@@ -1,8 +1,8 @@
 # LeetMap Pro — Free Company-Wise LeetCode & SQL Interview Questions
 
 <p align="center">
-  <a href="https://leetmap-pro.vercel.app">
-    <img src="https://leetmap-pro.vercel.app/icon-192.png" width="80" height="80" alt="LeetMap Pro Logo" />
+  <a href="https://www.leetmap-pro.com">
+    <img src="https://www.leetmap-pro.com/icon-192.png" width="80" height="80" alt="LeetMap Pro Logo" />
   </a>
 </p>
 
@@ -11,9 +11,9 @@
 </p>
 
 <p align="center">
-  <a href="https://leetmap-pro.vercel.app"><img src="https://img.shields.io/badge/Live%20App-leetmap--pro.vercel.app-2563eb?style=for-the-badge&logo=vercel&logoColor=white" alt="Live Application" /></a>
-  <a href="https://leetmap-pro.vercel.app/sql"><img src="https://img.shields.io/badge/SQL%20Hub-73%2B%20Companies-f59e0b?style=for-the-badge&logo=postgresql&logoColor=white" alt="SQL Practice Hub" /></a>
-  <a href="https://leetmap-pro.vercel.app/patterns"><img src="https://img.shields.io/badge/DSA%20Patterns-22%20Roadmaps-10b981?style=for-the-badge&logo=git&logoColor=white" alt="DSA Patterns" /></a>
+  <a href="https://www.leetmap-pro.com"><img src="https://img.shields.io/badge/Live%20App-www.leetmap--pro.com-2563eb?style=for-the-badge&logo=google-chrome&logoColor=white" alt="Live Application" /></a>
+  <a href="https://www.leetmap-pro.com/sql"><img src="https://img.shields.io/badge/SQL%20Hub-73%2B%20Companies-f59e0b?style=for-the-badge&logo=postgresql&logoColor=white" alt="SQL Practice Hub" /></a>
+  <a href="https://www.leetmap-pro.com/patterns"><img src="https://img.shields.io/badge/DSA%20Patterns-22%20Roadmaps-10b981?style=for-the-badge&logo=git&logoColor=white" alt="DSA Patterns" /></a>
   <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/License-MIT-gray?style=for-the-badge" alt="MIT License" /></a>
 </p>
 
@@ -21,11 +21,11 @@
 
 ## 🌐 Explore Live Hubs
 
-- 🏢 **[Company-Wise DSA Questions](https://leetmap-pro.vercel.app)** — Browse verified questions asked by **680+ tech companies** (Google, Meta, Amazon, Apple, Netflix, Microsoft, Bloomberg, Citadel, Uber, and more).
-- 🗄️ **[Company-Wise SQL Practice Hub](https://leetmap-pro.vercel.app/sql)** — Curated SQL and database interview questions across 73 top companies for Software Engineers, Data Engineers, and Data Analysts.
-- 🧩 **[Interactive DSA Coding Patterns](https://leetmap-pro.vercel.app/patterns)** — Master 22 core interview patterns including Sliding Window, Two Pointers, Monotonic Stack, Graph Traversal, and Dynamic Programming.
-- 🗺️ **[Visual Strategy Roadmap](https://leetmap-pro.vercel.app/strategy)** — Interactive directed graph mapping optimal study paths from basics to advanced topics.
-- ⏱️ **[Big-O Time & Space Complexity Guide](https://leetmap-pro.vercel.app/patterns/time-complexity)** — Comprehensive reference for data structure complexities and algorithm efficiency.
+- 🏢 **[Company-Wise DSA Questions](https://www.leetmap-pro.com)** — Browse verified questions asked by **680+ tech companies** (Google, Meta, Amazon, Apple, Netflix, Microsoft, Bloomberg, Citadel, Uber, and more).
+- 🗄️ **[Company-Wise SQL Practice Hub](https://www.leetmap-pro.com/sql)** — Curated SQL and database interview questions across 73 top companies for Software Engineers, Data Engineers, and Data Analysts.
+- 🧩 **[Interactive DSA Coding Patterns](https://www.leetmap-pro.com/patterns)** — Master 22 core interview patterns including Sliding Window, Two Pointers, Monotonic Stack, Graph Traversal, and Dynamic Programming.
+- 🗺️ **[Visual Strategy Roadmap](https://www.leetmap-pro.com/strategy)** — Interactive directed graph mapping optimal study paths from basics to advanced topics.
+- ⏱️ **[Big-O Time & Space Complexity Guide](https://www.leetmap-pro.com/patterns/time-complexity)** — Comprehensive reference for data structure complexities and algorithm efficiency.
 
 ---
 
@@ -55,14 +55,14 @@
 
 | Company | LeetCode Questions | SQL Questions | Top Problem Patterns |
 | :--- | :--- | :--- | :--- |
-| **[Google](https://leetmap-pro.vercel.app/company/google)** | [View Google Questions](https://leetmap-pro.vercel.app/company/google) | [Google SQL](https://leetmap-pro.vercel.app/sql/google) | Trees, Graphs, DP, Trie |
-| **[Meta](https://leetmap-pro.vercel.app/company/meta)** | [View Meta Questions](https://leetmap-pro.vercel.app/company/meta) | [Meta SQL](https://leetmap-pro.vercel.app/sql/meta) | Two Pointers, Binary Search, Sliding Window |
-| **[Amazon](https://leetmap-pro.vercel.app/company/amazon)** | [View Amazon Questions](https://leetmap-pro.vercel.app/company/amazon) | [Amazon SQL](https://leetmap-pro.vercel.app/sql/amazon) | Arrays, Heaps, BFS/DFS, Greedy |
-| **[Netflix](https://leetmap-pro.vercel.app/company/netflix)** | [View Netflix Questions](https://leetmap-pro.vercel.app/company/netflix) | [Netflix SQL](https://leetmap-pro.vercel.app/sql/netflix) | Design, Slidng Window, Graph Traversal |
-| **[Apple](https://leetmap-pro.vercel.app/company/apple)** | [View Apple Questions](https://leetmap-pro.vercel.app/company/apple) | [Apple SQL](https://leetmap-pro.vercel.app/sql/apple) | Linked Lists, Trees, Strings, Dynamic Programming |
-| **[Microsoft](https://leetmap-pro.vercel.app/company/microsoft)** | [View Microsoft Questions](https://leetmap-pro.vercel.app/company/microsoft) | [Microsoft SQL](https://leetmap-pro.vercel.app/sql/microsoft) | String Manipulation, Trees, Hash Tables |
-| **[Bloomberg](https://leetmap-pro.vercel.app/company/bloomberg)** | [View Bloomberg Questions](https://leetmap-pro.vercel.app/company/bloomberg) | [Bloomberg SQL](https://leetmap-pro.vercel.app/sql/bloomberg) | Design, Stack, Two Pointers, Sorting |
-| **[Citadel](https://leetmap-pro.vercel.app/company/citadel)** | [View Citadel Questions](https://leetmap-pro.vercel.app/company/citadel) | [Citadel SQL](https://leetmap-pro.vercel.app/sql/citadel) | Heaps, Monotonic Stack, Segment Trees |
+| **[Google](https://www.leetmap-pro.com/company/google)** | [View Google Questions](https://www.leetmap-pro.com/company/google) | [Google SQL](https://www.leetmap-pro.com/sql/google) | Trees, Graphs, DP, Trie |
+| **[Meta](https://www.leetmap-pro.com/company/meta)** | [View Meta Questions](https://www.leetmap-pro.com/company/meta) | [Meta SQL](https://www.leetmap-pro.com/sql/meta) | Two Pointers, Binary Search, Sliding Window |
+| **[Amazon](https://www.leetmap-pro.com/company/amazon)** | [View Amazon Questions](https://www.leetmap-pro.com/company/amazon) | [Amazon SQL](https://www.leetmap-pro.com/sql/amazon) | Arrays, Heaps, BFS/DFS, Greedy |
+| **[Netflix](https://www.leetmap-pro.com/company/netflix)** | [View Netflix Questions](https://www.leetmap-pro.com/company/netflix) | [Netflix SQL](https://www.leetmap-pro.com/sql/netflix) | Design, Slidng Window, Graph Traversal |
+| **[Apple](https://www.leetmap-pro.com/company/apple)** | [View Apple Questions](https://www.leetmap-pro.com/company/apple) | [Apple SQL](https://www.leetmap-pro.com/sql/apple) | Linked Lists, Trees, Strings, Dynamic Programming |
+| **[Microsoft](https://www.leetmap-pro.com/company/microsoft)** | [View Microsoft Questions](https://www.leetmap-pro.com/company/microsoft) | [Microsoft SQL](https://www.leetmap-pro.com/sql/microsoft) | String Manipulation, Trees, Hash Tables |
+| **[Bloomberg](https://www.leetmap-pro.com/company/bloomberg)** | [View Bloomberg Questions](https://www.leetmap-pro.com/company/bloomberg) | [Bloomberg SQL](https://www.leetmap-pro.com/sql/bloomberg) | Design, Stack, Two Pointers, Sorting |
+| **[Citadel](https://www.leetmap-pro.com/company/citadel)** | [View Citadel Questions](https://www.leetmap-pro.com/company/citadel) | [Citadel SQL](https://www.leetmap-pro.com/sql/citadel) | Heaps, Monotonic Stack, Segment Trees |
 
 ---
 

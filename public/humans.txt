@@ -1,6 +1,6 @@
 /* TEAM */
 Founder & Developer: Sai Tarrun Pitta
-Site: https://leetmap-pro.vercel.app
+Site: https://www.leetmap-pro.com
 GitHub: https://github.com/saitarrun/LeetMap-Pro
 Twitter: @saitarrun
 

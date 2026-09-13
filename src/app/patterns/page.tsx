@@ -17,12 +17,12 @@ export const metadata = {
     'FAANG Patterns',
   ],
   alternates: {
-    canonical: 'https://leetmap-pro.vercel.app/patterns',
+    canonical: 'https://www.leetmap-pro.com/patterns',
   },
   openGraph: {
     title: 'Browse by Pattern for LeetCode DSA | LeetMap Pro',
     description: 'Master 22 core LeetCode coding interview patterns asked by top tech firms.',
-    url: 'https://leetmap-pro.vercel.app/patterns',
+    url: 'https://www.leetmap-pro.com/patterns',
     type: 'website',
   },
   twitter: {
@@ -72,13 +72,13 @@ export default async function PatternsPage() {
         '@type': 'ListItem',
         position: 1,
         name: 'Home',
-        item: 'https://leetmap-pro.vercel.app',
+        item: 'https://www.leetmap-pro.com',
       },
       {
         '@type': 'ListItem',
         position: 2,
         name: 'Coding Patterns',
-        item: 'https://leetmap-pro.vercel.app/patterns',
+        item: 'https://www.leetmap-pro.com/patterns',
       },
     ],
   };
@@ -93,7 +93,7 @@ export default async function PatternsPage() {
       '@type': 'ListItem',
       position: idx + 1,
       name: p.name,
-      url: `https://leetmap-pro.vercel.app/patterns/${p.slug}`,
+      url: `https://www.leetmap-pro.com/patterns/${p.slug}`,
     })),
   };
 

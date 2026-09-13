@@ -20,12 +20,12 @@ export const metadata = {
   title: 'Privacy Policy',
   description: 'Learn how LeetMap Pro handles your data with privacy-first engineering, transparent local storage, and zero third-party ads.',
   alternates: {
-    canonical: 'https://leetmap-pro.vercel.app/privacy',
+    canonical: 'https://www.leetmap-pro.com/privacy',
   },
   openGraph: {
     title: 'Privacy Policy | LeetMap Pro',
     description: 'Learn how LeetMap Pro handles your data with privacy-first engineering, transparent local storage, and zero third-party ads.',
-    url: 'https://leetmap-pro.vercel.app/privacy',
+    url: 'https://www.leetmap-pro.com/privacy',
     type: 'website',
   },
   twitter: {
@@ -43,13 +43,13 @@ const privacyBreadcrumbJsonLd = {
       '@type': 'ListItem',
       position: 1,
       name: 'Home',
-      item: 'https://leetmap-pro.vercel.app',
+      item: 'https://www.leetmap-pro.com',
     },
     {
       '@type': 'ListItem',
       position: 2,
       name: 'Privacy Policy',
-      item: 'https://leetmap-pro.vercel.app/privacy',
+      item: 'https://www.leetmap-pro.com/privacy',
     },
   ],
 };
@@ -223,7 +223,7 @@ export default function PrivacyPage() {
             </p>
             <ul className="list-disc pl-5 space-y-2">
               <li>
-                <strong>Anonymous Local Data:</strong> Clear your browser&apos;s site data or local storage for <code className="px-1.5 py-0.5 rounded bg-[var(--bg-subtle)] text-xs font-mono">leetmap-pro.vercel.app</code> to immediately remove all stored data.
+                <strong>Anonymous Local Data:</strong> Clear your browser&apos;s site data or local storage for <code className="px-1.5 py-0.5 rounded bg-[var(--bg-subtle)] text-xs font-mono">www.leetmap-pro.com</code> to immediately remove all stored data.
               </li>
               <li>
                 <strong>Cloud Account & Progress:</strong> Click on your profile avatar in the header, select <strong>&ldquo;Manage Account&rdquo;</strong>, and choose <strong>&ldquo;Delete Account&rdquo;</strong>. This triggers immediate, permanent erasure of your user profile, solved history, and streak records across all databases.

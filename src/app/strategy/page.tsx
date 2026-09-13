@@ -16,12 +16,12 @@ export const metadata = {
     'Technical Interview Roadmap',
   ],
   alternates: {
-    canonical: 'https://leetmap-pro.vercel.app/strategy',
+    canonical: 'https://www.leetmap-pro.com/strategy',
   },
   openGraph: {
     title: 'Interview Strategy & Dependency Roadmap | LeetMap Pro',
     description: 'Master the 18 core LeetCode coding interview patterns in optimal prerequisite order with an interactive visual dependency graph.',
-    url: 'https://leetmap-pro.vercel.app/strategy',
+    url: 'https://www.leetmap-pro.com/strategy',
     type: 'website',
   },
   twitter: {
@@ -71,13 +71,13 @@ export default async function StrategyPage() {
         '@type': 'ListItem',
         position: 1,
         name: 'Home',
-        item: 'https://leetmap-pro.vercel.app',
+        item: 'https://www.leetmap-pro.com',
       },
       {
         '@type': 'ListItem',
         position: 2,
         name: 'Strategy Roadmap',
-        item: 'https://leetmap-pro.vercel.app/strategy',
+        item: 'https://www.leetmap-pro.com/strategy',
       },
     ],
   };
@@ -91,7 +91,7 @@ export default async function StrategyPage() {
       '@type': 'Organization',
       name: 'LeetMap Pro',
     },
-    url: 'https://leetmap-pro.vercel.app/strategy',
+    url: 'https://www.leetmap-pro.com/strategy',
   };
 
   return (

@@ -8,12 +8,12 @@ export const metadata = {
   title: 'LeetMap Pro | Company Wise Leetcode and SQL Questions',
   description: 'Browse coding interview problems asked by 680+ tech companies, ranked by frequency and recency. Free interactive strategy roadmap and SQL interview hub.',
   alternates: {
-    canonical: 'https://leetmap-pro.vercel.app',
+    canonical: 'https://www.leetmap-pro.com',
   },
   openGraph: {
     title: 'LeetMap Pro | Company Wise Leetcode and SQL Questions',
     description: 'Browse coding interview problems asked by 680+ tech companies, ranked by frequency and recency. Free interactive strategy roadmap and SQL interview hub.',
-    url: 'https://leetmap-pro.vercel.app',
+    url: 'https://www.leetmap-pro.com',
     type: 'website',
   },
 };

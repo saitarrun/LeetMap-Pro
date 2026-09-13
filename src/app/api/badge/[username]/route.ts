@@ -214,7 +214,7 @@ export async function GET(
     <!-- Bottom Bar -->
     <line x1="20" y1="120" x2="430" y2="120" stroke="rgba(255, 255, 255, 0.06)" stroke-width="1"/>
     <text x="20" y="135" font-size="10" font-weight="500" fill="#64748b">Verified Company &amp; SQL Questions</text>
-    <text x="430" y="135" font-size="10" font-weight="500" fill="#10b981" text-anchor="end">leetmap-pro.vercel.app</text>
+    <text x="430" y="135" font-size="10" font-weight="500" fill="#10b981" text-anchor="end">www.leetmap-pro.com</text>
   </g>
 </svg>`;
   }

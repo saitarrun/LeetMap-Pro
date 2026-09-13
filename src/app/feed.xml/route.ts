@@ -4,7 +4,7 @@ import path from 'path';
 export const dynamic = 'force-static';
 export const revalidate = 86400; // 24 hours
 
-const BASE_URL = 'https://leetmap-pro.vercel.app';
+const BASE_URL = 'https://www.leetmap-pro.com';
 
 function escapeXml(unsafe: string): string {
   return unsafe

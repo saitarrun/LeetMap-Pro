@@ -192,7 +192,7 @@ export const CompanyDetailView: React.FC<CompanyDetailViewProps> = ({ company })
   };
 
   const handleExportMarkdown = async () => {
-    const pageUrl = `https://leetmap-pro.vercel.app/company/${company.slug}`;
+    const pageUrl = `https://www.leetmap-pro.com/company/${company.slug}`;
     let md = `# ${company.name} LeetCode Questions (${currentWindow.name})\n\n`;
     md += `> Curated from [LeetMap Pro](${pageUrl}) — Ranked by real interview frequency and recency.\n\n`;
     md += `| Solved | Problem | Difficulty | Frequency | Topics |\n`;
