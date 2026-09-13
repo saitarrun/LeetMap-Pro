@@ -2,7 +2,7 @@ import { MetadataRoute } from 'next';
 import fs from 'fs';
 import path from 'path';
 
-const BASE_URL = 'https://leetmap-pro.vercel.app';
+const BASE_URL = 'https://www.leetmap-pro.com';
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const currentDate = new Date();

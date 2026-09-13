@@ -1,8 +1,8 @@
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 
-const canonicalProductionHost = "leetmap-pro.vercel.app";
-const legacyProductionHosts = new Set(["leetmap-hub.vercel.app"]);
+const canonicalProductionHost = "www.leetmap-pro.com";
+const legacyProductionHosts = new Set(["leetmap-hub.vercel.app", "leetmap-pro.vercel.app"]);
 
 const isProtectedApiRoute = createRouteMatcher([
   "/api/sync(.*)",

@@ -20,7 +20,7 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://leetmap-pro.vercel.app'),
+  metadataBase: new URL('https://www.leetmap-pro.com'),
   applicationName: 'LeetMap Pro',
   appleWebApp: {
     title: 'LeetMap Pro',
@@ -33,6 +33,10 @@ export const metadata: Metadata = {
   },
   description: 'Browse coding interview problems actually asked by 680+ tech companies, ranked by frequency and recency. Visual pattern roadmap, SQL interview questions, and real-time multi-source sync.',
   keywords: [
+    'leetmap',
+    'LeetMap',
+    'leetmap pro',
+    'leetmappro',
     'LeetCode Company Wise',
     'LeetCode Questions by Company',
     'LeetCode Frequency',
@@ -56,8 +60,8 @@ export const metadata: Metadata = {
   alternates: {
     canonical: '/',
     types: {
-      'application/rss+xml': [{ url: 'https://leetmap-pro.vercel.app/feed.xml', title: 'LeetMap Pro RSS Feed' }],
-      'application/atom+xml': [{ url: 'https://leetmap-pro.vercel.app/feed.xml?format=atom', title: 'LeetMap Pro Atom Feed' }],
+      'application/rss+xml': [{ url: 'https://www.leetmap-pro.com/feed.xml', title: 'LeetMap Pro RSS Feed' }],
+      'application/atom+xml': [{ url: 'https://www.leetmap-pro.com/feed.xml?format=atom', title: 'LeetMap Pro Atom Feed' }],
     },
   },
   robots: {
@@ -78,7 +82,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: 'website',
     locale: 'en_US',
-    url: 'https://leetmap-pro.vercel.app',
+    url: 'https://www.leetmap-pro.com',
     siteName: 'LeetMap Pro',
     title: 'LeetMap Pro | Company Wise Leetcode and SQL Questions',
     description: 'Browse coding interview problems actually asked by 680+ tech companies, ranked by frequency and recency. Free interactive strategy roadmap and curated SQL problems.',
@@ -126,14 +130,14 @@ const jsonLd = [
     '@context': 'https://schema.org',
     '@type': 'WebSite',
     name: 'LeetMap Pro',
-    alternateName: ['LeetMap', 'LeetMapPro', 'leetmap-pro.vercel.app'],
-    url: 'https://leetmap-pro.vercel.app/',
+    alternateName: ['LeetMap', 'leetmap', 'LeetMapPro', 'leetmap-pro.com', 'www.leetmap-pro.com', 'leetmap-pro.vercel.app'],
+    url: 'https://www.leetmap-pro.com/',
     inLanguage: 'en-US',
     potentialAction: {
       '@type': 'SearchAction',
       target: {
         '@type': 'EntryPoint',
-        urlTemplate: 'https://leetmap-pro.vercel.app/?search={search_term_string}',
+        urlTemplate: 'https://www.leetmap-pro.com/?search={search_term_string}',
       },
       'query-input': 'required name=search_term_string',
     },
@@ -142,9 +146,9 @@ const jsonLd = [
     '@context': 'https://schema.org',
     '@type': 'Organization',
     name: 'LeetMap Pro',
-    url: 'https://leetmap-pro.vercel.app',
-    logo: 'https://leetmap-pro.vercel.app/icon-192.png',
-    image: 'https://leetmap-pro.vercel.app/icon-512.png',
+    url: 'https://www.leetmap-pro.com',
+    logo: 'https://www.leetmap-pro.com/icon-192.png',
+    image: 'https://www.leetmap-pro.com/icon-512.png',
     sameAs: [
       'https://github.com/saitarrun/LeetMap-Pro',
     ],
@@ -153,7 +157,7 @@ const jsonLd = [
     '@context': 'https://schema.org',
     '@type': 'WebApplication',
     name: 'LeetMap Pro',
-    url: 'https://leetmap-pro.vercel.app',
+    url: 'https://www.leetmap-pro.com',
     applicationCategory: 'EducationalApplication',
     operatingSystem: 'All',
     description: 'Browse coding interview problems actually asked by 680+ tech companies, ranked by frequency and recency. Free interactive strategy roadmap and curated SQL problems.',
@@ -181,28 +185,28 @@ const jsonLd = [
         position: 1,
         name: 'Companies',
         description: 'Browse 680+ tech companies and their most frequently asked interview problems',
-        url: 'https://leetmap-pro.vercel.app/',
+        url: 'https://www.leetmap-pro.com/',
       },
       {
         '@type': 'SiteNavigationElement',
         position: 2,
         name: 'Patterns',
         description: '22 core coding interview patterns with problem lists and templates',
-        url: 'https://leetmap-pro.vercel.app/patterns',
+        url: 'https://www.leetmap-pro.com/patterns',
       },
       {
         '@type': 'SiteNavigationElement',
         position: 3,
         name: 'Strategy Roadmap',
         description: 'Prerequisite graph and study roadmap for technical interviews',
-        url: 'https://leetmap-pro.vercel.app/strategy',
+        url: 'https://www.leetmap-pro.com/strategy',
       },
       {
         '@type': 'SiteNavigationElement',
         position: 4,
         name: 'SQL Interview Hub',
         description: 'Company-wise SQL database interview questions and solution walkthroughs',
-        url: 'https://leetmap-pro.vercel.app/sql',
+        url: 'https://www.leetmap-pro.com/sql',
       },
     ],
   },

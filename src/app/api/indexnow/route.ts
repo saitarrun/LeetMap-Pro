@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 
 const INDEXNOW_KEY = 'c7b91d2f8e4a460393b6e82a15f07d2e';
-const HOST = 'leetmap-pro.vercel.app';
+const HOST = 'www.leetmap-pro.com';
 const KEY_LOCATION = `https://${HOST}/${INDEXNOW_KEY}.txt`;
 
 const CORE_URLS = [

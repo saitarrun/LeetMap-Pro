@@ -15,7 +15,7 @@ export default function robots(): MetadataRoute.Robots {
         ],
       },
     ],
-    sitemap: 'https://leetmap-pro.vercel.app/sitemap.xml',
+    sitemap: 'https://www.leetmap-pro.com/sitemap.xml',
   };
 }
 
