@@ -35,7 +35,10 @@ export default clerkMiddleware(
         'base-uri': ["'self'"],
         'frame-ancestors': ["'none'"],
         'object-src': ["'none'"],
-        'img-src': ["'self'", "https://img.clerk.com", "https://www.google.com", "data:"],
+        'img-src': ["'self'", "https://img.clerk.com", "https://www.google.com", "data:", "https://pagead2.googlesyndication.com", "https://*.googlesyndication.com", "https://*.doubleclick.net"],
+        'script-src': ["'self'", "https://pagead2.googlesyndication.com", "https://tpc.googlesyndication.com", "https://googleads.g.doubleclick.net"],
+        'frame-src': ["'self'", "https://googleads.g.doubleclick.net", "https://tpc.googlesyndication.com", "https://pagead2.googlesyndication.com", "https://www.google.com"],
+        'connect-src': ["'self'", "https://pagead2.googlesyndication.com", "https://googleads.g.doubleclick.net", "https://tpc.googlesyndication.com"],
       },
     },
   }

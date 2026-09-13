@@ -108,6 +108,7 @@ export const metadata: Metadata = {
     google: 'zQTd5IdhklFb7tgLr2_5ixhggoG5rfAD-NnMdoJ4Ijk',
     other: {
       'msvalidate.01': '3197E69BB7A94B4BD584F66EB2436C2C',
+      'google-adsense-account': 'ca-pub-5930264634833391',
     },
   },
   icons: {
@@ -238,13 +239,14 @@ export default async function RootLayout({
         <link rel="alternate" type="application/rss+xml" title="LeetMap Pro | Latest Interview Questions & Daily Challenges" href="/feed.xml" />
         <link rel="alternate" type="application/atom+xml" title="LeetMap Pro Atom Feed" href="/feed.xml?format=atom" />
         <link rel="author" href="/humans.txt" />
-        <Script src="/theme-init.js" strategy="beforeInteractive" nonce={nonce} />
-        <Script
+        <meta name="google-adsense-account" content="ca-pub-5930264634833391" />
+        <script
           async
           src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930264634833391"
           crossOrigin="anonymous"
-          strategy="afterInteractive"
+          nonce={nonce}
         />
+        <Script src="/theme-init.js" strategy="beforeInteractive" nonce={nonce} />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
