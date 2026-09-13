@@ -88,7 +88,8 @@ async function readUserRaw(id: string): Promise<StoredUserData | null> {
 }
 
 export async function fetchPublicUserProfile(rawUsername: string): Promise<PublicUserProfileData | null> {
-  const cleanUsername = rawUsername.trim().toLowerCase();
+  const raw = rawUsername.trim();
+  const cleanUsername = raw.toLowerCase();
   if (!cleanUsername) return null;
 
   let clerkUser: {
@@ -102,15 +103,20 @@ export async function fetchPublicUserProfile(rawUsername: string): Promise<Publi
   try {
     const client = await clerkClient();
 
-    if (cleanUsername.startsWith('user_')) {
+    // 1. Exact or case-insensitive User ID search
+    if (raw.startsWith('user_') || cleanUsername.startsWith('user_')) {
       try {
-        const u = await client.users.getUser(cleanUsername);
+        const u = await client.users.getUser(raw);
         if (u) {
-          const uName = u.username || u.firstName?.toLowerCase().replace(/[^a-z0-9]/g, '') || u.id;
+          const defaultHandle =
+            u.username ||
+            u.primaryEmailAddress?.emailAddress?.split('@')[0]?.toLowerCase().replace(/[^a-z0-9_-]/g, '') ||
+            u.firstName?.toLowerCase().replace(/[^a-z0-9_-]/g, '') ||
+            u.id;
           clerkUser = {
             id: u.id,
-            username: uName,
-            name: u.fullName || u.firstName || uName,
+            username: defaultHandle,
+            name: u.fullName || u.firstName || defaultHandle,
             avatarUrl: u.imageUrl,
             createdAt: u.createdAt,
           };
@@ -118,12 +124,58 @@ export async function fetchPublicUserProfile(rawUsername: string): Promise<Publi
       } catch {
         // ignore
       }
+
+      if (!clerkUser && raw !== cleanUsername) {
+        try {
+          const u = await client.users.getUser(cleanUsername);
+          if (u) {
+            const defaultHandle =
+              u.username ||
+              u.primaryEmailAddress?.emailAddress?.split('@')[0]?.toLowerCase().replace(/[^a-z0-9_-]/g, '') ||
+              u.firstName?.toLowerCase().replace(/[^a-z0-9_-]/g, '') ||
+              u.id;
+            clerkUser = {
+              id: u.id,
+              username: defaultHandle,
+              name: u.fullName || u.firstName || defaultHandle,
+              avatarUrl: u.imageUrl,
+              createdAt: u.createdAt,
+            };
+          }
+        } catch {
+          // ignore
+        }
+      }
+
+      if (!clerkUser) {
+        try {
+          const list = await client.users.getUserList({ limit: 100 });
+          const found = list.data.find((u) => u.id.toLowerCase() === cleanUsername);
+          if (found) {
+            const defaultHandle =
+              found.username ||
+              found.primaryEmailAddress?.emailAddress?.split('@')[0]?.toLowerCase().replace(/[^a-z0-9_-]/g, '') ||
+              found.firstName?.toLowerCase().replace(/[^a-z0-9_-]/g, '') ||
+              found.id;
+            clerkUser = {
+              id: found.id,
+              username: defaultHandle,
+              name: found.fullName || found.firstName || defaultHandle,
+              avatarUrl: found.imageUrl,
+              createdAt: found.createdAt,
+            };
+          }
+        } catch {
+          // ignore
+        }
+      }
     }
 
+    // 2. Direct Clerk Username match
     if (!clerkUser) {
       try {
         const list = await client.users.getUserList({
-          username: [cleanUsername],
+          username: [cleanUsername, raw],
           limit: 1,
         });
         if (list.data.length > 0) {
@@ -142,35 +194,23 @@ export async function fetchPublicUserProfile(rawUsername: string): Promise<Publi
       }
     }
 
-    if (!clerkUser) {
+    // 3. Direct Email match
+    if (!clerkUser && cleanUsername.includes('@')) {
       try {
-        const search = await client.users.getUserList({
-          query: cleanUsername,
-          limit: 10,
+        const emailSearch = await client.users.getUserList({
+          emailAddress: [cleanUsername],
+          limit: 1,
         });
-        const found = search.data.find((u) => {
-          const directUsername = u.username?.toLowerCase();
-          const emailPrefix = u.primaryEmailAddress?.emailAddress?.split('@')[0]?.toLowerCase();
-          const fullEmail = u.primaryEmailAddress?.emailAddress?.toLowerCase();
-          const anyEmail = u.emailAddresses?.some(
-            (e) =>
-              e.emailAddress.toLowerCase() === cleanUsername ||
-              e.emailAddress.toLowerCase().split('@')[0] === cleanUsername
-          );
-          return (
-            directUsername === cleanUsername ||
-            emailPrefix === cleanUsername ||
-            fullEmail === cleanUsername ||
-            Boolean(anyEmail) ||
-            u.id.toLowerCase() === cleanUsername
-          );
-        });
-        if (found) {
-          const uName = found.username || found.primaryEmailAddress?.emailAddress?.split('@')[0] || found.id;
+        if (emailSearch.data.length > 0) {
+          const found = emailSearch.data[0];
+          const defaultHandle =
+            found.username ||
+            found.primaryEmailAddress?.emailAddress?.split('@')[0]?.toLowerCase().replace(/[^a-z0-9_-]/g, '') ||
+            cleanUsername;
           clerkUser = {
             id: found.id,
-            username: uName,
-            name: found.fullName || found.firstName || uName,
+            username: defaultHandle,
+            name: found.fullName || found.firstName || defaultHandle,
             avatarUrl: found.imageUrl,
             createdAt: found.createdAt,
           };
@@ -180,22 +220,55 @@ export async function fetchPublicUserProfile(rawUsername: string): Promise<Publi
       }
     }
 
-    if (!clerkUser && !cleanUsername.includes('@')) {
+    // 4. Query search with ranked matching across username, firstName, lastName, emailPrefix
+    if (!clerkUser) {
       try {
-        const emailSearch = await client.users.getUserList({
-          emailAddress: [cleanUsername, `${cleanUsername}@gmail.com`],
-          limit: 2,
+        const search = await client.users.getUserList({
+          query: cleanUsername,
+          limit: 20,
         });
-        if (emailSearch.data.length > 0) {
-          const found = emailSearch.data[0];
-          const uName = found.username || found.primaryEmailAddress?.emailAddress?.split('@')[0] || found.id;
-          clerkUser = {
-            id: found.id,
-            username: uName,
-            name: found.fullName || found.firstName || uName,
-            avatarUrl: found.imageUrl,
-            createdAt: found.createdAt,
-          };
+        if (search.data.length > 0) {
+          const scored = search.data
+            .map((u) => {
+              let score = 0;
+              const uUsername = u.username?.toLowerCase();
+              const uFirst = u.firstName?.toLowerCase().replace(/[^a-z0-9]/g, '');
+              const uLast = u.lastName?.toLowerCase().replace(/[^a-z0-9]/g, '');
+              const uFull = `${uFirst || ''}${uLast || ''}`;
+              const emailPrefixes = (u.emailAddresses || []).map((e) => e.emailAddress.split('@')[0].toLowerCase());
+              const emailAddresses = (u.emailAddresses || []).map((e) => e.emailAddress.toLowerCase());
+
+              if (uUsername === cleanUsername) score = 100;
+              else if (emailPrefixes.includes(cleanUsername)) score = 90;
+              else if (uFirst === cleanUsername) score = 85;
+              else if (uFull === cleanUsername) score = 80;
+              else if (emailAddresses.includes(cleanUsername)) score = 75;
+              else if (u.id.toLowerCase() === cleanUsername) score = 70;
+              else if (uFirst && (cleanUsername.startsWith(uFirst) || uFirst.startsWith(cleanUsername))) score = 50;
+              else score = 20;
+
+              return { u, score };
+            })
+            .sort((a, b) => b.score - a.score);
+
+          if (scored.length > 0 && scored[0].score >= 20) {
+            const matched = scored[0].u;
+            const defaultHandle =
+              matched.username ||
+              (cleanUsername.startsWith('user_')
+                ? matched.primaryEmailAddress?.emailAddress?.split('@')[0]?.toLowerCase().replace(/[^a-z0-9_-]/g, '') ||
+                  matched.firstName?.toLowerCase().replace(/[^a-z0-9_-]/g, '') ||
+                  matched.id
+                : cleanUsername);
+
+            clerkUser = {
+              id: matched.id,
+              username: defaultHandle,
+              name: matched.fullName || matched.firstName || defaultHandle,
+              avatarUrl: matched.imageUrl,
+              createdAt: matched.createdAt,
+            };
+          }
         }
       } catch {
         // ignore
@@ -205,7 +278,7 @@ export async function fetchPublicUserProfile(rawUsername: string): Promise<Publi
     console.error('Clerk client error in fetchPublicUserProfile', error);
   }
 
-  // Fallback: If Clerk is not reachable or user exists in local seed storage
+  // Fallback: If Clerk is not reachable or user exists in storage
   if (!clerkUser) {
     const localRaw = await readUserRaw(cleanUsername);
     if (localRaw) {
