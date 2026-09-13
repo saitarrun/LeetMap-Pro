@@ -132,7 +132,7 @@ const jsonLd = [
     '@context': 'https://schema.org',
     '@type': 'WebSite',
     name: 'LeetMap Pro',
-    alternateName: ['LeetMap', 'leetmap', 'LeetMapPro', 'leetmap-pro.com', 'www.leetmap-pro.com', 'leetmap-pro.vercel.app'],
+    alternateName: ['LeetMap', 'LeetMapPro'],
     url: 'https://www.leetmap-pro.com/',
     inLanguage: 'en-US',
     potentialAction: {
@@ -229,13 +229,11 @@ export default async function RootLayout({
         <meta name="application-name" content="LeetMap Pro" />
         <meta name="apple-mobile-web-app-title" content="LeetMap Pro" />
         <meta property="og:site_name" content="LeetMap Pro" />
-        <link rel="icon" type="image/x-icon" href="/favicon.ico" sizes="48x48 32x32 16x16" />
-        <link rel="icon" type="image/png" sizes="48x48" href="/icon-48.png" />
-        <link rel="icon" type="image/png" sizes="96x96" href="/icon-96.png" />
-        <link rel="icon" type="image/png" sizes="144x144" href="/icon-144.png" />
-        <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png" />
-        <link rel="shortcut icon" href="/favicon.ico" />
-        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+        <link rel="icon" type="image/png" sizes="192x192" href="https://www.leetmap-pro.com/icon-192.png" />
+        <link rel="icon" type="image/png" sizes="48x48" href="https://www.leetmap-pro.com/icon-48.png" />
+        <link rel="icon" type="image/x-icon" href="https://www.leetmap-pro.com/favicon.ico" sizes="48x48 32x32 16x16" />
+        <link rel="shortcut icon" href="https://www.leetmap-pro.com/favicon.ico" />
+        <link rel="apple-touch-icon" sizes="180x180" href="https://www.leetmap-pro.com/apple-touch-icon.png" />
         <link rel="alternate" type="application/rss+xml" title="LeetMap Pro | Latest Interview Questions & Daily Challenges" href="/feed.xml" />
         <link rel="alternate" type="application/atom+xml" title="LeetMap Pro Atom Feed" href="/feed.xml?format=atom" />
         <link rel="author" href="/humans.txt" />
