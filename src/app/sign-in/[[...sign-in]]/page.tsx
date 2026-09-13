@@ -51,6 +51,7 @@ export default function SignInPage() {
           {/* Clerk SignIn with Apple aesthetic */}
           <div className="apple-enter">
             <SignIn
+              signUpUrl="/sign-up"
               appearance={{
                 variables: {
                   colorPrimary: '#10b981',
