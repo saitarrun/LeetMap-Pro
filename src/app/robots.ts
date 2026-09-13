@@ -5,7 +5,11 @@ export default function robots(): MetadataRoute.Robots {
     rules: [
       {
         userAgent: '*',
-        allow: '/',
+        allow: [
+          '/',
+          '/api/companies',
+          '/api/daily-challenge',
+        ],
         disallow: [
           '/api/',
           '/account',

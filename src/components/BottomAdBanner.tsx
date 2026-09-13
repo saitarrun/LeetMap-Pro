@@ -26,6 +26,11 @@ export const BottomAdBanner: React.FC<BottomAdBannerProps> = ({
   useEffect(() => {
     if (isExcludedRoute || pushedRef.current) return;
 
+    // Do not trigger programmatic ad requests during search crawler indexing
+    if (typeof navigator !== 'undefined' && /Googlebot|AdsBot|Mediapartners/i.test(navigator.userAgent)) {
+      return;
+    }
+
     try {
       if (typeof window !== 'undefined') {
         const adsbygoogle = (window as unknown as { adsbygoogle?: unknown[] }).adsbygoogle || [];
