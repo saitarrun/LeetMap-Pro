@@ -108,11 +108,8 @@ export async function fetchPublicUserProfile(rawUsername: string): Promise<Publi
       try {
         const u = await client.users.getUser(raw);
         if (u) {
-          const defaultHandle =
-            u.username ||
-            u.primaryEmailAddress?.emailAddress?.split('@')[0]?.toLowerCase().replace(/[^a-z0-9_-]/g, '') ||
-            u.firstName?.toLowerCase().replace(/[^a-z0-9_-]/g, '') ||
-            u.id;
+          const emailPrefix = u.primaryEmailAddress?.emailAddress?.split('@')[0]?.toLowerCase().replace(/[^a-z0-9_-]/g, '');
+          const defaultHandle = u.username || emailPrefix || u.id;
           clerkUser = {
             id: u.id,
             username: defaultHandle,
@@ -129,11 +126,8 @@ export async function fetchPublicUserProfile(rawUsername: string): Promise<Publi
         try {
           const u = await client.users.getUser(cleanUsername);
           if (u) {
-            const defaultHandle =
-              u.username ||
-              u.primaryEmailAddress?.emailAddress?.split('@')[0]?.toLowerCase().replace(/[^a-z0-9_-]/g, '') ||
-              u.firstName?.toLowerCase().replace(/[^a-z0-9_-]/g, '') ||
-              u.id;
+            const emailPrefix = u.primaryEmailAddress?.emailAddress?.split('@')[0]?.toLowerCase().replace(/[^a-z0-9_-]/g, '');
+            const defaultHandle = u.username || emailPrefix || u.id;
             clerkUser = {
               id: u.id,
               username: defaultHandle,
@@ -152,11 +146,8 @@ export async function fetchPublicUserProfile(rawUsername: string): Promise<Publi
           const list = await client.users.getUserList({ limit: 100 });
           const found = list.data.find((u) => u.id.toLowerCase() === cleanUsername);
           if (found) {
-            const defaultHandle =
-              found.username ||
-              found.primaryEmailAddress?.emailAddress?.split('@')[0]?.toLowerCase().replace(/[^a-z0-9_-]/g, '') ||
-              found.firstName?.toLowerCase().replace(/[^a-z0-9_-]/g, '') ||
-              found.id;
+            const emailPrefix = found.primaryEmailAddress?.emailAddress?.split('@')[0]?.toLowerCase().replace(/[^a-z0-9_-]/g, '');
+            const defaultHandle = found.username || emailPrefix || found.id;
             clerkUser = {
               id: found.id,
               username: defaultHandle,
@@ -203,10 +194,8 @@ export async function fetchPublicUserProfile(rawUsername: string): Promise<Publi
         });
         if (emailSearch.data.length > 0) {
           const found = emailSearch.data[0];
-          const defaultHandle =
-            found.username ||
-            found.primaryEmailAddress?.emailAddress?.split('@')[0]?.toLowerCase().replace(/[^a-z0-9_-]/g, '') ||
-            cleanUsername;
+          const emailPrefix = found.primaryEmailAddress?.emailAddress?.split('@')[0]?.toLowerCase().replace(/[^a-z0-9_-]/g, '');
+          const defaultHandle = found.username || emailPrefix || found.id;
           clerkUser = {
             id: found.id,
             username: defaultHandle,
@@ -220,7 +209,7 @@ export async function fetchPublicUserProfile(rawUsername: string): Promise<Publi
       }
     }
 
-    // 4. Query search with ranked matching across username, firstName, lastName, emailPrefix
+    // 4. Exact match by username or email prefix
     if (!clerkUser) {
       try {
         const search = await client.users.getUserList({
@@ -228,38 +217,26 @@ export async function fetchPublicUserProfile(rawUsername: string): Promise<Publi
           limit: 20,
         });
         if (search.data.length > 0) {
-          const scored = search.data
-            .map((u) => {
-              let score = 0;
-              const uUsername = u.username?.toLowerCase();
-              const uFirst = u.firstName?.toLowerCase().replace(/[^a-z0-9]/g, '');
-              const uLast = u.lastName?.toLowerCase().replace(/[^a-z0-9]/g, '');
-              const uFull = `${uFirst || ''}${uLast || ''}`;
-              const emailPrefixes = (u.emailAddresses || []).map((e) => e.emailAddress.split('@')[0].toLowerCase());
-              const emailAddresses = (u.emailAddresses || []).map((e) => e.emailAddress.toLowerCase());
+          // Find the candidate who strictly matches by username, email, email prefix, or user id
+          const matched = search.data.find((u) => {
+            const uUsername = u.username?.toLowerCase();
+            if (uUsername === cleanUsername) return true;
 
-              if (uUsername === cleanUsername) score = 100;
-              else if (emailPrefixes.includes(cleanUsername)) score = 90;
-              else if (uFirst === cleanUsername) score = 85;
-              else if (uFull === cleanUsername) score = 80;
-              else if (emailAddresses.includes(cleanUsername)) score = 75;
-              else if (u.id.toLowerCase() === cleanUsername) score = 70;
-              else if (uFirst && (cleanUsername.startsWith(uFirst) || uFirst.startsWith(cleanUsername))) score = 50;
-              else score = 20;
+            const emails = (u.emailAddresses || []).map((e) => e.emailAddress.toLowerCase());
+            if (emails.includes(cleanUsername)) return true;
 
-              return { u, score };
-            })
-            .sort((a, b) => b.score - a.score);
+            const prefixes = emails.map((e) => e.split('@')[0].replace(/[^a-z0-9_-]/g, ''));
+            if (prefixes.includes(cleanUsername)) return true;
 
-          if (scored.length > 0 && scored[0].score >= 20) {
-            const matched = scored[0].u;
-            const defaultHandle =
-              matched.username ||
-              (cleanUsername.startsWith('user_')
-                ? matched.primaryEmailAddress?.emailAddress?.split('@')[0]?.toLowerCase().replace(/[^a-z0-9_-]/g, '') ||
-                  matched.firstName?.toLowerCase().replace(/[^a-z0-9_-]/g, '') ||
-                  matched.id
-                : cleanUsername);
+            if (u.id.toLowerCase() === cleanUsername) return true;
+
+            return false;
+          });
+
+          if (matched) {
+            const emailPrefix =
+              matched.primaryEmailAddress?.emailAddress?.split('@')[0]?.toLowerCase().replace(/[^a-z0-9_-]/g, '');
+            const defaultHandle = matched.username || emailPrefix || matched.id;
 
             clerkUser = {
               id: matched.id,

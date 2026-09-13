@@ -217,9 +217,11 @@ export const PublicProfileView: React.FC<PublicProfileViewProps> = ({ initialDat
     };
   }, [initialData.user.username]);
 
-  const isOwner =
-    currentUser?.id === profileData.user.id ||
-    currentUser?.username?.toLowerCase() === profileData.user.username.toLowerCase();
+  const isOwner = Boolean(
+    currentUser?.id &&
+    profileData?.user?.id &&
+    currentUser.id === profileData.user.id
+  );
 
   // If the owner is looking at their own profile, blend with any fresh client-side solves
   const clientStats = useMemo(() => {
@@ -474,8 +476,8 @@ export const PublicProfileView: React.FC<PublicProfileViewProps> = ({ initialDat
               <div className="w-18 h-18 sm:w-20 sm:h-20 rounded-full border-2 border-[var(--border)] overflow-hidden bg-[var(--bg-subtle)] shadow-md ring-4 ring-emerald-500/10">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
-                  src={profileData.user.avatarUrl}
-                  alt={profileData.user.name}
+                  src={isOwner && currentUser?.avatarUrl ? currentUser.avatarUrl : profileData.user.avatarUrl}
+                  alt={isOwner && currentUser?.name ? currentUser.name : profileData.user.name}
                   className="w-full h-full object-cover"
                 />
               </div>
@@ -490,10 +492,10 @@ export const PublicProfileView: React.FC<PublicProfileViewProps> = ({ initialDat
             <div className="space-y-1">
               <div className="flex items-center gap-2 flex-wrap">
                 <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-[var(--text-main)]">
-                  {profileData.user.name}
+                  {isOwner && currentUser?.name ? currentUser.name : profileData.user.name}
                 </h1>
                 <span className="text-xs px-2 py-0.5 rounded-md font-mono bg-[var(--bg-subtle)] border border-[var(--border)] text-[var(--text-muted)]">
-                  @{profileData.user.username}
+                  @{isOwner && currentUser?.username ? currentUser.username : profileData.user.username}
                 </span>
               </div>
               <div className="text-xs text-[var(--text-muted)] flex items-center gap-2 flex-wrap">

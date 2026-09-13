@@ -21,10 +21,11 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const user = useMemo<UserProfile | null>(() => {
     if (!isClerkSignedIn || !clerkUser) return null;
 
-    const username =
-      clerkUser.username ||
-      clerkUser.firstName?.toLowerCase().replace(/[^a-z0-9]/g, '') ||
-      clerkUser.id;
+    const emailPrefix = clerkUser.primaryEmailAddress?.emailAddress
+      ? clerkUser.primaryEmailAddress.emailAddress.split('@')[0].toLowerCase().replace(/[^a-z0-9_-]/g, '')
+      : null;
+
+    const username = clerkUser.username || emailPrefix || clerkUser.id;
 
     return {
       id: clerkUser.id,
