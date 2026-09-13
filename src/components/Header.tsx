@@ -15,7 +15,7 @@ import {
   Compass,
   Database,
 } from 'lucide-react';
-import { Show } from '@clerk/nextjs';
+import { SignInButton, SignUpButton, Show } from '@clerk/nextjs';
 import { toast } from 'sonner';
 import { SyncStatus } from '@/types';
 import { UserProfileMenu, MobileUserMenuSection } from '@/components/UserProfileMenu';
@@ -224,19 +224,17 @@ export const Header: React.FC<HeaderProps> = () => {
           {/* Clerk Auth Controls */}
           <Show when="signed-out">
             <div className="flex items-center gap-1.5 shrink-0">
-              <Link
-                href="/sign-in"
-                className="apple-press h-8 inline-flex items-center text-xs font-semibold px-3 rounded-full bg-[var(--text-main)] text-[var(--bg-page)] hover:opacity-90 transition-opacity cursor-pointer shadow-2xs shrink-0"
-              >
-                Sign in
-              </Link>
+              <SignInButton mode="modal">
+                <button className="apple-press h-8 inline-flex items-center text-xs font-semibold px-3 rounded-full bg-[var(--text-main)] text-[var(--bg-page)] hover:opacity-90 transition-opacity cursor-pointer shadow-2xs shrink-0">
+                  Sign in
+                </button>
+              </SignInButton>
               <div className="hidden sm:block shrink-0">
-                <Link
-                  href="/sign-up"
-                  className="apple-press h-8 inline-flex items-center text-xs font-medium px-3 rounded-full bg-[var(--bg-subtle)] border border-[var(--border)] text-[var(--text-main)] hover:bg-[var(--bg-hover)] transition-colors cursor-pointer shrink-0"
-                >
-                  Sign up
-                </Link>
+                <SignUpButton mode="modal">
+                  <button className="apple-press h-8 inline-flex items-center text-xs font-medium px-3 rounded-full bg-[var(--bg-subtle)] border border-[var(--border)] text-[var(--text-main)] hover:bg-[var(--bg-hover)] transition-colors cursor-pointer shrink-0">
+                    Sign up
+                  </button>
+                </SignUpButton>
               </div>
             </div>
           </Show>
@@ -348,20 +346,22 @@ export const Header: React.FC<HeaderProps> = () => {
           {/* Auth options for signed-out users in drawer */}
           <Show when="signed-out">
             <div className="pt-2 border-t border-[var(--border)]/60 grid grid-cols-2 gap-2">
-              <Link
-                href="/sign-in"
-                onClick={() => setMobileMenuOpen(false)}
-                className="apple-press h-9 w-full rounded-xl text-xs font-semibold bg-[var(--text-main)] text-[var(--bg-page)] flex items-center justify-center cursor-pointer shadow-2xs"
-              >
-                Sign in
-              </Link>
-              <Link
-                href="/sign-up"
-                onClick={() => setMobileMenuOpen(false)}
-                className="apple-press h-9 w-full rounded-xl text-xs font-medium bg-[var(--bg-subtle)] border border-[var(--border)] text-[var(--text-main)] flex items-center justify-center cursor-pointer"
-              >
-                Sign up
-              </Link>
+              <SignInButton mode="modal">
+                <button
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="apple-press h-9 w-full rounded-xl text-xs font-semibold bg-[var(--text-main)] text-[var(--bg-page)] flex items-center justify-center cursor-pointer shadow-2xs"
+                >
+                  Sign in
+                </button>
+              </SignInButton>
+              <SignUpButton mode="modal">
+                <button
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="apple-press h-9 w-full rounded-xl text-xs font-medium bg-[var(--bg-subtle)] border border-[var(--border)] text-[var(--text-main)] flex items-center justify-center cursor-pointer"
+                >
+                  Sign up
+                </button>
+              </SignUpButton>
             </div>
           </Show>
 

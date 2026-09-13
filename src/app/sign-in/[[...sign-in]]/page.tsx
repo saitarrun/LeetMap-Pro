@@ -1,8 +1,9 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
 import { SignIn } from '@clerk/nextjs';
+import { Header } from '@/components/Header';
 import { LeetMapLogo } from '@/components/LeetMapLogo';
-import { ArrowLeft, ArrowRight, X } from 'lucide-react';
+import { ArrowLeft, Shield } from 'lucide-react';
 
 export const metadata: Metadata = {
   title: 'Sign In',
@@ -14,75 +15,66 @@ export const metadata: Metadata = {
 
 export default function SignInPage() {
   return (
-    <div className="min-h-screen bg-[var(--bg-page)] text-[var(--text-main)] flex flex-col items-center justify-center p-4 relative selection:bg-[var(--text-main)]/10 overflow-x-hidden">
-      {/* Ambient specular light glow for Apple glass refraction */}
-      <div aria-hidden="true" className="pointer-events-none fixed inset-0 overflow-hidden select-none">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[580px] h-[580px] bg-gradient-to-tr from-emerald-500/20 via-teal-500/10 to-indigo-500/15 rounded-full blur-[140px] opacity-75 dark:opacity-35" />
-        <div className="absolute -top-24 left-1/2 -translate-x-1/2 w-[420px] h-[420px] bg-emerald-400/15 rounded-full blur-[120px] opacity-60 dark:opacity-20" />
-      </div>
+    <div className="min-h-screen bg-[var(--bg-page)] text-[var(--text-main)] flex flex-col">
+      <Header />
 
-      {/* Floating Apple-style Top Bar */}
-      <header className="fixed top-0 left-0 right-0 p-4 sm:p-6 flex items-center justify-between z-30 pointer-events-none">
-        <Link
-          href="/"
-          className="apple-press pointer-events-auto inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[var(--bg-card)]/80 hover:bg-[var(--bg-card)] backdrop-blur-2xl border border-[var(--border)] text-xs font-medium text-[var(--text-main)] shadow-sm transition-all"
-        >
-          <ArrowLeft className="w-3.5 h-3.5" />
-          <span>Back to LeetMap Pro</span>
-        </Link>
-        <Link
-          href="/"
-          aria-label="Close and return to home"
-          className="apple-press pointer-events-auto w-8 h-8 rounded-full bg-[var(--bg-card)]/80 hover:bg-[var(--bg-card)] backdrop-blur-2xl border border-[var(--border)] inline-flex items-center justify-center text-[var(--text-muted)] hover:text-[var(--text-main)] shadow-sm transition-all"
-        >
-          <X className="w-4 h-4" />
-        </Link>
-      </header>
+      <main className="flex-1 flex flex-col items-center justify-center px-4 py-8 sm:py-12">
+        <div className="w-full max-w-[440px] space-y-5">
+          {/* Top back & security indicator */}
+          <div className="flex items-center justify-between px-1 text-xs text-[var(--text-muted)]">
+            <Link
+              href="/"
+              className="apple-press inline-flex items-center gap-1.5 hover:text-[var(--text-main)] transition-colors font-medium"
+            >
+              <ArrowLeft className="w-3.5 h-3.5" />
+              <span>Back to LeetMap Pro</span>
+            </Link>
+            <div className="inline-flex items-center gap-1">
+              <Shield className="w-3 h-3 text-emerald-500" />
+              <span className="text-[11px]">Encrypted &amp; Privacy-First</span>
+            </div>
+          </div>
 
-      {/* Apple-style minimalist brand anchor */}
-      <Link
-        href="/"
-        aria-label="Back to LeetMap Pro"
-        className="apple-press inline-flex items-center gap-2.5 mb-6 hover:opacity-80 transition-opacity pt-12 sm:pt-0 z-10"
-      >
-        <div className="p-2 rounded-2xl bg-[var(--bg-card)]/60 border border-[var(--border)] backdrop-blur-xl shadow-xs">
-          <LeetMapLogo size={28} />
+          {/* Centered Brand Presentation */}
+          <div className="text-center space-y-1.5 pt-2">
+            <div className="inline-flex items-center justify-center p-2 rounded-2xl bg-[var(--bg-card)] border border-[var(--border)] shadow-xs mb-1">
+              <LeetMapLogo size={30} />
+            </div>
+            <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-[var(--text-main)]">
+              Welcome to LeetMap Pro
+            </h1>
+            <p className="text-xs text-[var(--text-muted)] max-w-sm mx-auto font-normal leading-relaxed">
+              Sign in to sync your solved problems, track daily streaks, and customize your company roadmap.
+            </p>
+          </div>
+
+          {/* Clerk SignIn with Apple aesthetic */}
+          <div className="apple-enter">
+            <SignIn
+              appearance={{
+                variables: {
+                  colorPrimary: '#10b981',
+                },
+                elements: {
+                  rootBox: 'mx-auto w-full',
+                  cardBox: 'w-full shadow-none',
+                  card: 'rounded-2xl border border-[var(--border)] bg-[var(--bg-card)] shadow-xl p-6 sm:p-7',
+                  headerTitle: 'text-base font-bold tracking-tight text-[var(--text-main)]',
+                  headerSubtitle: 'text-xs text-[var(--text-muted)]',
+                  socialButtonsBlockButton: 'apple-press rounded-xl border border-[var(--border)] bg-[var(--bg-subtle)] text-[var(--text-main)] hover:bg-[var(--bg-hover)] text-xs font-medium transition-colors py-2.5',
+                  formButtonPrimary: 'apple-press rounded-xl bg-[var(--text-main)] text-[var(--bg-page)] text-xs font-semibold py-2.5 hover:opacity-90 transition-opacity shadow-xs',
+                  formFieldInput: 'rounded-xl border border-[var(--border)] bg-[var(--bg-subtle)] text-[var(--text-main)] text-sm focus:border-emerald-500 transition-colors',
+                  footerActionLink: 'text-emerald-600 dark:text-emerald-400 font-medium hover:underline text-xs',
+                  identityPreview: 'rounded-xl border border-[var(--border)] bg-[var(--bg-subtle)]',
+                  formFieldLabel: 'text-xs font-medium text-[var(--text-main)]',
+                  dividerLine: 'bg-[var(--border)]',
+                  dividerText: 'text-xs text-[var(--text-muted)]',
+                },
+              }}
+            />
+          </div>
         </div>
-        <span className="text-sm font-semibold tracking-tight text-[var(--text-main)]">LeetMap Pro</span>
-      </Link>
-
-      {/* Minimalist Glassmorphic Card Container */}
-      <div className="w-full max-w-[390px] apple-auth-container apple-enter z-10">
-        <div className="apple-glass-card">
-          <SignIn
-            signUpUrl="/sign-up"
-            appearance={{
-              variables: {
-                colorPrimary: '#10b981',
-                borderRadius: '0.875rem',
-              },
-            }}
-          />
-        </div>
-      </div>
-
-      {/* Continue as guest escape hatch */}
-      <div className="mt-5 text-center z-10">
-        <Link
-          href="/"
-          className="apple-press text-xs text-[var(--text-muted)] hover:text-[var(--text-main)] transition-colors inline-flex items-center gap-1.5 font-medium py-1.5 px-3.5 rounded-full bg-[var(--bg-card)]/40 hover:bg-[var(--bg-card)] border border-[var(--border)] backdrop-blur-md"
-        >
-          <span>Continue browsing as guest</span>
-          <ArrowRight className="w-3 h-3" />
-        </Link>
-      </div>
-
-      {/* Apple-style minimalist legal footer */}
-      <div className="mt-6 flex items-center gap-3 text-[11px] text-[var(--text-muted)]/70 font-normal z-10">
-        <Link href="/privacy" className="hover:text-[var(--text-main)] transition-colors">Privacy</Link>
-        <span>·</span>
-        <Link href="/terms" className="hover:text-[var(--text-main)] transition-colors">Terms</Link>
-      </div>
+      </main>
     </div>
   );
 }

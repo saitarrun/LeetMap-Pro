@@ -2,16 +2,10 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
 import { LeetMapLogo } from './LeetMapLogo';
 
 export const Footer: React.FC = () => {
-  const pathname = usePathname();
   const currentYear = new Date().getFullYear();
-
-  if (pathname?.startsWith('/sign-in') || pathname?.startsWith('/sign-up')) {
-    return null;
-  }
 
   return (
     <footer className="w-full border-t border-[var(--border)] bg-[var(--bg-subtle)]/40 backdrop-blur-sm transition-colors">
