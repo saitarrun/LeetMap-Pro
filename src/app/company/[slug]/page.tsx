@@ -21,7 +21,7 @@ export async function generateMetadata({ params }: PageProps) {
   }
 
   const company: CompanyDetail = JSON.parse(fs.readFileSync(filePath, 'utf8'));
-  const title = `Free ${company.name} LeetCode Questions (2026) – ${company.total} Company-Wise Problems by Frequency`;
+  const title = `${company.name} LeetCode Questions`;
   const description = `Practice ${company.total} free company-wise ${company.name} LeetCode questions asked in real 2026 interviews. Filter by frequency across 30-day, 3-month, and 6-month recency (Easy: ${company.easy}, Med: ${company.medium}, Hard: ${company.hard}). 100% free alternative to LeetCode Premium.`;
 
   return {
@@ -48,7 +48,7 @@ export async function generateMetadata({ params }: PageProps) {
       canonical: `https://www.leetmap-pro.com/company/${safeSlug}`,
     },
     openGraph: {
-      title: `Free ${company.name} LeetCode Questions (2026) – ${company.total} Company-Wise Problems by Frequency | LeetMap Pro`,
+      title: `${company.name} LeetCode Questions | LeetMap Pro`,
       description,
       url: `https://www.leetmap-pro.com/company/${safeSlug}`,
       type: 'article',
@@ -56,7 +56,7 @@ export async function generateMetadata({ params }: PageProps) {
     },
     twitter: {
       card: 'summary_large_image',
-      title: `Free ${company.name} LeetCode Questions (2026) – ${company.total} Company-Wise Problems by Frequency | LeetMap Pro`,
+      title: `${company.name} LeetCode Questions | LeetMap Pro`,
       description,
     },
   };
@@ -107,12 +107,6 @@ export default async function CompanyPage({ params }: PageProps) {
       {
         '@type': 'ListItem',
         position: 2,
-        name: 'Company-Wise LeetCode Questions',
-        item: 'https://www.leetmap-pro.com',
-      },
-      {
-        '@type': 'ListItem',
-        position: 3,
         name: `${company.name} LeetCode Questions`,
         item: `https://www.leetmap-pro.com/company/${safeSlug}`,
       },
@@ -121,20 +115,6 @@ export default async function CompanyPage({ params }: PageProps) {
 
   const topProblems = (company.windows?.find((w) => w.key === 'all')?.problems || []).slice(0, 20);
   const topThreeProblems = topProblems.slice(0, 3).map((p) => p.title).join(', ') || 'Two Sum, Add Two Numbers, LRU Cache';
-
-  const itemListJsonLd = {
-    '@context': 'https://schema.org',
-    '@type': 'ItemList',
-    name: `${company.name} LeetCode Questions Ranked by Frequency`,
-    description: `Curated company-wise coding interview problems frequently asked by ${company.name}`,
-    numberOfItems: topProblems.length,
-    itemListElement: topProblems.map((p, idx) => ({
-      '@type': 'ListItem',
-      position: idx + 1,
-      name: `${company.name}: #${p.id} ${p.title} (${p.difficulty})`,
-      url: `https://www.leetmap-pro.com/company/${safeSlug}`,
-    })),
-  };
 
   const faqJsonLd = {
     '@context': 'https://schema.org',
@@ -175,15 +155,27 @@ export default async function CompanyPage({ params }: PageProps) {
     ],
   };
 
+  const isLarge = (company.windows?.some((w) => w.problems.length > 50)) ?? false;
+  const initialCompany: CompanyDetail = isLarge
+    ? {
+        ...company,
+        isTruncated: true,
+        windows: company.windows.map((w) => ({
+          ...w,
+          problems: w.problems.slice(0, 50),
+        })),
+      }
+    : company;
+
   return (
     <div className="min-h-screen flex flex-col">
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify([breadcrumbJsonLd, itemListJsonLd, faqJsonLd]) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify([breadcrumbJsonLd, faqJsonLd]) }}
       />
       <Header syncStatus={syncStatus} />
       <main className="flex-1 pb-16">
-        <CompanyDetailView company={company} />
+        <CompanyDetailView company={initialCompany} />
 
         {/* SEO Semantic Content & FAQ Section */}
         <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-12 pt-10 border-t border-[var(--border)]">

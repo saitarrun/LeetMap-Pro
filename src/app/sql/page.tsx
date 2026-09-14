@@ -5,7 +5,7 @@ import { SqlCatalog, SqlCompanySummary, SyncStatus } from '@/types';
 import { SqlHubClient } from '@/components/SqlHubClient';
 
 export const metadata = {
-  title: 'Free Company-Wise LeetCode SQL Questions (2026) by Frequency',
+  title: 'SQL Interview Questions by Company',
   description: 'Browse and practice company-wise LeetCode SQL questions asked by 73+ top tech firms (Amazon, Google, Meta, Bloomberg, Microsoft), ranked by interview frequency and recency. 100% free.',
   keywords: [
     'free leetcode sql questions',
@@ -21,14 +21,14 @@ export const metadata = {
     canonical: 'https://www.leetmap-pro.com/sql',
   },
   openGraph: {
-    title: 'Free Company-Wise LeetCode SQL Questions (2026) by Frequency | LeetMap Pro',
+    title: 'SQL Interview Questions by Company | LeetMap Pro',
     description: 'Browse and practice company-wise LeetCode SQL questions asked by 73+ top tech firms, ranked by interview frequency and recency. 100% free.',
     url: 'https://www.leetmap-pro.com/sql',
     type: 'website',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Free Company-Wise LeetCode SQL Questions (2026) by Frequency | LeetMap Pro',
+    title: 'SQL Interview Questions by Company | LeetMap Pro',
     description: 'Browse and practice company-wise LeetCode SQL questions asked by 73+ top tech firms, ranked by interview frequency and recency. 100% free.',
   },
 };

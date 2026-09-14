@@ -21,7 +21,7 @@ export async function generateMetadata({ params }: PageProps) {
 
   const company: CompanyDetail = JSON.parse(fs.readFileSync(filePath, 'utf8'));
   const sqlCount = company.sqlTotal || 0;
-  const title = `Free ${company.name} SQL Interview Questions (2026) – ${sqlCount} Company-Wise Problems by Frequency`;
+  const title = `${company.name} SQL Questions`;
   const description = `Practice ${sqlCount} free company-wise ${company.name} LeetCode SQL and database interview questions asked in 2026 technical interviews, ranked by frequency and recency on LeetMap Pro.`;
 
   return {
@@ -45,7 +45,7 @@ export async function generateMetadata({ params }: PageProps) {
       canonical: `https://www.leetmap-pro.com/sql/${safeSlug}`,
     },
     openGraph: {
-      title: `Free ${company.name} SQL Interview Questions (2026) – ${sqlCount} Company-Wise Problems by Frequency | LeetMap Pro`,
+      title: `${company.name} SQL Questions | LeetMap Pro`,
       description,
       url: `https://www.leetmap-pro.com/sql/${safeSlug}`,
       type: 'article',
@@ -53,7 +53,7 @@ export async function generateMetadata({ params }: PageProps) {
     },
     twitter: {
       card: 'summary_large_image',
-      title: `Free ${company.name} SQL Interview Questions (2026) – ${sqlCount} Company-Wise Problems by Frequency | LeetMap Pro`,
+      title: `${company.name} SQL Questions | LeetMap Pro`,
       description,
     },
   };
@@ -120,22 +120,6 @@ export default async function SqlCompanyPage({ params }: PageProps) {
     ],
   };
 
-  const allProblems = company.windows?.find((w) => w.key === 'all')?.problems || [];
-  const sqlProblems = allProblems.filter((p) => p.isSql).slice(0, 20);
-  const itemListJsonLd = {
-    '@context': 'https://schema.org',
-    '@type': 'ItemList',
-    name: `${company.name} SQL Interview Questions`,
-    description: `Curated SQL database interview questions asked at ${company.name}`,
-    numberOfItems: sqlProblems.length,
-    itemListElement: sqlProblems.map((p, idx) => ({
-      '@type': 'ListItem',
-      position: idx + 1,
-      name: p.title,
-      url: `https://leetcode.com/problems/${p.slug}`,
-    })),
-  };
-
   const faqJsonLd = {
     '@context': 'https://schema.org',
     '@type': 'FAQPage',
@@ -145,7 +129,7 @@ export default async function SqlCompanyPage({ params }: PageProps) {
         name: `What SQL questions are asked in ${company.name} interviews?`,
         acceptedAnswer: {
           '@type': 'Answer',
-          text: `Technical interviews at ${company.name} cover ${sqlProblems.length} curated SQL and relational database queries, including joins, window functions, aggregations, and subqueries.`,
+          text: `Technical interviews at ${company.name} cover curated SQL and relational database queries, including joins, window functions, aggregations, and subqueries.`,
         },
       },
       {
@@ -163,7 +147,7 @@ export default async function SqlCompanyPage({ params }: PageProps) {
     <div className="min-h-screen flex flex-col">
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify([breadcrumbJsonLd, itemListJsonLd, faqJsonLd]) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify([breadcrumbJsonLd, faqJsonLd]) }}
       />
       <Header syncStatus={syncStatus} />
       <main className="flex-1 pb-16">

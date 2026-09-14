@@ -37,6 +37,7 @@ export interface CompanyDetail {
     'more_than_6_months': number;
     'all': number;
   };
+  isTruncated?: boolean;
 }
 
 export interface CompanySummary {

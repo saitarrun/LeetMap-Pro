@@ -44,6 +44,7 @@ export const SqlCompanyDetailView: React.FC<SqlCompanyDetailViewProps> = ({ comp
 
   const [sortBy, setSortBy] = useState<'frequency' | 'difficulty' | 'title' | 'acceptance' | 'id'>('frequency');
   const [sortDir, setSortDir] = useState<'asc' | 'desc'>('desc');
+  const [imgFailed, setImgFailed] = useState(false);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -244,8 +245,16 @@ export const SqlCompanyDetailView: React.FC<SqlCompanyDetailViewProps> = ({ comp
       <section className="text-center max-w-2xl mx-auto space-y-3 pt-1">
         <div className="flex items-center justify-center gap-3">
           <div className="w-12 h-12 rounded-2xl bg-[var(--bg-subtle)] border border-[var(--border)] flex items-center justify-center shrink-0 overflow-hidden">
-            {faviconUrl ? (
-              <Image src={faviconUrl} alt={`${company.name} logo`} width={26} height={26} className="w-6.5 h-6.5 object-contain" />
+            {faviconUrl && !imgFailed ? (
+              <Image
+                src={faviconUrl}
+                alt={`${company.name} logo`}
+                width={26}
+                height={26}
+                unoptimized
+                onError={() => setImgFailed(true)}
+                className="w-6.5 h-6.5 object-contain"
+              />
             ) : (
               <span className="text-xs font-semibold text-[var(--text-muted)]">{initials}</span>
             )}
@@ -614,7 +623,7 @@ export const SqlCompanyDetailView: React.FC<SqlCompanyDetailViewProps> = ({ comp
                       <a
                         href={getLeetCodeProblemUrl(prob.slug)}
                         target="_blank"
-                        rel="noopener noreferrer"
+                        rel="nofollow noopener noreferrer"
                         className="text-xs font-semibold text-[var(--text-main)] hover:text-[var(--accent)] transition-colors inline-flex items-center gap-1 break-words line-clamp-2"
                       >
                         <span>{prob.title}</span>
@@ -763,7 +772,7 @@ export const SqlCompanyDetailView: React.FC<SqlCompanyDetailViewProps> = ({ comp
                             <a
                               href={getLeetCodeProblemUrl(prob.slug)}
                               target="_blank"
-                              rel="noopener noreferrer"
+                              rel="nofollow noopener noreferrer"
                               className={`inline-flex items-center gap-1.5 font-medium hover:text-[var(--text-main)] hover:underline transition-colors ${
                                 isSolved ? 'line-through text-[var(--text-muted)]' : 'text-[var(--text-main)]'
                               }`}

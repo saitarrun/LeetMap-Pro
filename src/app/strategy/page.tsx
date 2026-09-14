@@ -5,7 +5,7 @@ import { PatternSummary, SyncStatus } from '@/types';
 import { StrategyClient } from '@/components/StrategyClient';
 
 export const metadata = {
-  title: 'Free Coding Interview Strategy & DSA Roadmap (2026)',
+  title: 'Coding Interview Strategy & DSA Roadmap',
   description: 'Master the 18 core LeetCode coding interview patterns in optimal prerequisite order. Free interactive Apple-designed roadmap from Arrays & Hashing to Advanced Dynamic Programming.',
   keywords: [
     'free leetcode roadmap',
@@ -20,14 +20,14 @@ export const metadata = {
     canonical: 'https://www.leetmap-pro.com/strategy',
   },
   openGraph: {
-    title: 'Free Coding Interview Strategy & DSA Roadmap (2026) | LeetMap Pro',
+    title: 'Coding Interview Strategy & DSA Roadmap | LeetMap Pro',
     description: 'Master the 18 core LeetCode coding interview patterns in optimal prerequisite order with an interactive visual dependency graph.',
     url: 'https://www.leetmap-pro.com/strategy',
     type: 'website',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Free Coding Interview Strategy & DSA Roadmap (2026) | LeetMap Pro',
+    title: 'Coding Interview Strategy & DSA Roadmap | LeetMap Pro',
     description: 'Master the 18 core LeetCode coding interview patterns in optimal prerequisite order.',
   },
 };

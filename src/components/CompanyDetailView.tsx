@@ -37,6 +37,8 @@ interface CompanyDetailViewProps {
 }
 
 export const CompanyDetailView: React.FC<CompanyDetailViewProps> = ({ company }) => {
+  const [data, setData] = useState<CompanyDetail>(company);
+  const [imgFailed, setImgFailed] = useState(false);
   const [activeTab, setActiveTab] = useState<number>(4);
   const [searchQuery, setSearchQuery] = useState('');
   const [difficultyFilter, setDifficultyFilter] = useState<'ALL' | 'EASY' | 'MEDIUM' | 'HARD'>('ALL');
@@ -47,10 +49,31 @@ export const CompanyDetailView: React.FC<CompanyDetailViewProps> = ({ company })
   const searchInputRef = useRef<HTMLInputElement>(null);
   const solvedSet = useSolvedProblems();
   const { isPinned: checkPinned, togglePin } = usePinnedCompanies();
-  const isPinned = checkPinned(company.slug);
+  const isPinned = checkPinned(data.slug);
 
   const [sortBy, setSortBy] = useState<'frequency' | 'difficulty' | 'title' | 'acceptance' | 'id'>('frequency');
   const [sortDir, setSortDir] = useState<'asc' | 'desc'>('desc');
+
+  useEffect(() => {
+    setData(company);
+  }, [company]);
+
+  useEffect(() => {
+    if (company.isTruncated) {
+      const safeSlug = company.slug.toLowerCase().replace(/[^a-z0-9\-]/g, '');
+      fetch(`/data/companies/${safeSlug}.json`)
+        .then((res) => {
+          if (!res.ok) throw new Error('Network error');
+          return res.json();
+        })
+        .then((fullData: CompanyDetail) => {
+          setData(fullData);
+        })
+        .catch((err) => {
+          console.warn('Could not load full question list in background:', err);
+        });
+    }
+  }, [company.isTruncated, company.slug]);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -83,7 +106,7 @@ export const CompanyDetailView: React.FC<CompanyDetailViewProps> = ({ company })
     }
   };
 
-  const currentWindow = company.windows[activeTab] || company.windows[0];
+  const currentWindow = data.windows[activeTab] || data.windows[0];
   const allProblems = useMemo(() => currentWindow?.problems || [], [currentWindow]);
 
   const topicCounts = useMemo(() => {
@@ -184,16 +207,16 @@ export const CompanyDetailView: React.FC<CompanyDetailViewProps> = ({ company })
         (p.verifiedSources || []).join(', '),
       ];
     });
-    downloadCsv(`${company.slug}-questions-${currentWindow.key}.csv`, headers, rows);
+    downloadCsv(`${data.slug}-questions-${currentWindow.key}.csv`, headers, rows);
 
     toast.success('Downloaded CSV', {
-      description: `Exported ${sortedProblems.length} questions for ${company.name}`,
+      description: `Exported ${sortedProblems.length} questions for ${data.name}`,
     });
   };
 
   const handleExportMarkdown = async () => {
-    const pageUrl = `https://www.leetmap-pro.com/company/${company.slug}`;
-    let md = `# ${company.name} LeetCode Questions (${currentWindow.name})\n\n`;
+    const pageUrl = `https://www.leetmap-pro.com/company/${data.slug}`;
+    let md = `# ${data.name} LeetCode Questions (${currentWindow.name})\n\n`;
     md += `> Curated from [LeetMap Pro](${pageUrl}) — Ranked by real interview frequency and recency.\n\n`;
     md += `| Solved | Problem | Difficulty | Frequency | Topics |\n`;
     md += `| :---: | :--- | :---: | :---: | :--- |\n`;
@@ -211,13 +234,13 @@ export const CompanyDetailView: React.FC<CompanyDetailViewProps> = ({ company })
         description: `Ready to paste directly into Notion, Obsidian, or GitHub (${sortedProblems.length} questions).`,
       });
     } catch {
-      toast.error('Failed to copy Markdown checklist');
+      toast.error('Failed to copy to clipboard');
     }
   };
 
   const companySolvedCount = useMemo(() => {
     const allUniqueSlugs = new Set<string>();
-    for (const w of company.windows) {
+    for (const w of data.windows) {
       for (const p of w.problems) {
         allUniqueSlugs.add(p.slug);
       }
@@ -227,16 +250,16 @@ export const CompanyDetailView: React.FC<CompanyDetailViewProps> = ({ company })
       if (solvedSet.has(s)) count++;
     }
     return count;
-  }, [company, solvedSet]);
+  }, [data, solvedSet]);
 
-  const initials = company.name
+  const initials = data.name
     .split(' ')
     .filter(Boolean)
     .slice(0, 2)
     .map((w) => w[0].toUpperCase())
     .join('');
-  const faviconUrl = company.domain
-    ? `https://www.google.com/s2/favicons?sz=64&domain=${company.domain}`
+  const faviconUrl = data.domain
+    ? `https://www.google.com/s2/favicons?sz=64&domain=${data.domain}`
     : null;
 
   return (
@@ -248,21 +271,29 @@ export const CompanyDetailView: React.FC<CompanyDetailViewProps> = ({ company })
           <span>All companies</span>
         </Link>
         <span className="opacity-40">/</span>
-        <span className="text-[var(--text-main)] font-medium">{company.name}</span>
+        <span className="text-[var(--text-main)] font-medium">{data.name}</span>
       </nav>
 
       {/* Minimal Hero Header (Unboxed, matching Homepage) */}
       <section className="text-center max-w-2xl mx-auto space-y-3 pt-1">
         <div className="flex items-center justify-center gap-3">
           <div className="w-12 h-12 rounded-2xl bg-[var(--bg-subtle)] border border-[var(--border)] flex items-center justify-center shrink-0 overflow-hidden">
-            {faviconUrl ? (
-              <Image src={faviconUrl} alt={`${company.name} logo`} width={26} height={26} className="w-6.5 h-6.5 object-contain" />
+            {faviconUrl && !imgFailed ? (
+              <Image
+                src={faviconUrl}
+                alt={`${data.name} logo`}
+                width={26}
+                height={26}
+                unoptimized
+                onError={() => setImgFailed(true)}
+                className="w-6.5 h-6.5 object-contain"
+              />
             ) : (
               <span className="text-xs font-semibold text-[var(--text-muted)]">{initials}</span>
             )}
           </div>
           <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-[var(--text-main)] flex items-baseline gap-2 flex-wrap justify-center">
-            <span>{company.name}</span>
+            <span>{data.name}</span>
             <span className="font-normal text-lg sm:text-2xl text-[var(--text-muted)]">LeetCode Questions</span>
           </h1>
           <span className="inline-flex items-center gap-1 text-[11px] text-[var(--text-muted)] font-normal">
@@ -273,13 +304,13 @@ export const CompanyDetailView: React.FC<CompanyDetailViewProps> = ({ company })
 
         {/* Breakdown Stats */}
         <div className="flex items-center justify-center gap-2 pt-1 text-xs text-[var(--text-muted)] font-normal flex-wrap">
-          <span>{company.total} questions</span>
+          <span>{data.total} questions</span>
           <span className="opacity-30">·</span>
-          <span className="text-emerald-600 dark:text-emerald-400 font-medium">{company.easy} Easy</span>
+          <span className="text-emerald-600 dark:text-emerald-400 font-medium">{data.easy} Easy</span>
           <span className="opacity-30">·</span>
-          <span className="text-amber-600 dark:text-amber-400 font-medium">{company.medium} Medium</span>
+          <span className="text-amber-600 dark:text-amber-400 font-medium">{data.medium} Medium</span>
           <span className="opacity-30">·</span>
-          <span className="text-rose-600 dark:text-rose-400 font-medium">{company.hard} Hard</span>
+          <span className="text-rose-600 dark:text-rose-400 font-medium">{data.hard} Hard</span>
           {companySolvedCount > 0 && (
             <>
               <span className="opacity-30">·</span>
@@ -289,7 +320,7 @@ export const CompanyDetailView: React.FC<CompanyDetailViewProps> = ({ company })
         </div>
 
         <p className="text-xs sm:text-sm text-[var(--text-muted)] max-w-xl mx-auto font-normal leading-relaxed">
-          Company-wise coding interview questions asked by {company.name}, ranked by real frequency across 30-day, 3-month, and 6-month recency windows.
+          Company-wise coding interview questions asked by {data.name}, ranked by real frequency across 30-day, 3-month, and 6-month recency windows.
         </p>
 
         {/* Discreet Actions (Pin & Track Switcher) */}
@@ -297,13 +328,13 @@ export const CompanyDetailView: React.FC<CompanyDetailViewProps> = ({ company })
           <button
             type="button"
             onClick={() => {
-              const nowPinned = togglePin(company.slug);
+              const nowPinned = togglePin(data.slug);
               if (nowPinned) {
-                toast.success(`Pinned ${company.name}`, {
+                toast.success(`Pinned ${data.name}`, {
                   description: 'Added to your pinned companies for quick access',
                 });
               } else {
-                toast.info(`Unpinned ${company.name}`);
+                toast.info(`Unpinned ${data.name}`);
               }
             }}
             className={`apple-press inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium transition-colors cursor-pointer ${
@@ -311,19 +342,19 @@ export const CompanyDetailView: React.FC<CompanyDetailViewProps> = ({ company })
                 ? 'bg-amber-500/10 text-amber-600 dark:text-amber-400'
                 : 'text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--bg-subtle)]'
             }`}
-            title={isPinned ? `Unpin ${company.name}` : `Pin ${company.name}`}
+            title={isPinned ? `Unpin ${data.name}` : `Pin ${data.name}`}
           >
             <Pin className={`w-3 h-3 ${isPinned ? 'fill-amber-500 text-amber-500 rotate-45' : ''}`} />
             <span>{isPinned ? 'Pinned' : 'Pin'}</span>
           </button>
 
-          {Boolean(company.sqlTotal && company.sqlTotal > 0) && (
+          {Boolean(data.sqlTotal && data.sqlTotal > 0) && (
             <Link
-              href={`/sql/${company.slug}`}
+              href={`/sql/${data.slug}`}
               className="apple-press inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--bg-subtle)] transition-colors"
             >
               <Database className="w-3 h-3 opacity-70" />
-              <span>SQL ({company.sqlTotal})</span>
+              <span>SQL ({data.sqlTotal})</span>
             </Link>
           )}
         </div>
@@ -381,7 +412,7 @@ export const CompanyDetailView: React.FC<CompanyDetailViewProps> = ({ company })
                 className="w-full bg-transparent text-xs font-medium focus:outline-none cursor-pointer appearance-none pr-4 text-inherit"
                 aria-label="Select timeframe"
               >
-                {company.windows.map((win, idx) => (
+                {data.windows.map((win, idx) => (
                   <option key={win.key} value={idx} className="bg-[var(--bg-card)] text-[var(--text-main)]">
                     {win.name} ({win.count})
                   </option>
@@ -513,7 +544,7 @@ export const CompanyDetailView: React.FC<CompanyDetailViewProps> = ({ company })
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-2.5 text-xs">
             {/* Recency Tabs */}
             <div className="flex flex-wrap items-center gap-1">
-              {company.windows.map((win, idx) => (
+              {data.windows.map((win, idx) => (
                 <button
                   key={win.key}
                   onClick={() => {
@@ -705,7 +736,7 @@ export const CompanyDetailView: React.FC<CompanyDetailViewProps> = ({ company })
                       <a
                         href={getLeetCodeProblemUrl(prob.slug)}
                         target="_blank"
-                        rel="noopener noreferrer"
+                        rel="nofollow noopener noreferrer"
                         className="text-xs font-semibold text-[var(--text-main)] hover:text-[var(--accent)] transition-colors inline-flex items-center gap-1 break-words line-clamp-2"
                       >
                         <span>{prob.title}</span>
@@ -879,7 +910,7 @@ export const CompanyDetailView: React.FC<CompanyDetailViewProps> = ({ company })
                             <a
                               href={getLeetCodeProblemUrl(prob.slug)}
                               target="_blank"
-                              rel="noopener noreferrer"
+                              rel="nofollow noopener noreferrer"
                               className={`inline-flex items-center gap-1.5 font-medium hover:text-[var(--text-main)] hover:underline transition-colors ${
                                 isSolved ? 'line-through text-[var(--text-muted)]' : 'text-[var(--text-main)]'
                               }`}

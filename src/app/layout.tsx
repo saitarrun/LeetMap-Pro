@@ -29,7 +29,7 @@ export const metadata: Metadata = {
     statusBarStyle: 'default',
   },
   title: {
-    default: 'LeetMap Pro | Free Company-Wise LeetCode & SQL Questions (2026) by Frequency',
+    default: 'LeetMap Pro | Company-Wise LeetCode & SQL Questions',
     template: '%s | LeetMap Pro',
   },
   description: 'Practice verified company-wise LeetCode and SQL interview questions from 680+ top tech firms (Google, Meta, Amazon, Microsoft, Apple), ranked by frequency and 30-day recency. 100% free alternative to LeetCode Premium.',
@@ -90,7 +90,7 @@ export const metadata: Metadata = {
     locale: 'en_US',
     url: 'https://www.leetmap-pro.com',
     siteName: 'LeetMap Pro',
-    title: 'LeetMap Pro | Company Wise Leetcode and SQL Questions',
+    title: 'LeetMap Pro | Company-Wise LeetCode & SQL Questions',
     description: 'Browse coding interview problems actually asked by 680+ tech companies, ranked by frequency and recency. Free interactive strategy roadmap and curated SQL problems.',
     images: [
       {
@@ -105,7 +105,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     site: '@saitarrun',
     creator: '@saitarrun',
-    title: 'LeetMap Pro | Company Wise Leetcode and SQL Questions',
+    title: 'LeetMap Pro | Company-Wise LeetCode & SQL Questions',
     description: 'Browse coding interview problems actually asked by 680+ tech companies, ranked by frequency and recency.',
     images: ['/icon-512.png'],
   },
@@ -158,63 +158,6 @@ const jsonLd = [
     image: 'https://www.leetmap-pro.com/icon-512.png',
     sameAs: [
       'https://github.com/saitarrun/LeetMap-Pro',
-    ],
-  },
-  {
-    '@context': 'https://schema.org',
-    '@type': 'WebApplication',
-    name: 'LeetMap Pro',
-    url: 'https://www.leetmap-pro.com',
-    applicationCategory: 'EducationalApplication',
-    operatingSystem: 'All',
-    description: 'Browse coding interview problems actually asked by 680+ tech companies, ranked by frequency and recency. Free interactive strategy roadmap and curated SQL problems.',
-    offers: {
-      '@type': 'Offer',
-      price: '0',
-      priceCurrency: 'USD',
-    },
-    learningResourceType: 'Practice Problem Set & Interactive Roadmap',
-    educationalLevel: 'Beginner to Advanced Software Engineers',
-    teaches: [
-      'Data Structures and Algorithms',
-      'Technical Coding Interviews',
-      'LeetCode Problem Solving Patterns',
-      'SQL Database Queries',
-      'Time and Space Complexity Analysis',
-    ],
-  },
-  {
-    '@context': 'https://schema.org',
-    '@type': 'ItemList',
-    itemListElement: [
-      {
-        '@type': 'SiteNavigationElement',
-        position: 1,
-        name: 'Companies',
-        description: 'Browse 680+ tech companies and their most frequently asked interview problems',
-        url: 'https://www.leetmap-pro.com/',
-      },
-      {
-        '@type': 'SiteNavigationElement',
-        position: 2,
-        name: 'Patterns',
-        description: '22 core coding interview patterns with problem lists and templates',
-        url: 'https://www.leetmap-pro.com/patterns',
-      },
-      {
-        '@type': 'SiteNavigationElement',
-        position: 3,
-        name: 'Strategy Roadmap',
-        description: 'Prerequisite graph and study roadmap for technical interviews',
-        url: 'https://www.leetmap-pro.com/strategy',
-      },
-      {
-        '@type': 'SiteNavigationElement',
-        position: 4,
-        name: 'SQL Interview Hub',
-        description: 'Company-wise SQL database interview questions and solution walkthroughs',
-        url: 'https://www.leetmap-pro.com/sql',
-      },
     ],
   },
 ];

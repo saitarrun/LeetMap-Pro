@@ -13,14 +13,14 @@ export const metadata: Metadata = {
     capable: true,
     statusBarStyle: 'default',
   },
-  title: 'LeetMap Pro | Free Company-Wise LeetCode & SQL Questions (2026) by Frequency',
+  title: 'LeetMap Pro | Company-Wise LeetCode & SQL Questions',
   description: 'Practice verified coding interview problems asked by 680+ tech companies (Google, Meta, Amazon, Microsoft, Apple), ranked by frequency and 30-day recency. 100% free alternative to LeetCode Premium.',
   alternates: {
     canonical: 'https://www.leetmap-pro.com',
   },
   openGraph: {
     siteName: 'LeetMap Pro',
-    title: 'LeetMap Pro | Free Company-Wise LeetCode & SQL Questions (2026) by Frequency',
+    title: 'LeetMap Pro | Company-Wise LeetCode & SQL Questions',
     description: 'Practice verified coding interview problems asked by 680+ tech companies (Google, Meta, Amazon, Microsoft, Apple), ranked by frequency and 30-day recency. 100% free alternative to LeetCode Premium.',
     url: 'https://www.leetmap-pro.com',
     type: 'website',
@@ -32,23 +32,6 @@ export const metadata: Metadata = {
         alt: 'LeetMap Pro Logo',
       },
     ],
-  },
-};
-
-const homeWebSiteJsonLd = {
-  '@context': 'https://schema.org',
-  '@type': 'WebSite',
-  name: 'LeetMap Pro',
-  alternateName: ['LeetMap', 'LeetMapPro', 'leetmap-pro.com'],
-  url: 'https://www.leetmap-pro.com',
-  inLanguage: 'en-US',
-  potentialAction: {
-    '@type': 'SearchAction',
-    target: {
-      '@type': 'EntryPoint',
-      urlTemplate: 'https://www.leetmap-pro.com/?search={search_term_string}',
-    },
-    'query-input': 'required name=search_term_string',
   },
 };
 
@@ -130,10 +113,6 @@ export default function HomePage() {
 
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(homeWebSiteJsonLd) }}
-      />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(homeFaqJsonLd) }}

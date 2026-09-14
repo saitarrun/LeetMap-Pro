@@ -12,6 +12,16 @@ const nextConfig: NextConfig = {
         hostname: "www.google.com",
         pathname: "/s2/favicons",
       },
+      {
+        protocol: "https",
+        hostname: "*.gstatic.com",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "t*.gstatic.com",
+        pathname: "/**",
+      },
     ],
   },
   async headers() {

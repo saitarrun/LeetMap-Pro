@@ -1,0 +1,21 @@
+# LeetMap Pro
+
+> LeetMap Pro is a free, high-speed platform providing company-wise LeetCode and SQL interview questions ranked by real frequency and recency.
+
+## Overview
+
+LeetMap Pro tracks coding interview questions asked by 680+ top technology companies (Google, Meta, Amazon, Microsoft, Apple, Bloomberg, Citadel, Netflix, and more). It provides real-time filtering across 30-day, 3-month, and 6-month recency windows, interactive DSA pattern roadmaps, curated SQL practice, and progress synchronization.
+
+## Core Features & Resources
+
+- [Company-Wise Coding Questions](https://www.leetmap-pro.com/): Browse 680+ tech companies with interview questions ranked by recency and frequency.
+- [SQL Interview Practice Hub](https://www.leetmap-pro.com/sql): Curated SQL and relational database questions asked by 70+ tech companies.
+- [DSA Pattern Guides](https://www.leetmap-pro.com/patterns): 22 algorithmic patterns (Two Pointers, Sliding Window, Monotonic Stack, Dynamic Programming, Graphs) with strategy breakdowns and templates.
+- [Technical Interview Strategy Roadmap](https://www.leetmap-pro.com/strategy): Interactive prerequisite dependency graph for coding interview preparation.
+- [Time & Space Complexity Reference](https://www.leetmap-pro.com/patterns/time-complexity): Visual Big-O guide, growth curves, and recursion tree cheat sheets.
+
+## API & Data Feeds
+
+- [RSS Feed](https://www.leetmap-pro.com/feed.xml): Daily updates and daily challenge announcements.
+- [Sitemap](https://www.leetmap-pro.com/sitemap.xml): Comprehensive URL index of all company interview hubs and pattern guides.
+- [Open Source Repository](https://github.com/saitarrun/LeetMap-Pro): Full source code and daily automated data synchronization scripts.

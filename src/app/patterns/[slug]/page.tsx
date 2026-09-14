@@ -44,7 +44,7 @@ export async function generateMetadata({ params }: PageProps) {
   }
 
   const pattern: PatternDetail = JSON.parse(fs.readFileSync(filePath, 'utf8'));
-  const title = `${pattern.name} Pattern (${pattern.total} Curated Problems)`;
+  const title = `${pattern.name} Pattern Guide`;
   const description = `${pattern.tagline}. Master ${pattern.total} LeetCode interview problems in the ${pattern.name} pattern asked by ${pattern.topCompanies.slice(0, 4).join(', ')}. Strategy guide, code templates, and difficulty breakdown.`;
 
   return {
@@ -152,21 +152,6 @@ export default async function PatternDetailPage({ params }: PageProps) {
     url: `https://www.leetmap-pro.com/patterns/${safeSlug}`,
   };
 
-  const topProblems = (pattern.problems || []).slice(0, 15);
-  const itemListJsonLd = {
-    '@context': 'https://schema.org',
-    '@type': 'ItemList',
-    name: `${pattern.name} Practice Problems`,
-    description: `Core curated LeetCode coding problems for the ${pattern.name} pattern.`,
-    numberOfItems: topProblems.length,
-    itemListElement: topProblems.map((p, idx) => ({
-      '@type': 'ListItem',
-      position: idx + 1,
-      name: p.title,
-      url: `https://leetcode.com/problems/${p.slug}`,
-    })),
-  };
-
   const faqJsonLd = {
     '@context': 'https://schema.org',
     '@type': 'FAQPage',
@@ -202,7 +187,7 @@ export default async function PatternDetailPage({ params }: PageProps) {
     <div className="min-h-screen flex flex-col">
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify([breadcrumbJsonLd, articleJsonLd, itemListJsonLd, faqJsonLd]) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify([breadcrumbJsonLd, articleJsonLd, faqJsonLd]) }}
       />
       <Header syncStatus={syncStatus} />
       <main className="flex-1 pb-16">

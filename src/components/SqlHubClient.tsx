@@ -466,7 +466,7 @@ export const SqlHubClient: React.FC<SqlHubClientProps> = ({
                               <a
                                 href={`https://leetcode.com/problems/${prob.slug}`}
                                 target="_blank"
-                                rel="noopener noreferrer"
+                                rel="nofollow noopener noreferrer"
                                 className="group/title flex items-center gap-1.5 min-w-0 flex-1"
                               >
                                 <span className={`text-xs sm:text-sm font-semibold hover:underline line-clamp-1 leading-snug ${
@@ -537,7 +537,7 @@ export const SqlHubClient: React.FC<SqlHubClientProps> = ({
                             <a
                               href={`https://leetcode.com/problems/${prob.slug}`}
                               target="_blank"
-                              rel="noopener noreferrer"
+                              rel="nofollow noopener noreferrer"
                               className="apple-press inline-flex items-center gap-1 px-3 py-1.5 rounded-xl text-[11px] font-medium bg-[var(--bg-subtle)] hover:bg-[var(--bg-hover)] text-[var(--text-main)] border border-[var(--border)] transition-colors"
                             >
                               <span>Solve</span>
