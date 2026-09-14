@@ -22,29 +22,66 @@ export async function generateMetadata({ params }: PageProps) {
   }
 
   const company: CompanyDetail = JSON.parse(fs.readFileSync(filePath, 'utf8'));
-  const title = `${company.name} LeetCode Questions`;
-  const description = `Practice ${company.total} free company-wise ${company.name} LeetCode questions asked in real 2026 interviews. Filter by frequency across 30-day, 3-month, and 6-month recency (Easy: ${company.easy}, Med: ${company.medium}, Hard: ${company.hard}). 100% free alternative to LeetCode Premium.`;
+  let title = `${company.name} LeetCode Questions`;
+  let description = `Practice ${company.total} free company-wise ${company.name} LeetCode questions asked in real 2026 interviews. Filter by frequency across 30-day, 3-month, and 6-month recency (Easy: ${company.easy}, Med: ${company.medium}, Hard: ${company.hard}). 100% free alternative to LeetCode Premium.`;
+  let keywords = [
+    `free ${company.name} leetcode questions`,
+    `${company.name} LeetCode questions 2026`,
+    `${company.name} LeetCode 2026`,
+    `free leetcode premium ${company.name}`,
+    `${company.name} leetcode tagged questions free`,
+    `company wise leetcode questions ${company.name}`,
+    `${company.name} leetcode frequency`,
+    `${company.name} most asked leetcode 30 days`,
+    `${company.name} coding interview questions`,
+    `${company.name} software engineer interview`,
+    `leetcode ${company.slug}`,
+    `${company.name} interview questions`,
+    `${company.name} technical interview`,
+    `company wise leetcode questions`,
+    `leetcode company wise`,
+  ];
+
+  if (safeSlug === 'blind-75') {
+    title = 'Blind 75 LeetCode Questions (2026) – Curated Interview Problems';
+    description = 'Practice and master the complete Blind 75 LeetCode study list with an interactive progress tracker, difficulty filters (Easy: 19, Med: 49, Hard: 7), and pattern categorization. 100% free with no paywall.';
+    keywords = [
+      'blind 75',
+      'blind 75 leetcode',
+      'blind 75 list',
+      'blind 75 questions',
+      'blind 75 sheet',
+      'blind 75 practice',
+      'blind 75 tracker',
+      'blind 75 study plan',
+      'blind 75 leetcode questions',
+      'blind 75 curated problems',
+      'neetcode blind 75',
+      'coding interview preparation',
+      'leetcode patterns',
+    ];
+  } else if (safeSlug === 'neetcode-150') {
+    title = 'NeetCode 150 LeetCode Questions (2026) – Complete Practice Roadmap';
+    description = 'Practice all 150 NeetCode coding interview questions with real-time progress tracking, Blind mode, and pattern-based categorization (Easy: 28, Med: 101, Hard: 21). 100% free alternative.';
+    keywords = [
+      'neetcode 150',
+      'neetcode 150 list',
+      'neetcode 150 practice',
+      'neetcode 150 questions',
+      'neetcode sheet',
+      'neetcode roadmap',
+      'neetcode 150 leetcode',
+      'neetcode practice',
+      'neetcode questions',
+      'blind 75',
+      'coding interview roadmap',
+    ];
+  }
 
   return {
     title,
     description,
-    keywords: [
-      `free ${company.name} leetcode questions`,
-      `${company.name} LeetCode questions 2026`,
-      `${company.name} LeetCode 2026`,
-      `free leetcode premium ${company.name}`,
-      `${company.name} leetcode tagged questions free`,
-      `company wise leetcode questions ${company.name}`,
-      `${company.name} leetcode frequency`,
-      `${company.name} most asked leetcode 30 days`,
-      `${company.name} coding interview questions`,
-      `${company.name} software engineer interview`,
-      `leetcode ${company.slug}`,
-      `${company.name} interview questions`,
-      `${company.name} technical interview`,
-      `company wise leetcode questions`,
-      `leetcode company wise`,
-    ],
+    keywords,
     alternates: {
       canonical: `https://www.leetmap-pro.com/company/${COMPANY_ALIASES[safeSlug] || safeSlug}`,
     },
