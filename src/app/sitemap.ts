@@ -1,6 +1,7 @@
 import { MetadataRoute } from 'next';
 import fs from 'fs';
 import path from 'path';
+import { COMPANY_ALIASES } from '@/utils/aliases';
 
 const BASE_URL = 'https://www.leetmap-pro.com';
 
@@ -81,7 +82,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     if (fs.existsSync(companiesPath)) {
       const companies: { slug: string; total: number }[] = JSON.parse(fs.readFileSync(companiesPath, 'utf8'));
       for (const comp of companies) {
-        if (comp.slug) {
+        if (comp.slug && !COMPANY_ALIASES[comp.slug]) {
           companyPages.push({
             url: `${BASE_URL}/company/${comp.slug}`,
             lastModified: currentDate,

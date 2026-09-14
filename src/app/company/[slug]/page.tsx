@@ -2,10 +2,11 @@ import React from 'react';
 import Link from 'next/link';
 import fs from 'fs';
 import path from 'path';
-import { notFound } from 'next/navigation';
+import { notFound, permanentRedirect } from 'next/navigation';
 import { CompanyDetail, SyncStatus } from '@/types';
 import { Header } from '@/components/Header';
 import { CompanyDetailView } from '@/components/CompanyDetailView';
+import { COMPANY_ALIASES } from '@/utils/aliases';
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -45,7 +46,7 @@ export async function generateMetadata({ params }: PageProps) {
       `leetcode company wise`,
     ],
     alternates: {
-      canonical: `https://www.leetmap-pro.com/company/${safeSlug}`,
+      canonical: `https://www.leetmap-pro.com/company/${COMPANY_ALIASES[safeSlug] || safeSlug}`,
     },
     openGraph: {
       title: `${company.name} LeetCode Questions | LeetMap Pro`,
@@ -80,6 +81,11 @@ export async function generateStaticParams() {
 export default async function CompanyPage({ params }: PageProps) {
   const { slug } = await params;
   const safeSlug = slug.toLowerCase().replace(/[^a-z0-9\-]/g, '');
+
+  if (COMPANY_ALIASES[safeSlug]) {
+    permanentRedirect(`/company/${COMPANY_ALIASES[safeSlug]}`);
+  }
+
   const filePath = path.join(process.cwd(), 'public', 'data', 'companies', `${safeSlug}.json`);
   const statusPath = path.join(process.cwd(), 'public', 'data', 'sync-status.json');
 
