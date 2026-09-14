@@ -30,6 +30,7 @@ import { PublicUserProfileData } from '@/utils/server-user';
 import { useAuth } from '@/context/AuthContext';
 import { getUserActivityStats } from '@/utils/progress';
 import { useSolvedProblems } from '@/utils/useSolvedProblems';
+import { getProblemOutboundUrl } from '@/utils/urls';
 
 export interface PrepLevel {
   level: number;
@@ -846,9 +847,9 @@ export const PublicProfileView: React.FC<PublicProfileViewProps> = ({ initialDat
                 <div className="flex items-center gap-3 min-w-0 flex-1">
                   <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />
                   <a
-                    href={`https://leetcode.com/problems/${prob.slug}`}
+                    href={getProblemOutboundUrl(prob.slug)}
                     target="_blank"
-                    rel="noopener noreferrer"
+                    rel="nofollow noopener noreferrer"
                     className="font-medium text-[var(--text-main)] hover:underline truncate"
                   >
                     {prob.title || prob.slug.replace(/-/g, ' ')}

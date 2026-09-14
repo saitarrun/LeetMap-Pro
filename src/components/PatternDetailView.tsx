@@ -52,7 +52,7 @@ import { toast } from 'sonner';
 import { PatternDetail, PatternProblem } from '@/types';
 import { toggleProblemSolved } from '@/utils/progress';
 import { useSolvedProblems } from '@/utils/useSolvedProblems';
-import { getLeetCodeProblemUrl } from '@/utils/urls';
+import { getLeetCodeProblemUrl, getProblemOutboundUrl } from '@/utils/urls';
 import { downloadCsv } from '@/utils/csv';
 import { PATTERN_GUIDES } from '@/data/pattern-guides';
 
@@ -766,7 +766,7 @@ export const PatternDetailView: React.FC<PatternDetailViewProps> = ({ pattern, a
                         </span>
                       )}
                       <a
-                        href={getLeetCodeProblemUrl(prob.slug)}
+                        href={getProblemOutboundUrl(prob.slug)}
                         target="_blank"
                         rel="nofollow noopener noreferrer"
                         className="text-xs font-semibold text-[var(--text-main)] hover:text-[var(--accent)] transition-colors inline-flex items-center gap-1 break-words line-clamp-2"
@@ -947,7 +947,7 @@ export const PatternDetailView: React.FC<PatternDetailViewProps> = ({ pattern, a
                       <td className="py-3 px-4">
                         <div className="flex flex-col gap-0.5">
                           <a
-                            href={getLeetCodeProblemUrl(prob.slug)}
+                            href={getProblemOutboundUrl(prob.slug)}
                             target="_blank"
                             rel="nofollow noopener noreferrer"
                             className={`inline-flex items-center gap-1.5 font-medium hover:text-[var(--text-main)] hover:underline transition-colors ${

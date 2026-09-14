@@ -20,7 +20,7 @@ import { toast } from 'sonner';
 import { SqlProblem, SqlCatalog } from '@/types';
 import { toggleProblemSolved } from '@/utils/progress';
 import { useSolvedProblems } from '@/utils/useSolvedProblems';
-import { getLeetCodeProblemUrl } from '@/utils/urls';
+import { getLeetCodeProblemUrl, getProblemOutboundUrl } from '@/utils/urls';
 import { downloadCsv } from '@/utils/csv';
 
 interface SqlExplorerViewProps {
@@ -488,7 +488,7 @@ export const SqlExplorerView: React.FC<SqlExplorerViewProps> = ({ catalog }) => 
                         </span>
                       )}
                       <a
-                        href={getLeetCodeProblemUrl(prob.slug)}
+                        href={getProblemOutboundUrl(prob.slug)}
                         target="_blank"
                         rel="nofollow noopener noreferrer"
                         className="text-xs font-semibold text-[var(--text-main)] hover:text-[var(--accent)] transition-colors inline-flex items-center gap-1 break-words line-clamp-2"
@@ -640,7 +640,7 @@ export const SqlExplorerView: React.FC<SqlExplorerViewProps> = ({ catalog }) => 
                       {/* Title */}
                       <td className="py-3 px-4">
                         <a
-                          href={getLeetCodeProblemUrl(prob.slug)}
+                          href={getProblemOutboundUrl(prob.slug)}
                           target="_blank"
                           rel="nofollow noopener noreferrer"
                           className={`inline-flex items-center gap-1.5 font-medium hover:text-[var(--text-main)] hover:underline transition-colors ${

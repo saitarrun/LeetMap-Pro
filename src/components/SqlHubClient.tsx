@@ -21,6 +21,7 @@ import { SqlExplorerView } from '@/components/SqlExplorerView';
 import { useSolvedProblems } from '@/utils/useSolvedProblems';
 import { usePinnedCompanies } from '@/utils/usePinnedCompanies';
 import { toggleProblemSolved } from '@/utils/progress';
+import { getProblemOutboundUrl } from '@/utils/urls';
 
 interface SqlHubClientProps {
   companies: SqlCompanySummary[];
@@ -464,7 +465,7 @@ export const SqlHubClient: React.FC<SqlHubClientProps> = ({
                           <div className="space-y-2">
                             <div className="flex items-start justify-between gap-2">
                               <a
-                                href={`https://leetcode.com/problems/${prob.slug}`}
+                                href={getProblemOutboundUrl(prob.slug)}
                                 target="_blank"
                                 rel="nofollow noopener noreferrer"
                                 className="group/title flex items-center gap-1.5 min-w-0 flex-1"
@@ -535,7 +536,7 @@ export const SqlHubClient: React.FC<SqlHubClientProps> = ({
                             </button>
 
                             <a
-                              href={`https://leetcode.com/problems/${prob.slug}`}
+                              href={getProblemOutboundUrl(prob.slug)}
                               target="_blank"
                               rel="nofollow noopener noreferrer"
                               className="apple-press inline-flex items-center gap-1 px-3 py-1.5 rounded-xl text-[11px] font-medium bg-[var(--bg-subtle)] hover:bg-[var(--bg-hover)] text-[var(--text-main)] border border-[var(--border)] transition-colors"

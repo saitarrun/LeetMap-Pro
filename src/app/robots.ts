@@ -13,6 +13,7 @@ export default function robots(): MetadataRoute.Robots {
         ],
         disallow: [
           '/api/',
+          '/out/',
           '/account',
           '/settings',
           '/sign-in',
@@ -50,6 +51,7 @@ export default function robots(): MetadataRoute.Robots {
           '/strategy',
         ],
         disallow: [
+          '/out/',
           '/account',
           '/settings',
           '/sign-in',
