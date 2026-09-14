@@ -90,7 +90,7 @@ async function readUserRaw(id: string): Promise<StoredUserData | null> {
 export async function fetchPublicUserProfile(rawUsername: string): Promise<PublicUserProfileData | null> {
   const raw = rawUsername.trim();
   const cleanUsername = raw.toLowerCase();
-  if (!cleanUsername) return null;
+  if (!cleanUsername || !/^[a-z0-9_-]+$/.test(cleanUsername)) return null;
 
   let clerkUser: {
     id: string;
@@ -185,31 +185,7 @@ export async function fetchPublicUserProfile(rawUsername: string): Promise<Publi
       }
     }
 
-    // 3. Direct Email match
-    if (!clerkUser && cleanUsername.includes('@')) {
-      try {
-        const emailSearch = await client.users.getUserList({
-          emailAddress: [cleanUsername],
-          limit: 1,
-        });
-        if (emailSearch.data.length > 0) {
-          const found = emailSearch.data[0];
-          const emailPrefix = found.primaryEmailAddress?.emailAddress?.split('@')[0]?.toLowerCase().replace(/[^a-z0-9_-]/g, '');
-          const defaultHandle = found.username || emailPrefix || found.id;
-          clerkUser = {
-            id: found.id,
-            username: defaultHandle,
-            name: found.fullName || found.firstName || defaultHandle,
-            avatarUrl: found.imageUrl,
-            createdAt: found.createdAt,
-          };
-        }
-      } catch {
-        // ignore
-      }
-    }
-
-    // 4. Exact match by username or email prefix
+    // 3. Exact query search: Clerk username or unique unambiguous email prefix
     if (!clerkUser) {
       try {
         const search = await client.users.getUserList({
@@ -217,34 +193,43 @@ export async function fetchPublicUserProfile(rawUsername: string): Promise<Publi
           limit: 20,
         });
         if (search.data.length > 0) {
-          // Find the candidate who strictly matches by username, email, email prefix, or user id
-          const matched = search.data.find((u) => {
-            const uUsername = u.username?.toLowerCase();
-            if (uUsername === cleanUsername) return true;
-
-            const emails = (u.emailAddresses || []).map((e) => e.emailAddress.toLowerCase());
-            if (emails.includes(cleanUsername)) return true;
-
-            const prefixes = emails.map((e) => e.split('@')[0].replace(/[^a-z0-9_-]/g, ''));
-            if (prefixes.includes(cleanUsername)) return true;
-
-            if (u.id.toLowerCase() === cleanUsername) return true;
-
-            return false;
-          });
-
-          if (matched) {
+          // Priority A: Exact Clerk username match
+          const exactUsernameMatch = search.data.find(
+            (u) => u.username?.toLowerCase() === cleanUsername
+          );
+          if (exactUsernameMatch) {
             const emailPrefix =
-              matched.primaryEmailAddress?.emailAddress?.split('@')[0]?.toLowerCase().replace(/[^a-z0-9_-]/g, '');
-            const defaultHandle = matched.username || emailPrefix || matched.id;
-
+              exactUsernameMatch.primaryEmailAddress?.emailAddress?.split('@')[0]?.toLowerCase().replace(/[^a-z0-9_-]/g, '');
+            const defaultHandle = exactUsernameMatch.username || emailPrefix || exactUsernameMatch.id;
             clerkUser = {
-              id: matched.id,
+              id: exactUsernameMatch.id,
               username: defaultHandle,
-              name: matched.fullName || matched.firstName || defaultHandle,
-              avatarUrl: matched.imageUrl,
-              createdAt: matched.createdAt,
+              name: exactUsernameMatch.fullName || exactUsernameMatch.firstName || defaultHandle,
+              avatarUrl: exactUsernameMatch.imageUrl,
+              createdAt: exactUsernameMatch.createdAt,
             };
+          } else {
+            // Priority B: Exact email prefix match — MUST be unambiguous (exactly 1 user with this prefix)
+            const prefixMatches = search.data.filter((u) => {
+              const prefixes = (u.emailAddresses || []).map((e) =>
+                e.emailAddress.split('@')[0].toLowerCase().replace(/[^a-z0-9_-]/g, '')
+              );
+              return prefixes.includes(cleanUsername);
+            });
+
+            if (prefixMatches.length === 1) {
+              const matched = prefixMatches[0];
+              const emailPrefix =
+                matched.primaryEmailAddress?.emailAddress?.split('@')[0]?.toLowerCase().replace(/[^a-z0-9_-]/g, '');
+              const defaultHandle = matched.username || emailPrefix || matched.id;
+              clerkUser = {
+                id: matched.id,
+                username: defaultHandle,
+                name: matched.fullName || matched.firstName || defaultHandle,
+                avatarUrl: matched.imageUrl,
+                createdAt: matched.createdAt,
+              };
+            }
           }
         }
       } catch {

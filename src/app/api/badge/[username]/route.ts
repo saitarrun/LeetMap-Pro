@@ -25,6 +25,9 @@ export async function GET(
 ) {
   const { username } = await params;
   const safeUsername = username.trim().toLowerCase().replace(/[^a-z0-9_\-]/g, '');
+  if (!safeUsername) {
+    return new Response('Invalid username', { status: 400 });
+  }
 
   const url = new URL(request.url);
   const style = url.searchParams.get('style') || 'card';

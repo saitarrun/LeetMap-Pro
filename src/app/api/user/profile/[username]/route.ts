@@ -9,8 +9,9 @@ export async function GET(
   { params }: { params: Promise<{ username: string }> }
 ) {
   const { username } = await params;
-  if (!username) {
-    return NextResponse.json({ error: 'Username required' }, { status: 400 });
+  const clean = username?.trim().toLowerCase();
+  if (!clean || !/^[a-z0-9_-]+$/.test(clean)) {
+    return NextResponse.json({ error: 'Invalid username format' }, { status: 400 });
   }
 
   const profile = await fetchPublicUserProfile(username);

@@ -36,6 +36,7 @@ export function setActiveUser(user: UserProfile | null): void {
       syncUserProgressWithServer(user.id).catch(() => {});
     } else {
       localStorage.removeItem(ACTIVE_USER_KEY);
+      initializedServerUsers.clear();
     }
   } catch (e) {
     console.error('Failed to update active user in storage:', e);
@@ -353,6 +354,12 @@ export function migrateGuestToUser(targetUsername: string): number {
 
   localStorage.setItem(userKey, JSON.stringify(Array.from(userSet)));
   localStorage.setItem(actKey, JSON.stringify(mergedRecords));
+
+  // Purge guest data so future logins or other users on this device do not inherit it
+  localStorage.removeItem(GUEST_KEY);
+  localStorage.removeItem(GUEST_ACTIVITY_KEY);
+  localStorage.removeItem(LEGACY_GUEST_KEY);
+  localStorage.removeItem(LEGACY_GUEST_ACTIVITY_KEY);
 
   window.dispatchEvent(new CustomEvent('leetmap-solved-updated', { detail: { count: userSet.size } }));
   return merged;
