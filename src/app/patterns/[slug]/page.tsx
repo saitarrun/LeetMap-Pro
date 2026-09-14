@@ -1,7 +1,7 @@
 import React from 'react';
 import fs from 'fs';
 import path from 'path';
-import { notFound } from 'next/navigation';
+import { notFound, permanentRedirect } from 'next/navigation';
 import { PatternDetail, SyncStatus } from '@/types';
 import { Header } from '@/components/Header';
 import { PatternDetailView } from '@/components/PatternDetailView';
@@ -11,6 +11,7 @@ interface PageProps {
 }
 
 const SLUG_ALIASES: Record<string, string> = {
+  'subsets-backtracking': 'backtracking',
   'arrays-hashing': 'prefix-sum',
   'array-hashing': 'prefix-sum',
   'stack': 'monotonic-stack',
@@ -96,7 +97,10 @@ export async function generateStaticParams() {
 export default async function PatternDetailPage({ params }: PageProps) {
   const { slug } = await params;
   const safeSlug = slug.toLowerCase().replace(/[^a-z0-9\-]/g, '');
-  const resolvedSlug = SLUG_ALIASES[safeSlug] || safeSlug;
+  if (SLUG_ALIASES[safeSlug]) {
+    permanentRedirect(`/patterns/${SLUG_ALIASES[safeSlug]}`);
+  }
+  const resolvedSlug = safeSlug;
   const filePath = path.join(process.cwd(), 'public', 'data', 'patterns', `${resolvedSlug}.json`);
   const statusPath = path.join(process.cwd(), 'public', 'data', 'sync-status.json');
 

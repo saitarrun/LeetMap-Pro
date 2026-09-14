@@ -152,7 +152,7 @@ export const StrategyClient: React.FC<StrategyClientProps> = ({
                 Backtracking &amp; Dynamic Programming
               </h3>
               <p className="text-xs text-[var(--text-muted)] leading-relaxed">
-                Tackle optimization and state transitions. Master recursive exhaustive search with <Link href="/patterns/subsets-backtracking" className="text-[var(--accent)] hover:underline">Backtracking</Link>, memoization, and optimal substructure in <Link href="/patterns/dynamic-programming-1d" className="text-[var(--accent)] hover:underline">1D DP</Link> and <Link href="/patterns/dynamic-programming-2d" className="text-[var(--accent)] hover:underline">2D Dynamic Programming</Link>.
+                Tackle optimization and state transitions. Master recursive exhaustive search with <Link href="/patterns/backtracking" className="text-[var(--accent)] hover:underline">Backtracking</Link>, memoization, and optimal substructure in <Link href="/patterns/dynamic-programming-1d" className="text-[var(--accent)] hover:underline">1D DP</Link> and <Link href="/patterns/dynamic-programming-2d" className="text-[var(--accent)] hover:underline">2D Dynamic Programming</Link>.
               </p>
             </div>
           </div>
