@@ -31,15 +31,35 @@ export const BottomAdBanner: React.FC<BottomAdBannerProps> = ({
       return;
     }
 
-    try {
-      if (typeof window !== 'undefined') {
-        const adsbygoogle = (window as unknown as { adsbygoogle?: unknown[] }).adsbygoogle || [];
-        adsbygoogle.push({});
-        (window as unknown as { adsbygoogle: unknown[] }).adsbygoogle = adsbygoogle;
-        pushedRef.current = true;
+    const pushAd = () => {
+      if (pushedRef.current) return;
+      try {
+        if (typeof window !== 'undefined') {
+          const adsbygoogle = (window as unknown as { adsbygoogle?: unknown[] }).adsbygoogle || [];
+          adsbygoogle.push({});
+          (window as unknown as { adsbygoogle: unknown[] }).adsbygoogle = adsbygoogle;
+          pushedRef.current = true;
+        }
+      } catch {
+        // Gracefully silence if blocked by user ad blocker or still loading
       }
-    } catch {
-      // Gracefully silence if blocked by user ad blocker or still loading
+    };
+
+    if (typeof window !== 'undefined' && 'IntersectionObserver' in window && adRef.current) {
+      const observer = new IntersectionObserver(
+        (entries) => {
+          if (entries[0]?.isIntersecting) {
+            pushAd();
+            observer.disconnect();
+          }
+        },
+        { rootMargin: '300px' }
+      );
+      observer.observe(adRef.current);
+      return () => observer.disconnect();
+    } else {
+      const timer = setTimeout(pushAd, 2500);
+      return () => clearTimeout(timer);
     }
   }, [pathname, isExcludedRoute]);
 

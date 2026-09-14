@@ -95,8 +95,10 @@ export const HomeClient: React.FC<HomeClientProps> = ({
         .finally(() => setIsLoadingCompanies(false));
     };
 
-    // Populate full dataset after initial lightweight SSR render
-    loadCompanies();
+    // Defer populating full 680+ dataset until browser finishes initial hydration & paint
+    const idleId = typeof window !== 'undefined' && 'requestIdleCallback' in window
+      ? (window as unknown as { requestIdleCallback: (cb: () => void, opts?: { timeout: number }) => number }).requestIdleCallback(loadCompanies, { timeout: 1500 })
+      : setTimeout(loadCompanies, 800);
 
     const handleLiveRefreshEvent = (e: Event) => {
       const customEvent = e as CustomEvent<SyncStatus>;
@@ -110,6 +112,11 @@ export const HomeClient: React.FC<HomeClientProps> = ({
 
     return () => {
       controller.abort();
+      if (typeof window !== 'undefined' && 'cancelIdleCallback' in window && typeof idleId === 'number') {
+        (window as unknown as { cancelIdleCallback: (id: number) => void }).cancelIdleCallback(idleId);
+      } else {
+        clearTimeout(idleId);
+      }
       window.removeEventListener('leetmap-live-refresh', handleLiveRefreshEvent);
     };
   }, []);

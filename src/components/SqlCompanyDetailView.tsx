@@ -135,6 +135,26 @@ export const SqlCompanyDetailView: React.FC<SqlCompanyDetailViewProps> = ({ comp
     });
   }, [filteredProblems, sortBy, sortDir]);
 
+  const [visibleCount, setVisibleCount] = useState<number>(50);
+  const loadMoreRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    setVisibleCount(50);
+  }, [activeTab, searchQuery, difficultyFilter, sortBy, sortDir, hideSolved]);
+
+  const visibleProblems = useMemo(() => sortedProblems.slice(0, visibleCount), [sortedProblems, visibleCount]);
+
+  useEffect(() => {
+    if (!loadMoreRef.current || visibleCount >= sortedProblems.length) return;
+    const observer = new IntersectionObserver((entries) => {
+      if (entries[0]?.isIntersecting) {
+        setVisibleCount((prev) => Math.min(prev + 50, sortedProblems.length));
+      }
+    }, { rootMargin: '400px' });
+    observer.observe(loadMoreRef.current);
+    return () => observer.disconnect();
+  }, [visibleCount, sortedProblems.length]);
+
   const handleSort = (column: 'frequency' | 'difficulty' | 'title' | 'acceptance' | 'id') => {
     if (sortBy === column) {
       setSortDir(sortDir === 'asc' ? 'desc' : 'asc');
@@ -580,7 +600,7 @@ export const SqlCompanyDetailView: React.FC<SqlCompanyDetailViewProps> = ({ comp
               </button>
             </div>
           ) : (
-            sortedProblems.map((prob) => {
+            visibleProblems.map((prob) => {
               const isSolved = solvedSet.has(prob.slug);
               const accPercent = prob.acceptance > 0
                 ? (prob.acceptance <= 1 ? (prob.acceptance * 100).toFixed(1) : prob.acceptance.toFixed(1)) + '%'
@@ -726,7 +746,7 @@ export const SqlCompanyDetailView: React.FC<SqlCompanyDetailViewProps> = ({ comp
                   </td>
                 </tr>
               ) : (
-                sortedProblems.map((prob) => {
+                visibleProblems.map((prob) => {
                   const isSolved = solvedSet.has(prob.slug);
                   const accPercent = prob.acceptance > 0
                     ? (prob.acceptance <= 1 ? (prob.acceptance * 100).toFixed(1) : prob.acceptance.toFixed(1)) + '%'
@@ -830,9 +850,38 @@ export const SqlCompanyDetailView: React.FC<SqlCompanyDetailViewProps> = ({ comp
           </table>
         </div>
 
+        {/* Load More Controls & Progressive Scroll Sentinel */}
+        {sortedProblems.length > visibleProblems.length && (
+          <div className="py-4 px-5 border-t border-[var(--border)] bg-[var(--bg-subtle)]/40 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
+            <span className="text-[var(--text-muted)]">
+              Showing <span className="font-semibold text-[var(--text-main)]">{visibleProblems.length}</span> of{' '}
+              <span className="font-semibold text-[var(--text-main)]">{sortedProblems.length}</span> SQL questions
+            </span>
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => setVisibleCount((prev) => Math.min(prev + 50, sortedProblems.length))}
+                className="apple-press px-4 py-2 rounded-xl bg-[var(--bg-card)] border border-[var(--border)] text-[var(--text-main)] font-semibold hover:border-[var(--accent)] hover:text-[var(--accent)] transition-all cursor-pointer shadow-xs"
+              >
+                Load Next 50 Questions (+50)
+              </button>
+              {sortedProblems.length > visibleCount + 50 && (
+                <button
+                  type="button"
+                  onClick={() => setVisibleCount(sortedProblems.length)}
+                  className="apple-press px-3 py-2 rounded-xl text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--bg-subtle)] transition-colors cursor-pointer"
+                >
+                  Show All ({sortedProblems.length})
+                </button>
+              )}
+            </div>
+          </div>
+        )}
+        <div ref={loadMoreRef} className="h-2" aria-hidden="true" />
+
         {/* Footer */}
-        <div className="py-3 px-5 border-t border-[var(--border)] bg-[var(--bg-subtle)]/40 text-xs text-[var(--text-muted)] flex items-center justify-between">
-          <span>Showing <strong>{sortedProblems.length}</strong> of {allProblems.length} SQL questions in {currentWindow.name}</span>
+        <div className="py-3 px-5 border-t border-[var(--border)] bg-[var(--bg-subtle)]/20 text-xs text-[var(--text-muted)] flex items-center justify-between">
+          <span>{visibleProblems.length} displayed (of {sortedProblems.length} matching)</span>
           <span>Company Total: {totalSqlCount} SQL questions</span>
         </div>
       </div>

@@ -192,9 +192,16 @@ export default async function RootLayout({
         <link rel="alternate" type="application/rss+xml" title="LeetMap Pro | Latest Interview Questions & Daily Challenges" href="/feed.xml" />
         <link rel="alternate" type="application/atom+xml" title="LeetMap Pro Atom Feed" href="/feed.xml?format=atom" />
         <link rel="author" href="/humans.txt" />
+        <link rel="preconnect" href="https://pagead2.googlesyndication.com" crossOrigin="anonymous" />
+        <link rel="preconnect" href="https://img.clerk.com" crossOrigin="anonymous" />
+        <link rel="dns-prefetch" href="https://pagead2.googlesyndication.com" />
+        <link rel="dns-prefetch" href="https://googleads.g.doubleclick.net" />
+        <link rel="dns-prefetch" href="https://tpc.googlesyndication.com" />
+        <link rel="dns-prefetch" href="https://img.clerk.com" />
         <meta name="google-adsense-account" content="ca-pub-5930264634833391" />
-        <script
-          async
+        <Script
+          id="google-adsense"
+          strategy="lazyOnload"
           src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930264634833391"
           crossOrigin="anonymous"
           nonce={nonce}
