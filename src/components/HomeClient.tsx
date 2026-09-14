@@ -10,6 +10,7 @@ import { CompanyCard } from '@/components/CompanyCard';
 import { useSolvedProblems } from '@/utils/useSolvedProblems';
 import { usePinnedCompanies } from '@/utils/usePinnedCompanies';
 import { toggleProblemSolved } from '@/utils/progress';
+import { getProblemOutboundUrl } from '@/utils/urls';
 import { SearchResult } from '@/app/api/search/route';
 
 interface HomeClientProps {
@@ -575,9 +576,9 @@ export const HomeClient: React.FC<HomeClientProps> = ({
                     </div>
 
                     <a
-                      href={dailyChallenge.link}
+                      href={dailyChallenge.slug ? getProblemOutboundUrl(dailyChallenge.slug) : dailyChallenge.link}
                       target="_blank"
-                      rel="nofollow noopener noreferrer"
+                      rel="noopener noreferrer"
                       className="group flex items-center gap-1.5 mt-0.5 min-w-0 max-w-full"
                     >
                       <h3 className={`text-xs sm:text-sm font-semibold hover:underline break-words line-clamp-2 leading-snug ${
@@ -720,9 +721,9 @@ export const HomeClient: React.FC<HomeClientProps> = ({
                       <div className="space-y-2">
                         <div className="flex items-start justify-between gap-2">
                           <a
-                            href={prob.href}
+                            href={prob.slug ? getProblemOutboundUrl(prob.slug) : prob.href}
                             target="_blank"
-                            rel="nofollow noopener noreferrer"
+                            rel="noopener noreferrer"
                             className="group/title flex items-center gap-1.5 min-w-0 flex-1"
                           >
                             <span className={`text-xs sm:text-sm font-semibold hover:underline line-clamp-1 leading-snug ${
@@ -791,9 +792,9 @@ export const HomeClient: React.FC<HomeClientProps> = ({
                         </button>
 
                         <a
-                          href={prob.href}
+                          href={prob.slug ? getProblemOutboundUrl(prob.slug) : prob.href}
                           target="_blank"
-                          rel="nofollow noopener noreferrer"
+                          rel="noopener noreferrer"
                           className="apple-press inline-flex items-center gap-1 px-3 py-1.5 rounded-xl text-[11px] font-medium bg-[var(--bg-subtle)] hover:bg-[var(--bg-hover)] text-[var(--text-main)] border border-[var(--border)] transition-colors"
                         >
                           <span>Solve</span>

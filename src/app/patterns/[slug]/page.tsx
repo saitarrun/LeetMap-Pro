@@ -106,6 +106,15 @@ export default async function PatternDetailPage({ params }: PageProps) {
 
   const pattern: PatternDetail = JSON.parse(fs.readFileSync(filePath, 'utf8'));
 
+  const isLarge = (pattern.problems?.length || 0) > 50;
+  const initialPattern: PatternDetail = isLarge
+    ? {
+        ...pattern,
+        isTruncated: true,
+        problems: pattern.problems.slice(0, 50),
+      }
+    : pattern;
+
   let syncStatus: SyncStatus | null = null;
   if (fs.existsSync(statusPath)) {
     try {
@@ -207,7 +216,7 @@ export default async function PatternDetailPage({ params }: PageProps) {
       />
       <Header syncStatus={syncStatus} />
       <main className="flex-1 pb-16">
-        <PatternDetailView pattern={pattern} allPatterns={allPatterns} />
+        <PatternDetailView pattern={initialPattern} allPatterns={allPatterns} />
       </main>
     </div>
   );

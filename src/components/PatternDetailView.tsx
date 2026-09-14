@@ -98,6 +98,21 @@ export const PatternDetailView: React.FC<PatternDetailViewProps> = ({ pattern, a
   const [sortBy, setSortBy] = useState<'companiesCount' | 'difficulty' | 'title' | 'acceptance' | 'id' | 'frequency'>('companiesCount');
   const [sortDir, setSortDir] = useState<'asc' | 'desc'>('desc');
   const [copiedTemplate, setCopiedTemplate] = useState(false);
+  const [fullPattern, setFullPattern] = useState<PatternDetail | null>(null);
+  const activePattern = fullPattern || pattern;
+
+  useEffect(() => {
+    if (pattern.isTruncated) {
+      fetch(`/data/patterns/${pattern.slug}.json`)
+        .then((res) => res.json())
+        .then((fullData: PatternDetail) => {
+          if (fullData && fullData.problems) {
+            setFullPattern(fullData);
+          }
+        })
+        .catch((err) => console.error('Failed to load full pattern details', err));
+    }
+  }, [pattern.isTruncated, pattern.slug]);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -133,7 +148,7 @@ export const PatternDetailView: React.FC<PatternDetailViewProps> = ({ pattern, a
   // Distinct companies present in this pattern with counts
   const companyOptions = useMemo(() => {
     const map: Record<string, { name: string; count: number }> = {};
-    for (const p of pattern.problems) {
+    for (const p of activePattern.problems) {
       const seen = new Set<string>();
       for (const c of p.companies) {
         if (seen.has(c.slug)) continue;
@@ -145,11 +160,11 @@ export const PatternDetailView: React.FC<PatternDetailViewProps> = ({ pattern, a
       }
     }
     return Object.entries(map).sort((a, b) => b[1].count - a[1].count);
-  }, [pattern.problems]);
+  }, [activePattern.problems]);
 
   // Filtered problems
   const filteredProblems = useMemo(() => {
-    return pattern.problems.filter((p) => {
+    return activePattern.problems.filter((p) => {
       if (searchQuery.trim()) {
         const q = searchQuery.toLowerCase().trim();
         const matchesTitle = p.title.toLowerCase().includes(q);
@@ -168,7 +183,7 @@ export const PatternDetailView: React.FC<PatternDetailViewProps> = ({ pattern, a
       }
       return true;
     });
-  }, [pattern.problems, searchQuery, difficultyFilter, selectedCompany, hideSolved, solvedSet]);
+  }, [activePattern.problems, searchQuery, difficultyFilter, selectedCompany, hideSolved, solvedSet]);
 
   const sortedProblems = useMemo(() => {
     return [...filteredProblems].sort((a, b) => {
@@ -241,11 +256,11 @@ export const PatternDetailView: React.FC<PatternDetailViewProps> = ({ pattern, a
 
   const patternSolvedCount = useMemo(() => {
     let count = 0;
-    for (const p of pattern.problems) {
+    for (const p of activePattern.problems) {
       if (solvedSet.has(p.slug)) count++;
     }
     return count;
-  }, [pattern.problems, solvedSet]);
+  }, [activePattern.problems, solvedSet]);
 
   const IconComponent = ICON_MAP[pattern.icon] || GitBranch;
   const guide = PATTERN_GUIDES[pattern.slug];
@@ -768,7 +783,7 @@ export const PatternDetailView: React.FC<PatternDetailViewProps> = ({ pattern, a
                       <a
                         href={getProblemOutboundUrl(prob.slug)}
                         target="_blank"
-                        rel="nofollow noopener noreferrer"
+                        rel="noopener noreferrer"
                         className="text-xs font-semibold text-[var(--text-main)] hover:text-[var(--accent)] transition-colors inline-flex items-center gap-1 break-words line-clamp-2"
                       >
                         <span>{prob.title}</span>
@@ -949,7 +964,7 @@ export const PatternDetailView: React.FC<PatternDetailViewProps> = ({ pattern, a
                           <a
                             href={getProblemOutboundUrl(prob.slug)}
                             target="_blank"
-                            rel="nofollow noopener noreferrer"
+                            rel="noopener noreferrer"
                             className={`inline-flex items-center gap-1.5 font-medium hover:text-[var(--text-main)] hover:underline transition-colors ${
                               isSolved ? 'line-through text-[var(--text-muted)]' : 'text-[var(--text-main)]'
                             }`}

@@ -95,11 +95,42 @@ export default async function StrategyPage() {
     url: 'https://www.leetmap-pro.com/strategy',
   };
 
+  const faqJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: [
+      {
+        '@type': 'Question',
+        name: 'In what order should I study LeetCode patterns?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'Start with Linear fundamentals (Arrays, Prefix Sum, Two Pointers, Sliding Window), then transition into Non-Linear structures (Tree BFS/DFS, Heaps, Graph Traversal), and conclude with Optimization techniques (Backtracking, 1D and 2D Dynamic Programming).',
+        },
+      },
+      {
+        '@type': 'Question',
+        name: 'How does the LeetMap Pro prerequisite graph work?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'The roadmap organizes patterns into topological dependency tiers. Mastering earlier tiers unlocks the intuition needed to solve complex composite problems in downstream tiers without brute-force memorization.',
+        },
+      },
+      {
+        '@type': 'Question',
+        name: 'How many patterns are needed to pass MAANG coding interviews?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'Mastering the 18 foundational patterns on LeetMap Pro covers over 90% of technical interview questions asked by top tech employers including Google, Meta, Amazon, and Apple.',
+        },
+      },
+    ],
+  };
+
   return (
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify([breadcrumbJsonLd, articleJsonLd]) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify([breadcrumbJsonLd, articleJsonLd, faqJsonLd]) }}
       />
       <StrategyClient patterns={patterns} patternProblems={patternProblems} syncStatus={syncStatus} />
     </>

@@ -101,6 +101,86 @@ export const StrategyClient: React.FC<StrategyClientProps> = ({
             </Link>
           </div>
         </section>
+
+        {/* Semantic Editorial Guide & Strategy Architecture */}
+        <section className="max-w-5xl mx-auto w-full pt-8 border-t border-[var(--border)] space-y-8">
+          <div className="space-y-3">
+            <h2 className="text-xl sm:text-2xl font-bold text-[var(--text-main)] tracking-tight">
+              Mastering DSA Patterns in Prerequisite Sequence
+            </h2>
+            <p className="text-xs sm:text-sm text-[var(--text-muted)] leading-relaxed">
+              Coding interview problems often feel overwhelming when approached randomly. The key to scalable retention is understanding that almost every complex LeetCode problem is an extension of foundational algorithmic patterns. By mastering these patterns in strict topological dependency order, you cultivate pattern-matching reflexes rather than memorizing individual solutions.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="p-5 rounded-2xl border border-[var(--border)] bg-[var(--bg-card)] space-y-2">
+              <div className="flex items-center gap-2 text-emerald-600 dark:text-emerald-400 font-semibold text-xs uppercase tracking-wider">
+                <span>Phase 1</span>
+                <span>·</span>
+                <span>Linear Fundamentals</span>
+              </div>
+              <h3 className="text-sm font-bold text-[var(--text-main)]">
+                Pointers, Windows &amp; Search
+              </h3>
+              <p className="text-xs text-[var(--text-muted)] leading-relaxed">
+                Build intuition on contiguous subsets and monotonic structures. Focus on <Link href="/patterns/two-pointers" className="text-[var(--accent)] hover:underline">Two Pointers</Link>, <Link href="/patterns/sliding-window" className="text-[var(--accent)] hover:underline">Sliding Window</Link>, and <Link href="/patterns/prefix-sum" className="text-[var(--accent)] hover:underline">Prefix Sum</Link> to reduce O(N²) brute-force solutions to optimal O(N) linear time.
+              </p>
+            </div>
+
+            <div className="p-5 rounded-2xl border border-[var(--border)] bg-[var(--bg-card)] space-y-2">
+              <div className="flex items-center gap-2 text-amber-600 dark:text-amber-400 font-semibold text-xs uppercase tracking-wider">
+                <span>Phase 2</span>
+                <span>·</span>
+                <span>Hierarchies &amp; Graphs</span>
+              </div>
+              <h3 className="text-sm font-bold text-[var(--text-main)]">
+                Trees, Heaps &amp; Traversal
+              </h3>
+              <p className="text-xs text-[var(--text-muted)] leading-relaxed">
+                Transition to non-linear structures. Learn tier-by-tier exploration with <Link href="/patterns/tree-bfs" className="text-[var(--accent)] hover:underline">Tree BFS</Link>, recursive path analysis with <Link href="/patterns/tree-dfs" className="text-[var(--accent)] hover:underline">Tree DFS</Link>, and cycle detection with <Link href="/patterns/graph-traversal" className="text-[var(--accent)] hover:underline">Graph Traversal</Link> and <Link href="/patterns/topological-sort" className="text-[var(--accent)] hover:underline">Topological Sort</Link>.
+              </p>
+            </div>
+
+            <div className="p-5 rounded-2xl border border-[var(--border)] bg-[var(--bg-card)] space-y-2">
+              <div className="flex items-center gap-2 text-rose-600 dark:text-rose-400 font-semibold text-xs uppercase tracking-wider">
+                <span>Phase 3</span>
+                <span>·</span>
+                <span>Dynamic Optimization</span>
+              </div>
+              <h3 className="text-sm font-bold text-[var(--text-main)]">
+                Backtracking &amp; Dynamic Programming
+              </h3>
+              <p className="text-xs text-[var(--text-muted)] leading-relaxed">
+                Tackle optimization and state transitions. Master recursive exhaustive search with <Link href="/patterns/subsets-backtracking" className="text-[var(--accent)] hover:underline">Backtracking</Link>, memoization, and optimal substructure in <Link href="/patterns/dynamic-programming-1d" className="text-[var(--accent)] hover:underline">1D DP</Link> and <Link href="/patterns/dynamic-programming-2d" className="text-[var(--accent)] hover:underline">2D Dynamic Programming</Link>.
+              </p>
+            </div>
+          </div>
+
+          <div className="p-6 rounded-2xl border border-[var(--border)] bg-[var(--bg-subtle)]/40 space-y-4">
+            <h3 className="text-sm font-bold text-[var(--text-main)]">
+              Frequently Asked Strategy Questions
+            </h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+              <div className="space-y-1">
+                <h4 className="font-semibold text-[var(--text-main)]">
+                  How many problems should I solve per pattern?
+                </h4>
+                <p className="text-[var(--text-muted)] leading-relaxed">
+                  We recommend solving 3 to 5 curated problems per pattern: 1 Easy for template mastery, 2-3 Mediums for real-world interview application, and 1 Hard problem once comfortable.
+                </p>
+              </div>
+              <div className="space-y-1">
+                <h4 className="font-semibold text-[var(--text-main)]">
+                  How do I track what I have solved?
+                </h4>
+                <p className="text-[var(--text-muted)] leading-relaxed">
+                  LeetMap Pro automatically saves your solved checkpoints locally in your browser and syncs them across company lists, SQL tracks, and this strategy roadmap in real-time.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
       </main>
     </div>
   );

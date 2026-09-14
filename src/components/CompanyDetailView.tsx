@@ -736,7 +736,7 @@ export const CompanyDetailView: React.FC<CompanyDetailViewProps> = ({ company })
                       <a
                         href={getProblemOutboundUrl(prob.slug)}
                         target="_blank"
-                        rel="nofollow noopener noreferrer"
+                        rel="noopener noreferrer"
                         className="text-xs font-semibold text-[var(--text-main)] hover:text-[var(--accent)] transition-colors inline-flex items-center gap-1 break-words line-clamp-2"
                       >
                         <span>{prob.title}</span>
@@ -910,7 +910,7 @@ export const CompanyDetailView: React.FC<CompanyDetailViewProps> = ({ company })
                             <a
                               href={getProblemOutboundUrl(prob.slug)}
                               target="_blank"
-                              rel="nofollow noopener noreferrer"
+                              rel="noopener noreferrer"
                               className={`inline-flex items-center gap-1.5 font-medium hover:text-[var(--text-main)] hover:underline transition-colors ${
                                 isSolved ? 'line-through text-[var(--text-muted)]' : 'text-[var(--text-main)]'
                               }`}

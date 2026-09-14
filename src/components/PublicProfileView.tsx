@@ -849,7 +849,7 @@ export const PublicProfileView: React.FC<PublicProfileViewProps> = ({ initialDat
                   <a
                     href={getProblemOutboundUrl(prob.slug)}
                     target="_blank"
-                    rel="nofollow noopener noreferrer"
+                    rel="noopener noreferrer"
                     className="font-medium text-[var(--text-main)] hover:underline truncate"
                   >
                     {prob.title || prob.slug.replace(/-/g, ' ')}

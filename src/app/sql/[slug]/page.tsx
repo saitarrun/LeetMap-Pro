@@ -86,6 +86,14 @@ export default async function SqlCompanyPage({ params }: PageProps) {
 
   const company: CompanyDetail = JSON.parse(fs.readFileSync(filePath, 'utf8'));
 
+  const sqlFilteredCompany: CompanyDetail = {
+    ...company,
+    windows: (company.windows || []).map((w) => ({
+      ...w,
+      problems: w.problems.filter((p) => p.isSql || p.topics?.includes('Database')),
+    })),
+  };
+
   let syncStatus: SyncStatus | null = null;
   if (fs.existsSync(statusPath)) {
     try {
@@ -166,7 +174,7 @@ export default async function SqlCompanyPage({ params }: PageProps) {
       />
       <Header syncStatus={syncStatus} />
       <main className="flex-1 pb-16">
-        <SqlCompanyDetailView company={company} allSqlCompanies={allSqlCompanies} />
+        <SqlCompanyDetailView company={sqlFilteredCompany} allSqlCompanies={allSqlCompanies} />
       </main>
     </div>
   );

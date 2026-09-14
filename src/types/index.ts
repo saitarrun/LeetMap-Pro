@@ -184,6 +184,7 @@ export interface PatternDetail extends PatternSummary {
   strategy: string;
   clues: string[];
   problems: PatternProblem[];
+  isTruncated?: boolean;
 }
 
 export interface UserProfile {
