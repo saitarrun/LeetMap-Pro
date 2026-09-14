@@ -36,7 +36,7 @@ export default clerkMiddleware(
         'frame-ancestors': ["'none'"],
         'object-src': ["'none'"],
         'form-action': ["'self'", "https://clerk.www.leetmap-pro.com", "https://accounts.google.com", "https://github.com", "https://*.clerk.com"],
-        'img-src': ["'self'", "https://img.clerk.com", "https://images.clerk.dev", "https://avatars.githubusercontent.com", "https://*.githubusercontent.com", "https://www.google.com", "https://*.googleusercontent.com", "data:", "https://pagead2.googlesyndication.com", "https://*.googlesyndication.com", "https://*.doubleclick.net"],
+        'img-src': ["'self'", "https://img.clerk.com", "https://images.clerk.dev", "https://avatars.githubusercontent.com", "https://*.githubusercontent.com", "https://www.google.com", "https://*.google.com", "https://*.googleusercontent.com", "https://*.gstatic.com", "https://icons.duckduckgo.com", "data:", "blob:", "https://pagead2.googlesyndication.com", "https://*.googlesyndication.com", "https://*.doubleclick.net"],
         'script-src': ["'self'", "https://pagead2.googlesyndication.com", "https://tpc.googlesyndication.com", "https://googleads.g.doubleclick.net", "https://challenges.cloudflare.com", "https://*.protect.clerk.com"],
         'frame-src': ["'self'", "https://accounts.google.com", "https://github.com", "https://challenges.cloudflare.com", "https://*.protect.clerk.com", "https://*.clerk.com", "https://googleads.g.doubleclick.net", "https://tpc.googlesyndication.com", "https://pagead2.googlesyndication.com", "https://www.google.com"],
         'connect-src': [
