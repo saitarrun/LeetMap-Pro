@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useMemo, useEffect, useRef } from 'react';
+import Link from 'next/link';
 import {
   Search,
   X,
@@ -180,11 +181,11 @@ export const SqlHubClient: React.FC<SqlHubClientProps> = ({
         {/* Minimal Hero */}
         <section className="text-center max-w-2xl mx-auto space-y-3 pt-2">
           <h1 className="text-3xl sm:text-5xl font-bold tracking-tight text-[var(--text-main)]">
-            Company-wise LeetCode SQL
+            LeetCode SQL 50 & Company-Wise Questions
           </h1>
 
           <p className="text-sm sm:text-base text-[var(--text-muted)] leading-relaxed font-normal max-w-xl mx-auto">
-            Interview problems top firms actually ask, ranked by frequency and recency.
+            Practice verified SQL interview questions from 73+ top tech firms (Amazon, Google, Meta, Microsoft) and LeetCode SQL 50 problems, ranked by real candidate frequency.
           </p>
 
           <div className="flex items-center justify-center gap-2 pt-1 text-xs text-[var(--text-muted)] font-normal">
@@ -621,6 +622,114 @@ export const SqlHubClient: React.FC<SqlHubClientProps> = ({
         ) : (
           <SqlExplorerView catalog={catalog} />
         )}
+
+        {/* Editorial Guide & FAQ for LeetCode SQL & Interview Prep */}
+        <section className="mt-16 pt-12 border-t border-[var(--border)] max-w-4xl mx-auto space-y-12">
+          <div className="space-y-4">
+            <h2 className="text-xl sm:text-2xl font-bold text-[var(--text-main)] tracking-tight">
+              Mastering SQL for Technical & FAANG Interviews
+            </h2>
+            <p className="text-sm text-[var(--text-muted)] leading-relaxed">
+              Database querying is a decisive filter in technical interview loops for Data Engineers, Backend Developers, Data Scientists, and Solutions Architects. Interviewers at companies like Amazon, Google, Meta, and Bloomberg look beyond simple SELECT queries to test your mastery of relational algebra, window partitioning, query optimization, and edge-case handling (such as NULL values and duplicate keys).
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="p-5 rounded-2xl border border-[var(--border)] bg-[var(--bg-card)] space-y-2">
+              <span className="text-xs font-semibold text-[var(--accent)] uppercase tracking-wider">Foundation</span>
+              <h3 className="text-sm font-bold text-[var(--text-main)]">Joins & Aggregations</h3>
+              <p className="text-xs text-[var(--text-muted)] leading-relaxed">
+                Mastering INNER, LEFT, RIGHT, and FULL OUTER joins alongside GROUP BY, HAVING, and multi-condition filtering. Crucial for reporting queries and deduplication.
+              </p>
+            </div>
+            <div className="p-5 rounded-2xl border border-[var(--border)] bg-[var(--bg-card)] space-y-2">
+              <span className="text-xs font-semibold text-[var(--accent)] uppercase tracking-wider">Advanced</span>
+              <h3 className="text-sm font-bold text-[var(--text-main)]">Window Functions</h3>
+              <p className="text-xs text-[var(--text-muted)] leading-relaxed">
+                Dense ranking (DENSE_RANK), ROW_NUMBER, LAG, and LEAD over partitioned datasets. Required for calculating running totals, retention rates, and top-N rankings.
+              </p>
+            </div>
+            <div className="p-5 rounded-2xl border border-[var(--border)] bg-[var(--bg-card)] space-y-2">
+              <span className="text-xs font-semibold text-[var(--accent)] uppercase tracking-wider">Architecture</span>
+              <h3 className="text-sm font-bold text-[var(--text-main)]">CTEs & Subqueries</h3>
+              <p className="text-xs text-[var(--text-muted)] leading-relaxed">
+                Structuring complex queries cleanly with Common Table Expressions (WITH clauses), recursive CTEs for hierarchical tree structures, and correlated subqueries.
+              </p>
+            </div>
+          </div>
+
+          {/* FAQ Accordion / Cards */}
+          <div className="space-y-4">
+            <h3 className="text-lg font-bold text-[var(--text-main)]">
+              Frequently Asked Questions (LeetCode SQL)
+            </h3>
+            <div className="space-y-3">
+              <div className="p-4 rounded-xl border border-[var(--border)] bg-[var(--bg-subtle)]/40">
+                <h4 className="text-xs font-semibold text-[var(--text-main)]">
+                  What is LeetCode SQL 50 and how should I practice it?
+                </h4>
+                <p className="mt-1 text-xs text-[var(--text-muted)] leading-relaxed">
+                  LeetCode SQL 50 is a curated study plan covering the fundamental query patterns asked in modern technical interviews: basic selects, outer joins, aggregations, window functions, and subqueries. On LeetMap Pro, you can cross-reference these patterns with company-specific frequency lists to focus on problems actively being asked right now.
+                </p>
+              </div>
+              <div className="p-4 rounded-xl border border-[var(--border)] bg-[var(--bg-subtle)]/40">
+                <h4 className="text-xs font-semibold text-[var(--text-main)]">
+                  Which companies ask the most SQL questions?
+                </h4>
+                <p className="mt-1 text-xs text-[var(--text-muted)] leading-relaxed">
+                  According to verified candidate reports, Amazon leads with over 105 distinct SQL interview questions, followed by Google (90 questions), Meta (80 questions), Bloomberg (65 questions), and Microsoft (61 questions). Service-based and fintech firms like Cognizant, TCS, and Capital One also heavily prioritize SQL rounds.
+                </p>
+              </div>
+              <div className="p-4 rounded-xl border border-[var(--border)] bg-[var(--bg-subtle)]/40">
+                <h4 className="text-xs font-semibold text-[var(--text-main)]">
+                  Is LeetMap Pro free for company SQL interview preparation?
+                </h4>
+                <p className="mt-1 text-xs text-[var(--text-muted)] leading-relaxed">
+                  Yes, LeetMap Pro is 100% free with no paywall, registration barrier, or subscription. All questions are tagged with frequency, recency, difficulty, and direct links to practice environments.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Cross-linking to DSA Patterns and Strategy */}
+          <div className="pt-4 border-t border-[var(--border)] space-y-3">
+            <h4 className="text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wider">
+              Complement Your SQL Practice with Core DSA Patterns
+            </h4>
+            <div className="flex flex-wrap gap-2">
+              <Link
+                href="/patterns/sliding-window"
+                className="apple-press text-xs px-3 py-1.5 rounded-full border border-[var(--border)] bg-[var(--bg-card)] text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--bg-hover)] transition-colors"
+              >
+                Sliding Window
+              </Link>
+              <Link
+                href="/patterns/two-pointers"
+                className="apple-press text-xs px-3 py-1.5 rounded-full border border-[var(--border)] bg-[var(--bg-card)] text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--bg-hover)] transition-colors"
+              >
+                Two Pointers
+              </Link>
+              <Link
+                href="/patterns/tree-bfs"
+                className="apple-press text-xs px-3 py-1.5 rounded-full border border-[var(--border)] bg-[var(--bg-card)] text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--bg-hover)] transition-colors"
+              >
+                Tree BFS
+              </Link>
+              <Link
+                href="/patterns/dynamic-programming-1d"
+                className="apple-press text-xs px-3 py-1.5 rounded-full border border-[var(--border)] bg-[var(--bg-card)] text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--bg-hover)] transition-colors"
+              >
+                Dynamic Programming
+              </Link>
+              <Link
+                href="/strategy"
+                className="apple-press text-xs px-3 py-1.5 rounded-full border border-[var(--border)] bg-[var(--bg-card)] text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--bg-hover)] transition-colors"
+              >
+                Coding Interview Roadmap
+              </Link>
+            </div>
+          </div>
+        </section>
       </main>
     </div>
   );

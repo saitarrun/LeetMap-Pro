@@ -5,31 +5,37 @@ import { SqlCatalog, SqlCompanySummary, SyncStatus } from '@/types';
 import { SqlHubClient } from '@/components/SqlHubClient';
 
 export const metadata = {
-  title: 'SQL Interview Questions by Company',
-  description: 'Browse and practice company-wise LeetCode SQL questions asked by 73+ top tech firms (Amazon, Google, Meta, Bloomberg, Microsoft), ranked by interview frequency and recency. 100% free.',
+  title: 'LeetCode SQL 50 & Company-Wise SQL Interview Questions (2026)',
+  description: 'Practice verified LeetCode SQL 50 and company-wise SQL interview questions from 73+ top tech firms (Amazon, Google, Meta, Bloomberg, Microsoft), ranked by frequency and recency. 100% free alternative to LeetCode Premium.',
   keywords: [
+    'leetcode sql',
+    'sql leetcode',
+    'leetcode sql 50',
+    'sql 50 leetcode',
+    'sql interview questions',
+    'company wise sql questions',
     'free leetcode sql questions',
     'LeetCode SQL Questions 2026',
     'SQL Interview Questions by Company',
-    'company wise sql questions',
     'FAANG SQL Questions',
     'Data Engineer Interview SQL',
     'Data Analyst LeetCode SQL',
+    'SQL Practice Questions',
     'SQL Frequency',
   ],
   alternates: {
     canonical: 'https://www.leetmap-pro.com/sql',
   },
   openGraph: {
-    title: 'SQL Interview Questions by Company | LeetMap Pro',
-    description: 'Browse and practice company-wise LeetCode SQL questions asked by 73+ top tech firms, ranked by interview frequency and recency. 100% free.',
+    title: 'LeetCode SQL 50 & Company-Wise SQL Interview Questions (2026) | LeetMap Pro',
+    description: 'Practice verified LeetCode SQL 50 and company-wise SQL interview questions from 73+ top tech firms, ranked by frequency and recency. 100% free.',
     url: 'https://www.leetmap-pro.com/sql',
     type: 'website',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'SQL Interview Questions by Company | LeetMap Pro',
-    description: 'Browse and practice company-wise LeetCode SQL questions asked by 73+ top tech firms, ranked by interview frequency and recency. 100% free.',
+    title: 'LeetCode SQL 50 & Company-Wise SQL Interview Questions (2026) | LeetMap Pro',
+    description: 'Practice verified LeetCode SQL 50 and company-wise SQL interview questions from 73+ top tech firms, ranked by frequency and recency. 100% free.',
   },
 };
 
@@ -103,11 +109,50 @@ export default async function SqlPage() {
     })),
   };
 
+  const faqJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: [
+      {
+        '@type': 'Question',
+        name: 'What is LeetCode SQL 50 and how do I prepare for SQL interviews?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'LeetCode SQL 50 is a curated study plan covering core SQL concepts tested in technical interviews: Select, Basic Joins, Basic Aggregate Functions, Advanced Select and Joins, Subqueries, and Advanced String Functions/Regex/Clause. On LeetMap Pro, you can practice these alongside company-specific SQL problem sets completely free.',
+        },
+      },
+      {
+        '@type': 'Question',
+        name: 'Which top tech companies ask SQL questions during interviews?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'Top tech employers including Amazon (105 questions), Google (90 questions), Meta (80 questions), Bloomberg (65 questions), and Microsoft (61 questions) actively test SQL queries for data engineers, data scientists, backend developers, and business intelligence roles.',
+        },
+      },
+      {
+        '@type': 'Question',
+        name: 'How does LeetMap Pro rank SQL interview questions?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'Questions are ranked dynamically based on real candidate interview reports filtered by recency (30 days, 3 months, 6 months, and all-time), so you prioritize high-probability queries actively appearing in current interview loops.',
+        },
+      },
+      {
+        '@type': 'Question',
+        name: 'Is LeetMap Pro free for company SQL practice?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'Yes, LeetMap Pro is 100% free with no paywall or subscription. You can filter company question banks, track solved questions locally, and export custom Notion/Markdown checklists without an account.',
+        },
+      },
+    ],
+  };
+
   return (
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify([breadcrumbJsonLd, itemListJsonLd]) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify([breadcrumbJsonLd, itemListJsonLd, faqJsonLd]) }}
       />
       <SqlHubClient
         companies={companies}

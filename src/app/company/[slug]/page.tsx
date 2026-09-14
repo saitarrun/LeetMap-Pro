@@ -78,6 +78,30 @@ export async function generateStaticParams() {
   return [];
 }
 
+let cachedCompanies: { name: string; slug: string }[] | null = null;
+function getCanonicalCompanies(): { name: string; slug: string }[] {
+  if (cachedCompanies) return cachedCompanies;
+  const companiesPath = path.join(process.cwd(), 'public', 'data', 'companies.json');
+  if (fs.existsSync(companiesPath)) {
+    try {
+      const raw: { name: string; slug: string }[] = JSON.parse(fs.readFileSync(companiesPath, 'utf8'));
+      const seen = new Set<string>();
+      const filtered: { name: string; slug: string }[] = [];
+      for (const c of raw) {
+        const canonical = COMPANY_ALIASES[c.slug] || c.slug;
+        if (!seen.has(canonical)) {
+          seen.add(canonical);
+          filtered.push({ name: c.name, slug: canonical });
+        }
+      }
+      cachedCompanies = filtered;
+    } catch {
+      cachedCompanies = [];
+    }
+  }
+  return cachedCompanies || [];
+}
+
 export default async function CompanyPage({ params }: PageProps) {
   const { slug } = await params;
   const safeSlug = slug.toLowerCase().replace(/[^a-z0-9\-]/g, '');
@@ -99,6 +123,27 @@ export default async function CompanyPage({ params }: PageProps) {
   if (fs.existsSync(statusPath)) {
     syncStatus = JSON.parse(fs.readFileSync(statusPath, 'utf8'));
   }
+
+  const allCompanies = getCanonicalCompanies();
+  const currentIndex = allCompanies.findIndex((c) => c.slug === safeSlug);
+
+  // Mesh neighbors (4 before and 4 after in circular ring)
+  const peerCompanies: { name: string; slug: string }[] = [];
+  if (allCompanies.length > 1 && currentIndex !== -1) {
+    const offsets = [-4, -3, -2, -1, 1, 2, 3, 4];
+    for (const offset of offsets) {
+      const idx = (currentIndex + offset + allCompanies.length) % allCompanies.length;
+      if (idx !== currentIndex && !peerCompanies.some((p) => p.slug === allCompanies[idx].slug)) {
+        peerCompanies.push(allCompanies[idx]);
+      }
+    }
+  }
+
+  // Anchor flagships (top tier tech firms for authority transfer)
+  const topAnchorSlugs = ['google', 'meta', 'amazon', 'microsoft', 'apple', 'bloomberg', 'uber', 'netflix'];
+  const anchorCompanies = allCompanies
+    .filter((c) => topAnchorSlugs.includes(c.slug) && c.slug !== safeSlug && !peerCompanies.some((p) => p.slug === c.slug))
+    .slice(0, 4);
 
   const breadcrumbJsonLd = {
     '@context': 'https://schema.org',
@@ -232,31 +277,18 @@ export default async function CompanyPage({ params }: PageProps) {
             {/* Related Companies / Internal Linking for SEO */}
             <div className="space-y-4">
               <h3 className="text-xs font-semibold text-[var(--text-main)] uppercase tracking-wider">
-                Explore Peer Tech Firms
+                Related Tech Companies ({company.name} Peers)
               </h3>
               <div className="flex flex-wrap gap-2">
-                {[
-                  { name: 'Google', slug: 'google' },
-                  { name: 'Meta', slug: 'meta' },
-                  { name: 'Amazon', slug: 'amazon' },
-                  { name: 'Apple', slug: 'apple' },
-                  { name: 'Netflix', slug: 'netflix' },
-                  { name: 'Microsoft', slug: 'microsoft' },
-                  { name: 'Bloomberg', slug: 'bloomberg' },
-                  { name: 'Citadel', slug: 'citadel' },
-                  { name: 'Uber', slug: 'uber' },
-                ]
-                  .filter((item) => item.slug !== safeSlug)
-                  .slice(0, 8)
-                  .map((peer) => (
-                    <Link
-                      key={peer.slug}
-                      href={`/company/${peer.slug}`}
-                      className="apple-press text-xs px-3 py-1.5 rounded-full border border-[var(--border)] bg-[var(--bg-card)] text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--bg-hover)] transition-colors"
-                    >
-                      {peer.name} Questions
-                    </Link>
-                  ))}
+                {[...peerCompanies, ...anchorCompanies].map((peer) => (
+                  <Link
+                    key={peer.slug}
+                    href={`/company/${peer.slug}`}
+                    className="apple-press text-xs px-3 py-1.5 rounded-full border border-[var(--border)] bg-[var(--bg-card)] text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--bg-hover)] transition-colors"
+                  >
+                    {peer.name} Questions
+                  </Link>
+                ))}
               </div>
 
               <h3 className="text-xs font-semibold text-[var(--text-main)] uppercase tracking-wider pt-4">
