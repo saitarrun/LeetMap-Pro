@@ -4,17 +4,51 @@ import path from 'path';
 import { SyncStatus, DailyChallenge, CompanySummary } from '@/types';
 import { HomeClient } from '@/components/HomeClient';
 
-export const metadata = {
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  applicationName: 'LeetMap Pro',
+  appleWebApp: {
+    title: 'LeetMap Pro',
+    capable: true,
+    statusBarStyle: 'default',
+  },
   title: 'LeetMap Pro | Free Company-Wise LeetCode & SQL Questions (2026) by Frequency',
   description: 'Practice verified coding interview problems asked by 680+ tech companies (Google, Meta, Amazon, Microsoft, Apple), ranked by frequency and 30-day recency. 100% free alternative to LeetCode Premium.',
   alternates: {
     canonical: 'https://www.leetmap-pro.com',
   },
   openGraph: {
+    siteName: 'LeetMap Pro',
     title: 'LeetMap Pro | Free Company-Wise LeetCode & SQL Questions (2026) by Frequency',
     description: 'Practice verified coding interview problems asked by 680+ tech companies (Google, Meta, Amazon, Microsoft, Apple), ranked by frequency and 30-day recency. 100% free alternative to LeetCode Premium.',
     url: 'https://www.leetmap-pro.com',
     type: 'website',
+    images: [
+      {
+        url: '/icon-512.png',
+        width: 512,
+        height: 512,
+        alt: 'LeetMap Pro Logo',
+      },
+    ],
+  },
+};
+
+const homeWebSiteJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  name: 'LeetMap Pro',
+  alternateName: ['LeetMap', 'LeetMapPro', 'leetmap-pro.com'],
+  url: 'https://www.leetmap-pro.com',
+  inLanguage: 'en-US',
+  potentialAction: {
+    '@type': 'SearchAction',
+    target: {
+      '@type': 'EntryPoint',
+      urlTemplate: 'https://www.leetmap-pro.com/?search={search_term_string}',
+    },
+    'query-input': 'required name=search_term_string',
   },
 };
 
@@ -96,6 +130,10 @@ export default function HomePage() {
 
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(homeWebSiteJsonLd) }}
+      />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(homeFaqJsonLd) }}

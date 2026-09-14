@@ -137,8 +137,8 @@ const jsonLd = [
     '@context': 'https://schema.org',
     '@type': 'WebSite',
     name: 'LeetMap Pro',
-    alternateName: ['LeetMap', 'LeetMapPro'],
-    url: 'https://www.leetmap-pro.com/',
+    alternateName: ['LeetMap', 'LeetMapPro', 'leetmap-pro.com'],
+    url: 'https://www.leetmap-pro.com',
     inLanguage: 'en-US',
     potentialAction: {
       '@type': 'SearchAction',
