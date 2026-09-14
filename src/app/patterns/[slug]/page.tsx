@@ -63,12 +63,12 @@ export async function generateMetadata({ params }: PageProps) {
       'dsa coding interview',
     ],
     alternates: {
-      canonical: `https://www.leetmap-pro.com/patterns/${safeSlug}`,
+      canonical: `https://www.leetmap-pro.com/patterns/${resolvedSlug}`,
     },
     openGraph: {
       title,
       description,
-      url: `https://www.leetmap-pro.com/patterns/${safeSlug}`,
+      url: `https://www.leetmap-pro.com/patterns/${resolvedSlug}`,
       type: 'article',
     },
     twitter: {
