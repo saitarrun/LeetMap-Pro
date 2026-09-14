@@ -4,6 +4,7 @@ import React, { useState, useMemo, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import {
   ArrowLeft,
+  ArrowRight,
   Search,
   Shuffle,
   Eye,
@@ -82,9 +83,10 @@ const ICON_MAP: Record<string, LucideIcon> = {
 
 interface PatternDetailViewProps {
   pattern: PatternDetail;
+  allPatterns?: { slug: string; name: string; category: string; total: number }[];
 }
 
-export const PatternDetailView: React.FC<PatternDetailViewProps> = ({ pattern }) => {
+export const PatternDetailView: React.FC<PatternDetailViewProps> = ({ pattern, allPatterns = [] }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [difficultyFilter, setDifficultyFilter] = useState<'ALL' | 'EASY' | 'MEDIUM' | 'HARD'>('ALL');
   const [selectedCompany, setSelectedCompany] = useState<string>('ALL');
@@ -1033,6 +1035,126 @@ export const PatternDetailView: React.FC<PatternDetailViewProps> = ({ pattern })
           <span>Filtered: {selectedCompany === 'ALL' ? 'All Companies' : selectedCompany}</span>
         </div>
       </div>
+
+      {/* Pattern Stepping Navigation (Previous & Next) */}
+      {allPatterns.length > 1 && (() => {
+        const curIdx = allPatterns.findIndex((p) => p.slug === pattern.slug);
+        const prevP = curIdx > 0 ? allPatterns[curIdx - 1] : allPatterns[allPatterns.length - 1];
+        const nextP = curIdx >= 0 && curIdx < allPatterns.length - 1 ? allPatterns[curIdx + 1] : allPatterns[0];
+
+        return (
+          <nav aria-label="Pattern roadmap navigation" className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+            {prevP && (
+              <Link
+                href={`/patterns/${prevP.slug}`}
+                className="apple-press p-4 rounded-2xl bg-[var(--bg-card)] border border-[var(--border)] hover:border-[var(--text-muted)]/40 transition-all flex items-center gap-3 shadow-xs group"
+              >
+                <div className="w-8 h-8 rounded-xl bg-[var(--bg-subtle)] border border-[var(--border)] flex items-center justify-center shrink-0 group-hover:bg-[var(--accent)]/10 group-hover:text-[var(--accent)] transition-colors">
+                  <ArrowLeft className="w-4 h-4" />
+                </div>
+                <div className="min-w-0">
+                  <span className="text-[10px] uppercase font-semibold tracking-wider text-[var(--text-muted)]">Previous Pattern</span>
+                  <p className="text-xs font-semibold text-[var(--text-main)] truncate">{prevP.name}</p>
+                </div>
+              </Link>
+            )}
+            {nextP && (
+              <Link
+                href={`/patterns/${nextP.slug}`}
+                className="apple-press p-4 rounded-2xl bg-[var(--bg-card)] border border-[var(--border)] hover:border-[var(--text-muted)]/40 transition-all flex items-center justify-between gap-3 shadow-xs group text-right sm:text-right"
+              >
+                <div className="min-w-0 flex-1 text-left sm:text-right">
+                  <span className="text-[10px] uppercase font-semibold tracking-wider text-[var(--text-muted)]">Next Pattern</span>
+                  <p className="text-xs font-semibold text-[var(--text-main)] truncate">{nextP.name}</p>
+                </div>
+                <div className="w-8 h-8 rounded-xl bg-[var(--bg-subtle)] border border-[var(--border)] flex items-center justify-center shrink-0 group-hover:bg-[var(--accent)]/10 group-hover:text-[var(--accent)] transition-colors">
+                  <ArrowRight className="w-4 h-4" />
+                </div>
+              </Link>
+            )}
+          </nav>
+        );
+      })()}
+
+      {/* Top Companies Asking This Pattern (Cross-Domain Linking) */}
+      {pattern.topCompanies && pattern.topCompanies.length > 0 && (
+        <section className="p-4 sm:p-5 rounded-2xl bg-[var(--bg-card)] border border-[var(--border)] shadow-xs space-y-3">
+          <div className="space-y-0.5">
+            <h3 className="text-xs font-semibold uppercase tracking-wider text-[var(--text-main)] flex items-center gap-1.5">
+              <Building2 className="w-3.5 h-3.5 text-[var(--accent)]" />
+              <span>Top Companies Testing {pattern.name}</span>
+            </h3>
+            <p className="text-xs text-[var(--text-muted)]">
+              Browse company-specific interview problem lists and recency breakdowns:
+            </p>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            {pattern.topCompanies.map((cName) => {
+              const cSlug = cName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+              return (
+                <Link
+                  key={cName}
+                  href={`/company/${cSlug}`}
+                  className="apple-press inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium bg-[var(--bg-subtle)] hover:bg-[var(--bg-hover)] border border-[var(--border)] text-[var(--text-main)] hover:border-[var(--text-muted)]/40 transition-colors"
+                >
+                  <Building2 className="w-3 h-3 text-[var(--text-muted)]" />
+                  <span>{cName} Questions</span>
+                </Link>
+              );
+            })}
+          </div>
+        </section>
+      )}
+
+      {/* Explore All 22 Coding Patterns Directory (Full Mesh Inter-linking) */}
+      {allPatterns.length > 0 && (
+        <section className="space-y-3 pt-2">
+          <div className="flex items-center justify-between">
+            <div className="space-y-0.5">
+              <h2 className="text-sm font-semibold text-[var(--text-main)] flex items-center gap-2">
+                <GitBranch className="w-4 h-4 text-[var(--accent)]" />
+                <span>Explore All 22 DSA Coding Patterns</span>
+              </h2>
+              <p className="text-xs text-[var(--text-muted)]">
+                Master core algorithmic patterns tested in FAANG & Big Tech coding interviews.
+              </p>
+            </div>
+            <Link
+              href="/patterns"
+              className="text-xs font-semibold text-[var(--accent)] hover:underline inline-flex items-center gap-1 shrink-0"
+            >
+              <span>Patterns Hub</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </Link>
+          </div>
+
+          <div className="p-4 sm:p-5 rounded-2xl bg-[var(--bg-card)] border border-[var(--border)] shadow-xs">
+            <div className="flex flex-wrap gap-1.5 sm:gap-2">
+              {allPatterns.map((p) => {
+                const isCurrent = p.slug === pattern.slug;
+                return (
+                  <Link
+                    key={p.slug}
+                    href={`/patterns/${p.slug}`}
+                    className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-medium border transition-colors ${
+                      isCurrent
+                        ? 'bg-[var(--accent)] text-white border-[var(--accent)] pointer-events-none'
+                        : 'bg-[var(--bg-subtle)]/70 hover:bg-[var(--bg-hover)] border-[var(--border)] text-[var(--text-main)] hover:border-[var(--text-muted)]/40'
+                    }`}
+                  >
+                    <span>{p.name}</span>
+                    {p.total > 0 && (
+                      <span className={`text-[10px] tabular-nums ${isCurrent ? 'opacity-80' : 'text-[var(--text-muted)]'}`}>
+                        ({p.total})
+                      </span>
+                    )}
+                  </Link>
+                );
+              })}
+            </div>
+          </div>
+        </section>
+      )}
     </div>
   );
 };

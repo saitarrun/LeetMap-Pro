@@ -5,6 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import {
   ArrowLeft,
+  ArrowRight,
   Search,
   Shuffle,
   CheckCircle2,
@@ -13,6 +14,7 @@ import {
   FileText,
   ShieldCheck,
   Code2,
+  Database,
   X,
   Pin,
   Clock,
@@ -30,9 +32,10 @@ import { downloadCsv } from '@/utils/csv';
 
 interface SqlCompanyDetailViewProps {
   company: CompanyDetail;
+  allSqlCompanies?: { slug: string; name: string; sqlTotal: number }[];
 }
 
-export const SqlCompanyDetailView: React.FC<SqlCompanyDetailViewProps> = ({ company }) => {
+export const SqlCompanyDetailView: React.FC<SqlCompanyDetailViewProps> = ({ company, allSqlCompanies = [] }) => {
   const [activeTab, setActiveTab] = useState<number>(4);
   const [searchQuery, setSearchQuery] = useState('');
   const [difficultyFilter, setDifficultyFilter] = useState<'ALL' | 'EASY' | 'MEDIUM' | 'HARD'>('ALL');
@@ -833,6 +836,78 @@ export const SqlCompanyDetailView: React.FC<SqlCompanyDetailViewProps> = ({ comp
           <span>Company Total: {totalSqlCount} SQL questions</span>
         </div>
       </div>
+
+      {/* Switch to DSA Interview Questions Banner */}
+      {Boolean(company.total - totalSqlCount > 0) && (
+        <div className="p-4 sm:p-5 rounded-2xl bg-[var(--bg-card)] border border-[var(--border)] flex flex-col sm:flex-row items-center justify-between gap-4 shadow-xs">
+          <div className="space-y-1 text-center sm:text-left">
+            <h3 className="text-sm font-semibold text-[var(--text-main)] flex items-center justify-center sm:justify-start gap-2">
+              <Code2 className="w-4 h-4 text-[var(--accent)]" />
+              <span>Practice {company.name} Data Structures & Algorithms</span>
+            </h3>
+            <p className="text-xs text-[var(--text-muted)]">
+              Explore {company.total - totalSqlCount} verified DSA interview questions asked by {company.name} across 5 recency windows.
+            </p>
+          </div>
+          <Link
+            href={`/company/${company.slug}`}
+            className="apple-press inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-semibold bg-[var(--accent)] text-white hover:opacity-90 transition-opacity shrink-0 shadow-xs"
+          >
+            <span>{company.name} DSA Problems</span>
+            <ArrowRight className="w-3.5 h-3.5" />
+          </Link>
+        </div>
+      )}
+
+      {/* Explore More SQL Companies (Full Inter-linking Network) */}
+      {allSqlCompanies.length > 0 && (
+        <section className="space-y-3 pt-2">
+          <div className="flex items-center justify-between">
+            <div className="space-y-0.5">
+              <h2 className="text-sm font-semibold text-[var(--text-main)] flex items-center gap-2">
+                <Database className="w-4 h-4 text-[var(--accent)]" />
+                <span>Explore Other Company SQL Questions</span>
+              </h2>
+              <p className="text-xs text-[var(--text-muted)]">
+                Direct links to database interview question sets across {allSqlCompanies.length} top tech companies.
+              </p>
+            </div>
+            <Link
+              href="/sql"
+              className="text-xs font-semibold text-[var(--accent)] hover:underline inline-flex items-center gap-1 shrink-0"
+            >
+              <span>SQL Hub</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </Link>
+          </div>
+
+          <div className="p-4 sm:p-5 rounded-2xl bg-[var(--bg-card)] border border-[var(--border)] shadow-xs">
+            <div className="flex flex-wrap gap-1.5 sm:gap-2">
+              {allSqlCompanies.map((c) => {
+                const isCurrent = c.slug === company.slug;
+                return (
+                  <Link
+                    key={c.slug}
+                    href={`/sql/${c.slug}`}
+                    className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-medium border transition-colors ${
+                      isCurrent
+                        ? 'bg-[var(--accent)] text-white border-[var(--accent)] pointer-events-none'
+                        : 'bg-[var(--bg-subtle)]/70 hover:bg-[var(--bg-hover)] border-[var(--border)] text-[var(--text-main)] hover:border-[var(--text-muted)]/40'
+                    }`}
+                  >
+                    <span>{c.name} SQL</span>
+                    {c.sqlTotal > 0 && (
+                      <span className={`text-[10px] tabular-nums ${isCurrent ? 'opacity-80' : 'text-[var(--text-muted)]'}`}>
+                        ({c.sqlTotal})
+                      </span>
+                    )}
+                  </Link>
+                );
+              })}
+            </div>
+          </div>
+        </section>
+      )}
     </div>
   );
 };

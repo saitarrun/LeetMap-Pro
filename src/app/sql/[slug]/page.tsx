@@ -143,6 +143,21 @@ export default async function SqlCompanyPage({ params }: PageProps) {
     ],
   };
 
+  let allSqlCompanies: { slug: string; name: string; sqlTotal: number }[] = [];
+  const sqlCompaniesPath = path.join(process.cwd(), 'public', 'data', 'sql-companies.json');
+  if (fs.existsSync(sqlCompaniesPath)) {
+    try {
+      const raw = JSON.parse(fs.readFileSync(sqlCompaniesPath, 'utf8'));
+      allSqlCompanies = raw.map((c: { slug: string; name: string; sqlTotal?: number }) => ({
+        slug: c.slug,
+        name: c.name,
+        sqlTotal: c.sqlTotal || 0,
+      }));
+    } catch (err) {
+      console.error('Failed to parse sql-companies.json', err);
+    }
+  }
+
   return (
     <div className="min-h-screen flex flex-col">
       <script
@@ -151,7 +166,7 @@ export default async function SqlCompanyPage({ params }: PageProps) {
       />
       <Header syncStatus={syncStatus} />
       <main className="flex-1 pb-16">
-        <SqlCompanyDetailView company={company} />
+        <SqlCompanyDetailView company={company} allSqlCompanies={allSqlCompanies} />
       </main>
     </div>
   );

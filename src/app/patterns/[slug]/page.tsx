@@ -183,6 +183,22 @@ export default async function PatternDetailPage({ params }: PageProps) {
     ],
   };
 
+  let allPatterns: { slug: string; name: string; category: string; total: number }[] = [];
+  const patternsPath = path.join(process.cwd(), 'public', 'data', 'patterns.json');
+  if (fs.existsSync(patternsPath)) {
+    try {
+      const raw = JSON.parse(fs.readFileSync(patternsPath, 'utf8'));
+      allPatterns = raw.map((p: { slug: string; name: string; category: string; total: number }) => ({
+        slug: p.slug,
+        name: p.name,
+        category: p.category,
+        total: p.total,
+      }));
+    } catch (err) {
+      console.error('Failed to parse patterns.json', err);
+    }
+  }
+
   return (
     <div className="min-h-screen flex flex-col">
       <script
@@ -191,7 +207,7 @@ export default async function PatternDetailPage({ params }: PageProps) {
       />
       <Header syncStatus={syncStatus} />
       <main className="flex-1 pb-16">
-        <PatternDetailView pattern={pattern} />
+        <PatternDetailView pattern={pattern} allPatterns={allPatterns} />
       </main>
     </div>
   );

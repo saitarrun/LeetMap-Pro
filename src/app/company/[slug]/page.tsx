@@ -254,9 +254,57 @@ export default async function CompanyPage({ params }: PageProps) {
               </div>
 
               <h3 className="text-xs font-semibold text-[var(--text-main)] uppercase tracking-wider pt-4">
-                Recommended Patterns
+                Recommended Coding Patterns
               </h3>
               <div className="flex flex-wrap gap-2">
+                <Link
+                  href="/patterns/sliding-window"
+                  className="apple-press text-xs px-3 py-1.5 rounded-full border border-[var(--border)] bg-[var(--bg-card)] text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--bg-hover)] transition-colors"
+                >
+                  Sliding Window
+                </Link>
+                <Link
+                  href="/patterns/two-pointers"
+                  className="apple-press text-xs px-3 py-1.5 rounded-full border border-[var(--border)] bg-[var(--bg-card)] text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--bg-hover)] transition-colors"
+                >
+                  Two Pointers
+                </Link>
+                <Link
+                  href="/patterns/fast-slow-pointers"
+                  className="apple-press text-xs px-3 py-1.5 rounded-full border border-[var(--border)] bg-[var(--bg-card)] text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--bg-hover)] transition-colors"
+                >
+                  Fast & Slow Pointers
+                </Link>
+                <Link
+                  href="/patterns/monotonic-stack"
+                  className="apple-press text-xs px-3 py-1.5 rounded-full border border-[var(--border)] bg-[var(--bg-card)] text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--bg-hover)] transition-colors"
+                >
+                  Monotonic Stack
+                </Link>
+                <Link
+                  href="/patterns/binary-search-tree"
+                  className="apple-press text-xs px-3 py-1.5 rounded-full border border-[var(--border)] bg-[var(--bg-card)] text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--bg-hover)] transition-colors"
+                >
+                  Binary Search Tree
+                </Link>
+                <Link
+                  href="/patterns/tree-bfs"
+                  className="apple-press text-xs px-3 py-1.5 rounded-full border border-[var(--border)] bg-[var(--bg-card)] text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--bg-hover)] transition-colors"
+                >
+                  Tree BFS
+                </Link>
+                <Link
+                  href="/patterns/matrix-traversal"
+                  className="apple-press text-xs px-3 py-1.5 rounded-full border border-[var(--border)] bg-[var(--bg-card)] text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--bg-hover)] transition-colors"
+                >
+                  Matrix Traversal
+                </Link>
+                <Link
+                  href="/patterns/union-find"
+                  className="apple-press text-xs px-3 py-1.5 rounded-full border border-[var(--border)] bg-[var(--bg-card)] text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--bg-hover)] transition-colors"
+                >
+                  Union-Find
+                </Link>
                 <Link
                   href="/patterns/dynamic-programming-1d"
                   className="apple-press text-xs px-3 py-1.5 rounded-full border border-[var(--border)] bg-[var(--bg-card)] text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--bg-hover)] transition-colors"
@@ -270,18 +318,27 @@ export default async function CompanyPage({ params }: PageProps) {
                   Graph Traversal
                 </Link>
                 <Link
-                  href="/patterns/two-pointers"
-                  className="apple-press text-xs px-3 py-1.5 rounded-full border border-[var(--border)] bg-[var(--bg-card)] text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--bg-hover)] transition-colors"
-                >
-                  Two Pointers
-                </Link>
-                <Link
                   href="/strategy"
                   className="apple-press text-xs px-3 py-1.5 rounded-full border border-[var(--border)] bg-[var(--bg-card)] text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--bg-hover)] transition-colors"
                 >
                   Roadmap Graph
                 </Link>
               </div>
+
+              {Boolean(company.sqlTotal && company.sqlTotal > 0) && (
+                <div className="pt-3">
+                  <h3 className="text-xs font-semibold text-[var(--text-main)] uppercase tracking-wider mb-2">
+                    Database & SQL Questions
+                  </h3>
+                  <Link
+                    href={`/sql/${safeSlug}`}
+                    className="apple-press inline-flex items-center gap-2 text-xs px-4 py-2 rounded-xl border border-[var(--border)] bg-[var(--bg-card)] text-[var(--text-main)] font-semibold hover:border-[var(--accent)] hover:text-[var(--accent)] transition-all"
+                  >
+                    <span>Practice {company.name} SQL Questions ({company.sqlTotal})</span>
+                    <span className="text-[10px] text-[var(--text-muted)] font-normal">Ranked by frequency</span>
+                  </Link>
+                </div>
+              )}
             </div>
           </div>
         </section>
