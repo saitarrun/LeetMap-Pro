@@ -1,13 +1,15 @@
 {
-  "date": "2026-09-14",
-  "link": "https://leetcode.com/problems/rectangle-overlap/",
-  "id": "836",
-  "title": "Rectangle Overlap",
-  "slug": "rectangle-overlap",
-  "difficulty": "EASY",
+  "date": "2026-09-15",
+  "link": "https://leetcode.com/problems/maximum-number-of-non-overlapping-palindrome-substrings/",
+  "id": "2472",
+  "title": "Maximum Number of Non-overlapping Palindrome Substrings",
+  "slug": "maximum-number-of-non-overlapping-palindrome-substrings",
+  "difficulty": "HARD",
   "topics": [
-    "Math",
-    "Geometry"
+    "Two Pointers",
+    "String",
+    "Dynamic Programming",
+    "Greedy"
   ],
-  "fetchedAt": 1789353588993
+  "fetchedAt": 1789440176420
 }
