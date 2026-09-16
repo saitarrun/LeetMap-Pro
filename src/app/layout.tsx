@@ -99,14 +99,6 @@ export const metadata: Metadata = {
     siteName: 'LeetMap Pro',
     title: 'LeetMap Pro | Company-Wise LeetCode & SQL Questions',
     description: 'Browse coding interview problems actually asked by 680+ tech companies, ranked by frequency and recency. Free interactive strategy roadmap and curated SQL problems.',
-    images: [
-      {
-        url: '/icon-512.png',
-        width: 512,
-        height: 512,
-        alt: 'LeetMap Pro Logo',
-      },
-    ],
   },
   twitter: {
     card: 'summary_large_image',
@@ -114,7 +106,6 @@ export const metadata: Metadata = {
     creator: '@saitarrun',
     title: 'LeetMap Pro | Company-Wise LeetCode & SQL Questions',
     description: 'Browse coding interview problems actually asked by 680+ tech companies, ranked by frequency and recency.',
-    images: ['/icon-512.png'],
   },
   verification: {
     google: 'zQTd5IdhklFb7tgLr2_5ixhggoG5rfAD-NnMdoJ4Ijk',
@@ -180,24 +171,18 @@ export default async function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
-        <meta name="google-site-verification" content="zQTd5IdhklFb7tgLr2_5ixhggoG5rfAD-NnMdoJ4Ijk" />
-        <meta name="application-name" content="LeetMap Pro" />
-        <meta name="apple-mobile-web-app-title" content="LeetMap Pro" />
-        <meta property="og:site_name" content="LeetMap Pro" />
-        <link rel="icon" type="image/png" sizes="192x192" href="https://www.leetmap-pro.com/icon-192.png" />
-        <link rel="icon" type="image/png" sizes="48x48" href="https://www.leetmap-pro.com/icon-48.png" />
-        <link rel="icon" type="image/x-icon" href="https://www.leetmap-pro.com/favicon.ico" sizes="48x48 32x32 16x16" />
-        <link rel="shortcut icon" href="https://www.leetmap-pro.com/favicon.ico" />
-        <link rel="apple-touch-icon" sizes="180x180" href="https://www.leetmap-pro.com/apple-touch-icon.png" />
+        {/* RSS/Atom alternate links & author — not handled by Next.js metadata alternates for custom titles */}
         <link rel="alternate" type="application/rss+xml" title="LeetMap Pro | Latest Interview Questions & Daily Challenges" href="/feed.xml" />
         <link rel="alternate" type="application/atom+xml" title="LeetMap Pro Atom Feed" href="/feed.xml?format=atom" />
         <link rel="author" href="/humans.txt" />
+        {/* Performance hints */}
         <link rel="preconnect" href="https://pagead2.googlesyndication.com" crossOrigin="anonymous" />
         <link rel="preconnect" href="https://img.clerk.com" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href="https://pagead2.googlesyndication.com" />
         <link rel="dns-prefetch" href="https://googleads.g.doubleclick.net" />
         <link rel="dns-prefetch" href="https://tpc.googlesyndication.com" />
         <link rel="dns-prefetch" href="https://img.clerk.com" />
+        {/* AdSense */}
         <meta name="google-adsense-account" content="ca-pub-5930264634833391" />
         <Script
           id="google-adsense"

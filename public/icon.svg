@@ -1,6 +1,10 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none">
-  <rect width="48" height="48" fill="#000000" />
-  <polygon points="24,17.4 30.6,24 24,30.6 17.4,24" fill="#10B981" />
-  <path d="M18 14.4L9.6 24L18 33.6" stroke="#FFFFFF" stroke-width="3.9" stroke-linecap="round" stroke-linejoin="round" />
-  <path d="M30 14.4L38.4 24L30 33.6" stroke="#FFFFFF" stroke-width="3.9" stroke-linecap="round" stroke-linejoin="round" />
+  <!-- Background with rounded corners for modern look -->
+  <rect width="48" height="48" rx="10" fill="#09090b" />
+  <!-- Center diamond - slightly larger, bolder emerald -->
+  <polygon points="24,16 31,24 24,32 17,24" fill="#10B981" />
+  <!-- Left bracket - thicker strokes, tighter spacing for clarity at small sizes -->
+  <path d="M17.5 13L8.5 24L17.5 35" stroke="#FFFFFF" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round" />
+  <!-- Right bracket -->
+  <path d="M30.5 13L39.5 24L30.5 35" stroke="#FFFFFF" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round" />
 </svg>
