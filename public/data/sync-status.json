@@ -1,7 +1,7 @@
 {
   "status": "success",
-  "lastSynced": 1789440182588,
-  "lastSyncedISO": "2026-09-15T02:43:02Z",
+  "lastSynced": 1789526275263,
+  "lastSyncedISO": "2026-09-16T02:37:55Z",
   "commitSha": "03850eb+e095c25+03850eb",
   "sources": [
     {
@@ -29,7 +29,7 @@
     },
     {
       "name": "LeetCode Live Daily Challenge",
-      "dailyProblem": "#2472 Maximum Number of Non-overlapping Palindrome Substrings",
+      "dailyProblem": "#1621 Number of Sets of K Non-Overlapping Line Segments",
       "description": "Active 24-hour questionOfToday daily challenge"
     },
     {
@@ -41,5 +41,5 @@
   "companiesCount": 684,
   "uniqueProblemsCount": 3422,
   "sqlProblemsCount": 194,
-  "durationSeconds": 8.11
+  "durationSeconds": 10.13
 }
