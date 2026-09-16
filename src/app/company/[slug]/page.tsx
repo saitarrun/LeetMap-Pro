@@ -88,7 +88,7 @@ export async function generateMetadata({ params }: PageProps) {
     openGraph: {
       title: `${company.name} LeetCode Questions | LeetMap Pro`,
       description,
-      url: `https://www.leetmap-pro.com/company/${safeSlug}`,
+      url: `https://www.leetmap-pro.com/company/${COMPANY_ALIASES[safeSlug] || safeSlug}`,
       type: 'article',
       siteName: 'LeetMap Pro',
     },
