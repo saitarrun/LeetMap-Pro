@@ -16,7 +16,11 @@ function isAuthorizedCronRequest(request: Request): boolean {
 
 export default clerkMiddleware(
   async (auth, request) => {
-    if (legacyProductionHosts.has(request.nextUrl.hostname)) {
+    if (
+      request.nextUrl.hostname.endsWith(".vercel.app") ||
+      legacyProductionHosts.has(request.nextUrl.hostname) ||
+      request.nextUrl.hostname === "leetmap-pro.com"
+    ) {
       const canonicalUrl = request.nextUrl.clone();
       canonicalUrl.hostname = canonicalProductionHost;
       canonicalUrl.protocol = "https:";
