@@ -1,26 +1,53 @@
 import { NextResponse } from 'next/server';
+import fs from 'fs';
+import path from 'path';
 
 const INDEXNOW_KEY = 'c7b91d2f8e4a460393b6e82a15f07d2e';
 const HOST = 'www.leetmap-pro.com';
 const KEY_LOCATION = `https://${HOST}/${INDEXNOW_KEY}.txt`;
 
-const CORE_URLS = [
-  `https://${HOST}`,
-  `https://${HOST}/strategy`,
-  `https://${HOST}/patterns`,
-  `https://${HOST}/sql`,
-  `https://${HOST}/patterns/time-complexity`,
-  `https://${HOST}/company/netflix`,
-  `https://${HOST}/company/google`,
-  `https://${HOST}/company/meta`,
-  `https://${HOST}/company/amazon`,
-  `https://${HOST}/company/apple`,
-  `https://${HOST}/company/microsoft`,
-  `https://${HOST}/company/bloomberg`,
-  `https://${HOST}/company/citadel`,
-  `https://${HOST}/privacy`,
-  `https://${HOST}/terms`,
-];
+function getAllCanonicalUrls(): string[] {
+  const baseUrls = [
+    `https://${HOST}`,
+    `https://${HOST}/strategy`,
+    `https://${HOST}/patterns`,
+    `https://${HOST}/sql`,
+    `https://${HOST}/patterns/time-complexity`,
+    `https://${HOST}/privacy`,
+    `https://${HOST}/terms`,
+  ];
+
+  try {
+    const dataDir = path.join(process.cwd(), 'public', 'data');
+    const companiesPath = path.join(dataDir, 'companies.json');
+    if (fs.existsSync(companiesPath)) {
+      const companies: { slug: string }[] = JSON.parse(fs.readFileSync(companiesPath, 'utf8'));
+      companies.forEach((c) => {
+        if (c.slug) baseUrls.push(`https://${HOST}/company/${c.slug}`);
+      });
+    }
+
+    const patternsPath = path.join(dataDir, 'patterns.json');
+    if (fs.existsSync(patternsPath)) {
+      const patterns: { slug: string }[] = JSON.parse(fs.readFileSync(patternsPath, 'utf8'));
+      patterns.forEach((p) => {
+        if (p.slug) baseUrls.push(`https://${HOST}/patterns/${p.slug}`);
+      });
+    }
+
+    const sqlPath = path.join(dataDir, 'sql-companies.json');
+    if (fs.existsSync(sqlPath)) {
+      const sqlCompanies: { slug: string }[] = JSON.parse(fs.readFileSync(sqlPath, 'utf8'));
+      sqlCompanies.forEach((s) => {
+        if (s.slug) baseUrls.push(`https://${HOST}/sql/${s.slug}`);
+      });
+    }
+  } catch (err) {
+    console.error('Failed to load canonical URLs for IndexNow:', err);
+  }
+
+  return baseUrls;
+}
 
 async function submitToIndexNow(urls: string[]) {
   const payload = {
@@ -62,10 +89,12 @@ async function submitToIndexNow(urls: string[]) {
 
 export async function GET() {
   try {
-    const results = await submitToIndexNow(CORE_URLS);
+    const urls = getAllCanonicalUrls();
+    const results = await submitToIndexNow(urls);
     return NextResponse.json({
       success: true,
-      submittedUrls: CORE_URLS,
+      submittedCount: urls.length,
+      submittedUrls: urls.slice(0, 50),
       results,
     });
   } catch (error) {
@@ -80,12 +109,13 @@ export async function GET() {
 export async function POST(request: Request) {
   try {
     const body = await request.json().catch(() => ({}));
-    const urls = Array.isArray(body?.urls) && body.urls.length > 0 ? body.urls : CORE_URLS;
+    const urls = Array.isArray(body?.urls) && body.urls.length > 0 ? body.urls : getAllCanonicalUrls();
     const results = await submitToIndexNow(urls);
 
     return NextResponse.json({
       success: true,
-      submittedUrls: urls,
+      submittedCount: urls.length,
+      submittedUrls: urls.slice(0, 50),
       results,
     });
   } catch (error) {
