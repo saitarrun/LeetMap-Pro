@@ -914,6 +914,17 @@ export const HomeClient: React.FC<HomeClientProps> = ({
                   </p>
                 </div>
               )}
+
+              <div className="pt-3 pb-1 flex justify-center">
+                <Link
+                  href="/companies"
+                  className="apple-press inline-flex items-center gap-2 px-4 py-2 rounded-xl border border-[var(--border)] bg-[var(--bg-card)] hover:bg-[var(--bg-subtle)] text-xs font-semibold text-emerald-600 dark:text-emerald-400 hover:border-emerald-500/40 transition-all shadow-2xs"
+                >
+                  <Building2 className="w-3.5 h-3.5" />
+                  <span>Browse all {companies.length || 660}+ companies in the A–Z Directory</span>
+                  <span>&rarr;</span>
+                </Link>
+              </div>
             </section>
           )
         )}

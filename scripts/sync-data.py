@@ -38,6 +38,31 @@ WINDOW_DEFINITIONS = [
     {"index": 4, "name": "All Time", "key": "all", "l_file": "5. All.csv", "s_file": "all.csv"},
 ]
 
+COMPANY_ALIASES = {
+    'snapchat': 'snap',
+    'twitter': 'x',
+    'medianet': 'media-net',
+    'ola-cabs': 'ola',
+    'hrt': 'hudson-river-trading',
+    'bookingcom': 'booking-com',
+    'wissen': 'wissen-technology',
+    'citi': 'citigroup',
+    'lowe': 'lowes',
+    'virtu': 'virtu-financial',
+    'airbus-se': 'airbus',
+    'otterai': 'otter-ai',
+    'ponyai': 'pony-ai',
+    'apolloio': 'apollo-io',
+    'larsen--toubro': 'larsen-toubro',
+    'sumologic': 'sumo-logic',
+    'tower-research': 'tower-research-capital',
+    'cruise-automation': 'cruise',
+    'national-payments-coorperation-india': 'national-payments-corporation-of-india',
+    'edelweiss-group': 'edelweiss',
+    'lendingkart-technologies': 'lendingkart',
+    'veeva-systems': 'veeva',
+}
+
 def slugify(text: str) -> str:
     s = text.lower().strip()
     s = re.sub(r'[\s\.\,\/_\-\+]+', '-', s)
@@ -823,6 +848,8 @@ def main():
     index_list = []
     sql_companies_list = []
     for c in merged_companies:
+        if c["slug"] in COMPANY_ALIASES:
+            continue
         item = {
             "name": c["name"],
             "slug": c["slug"],

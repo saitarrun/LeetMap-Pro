@@ -12,6 +12,8 @@ interface PageProps {
   params: Promise<{ slug: string }>;
 }
 
+export const revalidate = 86400;
+
 export async function generateMetadata({ params }: PageProps) {
   const { slug } = await params;
   const safeSlug = slug.toLowerCase().replace(/[^a-z0-9\-]/g, '');
@@ -195,6 +197,12 @@ export default async function CompanyPage({ params }: PageProps) {
       {
         '@type': 'ListItem',
         position: 2,
+        name: 'Companies Directory',
+        item: 'https://www.leetmap-pro.com/companies',
+      },
+      {
+        '@type': 'ListItem',
+        position: 3,
         name: `${company.name} LeetCode Questions`,
         item: `https://www.leetmap-pro.com/company/${safeSlug}`,
       },
@@ -203,6 +211,19 @@ export default async function CompanyPage({ params }: PageProps) {
 
   const topProblems = (company.windows?.find((w) => w.key === 'all')?.problems || []).slice(0, 20);
   const topThreeProblems = topProblems.slice(0, 3).map((p) => p.title).join(', ') || 'Two Sum, Add Two Numbers, LRU Cache';
+
+  const itemListJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    name: `${company.name} Interview Questions`,
+    numberOfItems: topProblems.length,
+    itemListElement: topProblems.map((prob, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      name: prob.title,
+      url: `https://leetcode.com/problems/${prob.slug}/`,
+    })),
+  };
 
   const faqJsonLd = {
     '@context': 'https://schema.org',
@@ -259,10 +280,20 @@ export default async function CompanyPage({ params }: PageProps) {
     <div className="min-h-screen flex flex-col">
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify([breadcrumbJsonLd, faqJsonLd]) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify([breadcrumbJsonLd, faqJsonLd, itemListJsonLd]) }}
       />
       <Header syncStatus={syncStatus} />
       <main className="flex-1 pb-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 pb-2">
+          <nav aria-label="Breadcrumb" className="flex items-center gap-1.5 text-xs text-[var(--text-muted)]">
+            <Link href="/" className="hover:text-[var(--text-main)] transition-colors">Home</Link>
+            <span className="opacity-40">/</span>
+            <Link href="/companies" className="hover:text-[var(--text-main)] transition-colors">Companies</Link>
+            <span className="opacity-40">/</span>
+            <span className="text-[var(--text-main)] font-medium truncate">{company.name}</span>
+          </nav>
+        </div>
+
         <CompanyDetailView company={initialCompany} />
 
         {/* SEO Semantic Content & FAQ Section */}
@@ -277,6 +308,17 @@ export default async function CompanyPage({ params }: PageProps) {
                   Software engineering and technical interviews at {company.name} emphasize real-world problem solving, algorithmic efficiency, and scalable data structure design. The curated dataset above contains {company.total} verified LeetCode problems, categorized by frequency and filtered across recent interview seasons.
                 </p>
               </div>
+
+              {company.total <= 5 && (
+                <div className="p-4 sm:p-5 rounded-2xl border border-emerald-500/20 bg-emerald-500/5 space-y-2.5">
+                  <div className="flex items-center gap-2 text-emerald-600 dark:text-emerald-400 font-semibold text-xs uppercase tracking-wider">
+                    <span>💡 Recommended Interview Strategy for {company.name}</span>
+                  </div>
+                  <p className="text-xs text-[var(--text-muted)] leading-relaxed">
+                    Because {company.name} currently has {company.total} direct interview {company.total === 1 ? 'problem' : 'problems'} logged in community reports, technical interview loops at {company.name} typically evaluate candidates on standard data structure patterns. For optimal preparation, master these problems first, then practice the comprehensive <Link href="/company/blind-75" className="text-emerald-600 dark:text-emerald-400 font-medium underline">Blind 75</Link> and <Link href="/company/neetcode-150" className="text-emerald-600 dark:text-emerald-400 font-medium underline">NeetCode 150</Link> roadmaps.
+                  </p>
+                </div>
+              )}
 
               <div className="space-y-4">
                 <h3 className="text-sm font-semibold text-[var(--text-main)] uppercase tracking-wider">

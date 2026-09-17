@@ -36,6 +36,11 @@ export const Footer: React.FC = () => {
                 </Link>
               </li>
               <li>
+                <Link href="/companies" className="hover:text-[var(--text-main)] transition-colors font-medium text-emerald-600 dark:text-emerald-400">
+                  All 660+ Companies (A–Z)
+                </Link>
+              </li>
+              <li>
                 <Link href="/strategy" className="hover:text-[var(--text-main)] transition-colors">
                   Strategy Roadmap
                 </Link>

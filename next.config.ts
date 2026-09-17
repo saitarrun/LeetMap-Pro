@@ -37,6 +37,30 @@ const nextConfig: NextConfig = {
           { key: "X-Frame-Options", value: "DENY" },
         ],
       },
+      {
+        source: "/company/:slug*",
+        headers: [
+          { key: "Cache-Control", value: "public, s-maxage=86400, stale-while-revalidate=86400" },
+        ],
+      },
+      {
+        source: "/companies",
+        headers: [
+          { key: "Cache-Control", value: "public, s-maxage=86400, stale-while-revalidate=86400" },
+        ],
+      },
+      {
+        source: "/patterns/:slug*",
+        headers: [
+          { key: "Cache-Control", value: "public, s-maxage=86400, stale-while-revalidate=86400" },
+        ],
+      },
+      {
+        source: "/sql/:slug*",
+        headers: [
+          { key: "Cache-Control", value: "public, s-maxage=86400, stale-while-revalidate=86400" },
+        ],
+      },
     ];
   },
 };
