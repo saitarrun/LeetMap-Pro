@@ -136,23 +136,12 @@ export const Header: React.FC<HeaderProps> = () => {
             <Link
               href="/"
               className={`apple-press px-3.5 py-1.5 rounded-xl transition-colors ${
-                pathname === '/'
+                pathname === '/' || pathname.startsWith('/company') || pathname === '/companies'
                   ? 'bg-[var(--bg-subtle)] text-[var(--text-main)] font-semibold'
                   : 'text-[var(--text-muted)] hover:text-[var(--text-main)] font-medium'
               }`}
             >
               DSA
-            </Link>
-
-            <Link
-              href="/companies"
-              className={`apple-press px-3.5 py-1.5 rounded-xl transition-colors ${
-                pathname === '/companies' || pathname.startsWith('/company/')
-                  ? 'bg-[var(--bg-subtle)] text-[var(--text-main)] font-semibold'
-                  : 'text-[var(--text-muted)] hover:text-[var(--text-main)] font-medium'
-              }`}
-            >
-              Companies
             </Link>
 
             <Link
@@ -293,7 +282,7 @@ export const Header: React.FC<HeaderProps> = () => {
               href="/"
               onClick={() => setMobileMenuOpen(false)}
               className={`apple-press flex items-center justify-between px-3.5 py-2.5 rounded-xl transition-colors ${
-                pathname === '/'
+                pathname === '/' || pathname.startsWith('/company') || pathname === '/companies'
                   ? 'bg-[var(--bg-subtle)] text-[var(--text-main)] font-semibold'
                   : 'text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--bg-subtle)]/50'
               }`}
@@ -301,22 +290,6 @@ export const Header: React.FC<HeaderProps> = () => {
               <div className="flex items-center gap-2.5">
                 <Building2 className="w-4 h-4 text-emerald-500" />
                 <span>DSA Practice</span>
-              </div>
-              <span className="text-xs text-[var(--text-muted)] font-mono">Home</span>
-            </Link>
-
-            <Link
-              href="/companies"
-              onClick={() => setMobileMenuOpen(false)}
-              className={`apple-press flex items-center justify-between px-3.5 py-2.5 rounded-xl transition-colors ${
-                pathname === '/companies' || pathname.startsWith('/company/')
-                  ? 'bg-[var(--bg-subtle)] text-[var(--text-main)] font-semibold'
-                  : 'text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--bg-subtle)]/50'
-              }`}
-            >
-              <div className="flex items-center gap-2.5">
-                <Building2 className="w-4 h-4 text-teal-500" />
-                <span>Companies Directory</span>
               </div>
               <span className="text-xs text-[var(--text-muted)] font-mono">660+</span>
             </Link>

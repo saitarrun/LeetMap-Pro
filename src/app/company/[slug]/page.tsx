@@ -197,12 +197,6 @@ export default async function CompanyPage({ params }: PageProps) {
       {
         '@type': 'ListItem',
         position: 2,
-        name: 'Companies Directory',
-        item: 'https://www.leetmap-pro.com/companies',
-      },
-      {
-        '@type': 'ListItem',
-        position: 3,
         name: `${company.name} LeetCode Questions`,
         item: `https://www.leetmap-pro.com/company/${safeSlug}`,
       },
@@ -288,7 +282,7 @@ export default async function CompanyPage({ params }: PageProps) {
           <nav aria-label="Breadcrumb" className="flex items-center gap-1.5 text-xs text-[var(--text-muted)]">
             <Link href="/" className="hover:text-[var(--text-main)] transition-colors">Home</Link>
             <span className="opacity-40">/</span>
-            <Link href="/companies" className="hover:text-[var(--text-main)] transition-colors">Companies</Link>
+            <Link href="/?tab=directory" className="hover:text-[var(--text-main)] transition-colors">Directory</Link>
             <span className="opacity-40">/</span>
             <span className="text-[var(--text-main)] font-medium truncate">{company.name}</span>
           </nav>

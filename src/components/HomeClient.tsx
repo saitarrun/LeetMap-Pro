@@ -2,7 +2,7 @@
 
 import React, { useState, useMemo, useEffect, useRef } from 'react';
 import Link from 'next/link';
-import { Search, X, Pin, Sparkles, ExternalLink, CheckCircle2, SlidersHorizontal, ArrowUpDown, ChevronDown, Building2, BookOpen } from 'lucide-react';
+import { Search, X, Pin, Sparkles, ExternalLink, CheckCircle2, SlidersHorizontal, ArrowUpDown, ChevronDown, Building2, BookOpen, ArrowRight } from 'lucide-react';
 import { toast } from 'sonner';
 import { CompanySummary, SyncStatus, DailyChallenge } from '@/types';
 import { Header } from '@/components/Header';
@@ -55,7 +55,7 @@ export const HomeClient: React.FC<HomeClientProps> = ({
   const [syncStatus, setSyncStatus] = useState<SyncStatus | null>(initialSyncStatus);
   const [dailyChallenge, setDailyChallenge] = useState<DailyChallenge | null>(initialDailyChallenge);
   const [searchQuery, setSearchQuery] = useState('');
-  const [categoryFilter, setCategoryFilter] = useState<'ALL' | 'PINNED' | 'FAANG' | 'FINTECH' | 'POPULAR' | 'SQL'>('ALL');
+  const [categoryFilter, setCategoryFilter] = useState<'ALL' | 'PINNED' | 'FAANG' | 'FINTECH' | 'POPULAR' | 'SQL' | 'DIRECTORY'>('ALL');
   const [sortBy, setSortBy] = useState<'total' | 'name' | 'hard'>('total');
   const [problemResults, setProblemResults] = useState<SearchResult[]>([]);
   const [isSearchingProblems, setIsSearchingProblems] = useState(false);
@@ -285,6 +285,39 @@ export const HomeClient: React.FC<HomeClientProps> = ({
   }, [filteredCompanies, visibleCount]);
 
   useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get('tab') === 'directory' || params.get('view') === 'directory') {
+        setCategoryFilter('DIRECTORY');
+      }
+    }
+  }, []);
+
+  const alphabetMap = useMemo(() => {
+    const map: Record<string, CompanySummary[]> = {};
+    const sorted = [...companies].sort((a, b) => a.name.localeCompare(b.name, undefined, { sensitivity: 'base' }));
+    for (const c of sorted) {
+      if (searchQuery.trim()) {
+        const q = searchQuery.toLowerCase().trim();
+        if (!c.name.toLowerCase().includes(q) && !c.slug.toLowerCase().includes(q)) continue;
+      }
+      const firstChar = (c.name.trim()[0] || '#').toUpperCase();
+      const key = /[A-Z]/.test(firstChar) ? firstChar : '#';
+      if (!map[key]) map[key] = [];
+      map[key].push(c);
+    }
+    return map;
+  }, [companies, searchQuery]);
+
+  const sortedLetters = useMemo(() => {
+    return Object.keys(alphabetMap).sort((a, b) => {
+      if (a === '#') return -1;
+      if (b === '#') return 1;
+      return a.localeCompare(b);
+    });
+  }, [alphabetMap]);
+
+  useEffect(() => {
     const trimmed = searchQuery.trim();
     if (!trimmed) {
       setProblemResults([]);
@@ -465,6 +498,7 @@ export const HomeClient: React.FC<HomeClientProps> = ({
                   aria-label="Filter companies by category"
                 >
                   <option value="ALL" className="bg-[var(--bg-card)] text-[var(--text-main)]">All Categories</option>
+                  <option value="DIRECTORY" className="bg-[var(--bg-card)] text-[var(--text-main)]">A–Z Directory (All 660+)</option>
                   <option value="PINNED" className="bg-[var(--bg-card)] text-[var(--text-main)]">
                     Pinned {pinnedSet.size > 0 ? `(${pinnedSet.size})` : ''}
                   </option>
@@ -499,6 +533,7 @@ export const HomeClient: React.FC<HomeClientProps> = ({
               <div className="flex items-center gap-1 overflow-x-auto pb-0 scrollbar-none">
                 {[
                   { key: 'ALL', label: 'All' },
+                  { key: 'DIRECTORY', label: 'A–Z Directory' },
                   {
                     key: 'PINNED',
                     label: `Pinned${pinnedSet.size > 0 ? ` (${pinnedSet.size})` : ''}`,
@@ -511,7 +546,14 @@ export const HomeClient: React.FC<HomeClientProps> = ({
                 ].map((tab) => (
                   <button
                     key={tab.key}
-                    onClick={() => setCategoryFilter(tab.key as typeof categoryFilter)}
+                    onClick={() => {
+                      const next = tab.key as typeof categoryFilter;
+                      setCategoryFilter(next);
+                      if (typeof window !== 'undefined') {
+                        const newUrl = next === 'DIRECTORY' ? '/?tab=directory' : '/';
+                        window.history.replaceState(null, '', newUrl);
+                      }
+                    }}
                     className={`apple-press shrink-0 whitespace-nowrap px-3 py-1.5 rounded-lg font-medium transition-colors cursor-pointer flex items-center gap-1.5 ${
                       categoryFilter === tab.key
                         ? 'bg-[var(--bg-subtle)] text-[var(--text-main)] font-semibold'
@@ -891,6 +933,80 @@ export const HomeClient: React.FC<HomeClientProps> = ({
                 </button>
               </div>
             </div>
+          ) : categoryFilter === 'DIRECTORY' ? (
+            <section className="space-y-6">
+              {/* Alphabet Jump Bar */}
+              <nav
+                aria-label="Alphabetical jump navigation"
+                className="sticky top-16 z-20 py-2.5 px-3 rounded-2xl bg-[var(--bg-card)]/90 backdrop-blur-md border border-[var(--border)] shadow-xs flex flex-wrap items-center justify-center gap-1.5 sm:gap-2 text-xs font-mono font-semibold"
+              >
+                {sortedLetters.map((letter) => (
+                  <a
+                    key={letter}
+                    href={`#letter-${letter === '#' ? 'num' : letter}`}
+                    className="apple-press w-7 h-7 sm:w-8 sm:h-8 rounded-lg flex items-center justify-center text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--bg-subtle)] transition-colors"
+                  >
+                    {letter}
+                  </a>
+                ))}
+              </nav>
+
+              {/* Directory Sections */}
+              <div className="space-y-10 pt-2">
+                {sortedLetters.map((letter) => {
+                  const letterCompanies = alphabetMap[letter] || [];
+                  return (
+                    <section
+                      key={letter}
+                      id={`letter-${letter === '#' ? 'num' : letter}`}
+                      className="space-y-3 scroll-mt-28"
+                    >
+                      <div className="flex items-center gap-2.5 border-b border-[var(--border)] pb-2">
+                        <span className="text-lg font-bold font-mono text-emerald-600 dark:text-emerald-400">
+                          {letter}
+                        </span>
+                        <span className="text-xs text-[var(--text-muted)] font-mono">
+                          ({letterCompanies.length} {letterCompanies.length === 1 ? 'company' : 'companies'})
+                        </span>
+                      </div>
+
+                      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2.5">
+                        {letterCompanies.map((comp) => (
+                          <Link
+                            key={comp.slug}
+                            href={`/company/${comp.slug}`}
+                            className="apple-press group flex flex-col justify-between p-3 rounded-xl border border-[var(--border)] bg-[var(--bg-card)] hover:border-emerald-500/40 hover:bg-[var(--bg-subtle)]/60 transition-all"
+                          >
+                            <div className="flex items-start justify-between gap-2">
+                              <span className="text-xs sm:text-sm font-semibold text-[var(--text-main)] group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors line-clamp-1">
+                                {comp.name}
+                              </span>
+                              <ArrowRight className="w-3.5 h-3.5 text-[var(--text-muted)] opacity-0 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all shrink-0 mt-0.5" />
+                            </div>
+
+                            <div className="mt-2 flex items-center justify-between text-[11px] text-[var(--text-muted)]">
+                              <span className="font-medium text-[var(--text-main)]">
+                                {comp.total} {comp.total === 1 ? 'question' : 'questions'}
+                              </span>
+                              <div className="flex items-center gap-1.5 font-mono text-[10px]">
+                                {comp.easy > 0 && <span className="text-emerald-600 dark:text-emerald-400">{comp.easy}E</span>}
+                                {comp.medium > 0 && <span className="text-amber-600 dark:text-amber-400">{comp.medium}M</span>}
+                                {comp.hard > 0 && <span className="text-rose-600 dark:text-rose-400">{comp.hard}H</span>}
+                                {comp.sqlTotal ? (
+                                  <span className="px-1 rounded bg-purple-500/10 text-purple-600 dark:text-purple-400 font-sans">
+                                    SQL
+                                  </span>
+                                ) : null}
+                              </div>
+                            </div>
+                          </Link>
+                        ))}
+                      </div>
+                    </section>
+                  );
+                })}
+              </div>
+            </section>
           ) : (
             <section className="space-y-6">
               <div className="apple-enter grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
@@ -916,14 +1032,21 @@ export const HomeClient: React.FC<HomeClientProps> = ({
               )}
 
               <div className="pt-3 pb-1 flex justify-center">
-                <Link
-                  href="/companies"
-                  className="apple-press inline-flex items-center gap-2 px-4 py-2 rounded-xl border border-[var(--border)] bg-[var(--bg-card)] hover:bg-[var(--bg-subtle)] text-xs font-semibold text-emerald-600 dark:text-emerald-400 hover:border-emerald-500/40 transition-all shadow-2xs"
+                <button
+                  type="button"
+                  onClick={() => {
+                    setCategoryFilter('DIRECTORY');
+                    if (typeof window !== 'undefined') {
+                      window.history.replaceState(null, '', '/?tab=directory');
+                    }
+                    window.scrollTo({ top: 400, behavior: 'smooth' });
+                  }}
+                  className="apple-press inline-flex items-center gap-2 px-4 py-2 rounded-xl border border-[var(--border)] bg-[var(--bg-card)] hover:bg-[var(--bg-subtle)] text-xs font-semibold text-emerald-600 dark:text-emerald-400 hover:border-emerald-500/40 transition-all shadow-2xs cursor-pointer"
                 >
                   <Building2 className="w-3.5 h-3.5" />
                   <span>Browse all {companies.length || 660}+ companies in the A–Z Directory</span>
                   <span>&rarr;</span>
-                </Link>
+                </button>
               </div>
             </section>
           )
