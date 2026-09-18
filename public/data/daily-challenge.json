@@ -1,16 +1,15 @@
 {
-  "date": "2026-09-17",
-  "link": "https://leetcode.com/problems/find-two-non-overlapping-sub-arrays-each-with-target-sum/",
-  "id": "1477",
-  "title": "Find Two Non-overlapping Sub-arrays Each With Target Sum",
-  "slug": "find-two-non-overlapping-sub-arrays-each-with-target-sum",
-  "difficulty": "MEDIUM",
+  "date": "2026-09-18",
+  "link": "https://leetcode.com/problems/maximum-number-of-non-overlapping-substrings/",
+  "id": "1520",
+  "title": "Maximum Number of Non-Overlapping Substrings",
+  "slug": "maximum-number-of-non-overlapping-substrings",
+  "difficulty": "HARD",
   "topics": [
-    "Array",
     "Hash Table",
-    "Binary Search",
-    "Dynamic Programming",
-    "Sliding Window"
+    "String",
+    "Greedy",
+    "Sorting"
   ],
-  "fetchedAt": 1789612910368
+  "fetchedAt": 1789698544905
 }
