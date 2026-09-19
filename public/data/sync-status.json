@@ -1,7 +1,7 @@
 {
   "status": "success",
-  "lastSynced": 1789698550141,
-  "lastSyncedISO": "2026-09-18T02:29:10Z",
+  "lastSynced": 1789784923497,
+  "lastSyncedISO": "2026-09-19T02:28:43Z",
   "commitSha": "03850eb+e095c25+03850eb",
   "sources": [
     {
@@ -24,12 +24,12 @@
     },
     {
       "name": "LeetCode Official GraphQL (Company Tags)",
-      "tagsCount": 984,
+      "tagsCount": 983,
       "description": "Live company tags & frequency metadata from LeetCode"
     },
     {
       "name": "LeetCode Live Daily Challenge",
-      "dailyProblem": "#1520 Maximum Number of Non-Overlapping Substrings",
+      "dailyProblem": "#1401 Circle and Rectangle Overlapping",
       "description": "Active 24-hour questionOfToday daily challenge"
     },
     {
@@ -41,5 +41,5 @@
   "companiesCount": 684,
   "uniqueProblemsCount": 3422,
   "sqlProblemsCount": 194,
-  "durationSeconds": 7.15
+  "durationSeconds": 9.85
 }
