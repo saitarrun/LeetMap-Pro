@@ -1,7 +1,7 @@
 {
   "status": "success",
-  "lastSynced": 1789784923497,
-  "lastSyncedISO": "2026-09-19T02:28:43Z",
+  "lastSynced": 1789872006591,
+  "lastSyncedISO": "2026-09-20T02:40:06Z",
   "commitSha": "03850eb+e095c25+03850eb",
   "sources": [
     {
@@ -29,7 +29,7 @@
     },
     {
       "name": "LeetCode Live Daily Challenge",
-      "dailyProblem": "#1401 Circle and Rectangle Overlapping",
+      "dailyProblem": "#3498 Reverse Degree of a String",
       "description": "Active 24-hour questionOfToday daily challenge"
     },
     {
@@ -41,5 +41,5 @@
   "companiesCount": 684,
   "uniqueProblemsCount": 3422,
   "sqlProblemsCount": 194,
-  "durationSeconds": 9.85
+  "durationSeconds": 8.17
 }
