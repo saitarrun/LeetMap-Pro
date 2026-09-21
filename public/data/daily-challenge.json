@@ -1,13 +1,14 @@
 {
-  "date": "2026-09-20",
-  "link": "https://leetcode.com/problems/reverse-degree-of-a-string/",
-  "id": "3498",
-  "title": "Reverse Degree of a String",
-  "slug": "reverse-degree-of-a-string",
-  "difficulty": "EASY",
+  "date": "2026-09-21",
+  "link": "https://leetcode.com/problems/find-x-value-of-array-i/",
+  "id": "3524",
+  "title": "Find X Value of Array I",
+  "slug": "find-x-value-of-array-i",
+  "difficulty": "MEDIUM",
   "topics": [
-    "String",
-    "Simulation"
+    "Array",
+    "Math",
+    "Dynamic Programming"
   ],
-  "fetchedAt": 1789872000474
+  "fetchedAt": 1789958194486
 }
