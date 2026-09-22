@@ -1,7 +1,7 @@
 {
   "status": "success",
-  "lastSynced": 1789958200841,
-  "lastSyncedISO": "2026-09-21T02:36:40Z",
+  "lastSynced": 1790044705663,
+  "lastSyncedISO": "2026-09-22T02:38:25Z",
   "commitSha": "03850eb+e095c25+03850eb",
   "sources": [
     {
@@ -29,7 +29,7 @@
     },
     {
       "name": "LeetCode Live Daily Challenge",
-      "dailyProblem": "#3524 Find X Value of Array I",
+      "dailyProblem": "#3525 Find X Value of Array II",
       "description": "Active 24-hour questionOfToday daily challenge"
     },
     {
@@ -41,5 +41,5 @@
   "companiesCount": 684,
   "uniqueProblemsCount": 3422,
   "sqlProblemsCount": 194,
-  "durationSeconds": 9.58
+  "durationSeconds": 7.4
 }

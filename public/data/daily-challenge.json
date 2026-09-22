@@ -1,14 +1,14 @@
 {
-  "date": "2026-09-21",
-  "link": "https://leetcode.com/problems/find-x-value-of-array-i/",
-  "id": "3524",
-  "title": "Find X Value of Array I",
-  "slug": "find-x-value-of-array-i",
-  "difficulty": "MEDIUM",
+  "date": "2026-09-22",
+  "link": "https://leetcode.com/problems/find-x-value-of-array-ii/",
+  "id": "3525",
+  "title": "Find X Value of Array II",
+  "slug": "find-x-value-of-array-ii",
+  "difficulty": "HARD",
   "topics": [
     "Array",
     "Math",
-    "Dynamic Programming"
+    "Segment Tree"
   ],
-  "fetchedAt": 1789958194486
+  "fetchedAt": 1790044699929
 }
