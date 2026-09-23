@@ -1,7 +1,7 @@
 {
   "status": "success",
-  "lastSynced": 1790044705663,
-  "lastSyncedISO": "2026-09-22T02:38:25Z",
+  "lastSynced": 1790131138612,
+  "lastSyncedISO": "2026-09-23T02:38:58Z",
   "commitSha": "03850eb+e095c25+03850eb",
   "sources": [
     {
@@ -29,7 +29,7 @@
     },
     {
       "name": "LeetCode Live Daily Challenge",
-      "dailyProblem": "#3525 Find X Value of Array II",
+      "dailyProblem": "#1658 Minimum Operations to Reduce X to Zero",
       "description": "Active 24-hour questionOfToday daily challenge"
     },
     {
@@ -41,5 +41,5 @@
   "companiesCount": 684,
   "uniqueProblemsCount": 3422,
   "sqlProblemsCount": 194,
-  "durationSeconds": 7.4
+  "durationSeconds": 9.58
 }
