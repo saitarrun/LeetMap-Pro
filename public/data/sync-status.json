@@ -1,7 +1,7 @@
 {
   "status": "success",
-  "lastSynced": 1790131138612,
-  "lastSyncedISO": "2026-09-23T02:38:58Z",
+  "lastSynced": 1790216900680,
+  "lastSyncedISO": "2026-09-24T02:28:20Z",
   "commitSha": "03850eb+e095c25+03850eb",
   "sources": [
     {
@@ -29,7 +29,7 @@
     },
     {
       "name": "LeetCode Live Daily Challenge",
-      "dailyProblem": "#1658 Minimum Operations to Reduce X to Zero",
+      "dailyProblem": "#3550 Smallest Index With Digit Sum Equal to Index",
       "description": "Active 24-hour questionOfToday daily challenge"
     },
     {
@@ -41,5 +41,5 @@
   "companiesCount": 684,
   "uniqueProblemsCount": 3422,
   "sqlProblemsCount": 194,
-  "durationSeconds": 9.58
+  "durationSeconds": 9.01
 }
