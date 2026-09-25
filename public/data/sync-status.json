@@ -1,7 +1,7 @@
 {
   "status": "success",
-  "lastSynced": 1790216900680,
-  "lastSyncedISO": "2026-09-24T02:28:20Z",
+  "lastSynced": 1790304307105,
+  "lastSyncedISO": "2026-09-25T02:45:07Z",
   "commitSha": "03850eb+e095c25+03850eb",
   "sources": [
     {
@@ -29,7 +29,7 @@
     },
     {
       "name": "LeetCode Live Daily Challenge",
-      "dailyProblem": "#3550 Smallest Index With Digit Sum Equal to Index",
+      "dailyProblem": "#1096 Brace Expansion II",
       "description": "Active 24-hour questionOfToday daily challenge"
     },
     {
@@ -41,5 +41,5 @@
   "companiesCount": 684,
   "uniqueProblemsCount": 3422,
   "sqlProblemsCount": 194,
-  "durationSeconds": 9.01
+  "durationSeconds": 8.99
 }
