@@ -1,7 +1,7 @@
 {
   "status": "success",
-  "lastSynced": 1790304307105,
-  "lastSyncedISO": "2026-09-25T02:45:07Z",
+  "lastSynced": 1790390936791,
+  "lastSyncedISO": "2026-09-26T02:48:56Z",
   "commitSha": "03850eb+e095c25+03850eb",
   "sources": [
     {
@@ -29,7 +29,7 @@
     },
     {
       "name": "LeetCode Live Daily Challenge",
-      "dailyProblem": "#1096 Brace Expansion II",
+      "dailyProblem": "#1807 Evaluate the Bracket Pairs of a String",
       "description": "Active 24-hour questionOfToday daily challenge"
     },
     {
@@ -41,5 +41,5 @@
   "companiesCount": 684,
   "uniqueProblemsCount": 3422,
   "sqlProblemsCount": 194,
-  "durationSeconds": 8.99
+  "durationSeconds": 7.26
 }
