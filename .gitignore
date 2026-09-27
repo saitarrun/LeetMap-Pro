@@ -42,3 +42,4 @@ next-env.d.ts
 
 # user storage data
 /data/user-progress/
+.seo-cache/

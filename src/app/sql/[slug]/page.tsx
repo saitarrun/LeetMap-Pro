@@ -56,6 +56,9 @@ export async function generateMetadata({ params }: PageProps) {
       title: `${company.name} SQL Questions | LeetMap Pro`,
       description,
     },
+    robots: sqlCount <= 5
+      ? { index: false, follow: true }
+      : { index: true, follow: true },
   };
 }
 

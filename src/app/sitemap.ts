@@ -4,6 +4,7 @@ import path from 'path';
 import { COMPANY_ALIASES } from '@/utils/aliases';
 
 const BASE_URL = 'https://www.leetmap-pro.com';
+const MIN_INDEXABLE_COMPANY_PROBLEMS = 6;
 
 export default function sitemap(): MetadataRoute.Sitemap {
   // Keep sitemap timestamps tied to the dataset publication instead of the
@@ -96,7 +97,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
     if (fs.existsSync(companiesPath)) {
       const companies: { slug: string; total: number }[] = JSON.parse(fs.readFileSync(companiesPath, 'utf8'));
       for (const comp of companies) {
-        if (comp.slug && !COMPANY_ALIASES[comp.slug]) {
+        if (
+          comp.slug &&
+          !COMPANY_ALIASES[comp.slug] &&
+          comp.total >= MIN_INDEXABLE_COMPANY_PROBLEMS
+        ) {
           companyPages.push({
             url: `${BASE_URL}/company/${comp.slug}`,
             lastModified: currentDate,
@@ -115,9 +120,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
   try {
     const sqlPath = path.join(process.cwd(), 'public', 'data', 'sql-companies.json');
     if (fs.existsSync(sqlPath)) {
-      const sqlCompanies: { slug: string }[] = JSON.parse(fs.readFileSync(sqlPath, 'utf8'));
+      const sqlCompanies: { slug: string; sqlTotal?: number }[] = JSON.parse(fs.readFileSync(sqlPath, 'utf8'));
       for (const comp of sqlCompanies) {
-        if (comp.slug) {
+        if (comp.slug && (comp.sqlTotal ?? 0) >= MIN_INDEXABLE_COMPANY_PROBLEMS) {
           sqlPages.push({
             url: `${BASE_URL}/sql/${comp.slug}`,
             lastModified: currentDate,

@@ -99,6 +99,9 @@ export async function generateMetadata({ params }: PageProps) {
       title: `${company.name} LeetCode Questions | LeetMap Pro`,
       description,
     },
+    robots: company.total <= 5
+      ? { index: false, follow: true }
+      : { index: true, follow: true },
   };
 }
 
@@ -205,6 +208,16 @@ export default async function CompanyPage({ params }: PageProps) {
 
   const topProblems = (company.windows?.find((w) => w.key === 'all')?.problems || []).slice(0, 20);
   const topThreeProblems = topProblems.slice(0, 3).map((p) => p.title).join(', ') || 'Two Sum, Add Two Numbers, LRU Cache';
+  const allTimeProblems = company.windows?.find((w) => w.key === 'all')?.problems || [];
+  const recentProblems = company.windows?.find((w) => w.key === '30_days')?.problems || [];
+  const topicCounts = new Map<string, number>();
+  for (const problem of allTimeProblems) {
+    for (const topic of problem.topics || []) topicCounts.set(topic, (topicCounts.get(topic) || 0) + 1);
+  }
+  const topTopics = [...topicCounts.entries()].sort((a, b) => b[1] - a[1]).slice(0, 4);
+  const updatedLabel = syncStatus?.lastSyncedISO
+    ? new Intl.DateTimeFormat('en', { dateStyle: 'medium', timeZone: 'UTC' }).format(new Date(syncStatus.lastSyncedISO))
+    : 'the latest available dataset';
 
   const itemListJsonLd = {
     '@context': 'https://schema.org',
@@ -301,6 +314,18 @@ export default async function CompanyPage({ params }: PageProps) {
                 <p className="mt-2 text-sm text-[var(--text-muted)] leading-relaxed">
                   Software engineering and technical interviews at {company.name} emphasize real-world problem solving, algorithmic efficiency, and scalable data structure design. The curated dataset above contains {company.total} verified LeetCode problems, categorized by frequency and filtered across recent interview seasons.
                 </p>
+              </div>
+
+              <div className="rounded-2xl border border-[var(--border)] bg-[var(--bg-subtle)]/40 p-4 sm:p-5">
+                <h3 className="text-sm font-semibold text-[var(--text-main)]">How to prioritize {company.name} preparation</h3>
+                <p className="mt-2 text-xs text-[var(--text-muted)] leading-relaxed">
+                  Start with the {recentProblems.length} questions reported in the last 30 days, then work through the highest-frequency topics{topTopics.length ? ` (${topTopics.map(([topic]) => topic).join(', ')})` : ''}. This page tracks {company.total} community-verified questions across {company.easy} Easy, {company.medium} Medium, and {company.hard} Hard problems. Data refreshed {updatedLabel}.
+                </p>
+                <div className="mt-3 flex flex-wrap gap-2 text-xs">
+                  <Link href="/patterns" className="rounded-full border border-[var(--border)] px-3 py-1.5 font-medium text-[var(--text-main)] hover:bg-[var(--bg-hover)]">Browse DSA patterns</Link>
+                  <Link href="/strategy" className="rounded-full border border-[var(--border)] px-3 py-1.5 font-medium text-[var(--text-main)] hover:bg-[var(--bg-hover)]">Follow the strategy roadmap</Link>
+                  {company.sqlTotal ? <Link href={`/sql/${safeSlug}`} className="rounded-full border border-[var(--border)] px-3 py-1.5 font-medium text-[var(--text-main)] hover:bg-[var(--bg-hover)]">Practice {company.name} SQL</Link> : null}
+                </div>
               </div>
 
               {company.total <= 5 && (
