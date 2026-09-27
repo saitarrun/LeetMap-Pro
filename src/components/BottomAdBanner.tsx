@@ -2,6 +2,7 @@
 
 import React, { useEffect, useRef } from 'react';
 import { usePathname } from 'next/navigation';
+import Script from 'next/script';
 
 interface BottomAdBannerProps {
   slotId?: string;
@@ -73,6 +74,12 @@ export const BottomAdBanner: React.FC<BottomAdBannerProps> = ({
       aria-label="Advertisement"
       className={`w-full max-w-5xl mx-auto px-4 sm:px-6 my-6 sm:my-8 ${className}`}
     >
+      <Script
+        id="google-adsense-community"
+        strategy="afterInteractive"
+        src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930264634833391"
+        crossOrigin="anonymous"
+      />
       <div className="relative rounded-2xl border border-[var(--border)] bg-[var(--bg-card)]/70 backdrop-blur-sm p-3 sm:p-4 text-center overflow-hidden transition-colors shadow-[0_1px_3px_rgba(0,0,0,0.03)]">
         {/* Subtle, minimalist disclosure tag */}
         <div className="flex items-center justify-between pb-2 mb-2 border-b border-[var(--border)]/60 text-[10px] font-medium tracking-wider text-[var(--text-muted)] uppercase">

@@ -179,12 +179,6 @@ export default async function RootLayout({
         <link rel="dns-prefetch" href="https://img.clerk.com" />
         {/* AdSense */}
         <meta name="google-adsense-account" content="ca-pub-5930264634833391" />
-        <Script
-          id="google-adsense"
-          strategy="afterInteractive"
-          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930264634833391"
-          crossOrigin="anonymous"
-        />
         <Script src="/theme-init.js" strategy="beforeInteractive" />
         <script
           type="application/ld+json"
