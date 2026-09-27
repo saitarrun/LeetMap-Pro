@@ -12,6 +12,7 @@ export const BottomAdBanner: React.FC<BottomAdBannerProps> = ({
   slotId,
   className = '',
 }) => {
+  const configuredSlotId = slotId || process.env.NEXT_PUBLIC_ADSENSE_SLOT;
   const pathname = usePathname();
   const adRef = useRef<HTMLModElement | null>(null);
   const pushedRef = useRef(false);
@@ -86,15 +87,17 @@ export const BottomAdBanner: React.FC<BottomAdBannerProps> = ({
 
         {/* AdSense In-feed / Display Unit */}
         <div className="min-h-[90px] sm:min-h-[100px] flex items-center justify-center overflow-hidden">
-          <ins
-            ref={adRef}
-            className="adsbygoogle"
-            style={{ display: 'block', minWidth: '280px', width: '100%', textAlign: 'center' }}
-            data-ad-client="ca-pub-5930264634833391"
-            {...(slotId ? { 'data-ad-slot': slotId } : {})}
-            data-ad-format="auto"
-            data-full-width-responsive="true"
-          />
+          {configuredSlotId ? (
+            <ins
+              ref={adRef}
+              className="adsbygoogle"
+              style={{ display: 'block', minWidth: '280px', width: '100%', textAlign: 'center' }}
+              data-ad-client="ca-pub-5930264634833391"
+              data-ad-slot={configuredSlotId}
+              data-ad-format="auto"
+              data-full-width-responsive="true"
+            />
+          ) : null}
         </div>
       </div>
     </aside>

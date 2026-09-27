@@ -6,7 +6,21 @@ import { COMPANY_ALIASES } from '@/utils/aliases';
 const BASE_URL = 'https://www.leetmap-pro.com';
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const currentDate = new Date();
+  // Keep sitemap timestamps tied to the dataset publication instead of the
+  // sitemap request time. Marking every URL as changed on every crawl causes
+  // Google to repeatedly rediscover the whole catalog without a real update.
+  let currentDate = new Date('2026-01-01T00:00:00.000Z');
+  try {
+    const statusPath = path.join(process.cwd(), 'public', 'data', 'sync-status.json');
+    if (fs.existsSync(statusPath)) {
+      const status = JSON.parse(fs.readFileSync(statusPath, 'utf8')) as { lastSyncedISO?: unknown };
+      if (typeof status.lastSyncedISO === 'string' && Number.isFinite(Date.parse(status.lastSyncedISO))) {
+        currentDate = new Date(status.lastSyncedISO);
+      }
+    }
+  } catch {
+    // Keep a stable fallback timestamp if sync metadata is unavailable.
+  }
 
   // 1. Core static pages
   const staticPages: MetadataRoute.Sitemap = [

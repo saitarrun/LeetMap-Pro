@@ -14,15 +14,12 @@ import {
   Calendar,
   Building2,
   Layers,
-  Award,
   ShieldCheck,
   ArrowLeft,
   X,
   ChevronRight,
   ChevronDown,
-  Target,
   Info,
-  Sparkles,
   Trophy,
 } from 'lucide-react';
 import { toast } from 'sonner';

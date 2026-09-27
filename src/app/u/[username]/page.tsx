@@ -63,7 +63,7 @@ export default async function PublicProfilePage({ params }: PageProps) {
     notFound();
   }
 
-  const { user, stats } = profileData;
+  const { user } = profileData;
 
   const profileJsonLd = {
     '@context': 'https://schema.org',

@@ -1,7 +1,5 @@
 import { ClerkProvider } from "@clerk/nextjs";
-import { headers } from "next/headers";
 import Script from "next/script";
-import { connection } from "next/server";
 import type { Metadata, Viewport } from "next";
 import { Toaster } from "sonner";
 import { AuthProvider } from "@/context/AuthContext";
@@ -165,9 +163,6 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  await connection();
-  const nonce = (await headers()).get('x-nonce') ?? undefined;
-
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
@@ -186,12 +181,11 @@ export default async function RootLayout({
         <meta name="google-adsense-account" content="ca-pub-5930264634833391" />
         <Script
           id="google-adsense"
-          strategy="lazyOnload"
+          strategy="afterInteractive"
           src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930264634833391"
           crossOrigin="anonymous"
-          nonce={nonce}
         />
-        <Script src="/theme-init.js" strategy="beforeInteractive" nonce={nonce} />
+        <Script src="/theme-init.js" strategy="beforeInteractive" />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
@@ -199,8 +193,6 @@ export default async function RootLayout({
       </head>
       <body className="antialiased selection:bg-[var(--text-main)]/15 selection:text-[var(--text-main)]">
         <ClerkProvider
-          dynamic
-          nonce={nonce}
           appearance={{
             options: {
               unsafe_disableDevelopmentModeWarnings: true,

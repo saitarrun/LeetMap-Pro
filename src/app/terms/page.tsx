@@ -12,7 +12,6 @@ import {
   Award,
   Share2,
   HelpCircle,
-  Flame,
 } from 'lucide-react';
 
 export const metadata = {

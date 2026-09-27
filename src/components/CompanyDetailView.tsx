@@ -22,7 +22,6 @@ import {
   Tag,
   ArrowUpDown,
   ChevronDown,
-  SlidersHorizontal,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { CompanyDetail, Problem } from '@/types';

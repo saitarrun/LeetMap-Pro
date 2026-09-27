@@ -289,7 +289,7 @@ export async function fetchPublicUserProfile(rawUsername: string): Promise<Publi
 
     if (dailyHistory[todayStr]) {
       currentStreak = 1;
-      let check = new Date(today);
+      const check = new Date(today);
       while (true) {
         check.setDate(check.getDate() - 1);
         const dateStr = `${check.getFullYear()}-${String(check.getMonth() + 1).padStart(2, '0')}-${String(check.getDate()).padStart(2, '0')}`;
@@ -301,7 +301,7 @@ export async function fetchPublicUserProfile(rawUsername: string): Promise<Publi
       }
     } else if (dailyHistory[yesterdayStr]) {
       currentStreak = 1;
-      let check = new Date(yesterday);
+      const check = new Date(yesterday);
       while (true) {
         check.setDate(check.getDate() - 1);
         const dateStr = `${check.getFullYear()}-${String(check.getMonth() + 1).padStart(2, '0')}-${String(check.getDate()).padStart(2, '0')}`;

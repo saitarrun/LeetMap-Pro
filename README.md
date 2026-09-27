@@ -140,6 +140,15 @@ npm run build
 npm run start
 ```
 
+### Production data sync
+
+The `/api/sync` endpoint does not run the generator directly on Vercel because
+serverless filesystems are ephemeral. Configure `SYNC_RUNNER_URL` (and, if
+needed, `SYNC_RUNNER_TOKEN`) to point at a persistent CI or worker job that
+runs `npm run sync`, commits the generated `public/data` files, and deploys the
+updated application. Without this setting, production sync requests return a
+clear `503` instead of reporting a misleading success.
+
 ---
 
 ## 🔄 API Routes

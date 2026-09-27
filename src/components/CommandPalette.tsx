@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import { BookOpen, Building2, Command, Database, GitBranch, Search } from 'lucide-react';
 
@@ -51,14 +51,14 @@ export function CommandPalette() {
     return () => { window.clearTimeout(timer); controller.abort(); };
   }, [query]);
 
-  const selectItem = (href: string) => {
+  const selectItem = useCallback((href: string) => {
     setOpen(false);
     if (href.startsWith('http')) {
       window.open(href, '_blank', 'noopener,noreferrer');
     } else {
       router.push(href);
     }
-  };
+  }, [router]);
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -91,7 +91,7 @@ export function CommandPalette() {
       window.removeEventListener('keydown', handleKeyDown);
       window.removeEventListener('leetmap-open-command-palette', handleOpen);
     };
-  }, [open, currentItems, selectedIndex]);
+  }, [open, currentItems, selectedIndex, selectItem]);
 
   useEffect(() => {
     if (open) {

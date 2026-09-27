@@ -4,7 +4,7 @@ import React from 'react';
 import Link from 'next/link';
 import { UserProfile, Show, RedirectToSignIn, ClerkLoading, ClerkLoaded } from '@clerk/nextjs';
 import { Header } from '@/components/Header';
-import { ArrowLeft, Shield, Sparkles } from 'lucide-react';
+import { ArrowLeft, Shield } from 'lucide-react';
 
 export default function AccountPage() {
   return (

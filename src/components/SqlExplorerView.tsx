@@ -75,7 +75,6 @@ export const SqlExplorerView: React.FC<SqlExplorerViewProps> = ({ catalog }) => 
       if (searchQuery.trim()) {
         const q = searchQuery.toLowerCase().trim();
         const cleanNum = q.replace(/^#/, '');
-        const isNum = /^\d+$/.test(cleanNum);
         const matchesId = p.id && (p.id === cleanNum || (cleanNum.length >= 2 && p.id.startsWith(cleanNum)));
         const matchesTitle = p.title.toLowerCase().includes(q);
         const matchesTopic = p.topics.some((t) => t.toLowerCase().includes(q));

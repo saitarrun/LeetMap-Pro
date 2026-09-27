@@ -2,65 +2,14 @@ import { MetadataRoute } from 'next';
 
 export default function robots(): MetadataRoute.Robots {
   return {
-    rules: [
-      {
-        userAgent: '*',
-        allow: [
-          '/',
-          '/llms.txt',
-          '/api/companies',
-          '/api/daily-challenge',
-        ],
-        disallow: [
-          '/api/',
-          '/out/',
-          '/account',
-          '/settings',
-          '/sign-in',
-          '/sign-up',
-        ],
-      },
-      {
-        userAgent: [
-          'ChatGPT-User',
-          'GPTBot',
-          'OAI-SearchBot',
-          'ClaudeBot',
-          'Claude-User',
-          'Claude-SearchBot',
-          'anthropic-ai',
-          'PerplexityBot',
-          'Perplexity-User',
-          'Googlebot',
-          'Google-Extended',
-          'Applebot',
-          'Applebot-Extended',
-          'Meta-ExternalAgent',
-          'FacebookBot',
-          'Amazonbot',
-          'cohere-ai',
-          'Bytespider',
-          'CCBot',
-        ],
-        allow: [
-          '/',
-          '/llms.txt',
-          '/company/',
-          '/patterns/',
-          '/sql/',
-          '/strategy',
-        ],
-        disallow: [
-          '/out/',
-          '/account',
-          '/settings',
-          '/sign-in',
-          '/sign-up',
-        ],
-      },
-    ],
+    // One broad rule avoids conflicting user-agent groups. Specific bots now
+    // inherit the same crawl permissions as Googlebot and other crawlers.
+    rules: {
+      userAgent: '*',
+      allow: ['/', '/llms.txt', '/api/companies', '/api/daily-challenge'],
+      disallow: ['/api/', '/out/', '/account', '/settings', '/sign-in', '/sign-up'],
+    },
     sitemap: 'https://www.leetmap-pro.com/sitemap.xml',
   };
 }
-
 

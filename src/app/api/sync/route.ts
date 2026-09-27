@@ -111,6 +111,43 @@ export async function POST(request: Request) {
   }
 
   const now = Date.now();
+
+  // Vercel serverless filesystems are ephemeral: running the generator here
+  // would report success while losing the generated public/data files when the
+  // invocation ends. Production sync must be performed by a persistent CI job
+  // (or another explicitly configured runner) that commits/deploys the result.
+  if (process.env.NODE_ENV === 'production' && !process.env.SYNC_RUNNER_URL) {
+    return NextResponse.json(
+      { error: 'Sync runner is not configured. Set SYNC_RUNNER_URL to a persistent data-publishing job.' },
+      { status: 503 }
+    );
+  }
+
+  if (process.env.SYNC_RUNNER_URL) {
+    try {
+      const runnerResponse = await fetch(process.env.SYNC_RUNNER_URL, {
+        method: 'POST',
+        headers: {
+          'content-type': 'application/json',
+          ...(process.env.SYNC_RUNNER_TOKEN
+            ? { authorization: `Bearer ${process.env.SYNC_RUNNER_TOKEN}` }
+            : {}),
+        },
+        body: JSON.stringify({ source: 'leetmap-pro', requestedAt: new Date(now).toISOString() }),
+        cache: 'no-store',
+      });
+      if (!runnerResponse.ok) {
+        return NextResponse.json({ error: 'Configured sync runner rejected the request' }, { status: 502 });
+      }
+      return NextResponse.json(
+        { success: true, queued: true },
+        { status: 202, headers: { 'Cache-Control': 'no-store' } }
+      );
+    } catch (error) {
+      console.error('Failed to invoke configured sync runner:', error);
+      return NextResponse.json({ error: 'Configured sync runner is unavailable' }, { status: 503 });
+    }
+  }
   const lastSync = lastSyncByUser.get(userId) || 0;
   if (syncInProgress || now - lastSync < SYNC_COOLDOWN_MS) {
     return NextResponse.json(

@@ -13,7 +13,6 @@ import {
   Share2,
   Globe2,
   Database,
-  CheckCircle2,
 } from 'lucide-react';
 
 export const metadata = {
