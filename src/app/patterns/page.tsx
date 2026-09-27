@@ -1,4 +1,4 @@
-import React, { Suspense } from 'react';
+import React from 'react';
 import fs from 'fs';
 import path from 'path';
 import { PatternSummary, SyncStatus } from '@/types';
@@ -103,9 +103,7 @@ export default async function PatternsPage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify([breadcrumbJsonLd, itemListJsonLd]) }}
       />
-      <Suspense fallback={null}>
-        <PatternsHubClient patterns={patterns} patternProblems={patternProblems} syncStatus={syncStatus} />
-      </Suspense>
+      <PatternsHubClient patterns={patterns} patternProblems={patternProblems} syncStatus={syncStatus} />
     </>
   );
 }

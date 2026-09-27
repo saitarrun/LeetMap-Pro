@@ -34,7 +34,11 @@ export default clerkMiddleware(
   },
   {
     contentSecurityPolicy: {
-      strict: true,
+      // The public site is statically rendered for SEO and performance. A strict
+      // nonce-based CSP only works with per-request dynamic rendering; enabling it
+      // here blocks Next.js' static client bundles and leaves client-only routes
+      // (such as /patterns) blank.
+      strict: false,
       directives: {
         'base-uri': ["'self'"],
         'frame-ancestors': ["'none'"],

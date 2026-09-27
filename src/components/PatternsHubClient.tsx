@@ -2,7 +2,7 @@
 
 import React, { useState, useMemo, useEffect, useRef } from 'react';
 import Link from 'next/link';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import {
   Search,
   X,
@@ -70,19 +70,29 @@ export const PatternsHubClient: React.FC<PatternsHubClientProps> = ({
   syncStatus,
 }) => {
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const categoryParam = searchParams?.get('category') || searchParams?.get('group') || searchParams?.get('filter');
-  const patternParam = searchParams?.get('pattern') || null;
-
   const [searchQuery, setSearchQuery] = useState('');
   const [internalCategory, setInternalCategory] = useState<CategoryFilterType>('ALL');
+  const [patternParam, setPatternParam] = useState<string | null>(null);
   const [sortBy, setSortBy] = useState<'total' | 'name' | 'hard'>('total');
   const solvedSet = useSolvedProblems();
 
-  // Derive categoryFilter directly from URL searchParams if present, or internal state
-  const categoryFilter: CategoryFilterType = categoryParam
-    ? normalizeCategory(categoryParam)
-    : internalCategory;
+  const categoryFilter = internalCategory;
+
+  // Reading URL params with useSearchParams would opt this entire static page into
+  // client-only rendering. Sync them after hydration instead so the complete catalog
+  // remains present in the initial HTML for users and search engines.
+  useEffect(() => {
+    const syncFiltersFromUrl = () => {
+      const params = new URLSearchParams(window.location.search);
+      const categoryParam = params.get('category') || params.get('group') || params.get('filter');
+      setInternalCategory(normalizeCategory(categoryParam));
+      setPatternParam(params.get('pattern'));
+    };
+
+    syncFiltersFromUrl();
+    window.addEventListener('popstate', syncFiltersFromUrl);
+    return () => window.removeEventListener('popstate', syncFiltersFromUrl);
+  }, []);
 
   // Auto-scroll to target pattern card when navigating directly from roadmap
   useEffect(() => {
@@ -99,7 +109,8 @@ export const PatternsHubClient: React.FC<PatternsHubClientProps> = ({
 
   const handleCategoryChange = (newCat: CategoryFilterType) => {
     setInternalCategory(newCat);
-    const params = new URLSearchParams(searchParams?.toString() || '');
+    setPatternParam(null);
+    const params = new URLSearchParams(window.location.search);
     if (newCat === 'ALL') {
       params.delete('category');
       params.delete('group');
