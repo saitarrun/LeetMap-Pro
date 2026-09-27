@@ -30,7 +30,7 @@ export const metadata: Metadata = {
     default: 'LeetMap Pro | Company-Wise LeetCode & SQL Questions',
     template: '%s | LeetMap Pro',
   },
-  description: 'Practice verified company-wise LeetCode and SQL interview questions from 680+ top tech firms (Google, Meta, Amazon, Microsoft, Apple), ranked by frequency and 30-day recency. 100% free alternative to LeetCode Premium.',
+  description: 'Practice verified company-wise LeetCode and SQL interview questions from 660+ top tech firms (Google, Meta, Amazon, Microsoft, Apple), ranked by frequency and 30-day recency. 100% free alternative to LeetCode Premium.',
   keywords: [
     'leetmap',
     'LeetMap',
@@ -96,14 +96,14 @@ export const metadata: Metadata = {
     url: 'https://www.leetmap-pro.com',
     siteName: 'LeetMap Pro',
     title: 'LeetMap Pro | Company-Wise LeetCode & SQL Questions',
-    description: 'Browse coding interview problems actually asked by 680+ tech companies, ranked by frequency and recency. Free interactive strategy roadmap and curated SQL problems.',
+    description: 'Browse coding interview problems actually asked by 660+ tech companies, ranked by frequency and recency. Free interactive strategy roadmap and curated SQL problems.',
   },
   twitter: {
     card: 'summary_large_image',
     site: '@saitarrun',
     creator: '@saitarrun',
     title: 'LeetMap Pro | Company-Wise LeetCode & SQL Questions',
-    description: 'Browse coding interview problems actually asked by 680+ tech companies, ranked by frequency and recency.',
+    description: 'Browse coding interview problems actually asked by 660+ tech companies, ranked by frequency and recency.',
   },
   verification: {
     google: 'zQTd5IdhklFb7tgLr2_5ixhggoG5rfAD-NnMdoJ4Ijk',

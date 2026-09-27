@@ -745,7 +745,7 @@ export const PublicProfileView: React.FC<PublicProfileViewProps> = ({ initialDat
               href="/"
               className="apple-press text-xs text-[var(--text-muted)] hover:text-[var(--text-main)] transition-colors inline-flex items-center gap-1"
             >
-              <span>View all 680+</span>
+              <span>View all 660+</span>
               <ExternalLink className="w-3 h-3" />
             </Link>
           </div>

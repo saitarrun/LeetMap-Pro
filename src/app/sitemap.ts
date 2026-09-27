@@ -90,7 +90,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     console.error('Failed to load patterns for sitemap:', err);
   }
 
-  // 3. Company detail pages (680+)
+  // 3. Company detail pages (660+)
   const companyPages: MetadataRoute.Sitemap = [];
   try {
     const companiesPath = path.join(process.cwd(), 'public', 'data', 'companies.json');

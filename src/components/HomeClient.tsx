@@ -95,7 +95,7 @@ export const HomeClient: React.FC<HomeClientProps> = ({
         .finally(() => setIsLoadingCompanies(false));
     };
 
-    // Defer populating full 680+ dataset until browser finishes initial hydration & paint
+    // Defer populating the full 660+ dataset until browser finishes initial hydration & paint
     const idleId = typeof window !== 'undefined' && 'requestIdleCallback' in window
       ? (window as unknown as { requestIdleCallback: (cb: () => void, opts?: { timeout: number }) => number }).requestIdleCallback(loadCompanies, { timeout: 1500 })
       : setTimeout(loadCompanies, 800);
@@ -1069,7 +1069,7 @@ export const HomeClient: React.FC<HomeClientProps> = ({
                 How to practice company-wise LeetCode questions for free?
               </h3>
               <p className="text-xs text-[var(--text-muted)] leading-relaxed font-normal">
-                LeetMap Pro organizes thousands of verified coding interview problems asked by 680+ tech companies (including Google, Meta, Amazon, Apple, Microsoft, Citadel, Bloomberg), ranked by real frequency and recency over 30 days, 3 months, and 6 months with zero paywall.
+                LeetMap Pro organizes thousands of verified coding interview problems asked by 660+ tech companies (including Google, Meta, Amazon, Apple, Microsoft, Citadel, Bloomberg), ranked by real frequency and recency over 30 days, 3 months, and 6 months with zero paywall.
               </p>
             </div>
 

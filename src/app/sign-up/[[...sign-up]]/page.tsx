@@ -44,7 +44,7 @@ export default function SignUpPage() {
               Create your account
             </h1>
             <p className="text-xs text-[var(--text-muted)] max-w-sm mx-auto font-normal leading-relaxed">
-              Join thousands of engineers practicing interview problems asked by 680+ tech companies.
+              Join thousands of engineers practicing interview problems asked by 660+ tech companies.
             </p>
           </div>
 

@@ -4,7 +4,7 @@ export default function manifest(): MetadataRoute.Manifest {
   return {
     name: 'LeetMap Pro',
     short_name: 'LeetMap Pro',
-    description: 'Browse coding interview problems asked by 680+ tech companies, ranked by frequency and recency. Free interactive strategy roadmap and SQL interview hub.',
+    description: 'Browse coding interview problems asked by 660+ tech companies, ranked by frequency and recency. Free interactive strategy roadmap and SQL interview hub.',
     start_url: '/',
     display: 'standalone',
     background_color: '#09090b',
@@ -14,7 +14,7 @@ export default function manifest(): MetadataRoute.Manifest {
       {
         name: 'Companies',
         short_name: 'Companies',
-        description: 'Browse 680+ company-wise question lists',
+        description: 'Browse 660+ company-wise question lists',
         url: '/',
         icons: [{ src: '/icon-192.png', sizes: '192x192' }],
       },

@@ -83,7 +83,7 @@ export async function GET(request: Request) {
     const atomXml = `<?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
   <title>LeetMap Pro | Company Wise Leetcode and SQL Questions</title>
-  <subtitle>Browse coding interview problems asked by 680+ tech companies, ranked by frequency and recency.</subtitle>
+  <subtitle>Browse coding interview problems asked by 660+ tech companies, ranked by frequency and recency.</subtitle>
   <link href="${BASE_URL}/feed.xml?format=atom" rel="self" />
   <link href="${BASE_URL}" />
   <id>${BASE_URL}/</id>
@@ -148,7 +148,7 @@ export async function GET(request: Request) {
   <channel>
     <title>LeetMap Pro | Company Wise Leetcode and SQL Questions</title>
     <link>${BASE_URL}</link>
-    <description>Browse coding interview problems asked by 680+ tech companies, ranked by frequency and recency. Free interactive strategy roadmap and curated SQL problems.</description>
+    <description>Browse coding interview problems asked by 660+ tech companies, ranked by frequency and recency. Free interactive strategy roadmap and curated SQL problems.</description>
     <language>en-US</language>
     <lastBuildDate>${pubDate}</lastBuildDate>
     <atom:link href="${BASE_URL}/feed.xml" rel="self" type="application/rss+xml" />

@@ -40,7 +40,7 @@ export default function NotFound() {
             <Home className="w-4 h-4 text-[var(--text-muted)] group-hover:text-emerald-500 transition-colors" />
             <div>
               <div className="text-xs font-semibold text-[var(--text-main)]">Company Directory</div>
-              <div className="text-[11px] text-[var(--text-muted)]">680+ Tech Firms</div>
+              <div className="text-[11px] text-[var(--text-muted)]">660+ Tech Firms</div>
             </div>
           </div>
           <ArrowRight className="w-3.5 h-3.5 text-[var(--text-muted)] group-hover:translate-x-0.5 transition-transform" />
