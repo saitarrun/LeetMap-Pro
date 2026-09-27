@@ -187,6 +187,9 @@ export default async function RootLayout({
       </head>
       <body className="antialiased selection:bg-[var(--text-main)]/15 selection:text-[var(--text-main)]">
         <ClerkProvider
+          signInUrl="/sign-in"
+          signUpUrl="/sign-up"
+          afterSignOutUrl="/"
           appearance={{
             options: {
               unsafe_disableDevelopmentModeWarnings: true,
