@@ -20,7 +20,7 @@ The latest row in the supplied Search Console export reports:
 
 Google discovery has therefore improved from 169 to 193 indexed URLs in the same export, but most previously submitted catalog URLs remain outside the index.
 
-Authenticated Search Console showed the same 193 indexed / 581 not-indexed totals in its last indexing update dated 20 September 2026. Its existing sitemap record was submitted 17 September, last read 25 September, and still reflects the former 764-URL sitemap rather than the new 303-URL quality-gated sitemap.
+Authenticated Search Console showed the same 193 indexed / 581 not-indexed totals in its last indexing update dated 20 September 2026. The new 303-URL quality-gated sitemap was successfully resubmitted on 27 September; Search Console still shows the former 764 discovered-page count until Google reads the replacement file.
 
 ## Verified strengths
 
@@ -31,6 +31,7 @@ Authenticated Search Console showed the same 193 indexed / 581 not-indexed total
 - Titles, descriptions, canonicals, Open Graph metadata, sitemap dates, RSS/Atom dates, and generated social imagery use current dataset values.
 - `robots.txt`, `sitemap.xml`, `llms.txt`, RSS, Atom, `humans.txt`, the About/methodology page, and public JSON APIs expose useful discovery and provenance signals.
 - IndexNow reuses the exact quality-gated sitemap URL set, rejects unauthenticated submissions, and is scheduled after the daily data publication window for Bing and other participating engines.
+- An immediate 303-URL submission was accepted with HTTP 200 by both `api.indexnow.org` and Bing after deployment.
 - GPTBot, OAI-SearchBot, ChatGPT-User, ClaudeBot, PerplexityBot, Google-Extended, CCBot, and Bytespider can retrieve the public site.
 - FAQ structured data on company, SQL, and pattern pages is generated from the same content users can see.
 - Search Console reports 24 valid breadcrumb items, 0 invalid breadcrumb items, and no breadcrumb issues detected in the last 90 days (last updated 25 September 2026).
@@ -41,7 +42,7 @@ Authenticated Search Console showed the same 193 indexed / 581 not-indexed total
 
 ### High: Google index selection backlog
 
-Search Console still lists 526 discovered-not-indexed and 53 crawled-not-indexed URLs. The repository cannot force Google to index a URL. The deployed sitemap should be resubmitted, representative fixed URLs should be inspected, and validation should be started in Search Console. Index coverage must then be monitored over multiple crawls.
+Search Console still lists 526 discovered-not-indexed and 53 crawled-not-indexed URLs. The repository cannot force Google to index a URL. The deployed sitemap has been resubmitted successfully; representative fixed URLs should be inspected and index coverage monitored over multiple crawls after Google processes it.
 
 The examples confirm that the new indexation threshold is aligned with the problem: 7 of the first 10 discovered-not-indexed examples and 9 of the first 10 crawled-not-indexed examples are thin pages now omitted from the sitemap and marked `noindex,follow`. The two redirect examples (`/company/medianet` and `/company/wissen`) are intentional aliases and return permanent 308 redirects to their canonical slugs.
 
@@ -85,5 +86,5 @@ The apex-domain redirect was observed as a temporary redirect at the hosting edg
 
 - No authenticated GA4, CrUX API, DataForSEO, or backlink-provider access was available. Search Console was inspected through its authenticated browser interface.
 - Google Rich Results Test does not provide an automatable authenticated API in this environment; rendered JSON-LD was inspected directly.
-- Search Console exposes examples, but its indexing report is delayed and still describes the former 764-URL sitemap; it cannot validate the newly deployed sitemap until Google processes a resubmission and recrawl.
+- Search Console exposes examples, but its indexing report is delayed and still describes the former 764 discovered-page set; it cannot validate the newly submitted sitemap until Google processes and recrawls it.
 - Rankings and indexation are controlled by search engines; technical compliance and submission do not guarantee inclusion.

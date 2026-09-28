@@ -10,15 +10,16 @@
 - Corrected stale catalog counts, social image text, privacy disclosures, heading order, text contrast, and the AdSense CSP allowlist.
 - Preserved crawl access to noindexed account/auth routes so crawlers can see their page-level directives.
 - Aligned the protected IndexNow submission with the quality-gated sitemap and scheduled it after daily data publication.
+- Submitted all 303 canonical URLs to IndexNow and Bing (HTTP 200) and successfully resubmitted the sitemap in Google Search Console.
 - Deferred AdSense loading and verified the production build, lint, TypeScript, and dependency security audit.
 
 ## P0 — after deployment
 
-1. In Search Console, resubmit `https://www.leetmap-pro.com/sitemap.xml`.
+1. Wait for Search Console to read the resubmitted sitemap and replace its former 764-page discovered count with the 303-page quality-gated set.
 2. Inspect one high-value company URL, one pattern URL, and one SQL URL, then request indexing after confirming the live canonical and rendered HTML.
-3. Start validation for “Crawled – currently not indexed” and “Discovered – currently not indexed.”
+3. Start validation for “Crawled – currently not indexed” and “Discovered – currently not indexed” after the new sitemap is read.
 4. Set the apex-domain redirect to permanent in Vercel’s domain settings.
-5. Re-run Lighthouse and a rendered schema check against the deployed commit.
+5. Re-run the authenticated indexing audit after Google reports a new last-read date.
 
 ## P1 — improve Google’s index selection
 
