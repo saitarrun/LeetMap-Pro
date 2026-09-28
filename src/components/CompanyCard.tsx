@@ -77,9 +77,9 @@ export const CompanyCard: React.FC<CompanyCardProps> = ({
         {/* Company Meta */}
         <div className="min-w-0">
           <div className="flex items-center gap-2">
-            <h3 className="text-sm font-semibold tracking-[-0.015em] text-[var(--text-main)] truncate">
+            <h2 className="text-sm font-semibold tracking-[-0.015em] text-[var(--text-main)] truncate">
               {company.name}
-            </h3>
+            </h2>
             {solvedCount > 0 && (
               <span className="inline-flex items-center gap-0.5 text-[10px] font-medium text-emerald-600 dark:text-emerald-400">
                 <CheckCircle2 className="w-2.5 h-2.5" />
@@ -87,7 +87,7 @@ export const CompanyCard: React.FC<CompanyCardProps> = ({
               </span>
             )}
             {Boolean(company.sqlTotal && company.sqlTotal > 0) && (
-              <span className="text-[10px] text-[var(--text-light)] font-mono">
+              <span className="text-[10px] text-[var(--text-muted)] font-mono">
                 {company.sqlTotal} SQL
               </span>
             )}
@@ -97,7 +97,7 @@ export const CompanyCard: React.FC<CompanyCardProps> = ({
           <div className="flex items-center gap-1.5 mt-0.5 text-xs text-[var(--text-muted)] font-normal">
             <span>{company.total.toLocaleString()} questions</span>
             <span className="opacity-30">·</span>
-            <span className="text-[11px] font-mono text-[var(--text-light)]">
+            <span className="text-[11px] font-mono text-[var(--text-muted)]">
               <span className="text-emerald-600/90 dark:text-emerald-400/90">{company.easy}</span>E{' '}
               <span className="text-amber-600/90 dark:text-amber-400/90">{company.medium}</span>M{' '}
               <span className="text-rose-600/90 dark:text-rose-400/90">{company.hard}</span>H

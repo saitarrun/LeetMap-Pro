@@ -18,8 +18,18 @@ function escapeXml(unsafe: string): string {
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const isAtom = searchParams.get('format') === 'atom';
-  const pubDate = new Date().toUTCString();
-  const isoDate = new Date().toISOString();
+  let publicationDate = new Date('2026-01-01T00:00:00.000Z');
+  try {
+    const statusPath = path.join(process.cwd(), 'public', 'data', 'sync-status.json');
+    const status = JSON.parse(fs.readFileSync(statusPath, 'utf8')) as { lastSyncedISO?: unknown };
+    if (typeof status.lastSyncedISO === 'string' && Number.isFinite(Date.parse(status.lastSyncedISO))) {
+      publicationDate = new Date(status.lastSyncedISO);
+    }
+  } catch {
+    // Keep a stable fallback date when publication metadata is unavailable.
+  }
+  const pubDate = publicationDate.toUTCString();
+  const isoDate = publicationDate.toISOString();
 
   // Load top companies
   const companiesPath = path.join(process.cwd(), 'public', 'data', 'companies.json');
@@ -84,7 +94,7 @@ export async function GET(request: Request) {
 <feed xmlns="http://www.w3.org/2005/Atom">
   <title>LeetMap Pro | Company Wise Leetcode and SQL Questions</title>
   <subtitle>Browse coding interview problems asked by 660+ tech companies, ranked by frequency and recency.</subtitle>
-  <link href="${BASE_URL}/feed.xml?format=atom" rel="self" />
+  <link href="${BASE_URL}/atom.xml" rel="self" />
   <link href="${BASE_URL}" />
   <id>${BASE_URL}/</id>
   <updated>${isoDate}</updated>

@@ -69,10 +69,9 @@ export const metadata: Metadata = {
     address: false,
   },
   alternates: {
-    canonical: '/',
     types: {
       'application/rss+xml': [{ url: 'https://www.leetmap-pro.com/feed.xml', title: 'LeetMap Pro RSS Feed' }],
-      'application/atom+xml': [{ url: 'https://www.leetmap-pro.com/feed.xml?format=atom', title: 'LeetMap Pro Atom Feed' }],
+      'application/atom+xml': [{ url: 'https://www.leetmap-pro.com/atom.xml', title: 'LeetMap Pro Atom Feed' }],
     },
   },
   robots: {
@@ -132,6 +131,7 @@ const jsonLd = [
   {
     '@context': 'https://schema.org',
     '@type': 'WebSite',
+    '@id': 'https://www.leetmap-pro.com/#website',
     name: 'LeetMap Pro',
     alternateName: ['LeetMap', 'LeetMapPro', 'leetmap-pro.com'],
     url: 'https://www.leetmap-pro.com',
@@ -148,6 +148,7 @@ const jsonLd = [
   {
     '@context': 'https://schema.org',
     '@type': 'Organization',
+    '@id': 'https://www.leetmap-pro.com/#organization',
     name: 'LeetMap Pro',
     url: 'https://www.leetmap-pro.com',
     logo: 'https://www.leetmap-pro.com/icon-192.png',
@@ -167,8 +168,8 @@ export default async function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <head>
         {/* RSS/Atom alternate links & author — not handled by Next.js metadata alternates for custom titles */}
-        <link rel="alternate" type="application/rss+xml" title="LeetMap Pro | Latest Interview Questions & Daily Challenges" href="/feed.xml" />
-        <link rel="alternate" type="application/atom+xml" title="LeetMap Pro Atom Feed" href="/feed.xml?format=atom" />
+        <link rel="alternate" type="application/rss+xml" title="LeetMap Pro Dataset Updates" href="/feed.xml" />
+        <link rel="alternate" type="application/atom+xml" title="LeetMap Pro Atom Feed" href="/atom.xml" />
         <link rel="author" href="/humans.txt" />
         {/* Performance hints */}
         <link rel="preconnect" href="https://pagead2.googlesyndication.com" crossOrigin="anonymous" />

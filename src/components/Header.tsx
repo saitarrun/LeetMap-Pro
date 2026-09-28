@@ -104,7 +104,7 @@ export const Header: React.FC<HeaderProps> = () => {
       const data = await res.json();
       window.dispatchEvent(new CustomEvent('leetmap-live-refresh', { detail: data }));
       toast.success('Live dataset up to date', {
-        description: '684 companies and 3,422 problems verified',
+        description: `${Number(data.uniqueProblemsCount || 0).toLocaleString()} problems tracked · refreshed ${data.lastSyncedISO ? new Date(data.lastSyncedISO).toLocaleDateString() : 'recently'}`,
       });
     } catch {
       toast.success('Live dataset up to date');

@@ -165,35 +165,32 @@ export default async function PatternDetailPage({ params }: PageProps) {
     url: `https://www.leetmap-pro.com/patterns/${safeSlug}`,
   };
 
+  const faqItems = [
+    {
+      question: `What is the ${pattern.name} pattern in coding interviews?`,
+      answer: `${pattern.tagline} It is categorized under ${pattern.category} and features ${pattern.total} curated interview problems across Easy (${pattern.easy}), Medium (${pattern.medium}), and Hard (${pattern.hard}) difficulties.`,
+    },
+    {
+      question: `Which tech companies frequently test ${pattern.name}?`,
+      answer: `Companies frequently asking ${pattern.name} questions include ${(pattern.topCompanies || []).slice(0, 6).join(', ') || 'Google, Meta, Amazon, and Microsoft'}.`,
+    },
+    {
+      question: `How do I master the ${pattern.name} pattern?`,
+      answer: 'Start by studying the algorithmic strategy and template code, then practice Easy and Medium problems before attempting Hard problems under timed conditions.',
+    },
+  ];
+
   const faqJsonLd = {
     '@context': 'https://schema.org',
     '@type': 'FAQPage',
-    mainEntity: [
-      {
+    mainEntity: faqItems.map((item) => ({
         '@type': 'Question',
-        name: `What is the ${pattern.name} pattern in coding interviews?`,
+        name: item.question,
         acceptedAnswer: {
           '@type': 'Answer',
-          text: `${pattern.tagline} It is categorized under ${pattern.category} and features ${pattern.total} curated interview problems across Easy (${pattern.easy}), Medium (${pattern.medium}), and Hard (${pattern.hard}) difficulties.`,
+          text: item.answer,
         },
-      },
-      {
-        '@type': 'Question',
-        name: `Which tech companies frequently test ${pattern.name}?`,
-        acceptedAnswer: {
-          '@type': 'Answer',
-          text: `Companies frequently asking ${pattern.name} questions include ${(pattern.topCompanies || []).slice(0, 6).join(', ') || 'Google, Meta, Amazon, and Microsoft'}.`,
-        },
-      },
-      {
-        '@type': 'Question',
-        name: `How do I master the ${pattern.name} pattern?`,
-        acceptedAnswer: {
-          '@type': 'Answer',
-          text: `Start by studying the algorithmic strategy and template code, then practice Easy and Medium problems before attempting Hard problems under timed conditions.`,
-        },
-      },
-    ],
+      })),
   };
 
   let allPatterns: { slug: string; name: string; category: string; total: number }[] = [];
@@ -221,6 +218,19 @@ export default async function PatternDetailPage({ params }: PageProps) {
       <Header syncStatus={syncStatus} />
       <main className="flex-1 pb-16">
         <PatternDetailView pattern={initialPattern} allPatterns={allPatterns} />
+        <section className="max-w-5xl mx-auto px-4 sm:px-6 mt-12 pt-10 border-t border-[var(--border)]" aria-labelledby="pattern-faq-title">
+          <h2 id="pattern-faq-title" className="text-xl font-bold tracking-tight text-[var(--text-main)]">
+            {pattern.name} frequently asked questions
+          </h2>
+          <div className="mt-5 grid gap-3">
+            {faqItems.map((item) => (
+              <article key={item.question} className="rounded-2xl border border-[var(--border)] bg-[var(--bg-subtle)]/40 p-4 sm:p-5">
+                <h3 className="text-sm font-semibold text-[var(--text-main)]">{item.question}</h3>
+                <p className="mt-2 text-sm leading-relaxed text-[var(--text-muted)]">{item.answer}</p>
+              </article>
+            ))}
+          </div>
+        </section>
       </main>
     </div>
   );

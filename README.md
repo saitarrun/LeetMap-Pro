@@ -7,7 +7,7 @@
 </p>
 
 <p align="center">
-  <b>The modern, free, and open-source platform for practicing Company-Wise LeetCode and SQL questions ranked by real interview frequency and recency.</b>
+  <b>The modern, free, and open-source platform for practicing Company-Wise LeetCode and SQL questions organized by reported interview frequency and recency.</b>
 </p>
 
 <p align="center">
@@ -21,7 +21,7 @@
 
 ## 🌐 Explore Live Hubs
 
-- 🏢 **[Company-Wise DSA Questions](https://www.leetmap-pro.com)** — Browse verified questions asked by **680+ tech companies** (Google, Meta, Amazon, Apple, Netflix, Microsoft, Bloomberg, Citadel, Uber, and more).
+- 🏢 **[Company-Wise DSA Questions](https://www.leetmap-pro.com)** — Browse community-reported questions from **660+ tech companies** (Google, Meta, Amazon, Apple, Netflix, Microsoft, Bloomberg, Citadel, Uber, and more).
 - 🗄️ **[Company-Wise SQL Practice Hub](https://www.leetmap-pro.com/sql)** — Curated SQL and database interview questions across 73 top companies for Software Engineers, Data Engineers, and Data Analysts.
 - 🧩 **[Interactive DSA Coding Patterns](https://www.leetmap-pro.com/patterns)** — Master 22 core interview patterns including Sliding Window, Two Pointers, Monotonic Stack, Graph Traversal, and Dynamic Programming.
 - 🗺️ **[Visual Strategy Roadmap](https://www.leetmap-pro.com/strategy)** — Interactive directed graph mapping optimal study paths from basics to advanced topics.
@@ -31,7 +31,7 @@
 
 ## ⚡ Features
 
-- **680+ Companies Catalog**: Instant access to real interview problems asked by top tech firms and quantitative hedge funds without any subscription or paywall.
+- **660+ Companies Catalog**: Instant access to community-reported interview problems for top tech firms and quantitative hedge funds without any subscription or paywall.
 - **5 Granular Recency Windows**:
   - `Last 30 Days` (Active hiring trends and recently reported questions)
   - `Last 3 Months`
@@ -101,7 +101,7 @@
        ▼                                       ▼
 ┌─────────────────────────┐         ┌────────────────────────┐
 │ public/data/            │         │ Next.js App Router     │
-│ - companies.json        │ ◄────── │ - 808 Pre-rendered     │
+│ - companies.json        │ ◄────── │ - 780+ Pre-rendered    │
 │ - companies/[slug].json │         │   Static HTML Pages    │
 │ - sql-companies.json    │         │ - Edge CDN Cache       │
 │ - patterns/*.json       │         │ - Local Storage Sync   │

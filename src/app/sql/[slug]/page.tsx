@@ -131,27 +131,28 @@ export default async function SqlCompanyPage({ params }: PageProps) {
     ],
   };
 
+  const faqItems = [
+    {
+      question: `What SQL questions are asked in ${company.name} interviews?`,
+      answer: `Technical interviews at ${company.name} cover curated SQL and relational database queries, including joins, window functions, aggregations, and subqueries.`,
+    },
+    {
+      question: `Are SQL questions common for software engineers and data analysts at ${company.name}?`,
+      answer: `Data engineers, backend engineers, business intelligence analysts, and data scientists at ${company.name} may be tested on practical database query problems relevant to the role.`,
+    },
+  ];
+
   const faqJsonLd = {
     '@context': 'https://schema.org',
     '@type': 'FAQPage',
-    mainEntity: [
-      {
+    mainEntity: faqItems.map((item) => ({
         '@type': 'Question',
-        name: `What SQL questions are asked in ${company.name} interviews?`,
+        name: item.question,
         acceptedAnswer: {
           '@type': 'Answer',
-          text: `Technical interviews at ${company.name} cover curated SQL and relational database queries, including joins, window functions, aggregations, and subqueries.`,
+          text: item.answer,
         },
-      },
-      {
-        '@type': 'Question',
-        name: `Are SQL questions common for software engineers and data analysts at ${company.name}?`,
-        acceptedAnswer: {
-          '@type': 'Answer',
-          text: `Yes, data engineers, backend engineers, business intelligence analysts, and data scientists at ${company.name} are routinely tested on real-world database query problems.`,
-        },
-      },
-    ],
+      })),
   };
 
   let allSqlCompanies: { slug: string; name: string; sqlTotal: number }[] = [];
@@ -178,6 +179,19 @@ export default async function SqlCompanyPage({ params }: PageProps) {
       <Header syncStatus={syncStatus} />
       <main className="flex-1 pb-16">
         <SqlCompanyDetailView company={sqlFilteredCompany} allSqlCompanies={allSqlCompanies} />
+        <section className="max-w-5xl mx-auto px-4 sm:px-6 mt-12 pt-10 border-t border-[var(--border)]" aria-labelledby="sql-faq-title">
+          <h2 id="sql-faq-title" className="text-xl font-bold tracking-tight text-[var(--text-main)]">
+            {company.name} SQL interview questions FAQ
+          </h2>
+          <div className="mt-5 grid gap-3">
+            {faqItems.map((item) => (
+              <article key={item.question} className="rounded-2xl border border-[var(--border)] bg-[var(--bg-subtle)]/40 p-4 sm:p-5">
+                <h3 className="text-sm font-semibold text-[var(--text-main)]">{item.question}</h3>
+                <p className="mt-2 text-sm leading-relaxed text-[var(--text-muted)]">{item.answer}</p>
+              </article>
+            ))}
+          </div>
+        </section>
       </main>
     </div>
   );

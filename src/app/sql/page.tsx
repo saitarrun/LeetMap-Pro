@@ -6,7 +6,7 @@ import { SqlHubClient } from '@/components/SqlHubClient';
 
 export const metadata = {
   title: 'LeetCode SQL 50 & Company-Wise SQL Interview Questions (2026)',
-  description: 'Practice verified LeetCode SQL 50 and company-wise SQL interview questions from 73+ top tech firms (Amazon, Google, Meta, Bloomberg, Microsoft), ranked by frequency and recency. 100% free alternative to LeetCode Premium.',
+  description: 'Practice LeetCode SQL 50 and community-reported SQL interview questions from 73+ tech firms, organized by frequency and recency. Free to use.',
   keywords: [
     'leetcode sql',
     'sql leetcode',
@@ -28,14 +28,14 @@ export const metadata = {
   },
   openGraph: {
     title: 'LeetCode SQL 50 & Company-Wise SQL Interview Questions (2026) | LeetMap Pro',
-    description: 'Practice verified LeetCode SQL 50 and company-wise SQL interview questions from 73+ top tech firms, ranked by frequency and recency. 100% free.',
+    description: 'Practice LeetCode SQL 50 and community-reported SQL interview questions from 73+ tech firms, organized by frequency and recency. Free to use.',
     url: 'https://www.leetmap-pro.com/sql',
     type: 'website',
   },
   twitter: {
     card: 'summary_large_image',
     title: 'LeetCode SQL 50 & Company-Wise SQL Interview Questions (2026) | LeetMap Pro',
-    description: 'Practice verified LeetCode SQL 50 and company-wise SQL interview questions from 73+ top tech firms, ranked by frequency and recency. 100% free.',
+    description: 'Practice LeetCode SQL 50 and community-reported SQL interview questions from 73+ tech firms, organized by frequency and recency. Free to use.',
   },
 };
 

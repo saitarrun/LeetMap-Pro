@@ -287,6 +287,10 @@ export const HomeClient: React.FC<HomeClientProps> = ({
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const params = new URLSearchParams(window.location.search);
+      const initialSearch = params.get('search');
+      if (initialSearch) {
+        setSearchQuery(initialSearch);
+      }
       if (params.get('tab') === 'directory' || params.get('view') === 'directory') {
         setCategoryFilter('DIRECTORY');
       }
@@ -630,11 +634,11 @@ export const HomeClient: React.FC<HomeClientProps> = ({
                       rel="noopener noreferrer"
                       className="group flex items-center gap-1.5 mt-0.5 min-w-0 max-w-full"
                     >
-                      <h3 className={`text-xs sm:text-sm font-semibold hover:underline break-words line-clamp-2 leading-snug ${
+                      <h2 className={`text-xs sm:text-sm font-semibold hover:underline break-words line-clamp-2 leading-snug ${
                         isDailySolved ? 'line-through text-[var(--text-muted)]' : 'text-[var(--text-main)]'
                       }`}>
                         #{dailyChallenge.id} {dailyChallenge.title}
-                      </h3>
+                      </h2>
                       <ExternalLink className="w-3.5 h-3.5 text-[var(--text-muted)] group-hover:text-[var(--text-main)] shrink-0 transition-colors" />
                     </a>
                   </div>
@@ -1069,7 +1073,7 @@ export const HomeClient: React.FC<HomeClientProps> = ({
                 How to practice company-wise LeetCode questions for free?
               </h3>
               <p className="text-xs text-[var(--text-muted)] leading-relaxed font-normal">
-                LeetMap Pro organizes thousands of verified coding interview problems asked by 660+ tech companies (including Google, Meta, Amazon, Apple, Microsoft, Citadel, Bloomberg), ranked by real frequency and recency over 30 days, 3 months, and 6 months with zero paywall.
+                LeetMap Pro organizes thousands of community-reported coding interview problems from 660+ tech companies (including Google, Meta, Amazon, Apple, Microsoft, Citadel, Bloomberg), ranked by reported frequency and recency over 30 days, 3 months, and 6 months with zero paywall.
               </p>
             </div>
 

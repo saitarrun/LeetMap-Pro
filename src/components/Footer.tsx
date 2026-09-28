@@ -20,7 +20,7 @@ export const Footer: React.FC = () => {
               </span>
             </Link>
             <p className="text-xs text-[var(--text-muted)] leading-relaxed max-w-xs">
-              Company-wise LeetCode & SQL interview questions ranked by real frequency and recency.
+              Company-wise LeetCode & SQL interview questions organized by reported frequency and recency.
             </p>
           </div>
 
@@ -216,6 +216,11 @@ export const Footer: React.FC = () => {
               About & Legal
             </h3>
             <ul className="space-y-2 text-xs text-[var(--text-muted)]">
+              <li>
+                <Link href="/about" className="hover:text-[var(--text-main)] transition-colors">
+                  About &amp; Methodology
+                </Link>
+              </li>
               <li>
                 <Link href="/sql" className="hover:text-[var(--text-main)] transition-colors">
                   All 73 SQL Companies

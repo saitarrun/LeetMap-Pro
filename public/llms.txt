@@ -1,6 +1,6 @@
 # LeetMap Pro
 
-> LeetMap Pro is a free, high-speed platform providing company-wise LeetCode and SQL interview questions ranked by real frequency and recency.
+> LeetMap Pro is a free, high-speed platform organizing community-reported company-wise LeetCode and SQL interview questions by frequency and recency.
 
 ## Overview
 
@@ -8,6 +8,7 @@ LeetMap Pro tracks coding interview questions asked by 660+ top technology compa
 
 ## Core Features & Resources
 
+- [About, Sources & Methodology](https://www.leetmap-pro.com/about): Data provenance, update process, ranking methodology, editorial principles, and correction policy.
 - [Company-Wise Coding Questions](https://www.leetmap-pro.com/): Browse 660+ tech companies with interview questions ranked by recency and frequency.
 - [SQL Interview Practice Hub](https://www.leetmap-pro.com/sql): Curated SQL and relational database questions asked by 70+ tech companies.
 - [DSA Pattern Guides](https://www.leetmap-pro.com/patterns): 22 algorithmic patterns (Two Pointers, Sliding Window, Monotonic Stack, Dynamic Programming, Graphs) with strategy breakdowns and templates.
@@ -16,6 +17,11 @@ LeetMap Pro tracks coding interview questions asked by 660+ top technology compa
 
 ## API & Data Feeds
 
-- [RSS Feed](https://www.leetmap-pro.com/feed.xml): Daily updates and daily challenge announcements.
+- [Companies JSON API](https://www.leetmap-pro.com/api/companies): Machine-readable company catalog and aggregate problem counts.
+- [SQL JSON API](https://www.leetmap-pro.com/api/sql): Machine-readable SQL company and problem catalog.
+- [Dataset Status API](https://www.leetmap-pro.com/api/status): Current dataset publication time, source commits, and synchronization status.
+- [Daily Challenge API](https://www.leetmap-pro.com/api/daily-challenge): Current LeetCode daily challenge metadata.
+- [RSS Feed](https://www.leetmap-pro.com/feed.xml): Company, pattern, and dataset update entries.
+- [Atom Feed](https://www.leetmap-pro.com/atom.xml): Atom-formatted company, pattern, and dataset update entries.
 - [Sitemap](https://www.leetmap-pro.com/sitemap.xml): Comprehensive URL index of all company interview hubs and pattern guides.
 - [Open Source Repository](https://github.com/saitarrun/LeetMap-Pro): Full source code and daily automated data synchronization scripts.

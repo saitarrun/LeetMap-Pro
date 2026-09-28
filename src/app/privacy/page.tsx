@@ -17,13 +17,13 @@ import {
 
 export const metadata = {
   title: 'Privacy Policy',
-  description: 'Learn how LeetMap Pro handles your data with privacy-first engineering, transparent local storage, and zero third-party ads.',
+  description: 'Learn how LeetMap Pro handles account data, local progress, authentication, infrastructure logs, and advertising services.',
   alternates: {
     canonical: 'https://www.leetmap-pro.com/privacy',
   },
   openGraph: {
     title: 'Privacy Policy | LeetMap Pro',
-    description: 'Learn how LeetMap Pro handles your data with privacy-first engineering, transparent local storage, and zero third-party ads.',
+    description: 'Learn how LeetMap Pro handles account data, local progress, authentication, infrastructure logs, and advertising services.',
     url: 'https://www.leetmap-pro.com/privacy',
     type: 'website',
   },
@@ -155,7 +155,7 @@ export default function PrivacyPage() {
               <h2>4. Cookies & Storage Policy</h2>
             </div>
             <p>
-              LeetMap Pro utilizes strictly necessary, privacy-preserving storage mechanisms:
+              LeetMap Pro uses local storage, authentication cookies, and limited third-party services needed to operate and support the site:
             </p>
             <ul className="list-disc pl-5 space-y-2">
               <li>
@@ -165,7 +165,7 @@ export default function PrivacyPage() {
                 <strong className="text-[var(--text-main)]">Local Storage:</strong> Browser-side key-value pairs used to remember your theme preference (Dark/Light mode) and offline solved status.
               </li>
               <li>
-                <strong className="text-[var(--text-main)]">No Advertising or Behavioral Trackers:</strong> We do NOT employ third-party advertising cookies, cross-site trackers, Facebook Pixels, or invasive behavioral fingerprinting scripts.
+                <strong className="text-[var(--text-main)]">Google AdSense:</strong> Public content pages may display ads supplied by Google. Google and its partners may process device information, IP address, and cookies or similar identifiers to deliver, measure, and prevent fraud in advertising, subject to Google&apos;s privacy policies and applicable consent choices. Ads are not displayed on authentication or account pages.
               </li>
             </ul>
           </section>
@@ -185,6 +185,9 @@ export default function PrivacyPage() {
               </li>
               <li>
                 <strong className="text-[var(--text-main)]">Clerk Inc.:</strong> SOC 2 Type II certified user identity, encrypted authentication, and session security.
+              </li>
+              <li>
+                <strong className="text-[var(--text-main)]">Google AdSense:</strong> Advertising delivery, measurement, quality controls, and fraud prevention on eligible public pages.
               </li>
             </ul>
           </section>
@@ -206,7 +209,7 @@ export default function PrivacyPage() {
                 <strong className="text-[var(--text-main)]">Right to Erasure (&ldquo;Right to be Forgotten&rdquo;):</strong> You have the absolute right to have all your data deleted from our systems.
               </li>
               <li>
-                <strong className="text-[var(--text-main)]">Do Not Sell or Share My Information:</strong> Under the California Consumer Privacy Act (CCPA/CPRA), we confirm that we do not &ldquo;sell&rdquo; or &ldquo;share&rdquo; your personal information for cross-context behavioral advertising.
+                <strong className="text-[var(--text-main)]">Advertising Choices:</strong> Where required, you may manage consent through the advertising controls shown to you and through Google&apos;s ad settings. Requests concerning LeetMap Pro account data can be submitted through the project&apos;s public support channel.
               </li>
             </ul>
           </section>

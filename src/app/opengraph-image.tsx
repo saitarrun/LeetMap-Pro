@@ -65,7 +65,7 @@ export default async function Image() {
             color: '#34d399',
           }}
         >
-          <span>684+ Companies Verified • Free & Open Source</span>
+          <span>660+ Companies • Free &amp; Open Source</span>
         </div>
 
         {/* Title */}
@@ -95,7 +95,7 @@ export default async function Image() {
             lineHeight: 1.4,
           }}
         >
-          Company-wise LeetCode problems ranked by real interview frequency, 22 interactive DSA coding patterns, and SQL interview hub.
+          Company-wise LeetCode problems organized by reported frequency, 22 interactive DSA coding patterns, and an SQL interview hub.
         </div>
 
         {/* Feature Pills */}

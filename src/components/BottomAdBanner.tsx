@@ -76,7 +76,7 @@ export const BottomAdBanner: React.FC<BottomAdBannerProps> = ({
     >
       <Script
         id="google-adsense-community"
-        strategy="afterInteractive"
+        strategy="lazyOnload"
         src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930264634833391"
         crossOrigin="anonymous"
       />
@@ -87,7 +87,7 @@ export const BottomAdBanner: React.FC<BottomAdBannerProps> = ({
             <span className="inline-block w-1.5 h-1.5 rounded-full bg-emerald-500/80" />
             Sponsored
           </span>
-          <span className="opacity-60 hover:opacity-100 transition-opacity">
+          <span>
             LeetMap Community Partner
           </span>
         </div>

@@ -25,7 +25,7 @@ export async function generateMetadata({ params }: PageProps) {
 
   const company: CompanyDetail = JSON.parse(fs.readFileSync(filePath, 'utf8'));
   let title = `${company.name} LeetCode Questions`;
-  let description = `Practice ${company.total} free company-wise ${company.name} LeetCode questions asked in real 2026 interviews. Filter by frequency across 30-day, 3-month, and 6-month recency (Easy: ${company.easy}, Med: ${company.medium}, Hard: ${company.hard}). 100% free alternative to LeetCode Premium.`;
+  let description = `Explore ${company.total} ${company.name} LeetCode interview questions ranked by frequency and recency, with difficulty filters and free progress tracking.`;
   let keywords = [
     `free ${company.name} leetcode questions`,
     `${company.name} LeetCode questions 2026`,
@@ -215,6 +215,12 @@ export default async function CompanyPage({ params }: PageProps) {
     for (const topic of problem.topics || []) topicCounts.set(topic, (topicCounts.get(topic) || 0) + 1);
   }
   const topTopics = [...topicCounts.entries()].sort((a, b) => b[1] - a[1]).slice(0, 4);
+  const difficultyCounts: Array<[string, number]> = [
+    ['Easy', company.easy],
+    ['Medium', company.medium],
+    ['Hard', company.hard],
+  ];
+  const [dominantDifficulty, dominantCount] = difficultyCounts.sort((a, b) => b[1] - a[1])[0];
   const updatedLabel = syncStatus?.lastSyncedISO
     ? new Intl.DateTimeFormat('en', { dateStyle: 'medium', timeZone: 'UTC' }).format(new Date(syncStatus.lastSyncedISO))
     : 'the latest available dataset';
@@ -232,43 +238,67 @@ export default async function CompanyPage({ params }: PageProps) {
     })),
   };
 
+  const faqItems = [
+    {
+      question: `What are the most frequent LeetCode questions for ${company.name}?`,
+      answer: `The leading problems in the available ${company.name} interview reports include ${topThreeProblems}. This page tracks ${company.total} reported problems across Easy (${company.easy}), Medium (${company.medium}), and Hard (${company.hard}) difficulty levels.`,
+    },
+    {
+      question: `Where can I practice company-wise LeetCode questions for ${company.name}?`,
+      answer: `You can review all ${company.total} ${company.name} questions on this page, filter them by 30-day, 3-month, 6-month, and all-time windows, and save practice progress for free.`,
+    },
+    {
+      question: `How does LeetMap Pro organize ${company.name} interview problem recency?`,
+      answer: `LeetMap Pro groups community-reported occurrences into 30-day, 3-month, 6-month, and older windows. These are preparation signals from the available sources, not guarantees that a problem will appear in a future interview.`,
+    },
+    {
+      question: `What is the difficulty distribution for ${company.name} coding questions?`,
+      answer: `${dominantDifficulty} is the largest tracked difficulty group for ${company.name}, with ${dominantCount} problems. The full distribution is ${company.easy} Easy, ${company.medium} Medium, and ${company.hard} Hard.`,
+    },
+  ];
+
   const faqJsonLd = {
     '@context': 'https://schema.org',
     '@type': 'FAQPage',
-    mainEntity: [
-      {
-        '@type': 'Question',
-        name: `What are the most frequent LeetCode questions for ${company.name}?`,
-        acceptedAnswer: {
-          '@type': 'Answer',
-          text: `The top problems asked in ${company.name} technical interviews include ${topThreeProblems}. In total, ${company.total} verified problems are tracked across Easy (${company.easy}), Medium (${company.medium}), and Hard (${company.hard}) tiers.`,
-        },
+    mainEntity: faqItems.map(({ question, answer }) => ({
+      '@type': 'Question',
+      name: question,
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: answer,
       },
-      {
-        '@type': 'Question',
-        name: `Where can I find company-wise LeetCode questions for ${company.name}?`,
-        acceptedAnswer: {
-          '@type': 'Answer',
-          text: `LeetMap Pro provides a complete, verified list of ${company.total} company-wise ${company.name} coding interview questions filtered by 30-day, 3-month, and 6-month recency windows, 100% free with no paywall or subscription.`,
-        },
-      },
-      {
-        '@type': 'Question',
-        name: `How does LeetMap track ${company.name} interview problem recency?`,
-        acceptedAnswer: {
-          '@type': 'Answer',
-          text: `LeetMap weights problem occurrences across 30-day, 3-month, and 6-month recency windows to ensure candidates focus on problems actively being asked in the current hiring cycle.`,
-        },
-      },
-      {
-        '@type': 'Question',
-        name: `What difficulty distribution should I expect in ${company.name} coding rounds?`,
-        acceptedAnswer: {
-          '@type': 'Answer',
-          text: `For ${company.name}, Medium difficulty problems represent the largest share (${company.medium} problems), followed by Easy (${company.easy}) and Hard (${company.hard}). Mastering foundational patterns like Trees, Graphs, and Dynamic Programming is essential.`,
-        },
-      },
-    ],
+    })),
+  };
+
+  const collectionPageJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    '@id': `https://www.leetmap-pro.com/company/${safeSlug}#page`,
+    name: `${company.name} LeetCode Interview Questions`,
+    url: `https://www.leetmap-pro.com/company/${safeSlug}`,
+    description: `A frequency- and recency-organized collection of ${company.total} community-reported ${company.name} coding interview questions.`,
+    dateModified: syncStatus?.lastSyncedISO,
+    isPartOf: {
+      '@type': 'WebSite',
+      '@id': 'https://www.leetmap-pro.com/#website',
+      name: 'LeetMap Pro',
+      url: 'https://www.leetmap-pro.com',
+    },
+    about: {
+      '@type': 'Organization',
+      name: company.name,
+    },
+    mainEntity: {
+      '@type': 'ItemList',
+      name: `${company.name} Interview Questions`,
+      numberOfItems: topProblems.length,
+      itemListElement: topProblems.map((prob, index) => ({
+        '@type': 'ListItem',
+        position: index + 1,
+        name: prob.title,
+        url: `https://leetcode.com/problems/${prob.slug}/`,
+      })),
+    },
   };
 
   const isLarge = (company.windows?.some((w) => w.problems.length > 50)) ?? false;
@@ -287,7 +317,7 @@ export default async function CompanyPage({ params }: PageProps) {
     <div className="min-h-screen flex flex-col">
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify([breadcrumbJsonLd, faqJsonLd, itemListJsonLd]) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify([breadcrumbJsonLd, collectionPageJsonLd, faqJsonLd, itemListJsonLd]) }}
       />
       <Header syncStatus={syncStatus} />
       <main className="flex-1 pb-16">
@@ -312,18 +342,20 @@ export default async function CompanyPage({ params }: PageProps) {
                   {company.name} Technical Interview Overview & Company-Wise Questions
                 </h2>
                 <p className="mt-2 text-sm text-[var(--text-muted)] leading-relaxed">
-                  Software engineering and technical interviews at {company.name} emphasize real-world problem solving, algorithmic efficiency, and scalable data structure design. The curated dataset above contains {company.total} verified LeetCode problems, categorized by frequency and filtered across recent interview seasons.
+                  This page organizes {company.total} community-reported {company.name} LeetCode problems by difficulty, frequency, and recency so you can build a focused preparation queue. Reports are aggregated from public datasets and should be treated as preparation signals rather than predictions.
                 </p>
               </div>
 
               <div className="rounded-2xl border border-[var(--border)] bg-[var(--bg-subtle)]/40 p-4 sm:p-5">
                 <h3 className="text-sm font-semibold text-[var(--text-main)]">How to prioritize {company.name} preparation</h3>
                 <p className="mt-2 text-xs text-[var(--text-muted)] leading-relaxed">
-                  Start with the {recentProblems.length} questions reported in the last 30 days, then work through the highest-frequency topics{topTopics.length ? ` (${topTopics.map(([topic]) => topic).join(', ')})` : ''}. This page tracks {company.total} community-verified questions across {company.easy} Easy, {company.medium} Medium, and {company.hard} Hard problems. Data refreshed {updatedLabel}.
+                  Start with the {recentProblems.length} questions reported in the last 30 days, then work through the highest-frequency topics{topTopics.length ? ` (${topTopics.map(([topic]) => topic).join(', ')})` : ''}. This page tracks {company.total} community-reported questions across {company.easy} Easy, {company.medium} Medium, and {company.hard} Hard problems. Data refreshed {updatedLabel}.
                 </p>
                 <div className="mt-3 flex flex-wrap gap-2 text-xs">
                   <Link href="/patterns" className="rounded-full border border-[var(--border)] px-3 py-1.5 font-medium text-[var(--text-main)] hover:bg-[var(--bg-hover)]">Browse DSA patterns</Link>
                   <Link href="/strategy" className="rounded-full border border-[var(--border)] px-3 py-1.5 font-medium text-[var(--text-main)] hover:bg-[var(--bg-hover)]">Follow the strategy roadmap</Link>
+                  <Link href="/about" className="rounded-full border border-[var(--border)] px-3 py-1.5 font-medium text-[var(--text-main)] hover:bg-[var(--bg-hover)]">Sources &amp; methodology</Link>
+                  <Link href="/api/status" className="rounded-full border border-[var(--border)] px-3 py-1.5 font-medium text-[var(--text-main)] hover:bg-[var(--bg-hover)]">Dataset status</Link>
                   {company.sqlTotal ? <Link href={`/sql/${safeSlug}`} className="rounded-full border border-[var(--border)] px-3 py-1.5 font-medium text-[var(--text-main)] hover:bg-[var(--bg-hover)]">Practice {company.name} SQL</Link> : null}
                 </div>
               </div>
@@ -344,30 +376,12 @@ export default async function CompanyPage({ params }: PageProps) {
                   Frequently Asked Questions
                 </h3>
                 <div className="space-y-3">
-                  <div className="p-4 rounded-xl border border-[var(--border)] bg-[var(--bg-subtle)]/40">
-                    <h4 className="text-xs font-semibold text-[var(--text-main)]">
-                      What are the top LeetCode questions for {company.name}?
-                    </h4>
-                    <p className="mt-1 text-xs text-[var(--text-muted)] leading-relaxed">
-                      Leading questions include {topThreeProblems}. Reviewing questions with higher recency (within the last 30 to 90 days) yields the highest return on preparation time.
-                    </p>
-                  </div>
-                  <div className="p-4 rounded-xl border border-[var(--border)] bg-[var(--bg-subtle)]/40">
-                    <h4 className="text-xs font-semibold text-[var(--text-main)]">
-                      Where can I practice company-wise LeetCode questions for {company.name}?
-                    </h4>
-                    <p className="mt-1 text-xs text-[var(--text-muted)] leading-relaxed">
-                      You can practice all {company.total} {company.name} LeetCode questions right here on LeetMap Pro. Filter by 30-day, 3-month, and 6-month recency, track your progress with local checkpoints, and practice curated SQL problems completely free.
-                    </p>
-                  </div>
-                  <div className="p-4 rounded-xl border border-[var(--border)] bg-[var(--bg-subtle)]/40">
-                    <h4 className="text-xs font-semibold text-[var(--text-main)]">
-                      How should I prepare for {company.name} coding rounds?
-                    </h4>
-                    <p className="mt-1 text-xs text-[var(--text-muted)] leading-relaxed">
-                      Begin by reviewing Medium-difficulty problems ({company.medium} tracked), which constitute the majority of technical rounds. Complement coding practice with foundational DSA patterns like Sliding Window, Two Pointers, and Graph Traversal.
-                    </p>
-                  </div>
+                  {faqItems.map(({ question, answer }) => (
+                    <div key={question} className="p-4 rounded-xl border border-[var(--border)] bg-[var(--bg-subtle)]/40">
+                      <h4 className="text-xs font-semibold text-[var(--text-main)]">{question}</h4>
+                      <p className="mt-1 text-xs text-[var(--text-muted)] leading-relaxed">{answer}</p>
+                    </div>
+                  ))}
                 </div>
               </div>
             </div>
@@ -375,7 +389,7 @@ export default async function CompanyPage({ params }: PageProps) {
             {/* Related Companies / Internal Linking for SEO */}
             <div className="space-y-4">
               <h3 className="text-xs font-semibold text-[var(--text-main)] uppercase tracking-wider">
-                Related Tech Companies ({company.name} Peers)
+                More Tech Companies
               </h3>
               <div className="flex flex-wrap gap-2">
                 {[...peerCompanies, ...anchorCompanies].map((peer) => (

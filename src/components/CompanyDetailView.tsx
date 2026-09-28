@@ -236,7 +236,7 @@ export const CompanyDetailView: React.FC<CompanyDetailViewProps> = ({ company })
   const handleExportMarkdown = async () => {
     const pageUrl = `https://www.leetmap-pro.com/company/${data.slug}`;
     let md = `# ${data.name} LeetCode Questions (${currentWindow.name})\n\n`;
-    md += `> Curated from [LeetMap Pro](${pageUrl}) — Ranked by real interview frequency and recency.\n\n`;
+    md += `> Curated from [LeetMap Pro](${pageUrl}) — Organized by reported interview frequency and recency.\n\n`;
     md += `| Solved | Problem | Difficulty | Frequency | Topics |\n`;
     md += `| :---: | :--- | :---: | :---: | :--- |\n`;
 
@@ -339,7 +339,7 @@ export const CompanyDetailView: React.FC<CompanyDetailViewProps> = ({ company })
         </div>
 
         <p className="text-xs sm:text-sm text-[var(--text-muted)] max-w-xl mx-auto font-normal leading-relaxed">
-          Company-wise coding interview questions asked by {data.name}, ranked by real frequency across 30-day, 3-month, and 6-month recency windows.
+          Community-reported coding interview questions for {data.name}, organized by frequency across 30-day, 3-month, and 6-month recency windows.
         </p>
 
         {/* Discreet Actions (Pin & Track Switcher) */}

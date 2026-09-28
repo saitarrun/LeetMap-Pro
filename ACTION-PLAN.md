@@ -1,22 +1,43 @@
 # SEO Action Plan
 
-## P0 — deploy and validate
+## Completed in this remediation
 
-1. Deploy the current sitemap/robots/indexing fixes.
-2. In Search Console, resubmit `https://www.leetmap-pro.com/sitemap.xml`.
-3. Validate the “Crawled - currently not indexed” and “Discovered - currently not indexed” issues after deployment.
-4. Inspect the URL-level examples Google provides; group them by company size, duplicate template, redirect, and content quality.
+- Quality-gated the sitemap and applied `noindex,follow` to thin programmatic pages.
+- Removed the inherited homepage canonical from non-home routes.
+- Made site search URLs functional for the WebSite `SearchAction`.
+- Matched FAQ JSON-LD to visible FAQ content on company, SQL, and pattern pages.
+- Added About/methodology, source provenance, correction guidance, Dataset schema, public data APIs, and stable RSS/Atom feeds.
+- Corrected stale catalog counts, social image text, privacy disclosures, heading order, text contrast, and the AdSense CSP allowlist.
+- Preserved crawl access to noindexed account/auth routes so crawlers can see their page-level directives.
+- Deferred AdSense loading and verified the production build, lint, TypeScript, and dependency security audit.
 
-## P1 — improve index selection
+## P0 — after deployment
 
-1. Add unique, useful company-level copy and statistics to high-priority company pages.
-2. Create stronger hub-to-spoke links from `/`, `/companies`, `/patterns`, `/strategy`, and `/sql` to priority pages.
-3. Define a minimum content threshold for generated pages. Consolidate or exclude pages that do not provide enough unique search value.
-4. Use Search Console performance data to prioritize the first 50–100 company pages by impressions and query demand.
+1. In Search Console, resubmit `https://www.leetmap-pro.com/sitemap.xml`.
+2. Inspect one high-value company URL, one pattern URL, and one SQL URL, then request indexing after confirming the live canonical and rendered HTML.
+3. Start validation for “Crawled – currently not indexed” and “Discovered – currently not indexed.”
+4. Set the apex-domain redirect to permanent in Vercel’s domain settings.
+5. Re-run Lighthouse and a rendered schema check against the deployed commit.
 
-## P2 — measurement and enrichment
+## P1 — improve Google’s index selection
 
-1. Run Lighthouse/mobile checks and record LCP, INP, and CLS.
-2. Validate JSON-LD with Rich Results Test for homepage, company, pattern, and SQL templates.
-3. Add visible data freshness/source information and editorial methodology to strengthen trust and E-E-A-T.
-4. Repeat the audit after Google has recrawled the deployed sitemap.
+1. Use Search Console query/impression data to prioritize the top 50 company pages.
+2. Add genuinely company-specific editorial notes only where supported by source data; do not manufacture interview claims.
+3. Add contextual links from relevant pattern and SQL guides to priority company pages.
+4. Keep the sitemap threshold under review and exclude pages that cannot provide distinct search value.
+5. Compare index counts weekly; avoid repeatedly changing sitemap timestamps unless the underlying dataset changed.
+
+## P2 — measurement and authority
+
+1. Connect authenticated Search Console and CrUX data to verify field Core Web Vitals.
+2. Earn relevant editorial backlinks to the methodology, pattern guides, and data resource rather than mass-linking individual thin pages.
+3. Publish evidence-based research summaries from the dataset that can attract citations from both search engines and LLM answers.
+4. Record a new crawl/Lighthouse/Search Console baseline after Google has recrawled the release.
+
+## Success criteria
+
+- Lighthouse SEO remains 100 on all representative templates.
+- No indexable sitemap URL returns non-200, a foreign canonical, or `noindex`.
+- Search Console discovered-not-indexed and crawled-not-indexed totals trend downward after validation.
+- Field Core Web Vitals pass once sufficient real-user data is available.
+- Public methodology and machine-readable sources remain synchronized with each dataset release.

@@ -14,24 +14,16 @@ export const metadata: Metadata = {
     statusBarStyle: 'default',
   },
   title: 'LeetMap Pro | Company-Wise LeetCode & SQL Questions',
-  description: 'Practice verified coding interview problems asked by 660+ tech companies (Google, Meta, Amazon, Microsoft, Apple), ranked by frequency and 30-day recency. 100% free alternative to LeetCode Premium.',
+  description: 'Practice community-reported coding interview problems from 660+ tech companies (Google, Meta, Amazon, Microsoft, Apple), ranked by frequency and recency. Free to use.',
   alternates: {
     canonical: 'https://www.leetmap-pro.com',
   },
   openGraph: {
     siteName: 'LeetMap Pro',
     title: 'LeetMap Pro | Company-Wise LeetCode & SQL Questions',
-    description: 'Practice verified coding interview problems asked by 660+ tech companies (Google, Meta, Amazon, Microsoft, Apple), ranked by frequency and 30-day recency. 100% free alternative to LeetCode Premium.',
+    description: 'Practice community-reported coding interview problems from 660+ tech companies (Google, Meta, Amazon, Microsoft, Apple), ranked by frequency and recency. Free to use.',
     url: 'https://www.leetmap-pro.com',
     type: 'website',
-    images: [
-      {
-        url: '/icon-512.png',
-        width: 512,
-        height: 512,
-        alt: 'LeetMap Pro Logo',
-      },
-    ],
   },
 };
 
@@ -44,7 +36,7 @@ const homeFaqJsonLd = {
       name: 'How to practice company-wise LeetCode questions for free?',
       acceptedAnswer: {
         '@type': 'Answer',
-        text: 'LeetMap Pro organizes thousands of verified coding interview problems asked by 660+ tech companies (including Google, Meta, Amazon, Apple, Netflix, Microsoft, Citadel, Bloomberg), ranked by real frequency and recency over 30 days, 3 months, and 6 months.',
+        text: 'LeetMap Pro organizes thousands of community-reported coding interview problems from 660+ tech companies (including Google, Meta, Amazon, Apple, Netflix, Microsoft, Citadel, Bloomberg), ranked by reported frequency and recency over 30 days, 3 months, and 6 months.',
       },
     },
     {
