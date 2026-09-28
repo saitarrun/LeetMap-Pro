@@ -24,8 +24,8 @@ Google discovery has therefore improved from 169 to 193 indexed URLs in the same
 
 - All 302 URLs in the pre-remediation quality-gated sitemap returned HTTP 200, were indexable, and used self-referencing canonicals in the full crawl. The generated post-remediation sitemap contains 303 URLs after adding `/about`.
 - The generated sitemap intentionally contains the strongest 262 company pages, 11 SQL detail pages, 24 pattern pages, and 6 other public pages. Thin company and SQL pages are accessible but marked `noindex,follow` and omitted from the sitemap.
-- Mobile Lighthouse SEO scored 100 on the homepage and representative `/patterns`, `/sql`, `/strategy`, and pattern-detail pages.
-- Mobile Lighthouse performance scored 94–100 on the sampled templates. Homepage lab metrics were approximately FCP 1.1 s, LCP 1.1–1.3 s, TBT 70 ms, and CLS 0.002.
+- Post-deployment mobile Lighthouse SEO scored 100 on the homepage, About, company, pattern, and SQL templates; earlier representative `/patterns`, `/sql`, and `/strategy` runs also scored 100.
+- The final post-deployment homepage Lighthouse run scored 95 for performance and 100 for accessibility, with FCP 2.3 s, LCP 2.3 s, TBT 70 ms, and CLS 0.002. Representative performance runs ranged from 94–100 after normal run-to-run variance.
 - Titles, descriptions, canonicals, Open Graph metadata, sitemap dates, RSS/Atom dates, and generated social imagery use current dataset values.
 - `robots.txt`, `sitemap.xml`, `llms.txt`, RSS, Atom, `humans.txt`, the About/methodology page, and public JSON APIs expose useful discovery and provenance signals.
 - GPTBot, OAI-SearchBot, ChatGPT-User, ClaudeBot, PerplexityBot, Google-Extended, CCBot, and Bytespider can retrieve the public site.
@@ -50,6 +50,8 @@ Lighthouse lab results are strong, but the PageSpeed Insights API returned a quo
 
 AdSense and Clerk account for most measured unused JavaScript. AdSense now loads with `lazyOnload`, but further gains would require viewport-triggered ad loading and route-level isolation of authentication code. These are performance architecture changes, not crawlability defects.
 
+Chrome reports AdSense's third-party test cookie as a Best Practices issue, leaving that Lighthouse category at 77. The final run contained no console errors; removing the cookie warning would require removing or fundamentally changing Google advertising.
+
 ### External configuration
 
 The apex-domain redirect was observed as a temporary redirect at the hosting edge even though the repository proxy uses a permanent redirect. Configure `leetmap-pro.com` to redirect permanently to `www.leetmap-pro.com` in the Vercel domain dashboard. The retired `leetmap-hub.vercel.app` hostname returns 404; redirect it only if the deployment still owns that hostname.
@@ -65,7 +67,7 @@ The apex-domain redirect was observed as a temporary redirect at the hosting edg
 | Sitemap | Pass: 303 quality-gated canonical URLs with dataset-based modification dates. |
 | GEO / LLM | Pass: open crawler policy, `llms.txt`, methodology, feeds, sitemap, and public JSON endpoints. |
 | Performance | Strong lab results (94–100); field CWV unavailable. |
-| Accessibility | Remediated sampled contrast and heading-order issues; verify again after deployment. |
+| Accessibility | Pass: post-deployment homepage Lighthouse accessibility score is 100. |
 | Programmatic SEO | Thresholding is active; high-value pages have richer data-driven context. |
 | Hreflang | Not applicable to this single-locale English site. |
 | Local / ecommerce | Not applicable to this product. |
