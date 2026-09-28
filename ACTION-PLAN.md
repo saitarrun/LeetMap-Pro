@@ -9,6 +9,7 @@
 - Added About/methodology, source provenance, correction guidance, Dataset schema, public data APIs, and stable RSS/Atom feeds.
 - Corrected stale catalog counts, social image text, privacy disclosures, heading order, text contrast, and the AdSense CSP allowlist.
 - Preserved crawl access to noindexed account/auth routes so crawlers can see their page-level directives.
+- Aligned the protected IndexNow submission with the quality-gated sitemap and scheduled it after daily data publication.
 - Deferred AdSense loading and verified the production build, lint, TypeScript, and dependency security audit.
 
 ## P0 — after deployment

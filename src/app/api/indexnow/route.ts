@@ -1,52 +1,26 @@
 import { NextResponse } from 'next/server';
-import fs from 'fs';
-import path from 'path';
+import sitemap from '@/app/sitemap';
 
 const INDEXNOW_KEY = 'c7b91d2f8e4a460393b6e82a15f07d2e';
 const HOST = 'www.leetmap-pro.com';
 const KEY_LOCATION = `https://${HOST}/${INDEXNOW_KEY}.txt`;
 
 function getAllCanonicalUrls(): string[] {
-  const baseUrls = [
-    `https://${HOST}`,
-    `https://${HOST}/strategy`,
-    `https://${HOST}/patterns`,
-    `https://${HOST}/sql`,
-    `https://${HOST}/patterns/time-complexity`,
-    `https://${HOST}/privacy`,
-    `https://${HOST}/terms`,
-  ];
+  // Reuse the sitemap's quality gate so IndexNow never receives thin,
+  // noindexed, duplicate, or alias URLs that contradict our Google signals.
+  return sitemap().map((entry) => entry.url);
+}
 
-  try {
-    const dataDir = path.join(process.cwd(), 'public', 'data');
-    const companiesPath = path.join(dataDir, 'companies.json');
-    if (fs.existsSync(companiesPath)) {
-      const companies: { slug: string }[] = JSON.parse(fs.readFileSync(companiesPath, 'utf8'));
-      companies.forEach((c) => {
-        if (c.slug) baseUrls.push(`https://${HOST}/company/${c.slug}`);
-      });
-    }
+function isAuthorized(request: Request): boolean {
+  const cronSecret = process.env.CRON_SECRET;
+  return Boolean(cronSecret) && request.headers.get('authorization') === `Bearer ${cronSecret}`;
+}
 
-    const patternsPath = path.join(dataDir, 'patterns.json');
-    if (fs.existsSync(patternsPath)) {
-      const patterns: { slug: string }[] = JSON.parse(fs.readFileSync(patternsPath, 'utf8'));
-      patterns.forEach((p) => {
-        if (p.slug) baseUrls.push(`https://${HOST}/patterns/${p.slug}`);
-      });
-    }
-
-    const sqlPath = path.join(dataDir, 'sql-companies.json');
-    if (fs.existsSync(sqlPath)) {
-      const sqlCompanies: { slug: string }[] = JSON.parse(fs.readFileSync(sqlPath, 'utf8'));
-      sqlCompanies.forEach((s) => {
-        if (s.slug) baseUrls.push(`https://${HOST}/sql/${s.slug}`);
-      });
-    }
-  } catch (err) {
-    console.error('Failed to load canonical URLs for IndexNow:', err);
-  }
-
-  return baseUrls;
+function unauthorizedResponse() {
+  return NextResponse.json(
+    { success: false, error: 'Unauthorized' },
+    { status: 401, headers: { 'Cache-Control': 'no-store' } }
+  );
 }
 
 async function submitToIndexNow(urls: string[]) {
@@ -87,7 +61,9 @@ async function submitToIndexNow(urls: string[]) {
   );
 }
 
-export async function GET() {
+export async function GET(request: Request) {
+  if (!isAuthorized(request)) return unauthorizedResponse();
+
   try {
     const urls = getAllCanonicalUrls();
     const results = await submitToIndexNow(urls);
@@ -96,7 +72,7 @@ export async function GET() {
       submittedCount: urls.length,
       submittedUrls: urls.slice(0, 50),
       results,
-    });
+    }, { headers: { 'Cache-Control': 'no-store' } });
   } catch (error) {
     console.error('IndexNow submission failed:', error);
     return NextResponse.json(
@@ -107,9 +83,19 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
+  if (!isAuthorized(request)) return unauthorizedResponse();
+
   try {
     const body = await request.json().catch(() => ({}));
-    const urls = Array.isArray(body?.urls) && body.urls.length > 0 ? body.urls : getAllCanonicalUrls();
+    const canonicalUrls = getAllCanonicalUrls();
+    const canonicalSet = new Set(canonicalUrls);
+    const requestedUrls: string[] = [];
+    if (Array.isArray(body?.urls)) {
+      for (const url of body.urls) {
+        if (typeof url === 'string' && canonicalSet.has(url)) requestedUrls.push(url);
+      }
+    }
+    const urls = requestedUrls.length > 0 ? [...new Set(requestedUrls)] : canonicalUrls;
     const results = await submitToIndexNow(urls);
 
     return NextResponse.json({
@@ -117,7 +103,7 @@ export async function POST(request: Request) {
       submittedCount: urls.length,
       submittedUrls: urls.slice(0, 50),
       results,
-    });
+    }, { headers: { 'Cache-Control': 'no-store' } });
   } catch (error) {
     console.error('IndexNow submission failed:', error);
     return NextResponse.json(

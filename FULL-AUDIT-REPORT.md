@@ -30,6 +30,7 @@ Authenticated Search Console showed the same 193 indexed / 581 not-indexed total
 - The final post-deployment homepage Lighthouse run scored 95 for performance and 100 for accessibility, with FCP 2.3 s, LCP 2.3 s, TBT 70 ms, and CLS 0.002. Representative performance runs ranged from 94–100 after normal run-to-run variance.
 - Titles, descriptions, canonicals, Open Graph metadata, sitemap dates, RSS/Atom dates, and generated social imagery use current dataset values.
 - `robots.txt`, `sitemap.xml`, `llms.txt`, RSS, Atom, `humans.txt`, the About/methodology page, and public JSON APIs expose useful discovery and provenance signals.
+- IndexNow reuses the exact quality-gated sitemap URL set, rejects unauthenticated submissions, and is scheduled after the daily data publication window for Bing and other participating engines.
 - GPTBot, OAI-SearchBot, ChatGPT-User, ClaudeBot, PerplexityBot, Google-Extended, CCBot, and Bytespider can retrieve the public site.
 - FAQ structured data on company, SQL, and pattern pages is generated from the same content users can see.
 - Search Console reports 24 valid breadcrumb items, 0 invalid breadcrumb items, and no breadcrumb issues detected in the last 90 days (last updated 25 September 2026).
