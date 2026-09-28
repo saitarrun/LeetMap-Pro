@@ -2,7 +2,7 @@
 
 Audit date: 2026-09-27  
 Audited URL: https://www.leetmap-pro.com  
-Method: complete sitemap crawl, repository and rendered-output inspection, mobile Lighthouse runs, robots/sitemap/feed checks, AI-crawler checks, and the supplied Google Search Console coverage export.
+Method: complete sitemap crawl, repository and rendered-output inspection, mobile Lighthouse runs, robots/sitemap/feed checks, AI-crawler checks, the supplied coverage export, and authenticated read-only Google Search Console inspection.
 
 ## Executive summary
 
@@ -20,6 +20,8 @@ The latest row in the supplied Search Console export reports:
 
 Google discovery has therefore improved from 169 to 193 indexed URLs in the same export, but most previously submitted catalog URLs remain outside the index.
 
+Authenticated Search Console showed the same 193 indexed / 581 not-indexed totals in its last indexing update dated 20 September 2026. Its existing sitemap record was submitted 17 September, last read 25 September, and still reflects the former 764-URL sitemap rather than the new 303-URL quality-gated sitemap.
+
 ## Verified strengths
 
 - All 302 URLs in the pre-remediation quality-gated sitemap returned HTTP 200, were indexable, and used self-referencing canonicals in the full crawl. The generated post-remediation sitemap contains 303 URLs after adding `/about`.
@@ -30,6 +32,8 @@ Google discovery has therefore improved from 169 to 193 indexed URLs in the same
 - `robots.txt`, `sitemap.xml`, `llms.txt`, RSS, Atom, `humans.txt`, the About/methodology page, and public JSON APIs expose useful discovery and provenance signals.
 - GPTBot, OAI-SearchBot, ChatGPT-User, ClaudeBot, PerplexityBot, Google-Extended, CCBot, and Bytespider can retrieve the public site.
 - FAQ structured data on company, SQL, and pattern pages is generated from the same content users can see.
+- Search Console reports 24 valid breadcrumb items, 0 invalid breadcrumb items, and no breadcrumb issues detected in the last 90 days (last updated 25 September 2026).
+- Search Console reports 18 HTTPS URLs and 0 non-HTTPS URLs, with no HTTPS issues detected in the last 90 days (last updated 19 September 2026).
 - The production build generates 790 routes successfully; lint, TypeScript, and the high-severity dependency audit pass.
 
 ## Findings by priority
@@ -38,13 +42,15 @@ Google discovery has therefore improved from 169 to 193 indexed URLs in the same
 
 Search Console still lists 526 discovered-not-indexed and 53 crawled-not-indexed URLs. The repository cannot force Google to index a URL. The deployed sitemap should be resubmitted, representative fixed URLs should be inspected, and validation should be started in Search Console. Index coverage must then be monitored over multiple crawls.
 
+The examples confirm that the new indexation threshold is aligned with the problem: 7 of the first 10 discovered-not-indexed examples and 9 of the first 10 crawled-not-indexed examples are thin pages now omitted from the sitemap and marked `noindex,follow`. The two redirect examples (`/company/medianet` and `/company/wissen`) are intentional aliases and return permanent 308 redirects to their canonical slugs.
+
 ### Medium: programmatic-page differentiation
 
 Indexable company pages now include company-specific counts, recent-question totals, top topics, difficulty distribution, visible provenance, refresh dates, and data-driven FAQs. They remain generated from a shared template, so the highest-demand companies should continue receiving genuinely unique editorial guidance and stronger contextual links. Low-volume pages should remain outside the sitemap until they pass the content threshold.
 
 ### Medium: field performance is unverified
 
-Lighthouse lab results are strong, but the PageSpeed Insights API returned a quota error and no authenticated CrUX or Search Console Core Web Vitals data was available. Lab results do not prove real-user INP/LCP/CLS.
+Lighthouse lab results are strong, but Search Console's Chrome UX Report states that neither mobile nor desktop has enough usage data in the last 90 days. The PageSpeed Insights API also returned a quota error. Lab results therefore do not yet prove real-user INP/LCP/CLS.
 
 ### Low: third-party JavaScript
 
@@ -76,7 +82,7 @@ The apex-domain redirect was observed as a temporary redirect at the hosting edg
 
 ## Limitations
 
-- No authenticated Google Search Console, GA4, CrUX, DataForSEO, or backlink-provider API access was available.
+- No authenticated GA4, CrUX API, DataForSEO, or backlink-provider access was available. Search Console was inspected through its authenticated browser interface.
 - Google Rich Results Test does not provide an automatable authenticated API in this environment; rendered JSON-LD was inspected directly.
-- The supplied Search Console export contains aggregate issue counts but no example-URL table.
+- Search Console exposes examples, but its indexing report is delayed and still describes the former 764-URL sitemap; it cannot validate the newly deployed sitemap until Google processes a resubmission and recrawl.
 - Rankings and indexation are controlled by search engines; technical compliance and submission do not guarantee inclusion.
