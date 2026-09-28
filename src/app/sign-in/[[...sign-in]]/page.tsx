@@ -1,6 +1,6 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
-import { SignIn } from '@clerk/nextjs';
+import { ClerkLoaded, ClerkLoading, SignIn } from '@clerk/nextjs';
 import { Header } from '@/components/Header';
 import { LeetMapLogo } from '@/components/LeetMapLogo';
 import { ArrowLeft, Shield } from 'lucide-react';
@@ -50,29 +50,40 @@ export default function SignInPage() {
 
           {/* Clerk SignIn with Apple aesthetic */}
           <div className="apple-enter">
-            <SignIn
-              signUpUrl="/sign-up"
-              appearance={{
-                variables: {
-                  colorPrimary: '#10b981',
-                },
-                elements: {
-                  rootBox: 'mx-auto w-full',
-                  cardBox: 'w-full shadow-none',
-                  card: 'rounded-2xl border border-[var(--border)] bg-[var(--bg-card)] shadow-xl p-6 sm:p-7',
-                  headerTitle: 'text-base font-bold tracking-tight text-[var(--text-main)]',
-                  headerSubtitle: 'text-xs text-[var(--text-muted)]',
-                  socialButtonsBlockButton: 'apple-press rounded-xl border border-[var(--border)] bg-[var(--bg-subtle)] text-[var(--text-main)] hover:bg-[var(--bg-hover)] text-xs font-medium transition-colors py-2.5',
-                  formButtonPrimary: 'apple-press rounded-xl bg-[var(--text-main)] text-[var(--bg-page)] text-xs font-semibold py-2.5 hover:opacity-90 transition-opacity shadow-xs',
-                  formFieldInput: 'rounded-xl border border-[var(--border)] bg-[var(--bg-subtle)] text-[var(--text-main)] text-sm focus:border-emerald-500 transition-colors',
-                  footerActionLink: 'text-emerald-600 dark:text-emerald-400 font-medium hover:underline text-xs',
-                  identityPreview: 'rounded-xl border border-[var(--border)] bg-[var(--bg-subtle)]',
-                  formFieldLabel: 'text-xs font-medium text-[var(--text-main)]',
-                  dividerLine: 'bg-[var(--border)]',
-                  dividerText: 'text-xs text-[var(--text-muted)]',
-                },
-              }}
-            />
+            <ClerkLoading>
+              <div className="w-full rounded-2xl border border-[var(--border)] bg-[var(--bg-card)] p-6 sm:p-7 shadow-xl space-y-4" role="status" aria-label="Loading sign-in form">
+                <div className="h-5 w-32 rounded bg-[var(--bg-subtle)] animate-pulse" />
+                <div className="h-10 w-full rounded-xl bg-[var(--bg-subtle)] animate-pulse" />
+                <div className="h-10 w-full rounded-xl bg-[var(--bg-subtle)] animate-pulse" />
+                <div className="h-10 w-full rounded-xl bg-[var(--bg-subtle)] animate-pulse" />
+                <p className="text-center text-xs text-[var(--text-muted)]">Loading secure sign-in…</p>
+              </div>
+            </ClerkLoading>
+            <ClerkLoaded>
+              <SignIn
+                signUpUrl="/sign-up"
+                appearance={{
+                  variables: {
+                    colorPrimary: '#10b981',
+                  },
+                  elements: {
+                    rootBox: 'mx-auto w-full',
+                    cardBox: 'w-full shadow-none',
+                    card: 'rounded-2xl border border-[var(--border)] bg-[var(--bg-card)] shadow-xl p-6 sm:p-7',
+                    headerTitle: 'text-base font-bold tracking-tight text-[var(--text-main)]',
+                    headerSubtitle: 'text-xs text-[var(--text-muted)]',
+                    socialButtonsBlockButton: 'apple-press rounded-xl border border-[var(--border)] bg-[var(--bg-subtle)] text-[var(--text-main)] hover:bg-[var(--bg-hover)] text-xs font-medium transition-colors py-2.5',
+                    formButtonPrimary: 'apple-press rounded-xl bg-[var(--text-main)] text-[var(--bg-page)] text-xs font-semibold py-2.5 hover:opacity-90 transition-opacity shadow-xs',
+                    formFieldInput: 'rounded-xl border border-[var(--border)] bg-[var(--bg-subtle)] text-[var(--text-main)] text-sm focus:border-emerald-500 transition-colors',
+                    footerActionLink: 'text-emerald-600 dark:text-emerald-400 font-medium hover:underline text-xs',
+                    identityPreview: 'rounded-xl border border-[var(--border)] bg-[var(--bg-subtle)]',
+                    formFieldLabel: 'text-xs font-medium text-[var(--text-main)]',
+                    dividerLine: 'bg-[var(--border)]',
+                    dividerText: 'text-xs text-[var(--text-muted)]',
+                  },
+                }}
+              />
+            </ClerkLoaded>
           </div>
         </div>
       </main>
