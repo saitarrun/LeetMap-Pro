@@ -159,7 +159,23 @@ export const PatternDetailView: React.FC<PatternDetailViewProps> = ({ pattern, a
         map[c.slug].count++;
       }
     }
-    return Object.entries(map).sort((a, b) => b[1].count - a[1].count);
+    const nameCounts = Object.values(map).reduce<Record<string, number>>((counts, company) => {
+      const key = company.name.trim().toLocaleLowerCase();
+      counts[key] = (counts[key] ?? 0) + 1;
+      return counts;
+    }, {});
+
+    // Keep similarly named source companies selectable without presenting
+    // indistinguishable duplicate options in the filter.
+    return Object.entries(map)
+      .map(([slug, company]) => {
+        const key = company.name.trim().toLocaleLowerCase();
+        return [slug, {
+          ...company,
+          name: nameCounts[key] > 1 ? `${company.name} · ${slug}` : company.name,
+        }] as const;
+      })
+      .sort((a, b) => b[1].count - a[1].count);
   }, [activePattern.problems]);
 
   // Filtered problems
