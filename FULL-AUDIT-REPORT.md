@@ -20,7 +20,7 @@ The latest row in the supplied Search Console export reports:
 
 Google discovery has therefore improved from 169 to 193 indexed URLs in the same export, but most previously submitted catalog URLs remain outside the index.
 
-Authenticated Search Console showed the same 193 indexed / 581 not-indexed totals in its last indexing update dated 20 September 2026. The new 303-URL quality-gated sitemap was successfully resubmitted on 27 September; Search Console still shows the former 764 discovered-page count until Google reads the replacement file.
+Authenticated Search Console showed the same 193 indexed / 581 not-indexed totals in its page-indexing report (last report update 20 September 2026). The replacement sitemap was successfully submitted and read on 27 September 2026; Search Console reports status **Success** and **303 discovered pages**, matching the deployed quality-gated sitemap. Google’s page-indexing totals will update on its separate recrawl schedule.
 
 ## Verified strengths
 
