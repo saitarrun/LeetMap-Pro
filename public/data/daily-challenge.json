@@ -1,14 +1,15 @@
 {
-  "date": "2026-09-28",
-  "link": "https://leetcode.com/problems/maximum-nesting-depth-of-the-parentheses/",
-  "id": "1614",
-  "title": "Maximum Nesting Depth of the Parentheses",
-  "slug": "maximum-nesting-depth-of-the-parentheses",
-  "difficulty": "EASY",
+  "date": "2026-09-29",
+  "link": "https://leetcode.com/problems/check-if-there-is-a-valid-parentheses-string-path/",
+  "id": "2267",
+  "title": " Check if There Is a Valid Parentheses String Path",
+  "slug": "check-if-there-is-a-valid-parentheses-string-path",
+  "difficulty": "HARD",
   "topics": [
-    "String",
-    "Stack",
+    "Array",
+    "Dynamic Programming",
+    "Matrix",
     "Bracket Sequences"
   ],
-  "fetchedAt": 1790563807537
+  "fetchedAt": 1790652672521
 }

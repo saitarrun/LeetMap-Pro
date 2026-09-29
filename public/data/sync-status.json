@@ -1,7 +1,7 @@
 {
   "status": "success",
-  "lastSynced": 1790563812628,
-  "lastSyncedISO": "2026-09-28T02:50:12Z",
+  "lastSynced": 1790652678122,
+  "lastSyncedISO": "2026-09-29T03:31:18Z",
   "commitSha": "03850eb+e095c25+03850eb",
   "sources": [
     {
@@ -29,7 +29,7 @@
     },
     {
       "name": "LeetCode Live Daily Challenge",
-      "dailyProblem": "#1614 Maximum Nesting Depth of the Parentheses",
+      "dailyProblem": "#2267  Check if There Is a Valid Parentheses String Path",
       "description": "Active 24-hour questionOfToday daily challenge"
     },
     {
@@ -41,5 +41,5 @@
   "companiesCount": 684,
   "uniqueProblemsCount": 3422,
   "sqlProblemsCount": 194,
-  "durationSeconds": 7.06
+  "durationSeconds": 11.33
 }
