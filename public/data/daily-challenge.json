@@ -1,15 +1,14 @@
 {
-  "date": "2026-09-29",
-  "link": "https://leetcode.com/problems/check-if-there-is-a-valid-parentheses-string-path/",
-  "id": "2267",
-  "title": " Check if There Is a Valid Parentheses String Path",
-  "slug": "check-if-there-is-a-valid-parentheses-string-path",
-  "difficulty": "HARD",
+  "date": "2026-09-30",
+  "link": "https://leetcode.com/problems/maximum-nesting-depth-of-two-valid-parentheses-strings/",
+  "id": "1111",
+  "title": "Maximum Nesting Depth of Two Valid Parentheses Strings",
+  "slug": "maximum-nesting-depth-of-two-valid-parentheses-strings",
+  "difficulty": "MEDIUM",
   "topics": [
-    "Array",
-    "Dynamic Programming",
-    "Matrix",
+    "String",
+    "Stack",
     "Bracket Sequences"
   ],
-  "fetchedAt": 1790652672521
+  "fetchedAt": 1790738142698
 }

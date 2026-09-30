@@ -1,7 +1,7 @@
 {
   "status": "success",
-  "lastSynced": 1790652678122,
-  "lastSyncedISO": "2026-09-29T03:31:18Z",
+  "lastSynced": 1790738147945,
+  "lastSyncedISO": "2026-09-30T03:15:47Z",
   "commitSha": "03850eb+e095c25+03850eb",
   "sources": [
     {
@@ -24,12 +24,12 @@
     },
     {
       "name": "LeetCode Official GraphQL (Company Tags)",
-      "tagsCount": 982,
+      "tagsCount": 983,
       "description": "Live company tags & frequency metadata from LeetCode"
     },
     {
       "name": "LeetCode Live Daily Challenge",
-      "dailyProblem": "#2267  Check if There Is a Valid Parentheses String Path",
+      "dailyProblem": "#1111 Maximum Nesting Depth of Two Valid Parentheses Strings",
       "description": "Active 24-hour questionOfToday daily challenge"
     },
     {
@@ -41,5 +41,5 @@
   "companiesCount": 684,
   "uniqueProblemsCount": 3422,
   "sqlProblemsCount": 194,
-  "durationSeconds": 11.33
+  "durationSeconds": 8.42
 }
