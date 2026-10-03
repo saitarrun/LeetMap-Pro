@@ -1,15 +1,15 @@
 {
-  "date": "2026-10-02",
-  "link": "https://leetcode.com/problems/generate-parentheses/",
-  "id": "22",
-  "title": "Generate Parentheses",
-  "slug": "generate-parentheses",
-  "difficulty": "MEDIUM",
+  "date": "2026-10-03",
+  "link": "https://leetcode.com/problems/longest-valid-parentheses/",
+  "id": "32",
+  "title": "Longest Valid Parentheses",
+  "slug": "longest-valid-parentheses",
+  "difficulty": "HARD",
   "topics": [
     "String",
     "Dynamic Programming",
-    "Backtracking",
+    "Stack",
     "Bracket Sequences"
   ],
-  "fetchedAt": 1790911389273
+  "fetchedAt": 1790996864022
 }
