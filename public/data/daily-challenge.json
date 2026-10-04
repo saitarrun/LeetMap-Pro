@@ -1,15 +1,16 @@
 {
-  "date": "2026-10-03",
-  "link": "https://leetcode.com/problems/longest-valid-parentheses/",
-  "id": "32",
-  "title": "Longest Valid Parentheses",
-  "slug": "longest-valid-parentheses",
-  "difficulty": "HARD",
+  "date": "2026-10-04",
+  "link": "https://leetcode.com/problems/valid-parenthesis-string/",
+  "id": "678",
+  "title": "Valid Parenthesis String",
+  "slug": "valid-parenthesis-string",
+  "difficulty": "MEDIUM",
   "topics": [
     "String",
     "Dynamic Programming",
     "Stack",
+    "Greedy",
     "Bracket Sequences"
   ],
-  "fetchedAt": 1790996864022
+  "fetchedAt": 1791084976178
 }
