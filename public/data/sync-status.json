@@ -1,7 +1,7 @@
 {
   "status": "success",
-  "lastSynced": 1791084982289,
-  "lastSyncedISO": "2026-10-04T03:36:22Z",
+  "lastSynced": 1791170310056,
+  "lastSyncedISO": "2026-10-05T03:18:30Z",
   "commitSha": "03850eb+e095c25+03850eb",
   "sources": [
     {
@@ -29,7 +29,7 @@
     },
     {
       "name": "LeetCode Live Daily Challenge",
-      "dailyProblem": "#678 Valid Parenthesis String",
+      "dailyProblem": "#856 Score of Parentheses",
       "description": "Active 24-hour questionOfToday daily challenge"
     },
     {
@@ -41,5 +41,5 @@
   "companiesCount": 684,
   "uniqueProblemsCount": 3422,
   "sqlProblemsCount": 194,
-  "durationSeconds": 8.4
+  "durationSeconds": 9.4
 }
