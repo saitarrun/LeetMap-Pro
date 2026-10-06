@@ -1,14 +1,15 @@
 {
-  "date": "2026-10-05",
-  "link": "https://leetcode.com/problems/score-of-parentheses/",
-  "id": "856",
-  "title": "Score of Parentheses",
-  "slug": "score-of-parentheses",
+  "date": "2026-10-06",
+  "link": "https://leetcode.com/problems/minimum-add-to-make-parentheses-valid/",
+  "id": "921",
+  "title": "Minimum Add to Make Parentheses Valid",
+  "slug": "minimum-add-to-make-parentheses-valid",
   "difficulty": "MEDIUM",
   "topics": [
     "String",
     "Stack",
+    "Greedy",
     "Bracket Sequences"
   ],
-  "fetchedAt": 1791170304121
+  "fetchedAt": 1791259529803
 }
