@@ -1,15 +1,16 @@
 {
-  "date": "2026-10-09",
-  "link": "https://leetcode.com/problems/minimum-insertions-to-balance-a-parentheses-string/",
-  "id": "1541",
-  "title": "Minimum Insertions to Balance a Parentheses String",
-  "slug": "minimum-insertions-to-balance-a-parentheses-string",
+  "date": "2026-10-10",
+  "link": "https://leetcode.com/problems/minimum-sum-of-squared-difference/",
+  "id": "2333",
+  "title": "Minimum Sum of Squared Difference",
+  "slug": "minimum-sum-of-squared-difference",
   "difficulty": "MEDIUM",
   "topics": [
-    "String",
-    "Stack",
+    "Array",
+    "Binary Search",
     "Greedy",
-    "Bracket Sequences"
+    "Sorting",
+    "Heap (Priority Queue)"
   ],
-  "fetchedAt": 1791517985692
+  "fetchedAt": 1791603437812
 }

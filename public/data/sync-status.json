@@ -1,7 +1,7 @@
 {
   "status": "success",
-  "lastSynced": 1791517991424,
-  "lastSyncedISO": "2026-10-09T03:53:11Z",
+  "lastSynced": 1791603443574,
+  "lastSyncedISO": "2026-10-10T03:37:23Z",
   "commitSha": "03850eb+e095c25+03850eb",
   "sources": [
     {
@@ -29,7 +29,7 @@
     },
     {
       "name": "LeetCode Live Daily Challenge",
-      "dailyProblem": "#1541 Minimum Insertions to Balance a Parentheses String",
+      "dailyProblem": "#2333 Minimum Sum of Squared Difference",
       "description": "Active 24-hour questionOfToday daily challenge"
     },
     {
@@ -41,5 +41,5 @@
   "companiesCount": 684,
   "uniqueProblemsCount": 3422,
   "sqlProblemsCount": 194,
-  "durationSeconds": 8.17
+  "durationSeconds": 7.97
 }
