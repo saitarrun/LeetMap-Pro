@@ -1,7 +1,7 @@
 {
   "status": "success",
-  "lastSynced": 1791775997473,
-  "lastSyncedISO": "2026-10-12T03:33:17Z",
+  "lastSynced": 1791866836810,
+  "lastSyncedISO": "2026-10-13T04:47:16Z",
   "commitSha": "03850eb+e095c25+03850eb",
   "sources": [
     {
@@ -29,7 +29,7 @@
     },
     {
       "name": "LeetCode Live Daily Challenge",
-      "dailyProblem": "#2897 Apply Operations on Array to Maximize Sum of Squares",
+      "dailyProblem": "#3727 Maximum Alternating Sum of Squares",
       "description": "Active 24-hour questionOfToday daily challenge"
     },
     {
@@ -41,5 +41,5 @@
   "companiesCount": 684,
   "uniqueProblemsCount": 3422,
   "sqlProblemsCount": 194,
-  "durationSeconds": 7.41
+  "durationSeconds": 6.7
 }
