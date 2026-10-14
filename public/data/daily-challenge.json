@@ -1,14 +1,13 @@
 {
-  "date": "2026-10-13",
-  "link": "https://leetcode.com/problems/maximum-alternating-sum-of-squares/",
-  "id": "3727",
-  "title": "Maximum Alternating Sum of Squares",
-  "slug": "maximum-alternating-sum-of-squares",
+  "date": "2026-10-14",
+  "link": "https://leetcode.com/problems/maximize-sum-of-squares-of-digits/",
+  "id": "3723",
+  "title": "Maximize Sum of Squares of Digits",
+  "slug": "maximize-sum-of-squares-of-digits",
   "difficulty": "MEDIUM",
   "topics": [
-    "Array",
-    "Greedy",
-    "Sorting"
+    "Math",
+    "Greedy"
   ],
-  "fetchedAt": 1791866831689
+  "fetchedAt": 1791946526144
 }
