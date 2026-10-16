@@ -1,15 +1,15 @@
 {
-  "date": "2026-10-15",
-  "link": "https://leetcode.com/problems/subarrays-distinct-element-sum-of-squares-i/",
-  "id": "2913",
-  "title": "Subarrays Distinct Element Sum of Squares I",
-  "slug": "subarrays-distinct-element-sum-of-squares-i",
-  "difficulty": "EASY",
+  "date": "2026-10-16",
+  "link": "https://leetcode.com/problems/subarrays-distinct-element-sum-of-squares-ii/",
+  "id": "2916",
+  "title": "Subarrays Distinct Element Sum of Squares II",
+  "slug": "subarrays-distinct-element-sum-of-squares-ii",
+  "difficulty": "HARD",
   "topics": [
     "Array",
     "Hash Table",
     "Binary Indexed Tree",
     "Segment Tree"
   ],
-  "fetchedAt": 1792031675452
+  "fetchedAt": 1792117777953
 }
