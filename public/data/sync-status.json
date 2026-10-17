@@ -1,7 +1,7 @@
 {
   "status": "success",
-  "lastSynced": 1792117783632,
-  "lastSyncedISO": "2026-10-16T02:29:43Z",
+  "lastSynced": 1792203743673,
+  "lastSyncedISO": "2026-10-17T02:22:23Z",
   "commitSha": "03850eb+e095c25+03850eb",
   "sources": [
     {
@@ -24,12 +24,12 @@
     },
     {
       "name": "LeetCode Official GraphQL (Company Tags)",
-      "tagsCount": 981,
+      "tagsCount": 980,
       "description": "Live company tags & frequency metadata from LeetCode"
     },
     {
       "name": "LeetCode Live Daily Challenge",
-      "dailyProblem": "#2916 Subarrays Distinct Element Sum of Squares II",
+      "dailyProblem": "#3551 Minimum Swaps to Sort by Digit Sum",
       "description": "Active 24-hour questionOfToday daily challenge"
     },
     {
@@ -41,5 +41,5 @@
   "companiesCount": 684,
   "uniqueProblemsCount": 3422,
   "sqlProblemsCount": 194,
-  "durationSeconds": 8.08
+  "durationSeconds": 7.59
 }
