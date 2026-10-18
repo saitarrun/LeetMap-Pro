@@ -1,7 +1,7 @@
 {
   "status": "success",
-  "lastSynced": 1792203743673,
-  "lastSyncedISO": "2026-10-17T02:22:23Z",
+  "lastSynced": 1792290146823,
+  "lastSyncedISO": "2026-10-18T02:22:26Z",
   "commitSha": "03850eb+e095c25+03850eb",
   "sources": [
     {
@@ -29,7 +29,7 @@
     },
     {
       "name": "LeetCode Live Daily Challenge",
-      "dailyProblem": "#3551 Minimum Swaps to Sort by Digit Sum",
+      "dailyProblem": "#1569 Number of Ways to Reorder Array to Get Same BST",
       "description": "Active 24-hour questionOfToday daily challenge"
     },
     {
@@ -41,5 +41,5 @@
   "companiesCount": 684,
   "uniqueProblemsCount": 3422,
   "sqlProblemsCount": 194,
-  "durationSeconds": 7.59
+  "durationSeconds": 9.4
 }
