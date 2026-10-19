@@ -1,7 +1,7 @@
 {
   "status": "success",
-  "lastSynced": 1792290146823,
-  "lastSyncedISO": "2026-10-18T02:22:26Z",
+  "lastSynced": 1792377402590,
+  "lastSyncedISO": "2026-10-19T02:36:42Z",
   "commitSha": "03850eb+e095c25+03850eb",
   "sources": [
     {
@@ -24,12 +24,12 @@
     },
     {
       "name": "LeetCode Official GraphQL (Company Tags)",
-      "tagsCount": 980,
+      "tagsCount": 978,
       "description": "Live company tags & frequency metadata from LeetCode"
     },
     {
       "name": "LeetCode Live Daily Challenge",
-      "dailyProblem": "#1569 Number of Ways to Reorder Array to Get Same BST",
+      "dailyProblem": "#2089 Find Target Indices After Sorting Array",
       "description": "Active 24-hour questionOfToday daily challenge"
     },
     {
@@ -41,5 +41,5 @@
   "companiesCount": 684,
   "uniqueProblemsCount": 3422,
   "sqlProblemsCount": 194,
-  "durationSeconds": 9.4
+  "durationSeconds": 7.92
 }

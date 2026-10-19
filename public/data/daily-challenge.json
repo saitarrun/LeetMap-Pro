@@ -1,22 +1,14 @@
 {
-  "date": "2026-10-18",
-  "link": "https://leetcode.com/problems/number-of-ways-to-reorder-array-to-get-same-bst/",
-  "id": "1569",
-  "title": "Number of Ways to Reorder Array to Get Same BST",
-  "slug": "number-of-ways-to-reorder-array-to-get-same-bst",
-  "difficulty": "HARD",
+  "date": "2026-10-19",
+  "link": "https://leetcode.com/problems/find-target-indices-after-sorting-array/",
+  "id": "2089",
+  "title": "Find Target Indices After Sorting Array",
+  "slug": "find-target-indices-after-sorting-array",
+  "difficulty": "EASY",
   "topics": [
     "Array",
-    "Math",
-    "Divide and Conquer",
-    "Dynamic Programming",
-    "Tree",
-    "Union-Find",
-    "Binary Search Tree",
-    "Memoization",
-    "Combinatorics",
-    "Binary Tree",
-    "Fermat's Little Theorem"
+    "Binary Search",
+    "Sorting"
   ],
-  "fetchedAt": 1792290140257
+  "fetchedAt": 1792377396671
 }
