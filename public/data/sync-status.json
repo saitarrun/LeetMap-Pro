@@ -1,7 +1,7 @@
 {
   "status": "success",
-  "lastSynced": 1792377402590,
-  "lastSyncedISO": "2026-10-19T02:36:42Z",
+  "lastSynced": 1792464556556,
+  "lastSyncedISO": "2026-10-20T02:49:16Z",
   "commitSha": "03850eb+e095c25+03850eb",
   "sources": [
     {
@@ -29,7 +29,7 @@
     },
     {
       "name": "LeetCode Live Daily Challenge",
-      "dailyProblem": "#2089 Find Target Indices After Sorting Array",
+      "dailyProblem": "#3886 Sum of Sortable Integers",
       "description": "Active 24-hour questionOfToday daily challenge"
     },
     {
@@ -41,5 +41,5 @@
   "companiesCount": 684,
   "uniqueProblemsCount": 3422,
   "sqlProblemsCount": 194,
-  "durationSeconds": 7.92
+  "durationSeconds": 8.8
 }
