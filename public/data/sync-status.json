@@ -1,7 +1,7 @@
 {
   "status": "success",
-  "lastSynced": 1792550598195,
-  "lastSyncedISO": "2026-10-21T02:43:18Z",
+  "lastSynced": 1792636866691,
+  "lastSyncedISO": "2026-10-22T02:41:06Z",
   "commitSha": "2b71796+e095c25+03850eb",
   "sources": [
     {
@@ -29,7 +29,7 @@
     },
     {
       "name": "LeetCode Live Daily Challenge",
-      "dailyProblem": "#3863 Minimum Operations to Sort a String",
+      "dailyProblem": "#3942 Minimum Operations to Sort a Permutation",
       "description": "Active 24-hour questionOfToday daily challenge"
     },
     {
@@ -41,5 +41,5 @@
   "companiesCount": 685,
   "uniqueProblemsCount": 3468,
   "sqlProblemsCount": 194,
-  "durationSeconds": 7.35
+  "durationSeconds": 7.85
 }
