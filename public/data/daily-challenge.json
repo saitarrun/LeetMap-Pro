@@ -1,13 +1,13 @@
 {
-  "date": "2026-10-23",
-  "link": "https://leetcode.com/problems/maximum-k-to-sort-a-permutation/",
-  "id": "3644",
-  "title": "Maximum K to Sort a Permutation",
-  "slug": "maximum-k-to-sort-a-permutation",
-  "difficulty": "MEDIUM",
+  "date": "2026-10-24",
+  "link": "https://leetcode.com/problems/count-days-spent-together/",
+  "id": "2409",
+  "title": "Count Days Spent Together",
+  "slug": "count-days-spent-together",
+  "difficulty": "EASY",
   "topics": [
-    "Array",
-    "Bit Manipulation"
+    "Math",
+    "String"
   ],
-  "fetchedAt": 1792723518531
+  "fetchedAt": 1792809763603
 }
