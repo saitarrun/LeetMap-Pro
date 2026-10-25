@@ -1,7 +1,7 @@
 {
   "status": "success",
-  "lastSynced": 1792809769381,
-  "lastSyncedISO": "2026-10-24T02:42:49Z",
+  "lastSynced": 1792895542794,
+  "lastSyncedISO": "2026-10-25T02:32:22Z",
   "commitSha": "2b71796+e095c25+03850eb",
   "sources": [
     {
@@ -24,12 +24,12 @@
     },
     {
       "name": "LeetCode Official GraphQL (Company Tags)",
-      "tagsCount": 978,
+      "tagsCount": 977,
       "description": "Live company tags & frequency metadata from LeetCode"
     },
     {
       "name": "LeetCode Live Daily Challenge",
-      "dailyProblem": "#2409 Count Days Spent Together",
+      "dailyProblem": "#1254 Number of Closed Islands",
       "description": "Active 24-hour questionOfToday daily challenge"
     },
     {
@@ -41,5 +41,5 @@
   "companiesCount": 685,
   "uniqueProblemsCount": 3468,
   "sqlProblemsCount": 194,
-  "durationSeconds": 7.67
+  "durationSeconds": 8.08
 }
