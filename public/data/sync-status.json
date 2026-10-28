@@ -1,7 +1,7 @@
 {
   "status": "success",
-  "lastSynced": 1793070390882,
-  "lastSyncedISO": "2026-10-27T03:06:30Z",
+  "lastSynced": 1793157559206,
+  "lastSyncedISO": "2026-10-28T03:19:19Z",
   "commitSha": "2b71796+e095c25+03850eb",
   "sources": [
     {
@@ -29,7 +29,7 @@
     },
     {
       "name": "LeetCode Live Daily Challenge",
-      "dailyProblem": "#3963 Create Grid With Exactly One Path",
+      "dailyProblem": "#3882 Minimum XOR Path in a Grid",
       "description": "Active 24-hour questionOfToday daily challenge"
     },
     {
@@ -41,5 +41,5 @@
   "companiesCount": 685,
   "uniqueProblemsCount": 3468,
   "sqlProblemsCount": 194,
-  "durationSeconds": 8.36
+  "durationSeconds": 9.25
 }
