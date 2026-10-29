@@ -1,15 +1,19 @@
 {
-  "date": "2026-10-28",
-  "link": "https://leetcode.com/problems/minimum-xor-path-in-a-grid/",
-  "id": "3882",
-  "title": "Minimum XOR Path in a Grid",
-  "slug": "minimum-xor-path-in-a-grid",
-  "difficulty": "MEDIUM",
+  "date": "2026-10-29",
+  "link": "https://leetcode.com/problems/palindromic-path-queries-in-a-tree/",
+  "id": "3841",
+  "title": "Palindromic Path Queries in a Tree",
+  "slug": "palindromic-path-queries-in-a-tree",
+  "difficulty": "HARD",
   "topics": [
     "Array",
-    "Dynamic Programming",
+    "String",
+    "Divide and Conquer",
     "Bit Manipulation",
-    "Matrix"
+    "Tree",
+    "Depth-First Search",
+    "Binary Indexed Tree",
+    "Segment Tree"
   ],
-  "fetchedAt": 1793157552768
+  "fetchedAt": 1793245407288
 }
