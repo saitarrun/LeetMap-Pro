@@ -1,19 +1,15 @@
 {
-  "date": "2026-10-29",
-  "link": "https://leetcode.com/problems/palindromic-path-queries-in-a-tree/",
-  "id": "3841",
-  "title": "Palindromic Path Queries in a Tree",
-  "slug": "palindromic-path-queries-in-a-tree",
-  "difficulty": "HARD",
+  "date": "2026-10-30",
+  "link": "https://leetcode.com/problems/shortest-path-with-at-most-k-consecutive-identical-characters/",
+  "id": "3970",
+  "title": "Shortest Path With At Most K Consecutive Identical Characters",
+  "slug": "shortest-path-with-at-most-k-consecutive-identical-characters",
+  "difficulty": "MEDIUM",
   "topics": [
-    "Array",
     "String",
-    "Divide and Conquer",
-    "Bit Manipulation",
-    "Tree",
-    "Depth-First Search",
-    "Binary Indexed Tree",
-    "Segment Tree"
+    "Graph Theory",
+    "Heap (Priority Queue)",
+    "Shortest Path"
   ],
-  "fetchedAt": 1793245407288
+  "fetchedAt": 1793331954449
 }
