@@ -1,7 +1,7 @@
 {
   "status": "success",
-  "lastSynced": 1793331959950,
-  "lastSyncedISO": "2026-10-30T03:45:59Z",
+  "lastSynced": 1793417366995,
+  "lastSyncedISO": "2026-10-31T03:29:26Z",
   "commitSha": "2b71796+e095c25+03850eb",
   "sources": [
     {
@@ -29,7 +29,7 @@
     },
     {
       "name": "LeetCode Live Daily Challenge",
-      "dailyProblem": "#3970 Shortest Path With At Most K Consecutive Identical Characters",
+      "dailyProblem": "#3665 Twisted Mirror Path Count",
       "description": "Active 24-hour questionOfToday daily challenge"
     },
     {
@@ -41,5 +41,5 @@
   "companiesCount": 685,
   "uniqueProblemsCount": 3468,
   "sqlProblemsCount": 194,
-  "durationSeconds": 7.84
+  "durationSeconds": 7.33
 }
