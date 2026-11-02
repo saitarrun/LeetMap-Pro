@@ -1,13 +1,14 @@
 {
-  "date": "2026-11-01",
-  "link": "https://leetcode.com/problems/minimum-moves-to-equal-array-elements/",
-  "id": "453",
-  "title": "Minimum Moves to Equal Array Elements",
-  "slug": "minimum-moves-to-equal-array-elements",
+  "date": "2026-11-02",
+  "link": "https://leetcode.com/problems/minimum-moves-to-equal-array-elements-ii/",
+  "id": "462",
+  "title": "Minimum Moves to Equal Array Elements II",
+  "slug": "minimum-moves-to-equal-array-elements-ii",
   "difficulty": "MEDIUM",
   "topics": [
     "Array",
-    "Math"
+    "Math",
+    "Sorting"
   ],
-  "fetchedAt": 1793504067778
+  "fetchedAt": 1793590866535
 }

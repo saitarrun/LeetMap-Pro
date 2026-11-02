@@ -1,24 +1,24 @@
 {
   "status": "success",
-  "lastSynced": 1793504071569,
-  "lastSyncedISO": "2026-11-01T03:34:31Z",
-  "commitSha": "latest+latest+latest",
+  "lastSynced": 1793590870878,
+  "lastSyncedISO": "2026-11-02T03:41:10Z",
+  "commitSha": "2b71796+e095c25+03850eb",
   "sources": [
     {
       "name": "liquidslr/leetcode-company-wise-problems",
-      "commit": "latest",
+      "commit": "2b717962",
       "companies": 470,
       "description": "Primary high-frequency company problem archives"
     },
     {
       "name": "snehasishroy/leetcode-companywise-interview-questions",
-      "commit": "latest",
+      "commit": "e095c259",
       "companies": 659,
       "description": "Multi-window interview questions dataset"
     },
     {
       "name": "samiullah88/leetcode-company-wise-problems",
-      "commit": "latest",
+      "commit": "03850eb5",
       "companies": 470,
       "description": "Curated company problems mirror"
     },
@@ -29,7 +29,7 @@
     },
     {
       "name": "LeetCode Live Daily Challenge",
-      "dailyProblem": "#453 Minimum Moves to Equal Array Elements",
+      "dailyProblem": "#462 Minimum Moves to Equal Array Elements II",
       "description": "Active 24-hour questionOfToday daily challenge"
     },
     {
@@ -41,5 +41,5 @@
   "companiesCount": 685,
   "uniqueProblemsCount": 3468,
   "sqlProblemsCount": 194,
-  "durationSeconds": 4.47
+  "durationSeconds": 6.57
 }
