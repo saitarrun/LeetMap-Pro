@@ -1,7 +1,7 @@
 {
   "status": "success",
-  "lastSynced": 1793590870878,
-  "lastSyncedISO": "2026-11-02T03:41:10Z",
+  "lastSynced": 1793681154567,
+  "lastSyncedISO": "2026-11-03T04:45:54Z",
   "commitSha": "2b71796+e095c25+03850eb",
   "sources": [
     {
@@ -29,7 +29,7 @@
     },
     {
       "name": "LeetCode Live Daily Challenge",
-      "dailyProblem": "#462 Minimum Moves to Equal Array Elements II",
+      "dailyProblem": "#3736 Minimum Moves to Equal Array Elements III",
       "description": "Active 24-hour questionOfToday daily challenge"
     },
     {
@@ -41,5 +41,5 @@
   "companiesCount": 685,
   "uniqueProblemsCount": 3468,
   "sqlProblemsCount": 194,
-  "durationSeconds": 6.57
+  "durationSeconds": 6.42
 }
