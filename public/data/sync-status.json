@@ -1,7 +1,7 @@
 {
   "status": "success",
-  "lastSynced": 1793681154567,
-  "lastSyncedISO": "2026-11-03T04:45:54Z",
+  "lastSynced": 1793765420402,
+  "lastSyncedISO": "2026-11-04T04:10:20Z",
   "commitSha": "2b71796+e095c25+03850eb",
   "sources": [
     {
@@ -29,7 +29,7 @@
     },
     {
       "name": "LeetCode Live Daily Challenge",
-      "dailyProblem": "#3736 Minimum Moves to Equal Array Elements III",
+      "dailyProblem": "#3505 Minimum Operations to Make Elements Within K Subarrays Equal",
       "description": "Active 24-hour questionOfToday daily challenge"
     },
     {
@@ -41,5 +41,5 @@
   "companiesCount": 685,
   "uniqueProblemsCount": 3468,
   "sqlProblemsCount": 194,
-  "durationSeconds": 6.42
+  "durationSeconds": 7.75
 }
