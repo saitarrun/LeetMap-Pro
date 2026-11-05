@@ -1,7 +1,7 @@
 {
   "status": "success",
-  "lastSynced": 1793765420402,
-  "lastSyncedISO": "2026-11-04T04:10:20Z",
+  "lastSynced": 1793852981160,
+  "lastSyncedISO": "2026-11-05T04:29:41Z",
   "commitSha": "2b71796+e095c25+03850eb",
   "sources": [
     {
@@ -29,7 +29,7 @@
     },
     {
       "name": "LeetCode Live Daily Challenge",
-      "dailyProblem": "#3505 Minimum Operations to Make Elements Within K Subarrays Equal",
+      "dailyProblem": "#1385 Find the Distance Value Between Two Arrays",
       "description": "Active 24-hour questionOfToday daily challenge"
     },
     {
@@ -41,5 +41,5 @@
   "companiesCount": 685,
   "uniqueProblemsCount": 3468,
   "sqlProblemsCount": 194,
-  "durationSeconds": 7.75
+  "durationSeconds": 8.59
 }
