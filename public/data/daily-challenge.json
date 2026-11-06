@@ -1,15 +1,15 @@
 {
-  "date": "2026-11-05",
-  "link": "https://leetcode.com/problems/find-the-distance-value-between-two-arrays/",
-  "id": "1385",
-  "title": "Find the Distance Value Between Two Arrays",
-  "slug": "find-the-distance-value-between-two-arrays",
-  "difficulty": "EASY",
+  "date": "2026-11-06",
+  "link": "https://leetcode.com/problems/count-zero-request-servers/",
+  "id": "2747",
+  "title": "Count Zero Request Servers",
+  "slug": "count-zero-request-servers",
+  "difficulty": "MEDIUM",
   "topics": [
     "Array",
-    "Two Pointers",
-    "Binary Search",
+    "Hash Table",
+    "Sliding Window",
     "Sorting"
   ],
-  "fetchedAt": 1793852975466
+  "fetchedAt": 1793939325194
 }
