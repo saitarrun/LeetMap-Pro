@@ -1,13 +1,17 @@
 {
-  "date": "2026-11-07",
-  "link": "https://leetcode.com/problems/process-tasks-using-servers/",
-  "id": "1882",
-  "title": "Process Tasks Using Servers",
-  "slug": "process-tasks-using-servers",
+  "date": "2026-11-08",
+  "link": "https://leetcode.com/problems/count-servers-that-communicate/",
+  "id": "1267",
+  "title": "Count Servers that Communicate",
+  "slug": "count-servers-that-communicate",
   "difficulty": "MEDIUM",
   "topics": [
     "Array",
-    "Heap (Priority Queue)"
+    "Depth-First Search",
+    "Breadth-First Search",
+    "Union-Find",
+    "Matrix",
+    "Counting"
   ],
-  "fetchedAt": 1794023706705
+  "fetchedAt": 1794109196055
 }
