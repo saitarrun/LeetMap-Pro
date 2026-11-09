@@ -1,7 +1,7 @@
 {
   "status": "success",
-  "lastSynced": 1794109199795,
-  "lastSyncedISO": "2026-11-08T03:39:59Z",
+  "lastSynced": 1794196375316,
+  "lastSyncedISO": "2026-11-09T03:52:55Z",
   "commitSha": "2b71796+e095c25+03850eb",
   "sources": [
     {
@@ -29,7 +29,7 @@
     },
     {
       "name": "LeetCode Live Daily Challenge",
-      "dailyProblem": "#1267 Count Servers that Communicate",
+      "dailyProblem": "#1606 Find Servers That Handled Most Number of Requests",
       "description": "Active 24-hour questionOfToday daily challenge"
     },
     {
@@ -41,5 +41,5 @@
   "companiesCount": 685,
   "uniqueProblemsCount": 3468,
   "sqlProblemsCount": 194,
-  "durationSeconds": 5.38
+  "durationSeconds": 8.91
 }

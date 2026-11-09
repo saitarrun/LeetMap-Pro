@@ -1,17 +1,15 @@
 {
-  "date": "2026-11-08",
-  "link": "https://leetcode.com/problems/count-servers-that-communicate/",
-  "id": "1267",
-  "title": "Count Servers that Communicate",
-  "slug": "count-servers-that-communicate",
-  "difficulty": "MEDIUM",
+  "date": "2026-11-09",
+  "link": "https://leetcode.com/problems/find-servers-that-handled-most-number-of-requests/",
+  "id": "1606",
+  "title": "Find Servers That Handled Most Number of Requests",
+  "slug": "find-servers-that-handled-most-number-of-requests",
+  "difficulty": "HARD",
   "topics": [
     "Array",
-    "Depth-First Search",
-    "Breadth-First Search",
-    "Union-Find",
-    "Matrix",
-    "Counting"
+    "Heap (Priority Queue)",
+    "Simulation",
+    "Ordered Set"
   ],
-  "fetchedAt": 1794109196055
+  "fetchedAt": 1794196369600
 }
