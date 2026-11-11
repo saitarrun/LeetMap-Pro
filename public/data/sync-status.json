@@ -1,7 +1,7 @@
 {
   "status": "success",
-  "lastSynced": 1794288416834,
-  "lastSyncedISO": "2026-11-10T05:26:56Z",
+  "lastSynced": 1794369430372,
+  "lastSyncedISO": "2026-11-11T03:57:10Z",
   "commitSha": "2b71796+e095c25+03850eb",
   "sources": [
     {
@@ -29,7 +29,7 @@
     },
     {
       "name": "LeetCode Live Daily Challenge",
-      "dailyProblem": "#3693 Climbing Stairs II",
+      "dailyProblem": "#3789 Minimum Cost to Acquire Required Items",
       "description": "Active 24-hour questionOfToday daily challenge"
     },
     {
@@ -41,5 +41,5 @@
   "companiesCount": 685,
   "uniqueProblemsCount": 3468,
   "sqlProblemsCount": 194,
-  "durationSeconds": 6.11
+  "durationSeconds": 9.06
 }
