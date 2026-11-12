@@ -1,7 +1,7 @@
 {
   "status": "success",
-  "lastSynced": 1794369430372,
-  "lastSyncedISO": "2026-11-11T03:57:10Z",
+  "lastSynced": 1794460019807,
+  "lastSyncedISO": "2026-11-12T05:06:59Z",
   "commitSha": "2b71796+e095c25+03850eb",
   "sources": [
     {
@@ -29,7 +29,7 @@
     },
     {
       "name": "LeetCode Live Daily Challenge",
-      "dailyProblem": "#3789 Minimum Cost to Acquire Required Items",
+      "dailyProblem": "#3105 Longest Strictly Increasing or Strictly Decreasing Subarray",
       "description": "Active 24-hour questionOfToday daily challenge"
     },
     {
@@ -41,5 +41,5 @@
   "companiesCount": 685,
   "uniqueProblemsCount": 3468,
   "sqlProblemsCount": 194,
-  "durationSeconds": 9.06
+  "durationSeconds": 6.44
 }
