@@ -1,12 +1,18 @@
 {
-  "date": "2026-11-12",
-  "link": "https://leetcode.com/problems/longest-strictly-increasing-or-strictly-decreasing-subarray/",
-  "id": "3105",
-  "title": "Longest Strictly Increasing or Strictly Decreasing Subarray",
-  "slug": "longest-strictly-increasing-or-strictly-decreasing-subarray",
-  "difficulty": "EASY",
+  "date": "2026-11-13",
+  "link": "https://leetcode.com/problems/count-non-decreasing-subarrays-after-k-operations/",
+  "id": "3420",
+  "title": "Count Non-Decreasing Subarrays After K Operations",
+  "slug": "count-non-decreasing-subarrays-after-k-operations",
+  "difficulty": "HARD",
   "topics": [
-    "Array"
+    "Array",
+    "Stack",
+    "Segment Tree",
+    "Queue",
+    "Sliding Window",
+    "Monotonic Stack",
+    "Monotonic Queue"
   ],
-  "fetchedAt": 1794460015568
+  "fetchedAt": 1794543772787
 }
