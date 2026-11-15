@@ -1,7 +1,7 @@
 {
   "status": "success",
-  "lastSynced": 1794629957482,
-  "lastSyncedISO": "2026-11-14T04:19:17Z",
+  "lastSynced": 1794715386424,
+  "lastSyncedISO": "2026-11-15T04:03:06Z",
   "commitSha": "2b71796+e095c25+03850eb",
   "sources": [
     {
@@ -29,7 +29,7 @@
     },
     {
       "name": "LeetCode Live Daily Challenge",
-      "dailyProblem": "#3364 Minimum Positive Sum Subarray ",
+      "dailyProblem": "#1524 Number of Sub-arrays With Odd Sum",
       "description": "Active 24-hour questionOfToday daily challenge"
     },
     {
@@ -41,5 +41,5 @@
   "companiesCount": 685,
   "uniqueProblemsCount": 3468,
   "sqlProblemsCount": 194,
-  "durationSeconds": 6.91
+  "durationSeconds": 5.77
 }
