@@ -1,7 +1,7 @@
 {
   "status": "success",
-  "lastSynced": 1794715386424,
-  "lastSyncedISO": "2026-11-15T04:03:06Z",
+  "lastSynced": 1794801735072,
+  "lastSyncedISO": "2026-11-16T04:02:15Z",
   "commitSha": "2b71796+e095c25+03850eb",
   "sources": [
     {
@@ -29,7 +29,7 @@
     },
     {
       "name": "LeetCode Live Daily Challenge",
-      "dailyProblem": "#1524 Number of Sub-arrays With Odd Sum",
+      "dailyProblem": "#2243 Calculate Digit Sum of a String",
       "description": "Active 24-hour questionOfToday daily challenge"
     },
     {
@@ -41,5 +41,5 @@
   "companiesCount": 685,
   "uniqueProblemsCount": 3468,
   "sqlProblemsCount": 194,
-  "durationSeconds": 5.77
+  "durationSeconds": 6.7
 }

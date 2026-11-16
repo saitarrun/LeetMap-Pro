@@ -1,15 +1,13 @@
 {
-  "date": "2026-11-15",
-  "link": "https://leetcode.com/problems/number-of-sub-arrays-with-odd-sum/",
-  "id": "1524",
-  "title": "Number of Sub-arrays With Odd Sum",
-  "slug": "number-of-sub-arrays-with-odd-sum",
-  "difficulty": "MEDIUM",
+  "date": "2026-11-16",
+  "link": "https://leetcode.com/problems/calculate-digit-sum-of-a-string/",
+  "id": "2243",
+  "title": "Calculate Digit Sum of a String",
+  "slug": "calculate-digit-sum-of-a-string",
+  "difficulty": "EASY",
   "topics": [
-    "Array",
-    "Math",
-    "Dynamic Programming",
-    "Prefix Sum"
+    "String",
+    "Simulation"
   ],
-  "fetchedAt": 1794715382214
+  "fetchedAt": 1794801730216
 }
