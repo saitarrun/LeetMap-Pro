@@ -1,7 +1,7 @@
 {
   "status": "success",
-  "lastSynced": 1794801735072,
-  "lastSyncedISO": "2026-11-16T04:02:15Z",
+  "lastSynced": 1794894812104,
+  "lastSyncedISO": "2026-11-17T05:53:32Z",
   "commitSha": "2b71796+e095c25+03850eb",
   "sources": [
     {
@@ -24,12 +24,12 @@
     },
     {
       "name": "LeetCode Official GraphQL (Company Tags)",
-      "tagsCount": 977,
+      "tagsCount": 976,
       "description": "Live company tags & frequency metadata from LeetCode"
     },
     {
       "name": "LeetCode Live Daily Challenge",
-      "dailyProblem": "#2243 Calculate Digit Sum of a String",
+      "dailyProblem": "#2911 Minimum Changes to Make K Semi-palindromes",
       "description": "Active 24-hour questionOfToday daily challenge"
     },
     {
@@ -41,5 +41,5 @@
   "companiesCount": 685,
   "uniqueProblemsCount": 3468,
   "sqlProblemsCount": 194,
-  "durationSeconds": 6.7
+  "durationSeconds": 6.75
 }
