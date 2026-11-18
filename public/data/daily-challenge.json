@@ -1,14 +1,12 @@
 {
-  "date": "2026-11-17",
-  "link": "https://leetcode.com/problems/minimum-changes-to-make-k-semi-palindromes/",
-  "id": "2911",
-  "title": "Minimum Changes to Make K Semi-palindromes",
-  "slug": "minimum-changes-to-make-k-semi-palindromes",
-  "difficulty": "HARD",
+  "date": "2026-11-18",
+  "link": "https://leetcode.com/problems/minimum-number-of-changes-to-make-binary-string-beautiful/",
+  "id": "2914",
+  "title": "Minimum Number of Changes to Make Binary String Beautiful",
+  "slug": "minimum-number-of-changes-to-make-binary-string-beautiful",
+  "difficulty": "MEDIUM",
   "topics": [
-    "Two Pointers",
-    "String",
-    "Dynamic Programming"
+    "String"
   ],
-  "fetchedAt": 1794894807583
+  "fetchedAt": 1794979281587
 }

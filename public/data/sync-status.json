@@ -1,7 +1,7 @@
 {
   "status": "success",
-  "lastSynced": 1794894812104,
-  "lastSyncedISO": "2026-11-17T05:53:32Z",
+  "lastSynced": 1794979285607,
+  "lastSyncedISO": "2026-11-18T05:21:25Z",
   "commitSha": "2b71796+e095c25+03850eb",
   "sources": [
     {
@@ -29,7 +29,7 @@
     },
     {
       "name": "LeetCode Live Daily Challenge",
-      "dailyProblem": "#2911 Minimum Changes to Make K Semi-palindromes",
+      "dailyProblem": "#2914 Minimum Number of Changes to Make Binary String Beautiful",
       "description": "Active 24-hour questionOfToday daily challenge"
     },
     {
@@ -41,5 +41,5 @@
   "companiesCount": 685,
   "uniqueProblemsCount": 3468,
   "sqlProblemsCount": 194,
-  "durationSeconds": 6.75
+  "durationSeconds": 6.15
 }
