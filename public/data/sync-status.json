@@ -1,7 +1,7 @@
 {
   "status": "success",
-  "lastSynced": 1794979285607,
-  "lastSyncedISO": "2026-11-18T05:21:25Z",
+  "lastSynced": 1795065446353,
+  "lastSyncedISO": "2026-11-19T05:17:26Z",
   "commitSha": "2b71796+e095c25+03850eb",
   "sources": [
     {
@@ -24,12 +24,12 @@
     },
     {
       "name": "LeetCode Official GraphQL (Company Tags)",
-      "tagsCount": 976,
+      "tagsCount": 977,
       "description": "Live company tags & frequency metadata from LeetCode"
     },
     {
       "name": "LeetCode Live Daily Challenge",
-      "dailyProblem": "#2914 Minimum Number of Changes to Make Binary String Beautiful",
+      "dailyProblem": "#2567 Minimum Score by Changing Two Elements",
       "description": "Active 24-hour questionOfToday daily challenge"
     },
     {
@@ -41,5 +41,5 @@
   "companiesCount": 685,
   "uniqueProblemsCount": 3468,
   "sqlProblemsCount": 194,
-  "durationSeconds": 6.15
+  "durationSeconds": 8.73
 }

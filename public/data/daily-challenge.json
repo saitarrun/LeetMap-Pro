@@ -1,12 +1,14 @@
 {
-  "date": "2026-11-18",
-  "link": "https://leetcode.com/problems/minimum-number-of-changes-to-make-binary-string-beautiful/",
-  "id": "2914",
-  "title": "Minimum Number of Changes to Make Binary String Beautiful",
-  "slug": "minimum-number-of-changes-to-make-binary-string-beautiful",
+  "date": "2026-11-19",
+  "link": "https://leetcode.com/problems/minimum-score-by-changing-two-elements/",
+  "id": "2567",
+  "title": "Minimum Score by Changing Two Elements",
+  "slug": "minimum-score-by-changing-two-elements",
   "difficulty": "MEDIUM",
   "topics": [
-    "String"
+    "Array",
+    "Greedy",
+    "Sorting"
   ],
-  "fetchedAt": 1794979281587
+  "fetchedAt": 1795065440766
 }
