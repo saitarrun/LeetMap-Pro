@@ -1,16 +1,12 @@
 {
-  "date": "2026-11-21",
-  "link": "https://leetcode.com/problems/find-subtree-sizes-after-changes/",
-  "id": "3331",
-  "title": "Find Subtree Sizes After Changes",
-  "slug": "find-subtree-sizes-after-changes",
-  "difficulty": "MEDIUM",
+  "date": "2026-11-22",
+  "link": "https://leetcode.com/problems/check-if-all-as-appears-before-all-bs/",
+  "id": "2124",
+  "title": "Check if All A's Appears Before All B's",
+  "slug": "check-if-all-as-appears-before-all-bs",
+  "difficulty": "EASY",
   "topics": [
-    "Array",
-    "Hash Table",
-    "String",
-    "Tree",
-    "Depth-First Search"
+    "String"
   ],
-  "fetchedAt": 1795237090044
+  "fetchedAt": 1795321255100
 }
