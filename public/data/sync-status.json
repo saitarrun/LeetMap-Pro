@@ -1,24 +1,24 @@
 {
   "status": "success",
-  "lastSynced": 1795321259437,
-  "lastSyncedISO": "2026-11-22T04:20:59Z",
-  "commitSha": "latest+latest+latest",
+  "lastSynced": 1795409890584,
+  "lastSyncedISO": "2026-11-23T04:58:10Z",
+  "commitSha": "2b71796+e095c25+03850eb",
   "sources": [
     {
       "name": "liquidslr/leetcode-company-wise-problems",
-      "commit": "latest",
+      "commit": "2b717962",
       "companies": 470,
       "description": "Primary high-frequency company problem archives"
     },
     {
       "name": "snehasishroy/leetcode-companywise-interview-questions",
-      "commit": "latest",
+      "commit": "e095c259",
       "companies": 659,
       "description": "Multi-window interview questions dataset"
     },
     {
       "name": "samiullah88/leetcode-company-wise-problems",
-      "commit": "latest",
+      "commit": "03850eb5",
       "companies": 470,
       "description": "Curated company problems mirror"
     },
@@ -29,7 +29,7 @@
     },
     {
       "name": "LeetCode Live Daily Challenge",
-      "dailyProblem": "#2124 Check if All A's Appears Before All B's",
+      "dailyProblem": "#1352 Product of the Last K Numbers",
       "description": "Active 24-hour questionOfToday daily challenge"
     },
     {
@@ -41,5 +41,5 @@
   "companiesCount": 685,
   "uniqueProblemsCount": 3468,
   "sqlProblemsCount": 194,
-  "durationSeconds": 4.93
+  "durationSeconds": 7.27
 }
