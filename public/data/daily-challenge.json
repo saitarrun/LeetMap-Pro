@@ -1,16 +1,16 @@
 {
-  "date": "2026-11-23",
-  "link": "https://leetcode.com/problems/product-of-the-last-k-numbers/",
-  "id": "1352",
-  "title": "Product of the Last K Numbers",
-  "slug": "product-of-the-last-k-numbers",
-  "difficulty": "MEDIUM",
+  "date": "2026-11-24",
+  "link": "https://leetcode.com/problems/maximum-subarray-with-equal-products/",
+  "id": "3411",
+  "title": "Maximum Subarray With Equal Products",
+  "slug": "maximum-subarray-with-equal-products",
+  "difficulty": "EASY",
   "topics": [
     "Array",
     "Math",
-    "Design",
-    "Data Stream",
-    "Prefix Sum"
+    "Sliding Window",
+    "Enumeration",
+    "Number Theory"
   ],
-  "fetchedAt": 1795409885959
+  "fetchedAt": 1795506419349
 }
