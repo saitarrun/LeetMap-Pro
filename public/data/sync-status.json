@@ -1,7 +1,7 @@
 {
   "status": "success",
-  "lastSynced": 1795506424262,
-  "lastSyncedISO": "2026-11-24T07:47:04Z",
+  "lastSynced": 1795587545721,
+  "lastSyncedISO": "2026-11-25T06:19:05Z",
   "commitSha": "2b71796+e095c25+03850eb",
   "sources": [
     {
@@ -29,7 +29,7 @@
     },
     {
       "name": "LeetCode Live Daily Challenge",
-      "dailyProblem": "#3411 Maximum Subarray With Equal Products",
+      "dailyProblem": "#3934 Smallest Unique Subarray",
       "description": "Active 24-hour questionOfToday daily challenge"
     },
     {
@@ -41,5 +41,5 @@
   "companiesCount": 685,
   "uniqueProblemsCount": 3468,
   "sqlProblemsCount": 194,
-  "durationSeconds": 6.99
+  "durationSeconds": 7.43
 }
