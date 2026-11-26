@@ -1,7 +1,7 @@
 {
   "status": "success",
-  "lastSynced": 1795587545721,
-  "lastSyncedISO": "2026-11-25T06:19:05Z",
+  "lastSynced": 1795673443501,
+  "lastSyncedISO": "2026-11-26T06:10:43Z",
   "commitSha": "2b71796+e095c25+03850eb",
   "sources": [
     {
@@ -29,7 +29,7 @@
     },
     {
       "name": "LeetCode Live Daily Challenge",
-      "dailyProblem": "#3934 Smallest Unique Subarray",
+      "dailyProblem": "#3360 Stone Removal Game",
       "description": "Active 24-hour questionOfToday daily challenge"
     },
     {
@@ -41,5 +41,5 @@
   "companiesCount": 685,
   "uniqueProblemsCount": 3468,
   "sqlProblemsCount": 194,
-  "durationSeconds": 7.43
+  "durationSeconds": 6.29
 }

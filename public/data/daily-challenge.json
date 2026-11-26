@@ -1,17 +1,13 @@
 {
-  "date": "2026-11-25",
-  "link": "https://leetcode.com/problems/smallest-unique-subarray/",
-  "id": "3934",
-  "title": "Smallest Unique Subarray",
-  "slug": "smallest-unique-subarray",
-  "difficulty": "HARD",
+  "date": "2026-11-26",
+  "link": "https://leetcode.com/problems/stone-removal-game/",
+  "id": "3360",
+  "title": "Stone Removal Game",
+  "slug": "stone-removal-game",
+  "difficulty": "EASY",
   "topics": [
-    "Array",
-    "Hash Table",
-    "Binary Search",
-    "Rolling Hash",
-    "Suffix Array",
-    "Hash Function"
+    "Math",
+    "Simulation"
   ],
-  "fetchedAt": 1795587540884
+  "fetchedAt": 1795673439490
 }
