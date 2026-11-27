@@ -1,13 +1,14 @@
 {
-  "date": "2026-11-26",
-  "link": "https://leetcode.com/problems/stone-removal-game/",
-  "id": "3360",
-  "title": "Stone Removal Game",
-  "slug": "stone-removal-game",
-  "difficulty": "EASY",
+  "date": "2026-11-27",
+  "link": "https://leetcode.com/problems/maximum-number-of-items-from-sale-i/",
+  "id": "3946",
+  "title": "Maximum Number of Items From Sale I",
+  "slug": "maximum-number-of-items-from-sale-i",
+  "difficulty": "MEDIUM",
   "topics": [
-    "Math",
-    "Simulation"
+    "Array",
+    "Dynamic Programming",
+    "Greedy"
   ],
-  "fetchedAt": 1795673439490
+  "fetchedAt": 1795759204842
 }
