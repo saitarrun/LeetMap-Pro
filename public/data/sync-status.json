@@ -1,7 +1,7 @@
 {
   "status": "success",
-  "lastSynced": 1795759210308,
-  "lastSyncedISO": "2026-11-27T06:00:10Z",
+  "lastSynced": 1795844550787,
+  "lastSyncedISO": "2026-11-28T05:42:30Z",
   "commitSha": "2b71796+e095c25+03850eb",
   "sources": [
     {
@@ -29,7 +29,7 @@
     },
     {
       "name": "LeetCode Live Daily Challenge",
-      "dailyProblem": "#3946 Maximum Number of Items From Sale I",
+      "dailyProblem": "#3947 Maximum Number of Items From Sale II",
       "description": "Active 24-hour questionOfToday daily challenge"
     },
     {
@@ -41,5 +41,5 @@
   "companiesCount": 685,
   "uniqueProblemsCount": 3468,
   "sqlProblemsCount": 194,
-  "durationSeconds": 8.39
+  "durationSeconds": 7.78
 }
